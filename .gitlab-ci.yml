@@ -1,0 +1,64 @@
+image : gradle:7.3.1
+
+stages:     
+  - gradle_setup
+  - lint          
+  - build
+  - test
+
+before_script:
+    - export GRADLE_USER_HOME=`pwd`/.gradle
+    - chmod 777 ./gradlew
+
+gradle_setup:
+    stage: gradle_setup
+    script: 
+        - ./gradlew wrapper
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        policy: push
+
+styleMain:
+    stage: lint
+    script: 
+        - ./gradlew checkstyleMain
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        policy: pull
+        paths:
+            - build
+            - .gradle 
+
+styleTest:
+    stage: lint
+    script: 
+        - ./gradlew checkstyleTest
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        policy: pull
+        paths:
+            - build
+            - .gradle 
+
+build:
+    stage: build
+    script:
+        - ./gradlew assemble
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        policy: pull-push
+        paths:
+            - build
+            - .gradle
+
+
+test:
+    stage: test
+    script: 
+        - ./gradlew test
+    cache:
+        key: "$CI_COMMIT_REF_NAME"
+        policy: pull
+        paths:
+            - build
+            - .gradle
