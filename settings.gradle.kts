@@ -1,2 +1,2 @@
-rootProject.name = "fireemblem"
+rootProject.name = "wargroove"
 include("config")

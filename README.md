@@ -8,15 +8,15 @@ A tactical RPG game based on the Fire Emblem game
 
 1. clone the repository
     ```
-    git clone git@gaufre.informatique.univ-paris-diderot.fr:garnierk/fire-emblem.git
+    git clone git@gaufre.informatique.univ-paris-diderot.fr:garnierk/wargroove.git
     ```
    or
     ```
-    git clone https://gaufre.informatique.univ-paris-diderot.fr/garnierk/fire-emblem.git
+    git clone https://gaufre.informatique.univ-paris-diderot.fr/garnierk/wargroove
     ```
 2. Enter the project folder
     ```
-    cd fire-emblem
+    cd wargroove
     ```
 4. run gradle wrapper (it will download all dependencies, including gradle itself)
     ```
