@@ -36,6 +36,7 @@ project(":core") {
 		implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
     		implementation("com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion")
 		implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
+		implementation(project(":utils"))
 
 	}
 

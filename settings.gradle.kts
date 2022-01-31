@@ -1,2 +1,2 @@
 rootProject.name = "wargroove"
-include("config", "core", "desktop")
+include("config", "core", "utils", "desktop")
