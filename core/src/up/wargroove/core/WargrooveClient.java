@@ -1,25 +1,73 @@
 package up.wargroove.core;
 
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import up.wargroove.core.ui.controller.ClientController;
+import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.View;
 
-public class WargrooveClient implements ApplicationListener {
+/**
+ * The wargroove client.
+ */
+public class WargrooveClient extends Game {
 
-	@Override
-	public void create() {}
-	
-	@Override
-	public void render() {}
+    /**
+     * The drawing tool.
+     */
+    SpriteBatch batch;
+    /**
+     * The app asset manager.
+     */
+    private AssetManager assetManager;
+    /**
+     * The client controller.
+     */
+    private Controller controller;
+    /**
+     * The shown scene.
+     */
+    private View scene;
 
-	@Override
-	public void resize(int width, int height) {}
+    @Override
+    public void create() {
+        batch = new SpriteBatch();
+        assetManager = new AssetManager();
+        controller = new ClientController(this);
+        loadAssets();
+        controller.create();
+        scene = new GameView(controller.getModel(), this);
+        setScreen(scene);
+    }
 
-	@Override
-	public void dispose() {}
+    @Override
+    public void render() {
+        scene.render(Gdx.graphics.getDeltaTime());
+    }
 
-	@Override
-	public void resume() {}
+    @Override
+    public void resize(int width, int height) {
+    }
 
-	@Override
-	public void pause() {}
+    @Override
+    public void dispose() {
+        batch.dispose();
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void pause() {
+    }
+
+    /**
+     * Loads assets in the assets folder.
+     */
+    private void loadAssets() {
+    }
 
 }
