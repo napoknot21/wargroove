@@ -22,8 +22,8 @@ public enum TileType {
     CARPET(false, "carpet");
 
 
-    private static final  String extension = ".png";
-    private static final  String TEXTURE_PATH = "data/sprites/world/";
+    private static final String extension = ".png";
+    private static final String TEXTURE_PATH = "data/sprites/world/";
     private final boolean hasVariant;
     private final String texture;
 
@@ -101,7 +101,8 @@ public enum TileType {
                 return FLAGSTONE;
             case 13:
                 return CARPET;
-            default: return TEST;
+            default:
+                return TEST;
         }
     }
 

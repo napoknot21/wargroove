@@ -2,6 +2,8 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
+import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.ui.Model;
 
 /**
  * A basic screen controller.
@@ -13,13 +15,13 @@ public abstract class ScreenController extends Controller {
      */
     private Screen screen;
 
-    public ScreenController(Game wargroove, Screen screen) {
-        super(wargroove);
+    public ScreenController(Model model, WargrooveClient wargroove, Screen screen) {
+        super(model, wargroove);
         this.screen = screen;
     }
 
-    public ScreenController(Game wargroove) {
-        super(wargroove);
+    public ScreenController(Model model, WargrooveClient wargroove) {
+        super(model, wargroove);
     }
 
     public Screen getScreen() {

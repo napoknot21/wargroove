@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Game;
+import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.GameController;
 import up.wargroove.core.ui.controller.ScreenController;
@@ -15,12 +16,12 @@ public class GameView extends View {
      */
     private GameMap gameMap;
 
-    public GameView(ScreenController controller, Model model, Game wargroove) {
+    public GameView(ScreenController controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
     }
 
-    public GameView(Model model, Game wargroove) {
-        this(new GameController(wargroove), model, wargroove);
+    public GameView(Model model, WargrooveClient wargroove) {
+        this(new GameController(model, wargroove), model, wargroove);
         getController().setScreen(this);
     }
 
@@ -47,13 +48,13 @@ public class GameView extends View {
     }
 
     @Override
-    public void render(float delta) {
+    public void draw(float delta) {
         gameMap.render();
-        super.render(delta);
     }
 
     @Override
-    public void draw(float delta) {
-        gameMap.render();
+    public void dispose() {
+        gameMap = null;
+        super.dispose();
     }
 }

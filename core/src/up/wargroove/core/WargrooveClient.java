@@ -4,9 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.ClientController;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
 
 /**
@@ -35,16 +37,13 @@ public class WargrooveClient extends Game {
     public void create() {
         batch = new SpriteBatch();
         assetManager = new AssetManager();
-        controller = new ClientController(this);
+        Model model = new Model();
+        controller = new ClientController(model, this);
         loadAssets();
         controller.create();
-        scene = new GameView(controller.getModel(), this);
+        //scene = new GameView(controller.getModel(), this);
+        scene = new MainMenu(controller.getModel(), this);
         setScreen(scene);
-    }
-
-    @Override
-    public void render() {
-        scene.render(Gdx.graphics.getDeltaTime());
     }
 
     @Override
@@ -65,9 +64,12 @@ public class WargrooveClient extends Game {
     }
 
     /**
-     * Loads assets in the assets folder.
+     * Loads assets in the assets' folder.
      */
     private void loadAssets() {
     }
 
+    public SpriteBatch getBatch() {
+        return batch;
+    }
 }

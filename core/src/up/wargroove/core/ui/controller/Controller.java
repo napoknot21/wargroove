@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Game;
+import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 
 /**
@@ -10,14 +11,15 @@ public abstract class Controller {
     /**
      * The wargroove client.
      */
-    private final Game wargroove;
+    private final WargrooveClient wargroove;
     /**
      * The game model.
      */
     private Model model;
 
-    public Controller(Game wargroove) {
+    public Controller(Model model, WargrooveClient wargroove) {
         this.wargroove = wargroove;
+        this.model = model;
     }
 
     /**
@@ -32,7 +34,7 @@ public abstract class Controller {
     }
 
 
-    public Game getClient() {
+    public WargrooveClient getClient() {
         return wargroove;
     }
 }

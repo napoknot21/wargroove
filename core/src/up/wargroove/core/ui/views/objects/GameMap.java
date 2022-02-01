@@ -41,7 +41,6 @@ public class GameMap extends TiledMap {
      * Render the world.
      */
     public void render() {
-        //updateScale();
         new BoardRenderer(this).render();
     }
 
@@ -57,6 +56,15 @@ public class GameMap extends TiledMap {
     }
 
     /**
+     * Camera of the world.
+     */
+    public static class BoardCamera extends OrthographicCamera {
+        public BoardCamera() {
+            setToOrtho(false, 5, 5);
+        }
+    }
+
+    /**
      * Tool for rendering the world.
      */
     public class BoardRenderer extends OrthogonalTiledMapRenderer {
@@ -64,15 +72,6 @@ public class GameMap extends TiledMap {
         public BoardRenderer(GameMap map) {
             super(map, scale);
             setView(new BoardCamera());
-        }
-    }
-
-    /**
-     * Camera of the world.
-     */
-    public static class BoardCamera extends OrthographicCamera {
-        public BoardCamera() {
-            setToOrtho(false, 5, 5);
         }
     }
 }
