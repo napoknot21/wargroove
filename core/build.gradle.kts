@@ -6,7 +6,7 @@ sourceSets {
 			srcDirs("src/")
 		}
 		resources {
-			srcDirs("resources/")
+			srcDirs("assets/")
 		}
 	}
 
@@ -15,7 +15,7 @@ sourceSets {
 			srcDirs("test/java")
 		}
 		resources {
-			srcDirs("test/ressources/")
+			srcDirs("test/assets/")
 		}
 	}
 }
