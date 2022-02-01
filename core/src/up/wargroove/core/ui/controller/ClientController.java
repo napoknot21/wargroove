@@ -8,7 +8,7 @@ import up.wargroove.core.ui.Model;
  * The Client Controller.
  */
 public class ClientController extends Controller {
-    public ClientController(Model model,WargrooveClient wargroove) {
+    public ClientController(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
     }
 }

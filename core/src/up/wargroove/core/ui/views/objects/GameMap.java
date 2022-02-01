@@ -30,7 +30,7 @@ public class GameMap extends TiledMap {
         for (int i = 0; i < 50; i++) {
             for (int j = 0; j < 50; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new Tile(20, 20));
+                cell.setTile(new Tile(board[i][j]));
                 tileLayer.setCell(i, j, cell);
             }
         }

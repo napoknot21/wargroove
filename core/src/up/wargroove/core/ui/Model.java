@@ -1,5 +1,7 @@
 package up.wargroove.core.ui;
 
+import java.util.Random;
+
 /**
  * The gui model.
  */
@@ -18,6 +20,12 @@ public class Model {
      */
     public void startGame() {
         world = new int[50][50];
+        Random random = new Random();
+        for (int i = 0; i < world.length; i++) {
+            for (int j = 0; j < world[i].length; j++) {
+                world[i][j] = random.nextInt(12) + 1;
+            }
+        }
         isActive = true;
     }
 

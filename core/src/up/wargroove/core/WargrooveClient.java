@@ -1,13 +1,11 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.ClientController;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
 
@@ -40,6 +38,10 @@ public class WargrooveClient extends Game {
         Model model = new Model();
         controller = new ClientController(model, this);
         loadAssets();
+        /*while(assetManager.update()) {
+            float progress = assetManager.getProgress();
+            System.out.println("Loading ... " + progress * 100 +"%");
+        }*/
         controller.create();
         //scene = new GameView(controller.getModel(), this);
         scene = new MainMenu(controller.getModel(), this);

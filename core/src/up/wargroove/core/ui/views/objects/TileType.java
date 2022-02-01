@@ -9,7 +9,6 @@ public enum TileType {
     TEST(false, "test"),
     GRASS(true, "grass"),
     BRIDGE(true, "bridge"),
-    PLAINS(true, "plains"),
     FOREST(true, "forest"),
     MOUNTAIN(true, "mountain"),
     BEACH(true, "beach"),
@@ -74,32 +73,31 @@ public enum TileType {
      * @return The Tiletype equivalent of the id
      */
     private static TileType getTileType(int id) {
+        int it = 1;
         switch (id) {
             case 1:
                 return GRASS;
             case 2:
                 return BRIDGE;
             case 3:
-                return PLAINS;
-            case 4:
                 return FOREST;
-            case 5:
+            case 4:
                 return MOUNTAIN;
-            case 6:
+            case 5:
                 return BEACH;
-            case 7:
+            case 6:
                 return SEA;
-            case 8:
+            case 7:
                 return DEEP_SEA;
-            case 9:
+            case 8:
                 return RIVER;
-            case 10:
+            case 9:
                 return REEF;
-            case 11:
+            case 10:
                 return WALL;
-            case 12:
+            case 11:
                 return FLAGSTONE;
-            case 13:
+            case 12:
                 return CARPET;
             default:
                 return TEST;
