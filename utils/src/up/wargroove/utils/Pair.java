@@ -30,4 +30,9 @@ public class Pair<T, U> {
 
 	}
 
+	@Override
+	public String toString() {
+		return "(" + first + ", " + second + ")";
+	}
+
 }

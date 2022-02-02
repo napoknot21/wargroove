@@ -10,7 +10,7 @@ public class WorldProperties {
 	
 	public Pair<Integer, Integer> dimension;
 	public Biome biome;
-	public Tale [] terrain;
+	public Tile [] terrain;
 
 	public boolean fog;		
 	public AudioInputStream music;

@@ -17,18 +17,13 @@ public class World {
 
 	private Pair<Integer, Integer> dimension;
 	private Biome biome;
-	private Tale [] terrain;
+	private Tile [] terrain;
 
 	private final boolean fog;
 	private AudioInputStream music;
 
 	private Stack<State> states;
 	private int turn;
-
-	private final static float CELL_SUBDIVISION = 8.0f;
-	private final static int POLYGON_DIMENSION  = 4;
-
-	private Pair<Double, Double> [][] generationGradients;
 
 	public World(WorldProperties properties) {
 
@@ -43,7 +38,7 @@ public class World {
 		this.music = music;
 
 		turn = 1;
-	
+
 //		entities   = new Vector<>();
 
 	}
@@ -57,20 +52,17 @@ public class World {
 	public void initialize(boolean generation) {
 
 		Log.print("Initialisation du monde ...");
+		terrain = new Tile[dimension.first * dimension.second];
 
-		if(generation) generateGradients();
-		terrain = new Tale[dimension.first * dimension.second];
-
-		for(int k = 0; k < terrain.length; k++) {
-
-			if(generation) {
-				
-				double val = noise(k % dimension.first, (int) (k / dimension.second));
-				Log.print("Noise value = " + val);
-
-			} else
-				terrain[k] = new Tale();
-
+		if(generation) {
+		
+			Generator gen = new Generator(dimension);
+			terrain = gen.build();
+		
+		} else {
+		
+			for(int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
+		
 		}
 
 	}
@@ -93,105 +85,47 @@ public class World {
 
 	}
 
-	/*
-	 * Génération procédurale basée
-	 * sur le bruit de Perlin
-	 *
-	 */
+	public Tile at(int x, int y) {
 
-	private void generateGradients() {
+		return terrain[y * dimension.first + x];
 
-		int sizeX = dimension.first + 1;
-		int sizeY = dimension.second + 1;
+	}
 
-		generationGradients = new Pair[sizeX][sizeY];
-		Random rdSeed = new Random();
+	public Tile at(Pair<Integer, Integer> coordinates) {
 
-		for(int k = 0; k < sizeX * sizeY; k++) {
-		
-			double radius = rdSeed.nextFloat();
-		
-			double x = Math.cos(radius);
-			double y = Math.sin(radius);
+		return at(coordinates.first, coordinates.second);
 
-			Pair<Double, Double> vector = new Pair<>(x, y);
-			generationGradients[(int) (k / sizeY)][k % sizeX] = vector;
-		
+	}
+
+	public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
+
+		int x = k % dimension.first;
+		int y = (int) (k / dimension.first);
+
+		return new Pair<>(x, y);
+
+	}
+
+	public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
+
+		return dimension.first * co.second + co.first;
+
+	}
+
+	public String toString() {
+
+		StringBuilder builder = new StringBuilder();
+		int index = 0;
+
+		for(Tile tile : terrain) {
+
+			builder.append(tile);
+			
+			if(++index % dimension.first == 0) builder.append('\n');
+
 		}
 
-	}
-
-	private double interpolation(double a, double b, double w) {
-
-		return w * b + (1 - w) * a;
-
-	}
-
-	private double cornerDotProduct(int floor_x, int floor_y, double x, double y) {
-
-		double deltaX = x - (double) floor_x;
-		double deltaY = y - (double) floor_y;
-
-		var vector = generationGradients[floor_x][floor_y];
-
-		double kX = deltaX * vector.first;
-		double kY = deltaY * vector.second;
-	
-		return kX + kY;	
-
-	}
-
-	private double noise(int x, int y) {
-
-		/*
-		 * Sous division de la cellule en 8
-		 */
-
-		double double_x = (float) x / (CELL_SUBDIVISION * dimension.first);
-		double double_y = (float) y / (CELL_SUBDIVISION * dimension.second);
-
-		int intCoXAlpha = (int) Math.floor(double_x);
-		int intCoYAlpha = (int) Math.floor(double_y);
-
-		double polX = double_x - (double) intCoXAlpha;
-		double polY = double_y - (double) intCoYAlpha;
-
-		int intCoXBeta = intCoXAlpha + 1;
-		int intCoYBeta = intCoYAlpha + 1;
-
-		/*
-		 * Interpolation: 
-		 * 	
-		 * 	- Sur les deux vecteurs de coordonnée y_0
-		 * 	de la cellulle
-		 *
-		 * 	- Sur les deux dernières
-		 *
-		 * 	- Interpolation des deux interpolations
-		 * 	obtenues
-		 */
-
-		double cornerAlpha, cornerBeta;
-
-		/*
-		 * Première interpolation
-		 */
-
-		cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYAlpha, double_x, double_y);
-		cornerBeta  = cornerDotProduct(intCoXBeta, intCoYAlpha, double_x, double_y);
-
-		double interpolationAlpha = interpolation(cornerAlpha, cornerBeta, polX);
-		
-		/*
-		 * Seconde interpolation
-		 */
-
-		cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYBeta, double_x, double_y);
-		cornerBeta  = cornerDotProduct(intCoXBeta, intCoYBeta, double_x, double_y);
-
-		double interpolationBeta = interpolation(cornerAlpha, cornerBeta, polX);
-
-		return interpolation(interpolationAlpha, interpolationBeta, polX);
+		return builder.toString();
 
 	}
 
