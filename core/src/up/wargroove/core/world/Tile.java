@@ -1,6 +1,6 @@
 package up.wargroove.core.world;
 
-public class Tale extends Component {
+public class Tile extends Component {
 
 	static enum TaleType implements Type {
 
@@ -36,7 +36,9 @@ public class Tale extends Component {
 	
 	private Structure structure;
 
-	public Tale() {
+	public int[] mvt_cost = new int[7]; //{walking, riding, wheels, flying, hover, water, amphibious}
+
+	public Tile() {
 
 		/*
 		 * Initialisé par défaut sur la plaine
@@ -46,7 +48,7 @@ public class Tale extends Component {
 
 	}
 
-	public Tale(Type type) {
+	public Tile(Type type) {
 	
 		super(type);
 

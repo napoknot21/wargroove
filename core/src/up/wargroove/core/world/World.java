@@ -4,7 +4,6 @@ import up.wargroove.utils.Pair;
 import up.wargroove.utils.Log;
 
 import java.util.Random;
-import java.util.Vector;
 import java.util.Stack;
 import javax.sound.sampled.AudioInputStream;
 
@@ -17,7 +16,7 @@ public class World {
 
 	private Pair<Integer, Integer> dimension;
 	private Biome biome;
-	private Tale [] terrain;
+	private Tile[] terrain;
 
 	private final boolean fog;
 	private AudioInputStream music;
@@ -59,7 +58,7 @@ public class World {
 		Log.print("Initialisation du monde ...");
 
 		if(generation) generateGradients();
-		terrain = new Tale[dimension.first * dimension.second];
+		terrain = new Tile[dimension.first * dimension.second];
 
 		for(int k = 0; k < terrain.length; k++) {
 
@@ -69,7 +68,7 @@ public class World {
 				Log.print("Noise value = " + val);
 
 			} else
-				terrain[k] = new Tale();
+				terrain[k] = new Tile();
 
 		}
 
