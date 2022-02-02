@@ -54,6 +54,20 @@ public class Tile extends StaticTiledMapTile {
     }
 
     /**
+     * Create a static tile according to the type and set the texture dimension.
+     *
+     * @param type The tile type.
+     * @param width The texture width.
+     * @param height the texture height.
+     */
+    public Tile(int type, int width, int height) {
+        super(new TextureRegion());
+        Texture texture = new Texture(TileType.getTexturePath(type));
+        TextureRegion textureRegion = new TextureRegion(texture, width, height);
+        setTextureRegion(textureRegion);
+    }
+
+    /**
      * Get the assets path.
      *
      * @param fileName The name of the file that will be loaded.

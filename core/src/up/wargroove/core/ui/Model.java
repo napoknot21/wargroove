@@ -19,7 +19,7 @@ public class Model {
      * Start a new game.
      */
     public void startGame() {
-        world = new int[50][50];
+        world = new int[500][500];
         Random random = new Random();
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[i].length; j++) {
