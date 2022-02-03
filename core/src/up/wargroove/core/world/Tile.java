@@ -40,6 +40,8 @@ public class Tile extends Component {
 	
 	private Structure structure;
 
+	public int[] mvt_cost = new int[7]; //{walking, riding, wheels, flying, hover, water, amphibious}
+
 	public Tile() {
 
 		/*
