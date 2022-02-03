@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import up.wargroove.core.ui.Assets;
 
 /**
  * Represent the visual of the world.
@@ -19,7 +20,7 @@ public class GameMap extends TiledMap {
      *
      * @param board The model that will be on the gui
      */
-    public GameMap(int[][] board) {
+    public GameMap(int[][] board, Assets assets) {
         super();
         this.board = board;
         initDimension();
@@ -27,7 +28,7 @@ public class GameMap extends TiledMap {
         for (int i = 0; i < 50; i++) {
             for (int j = 0; j < 50; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new Tile(board[i][j]));
+                cell.setTile(new Tile(board[i][j], assets));
                 tileLayer.setCell(i, j, cell);
             }
         }

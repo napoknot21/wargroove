@@ -3,11 +3,13 @@ package up.wargroove.core.ui.views.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
+import up.wargroove.core.ui.Assets;
 
 /**
  * Represent a visual tile of the world.
  */
 public class Tile extends StaticTiledMapTile {
+
     /**
      * Creates a static tile with the given region.
      *
@@ -46,18 +48,18 @@ public class Tile extends StaticTiledMapTile {
      *
      * @param type The tile Type.
      */
-    public Tile(int type) {
+    public Tile(int type, Assets assets) {
         super(new TextureRegion());
-        Texture texture = new Texture(TileType.getTexturePath(type));
-        TextureRegion textureRegion = new TextureRegion(texture);
+        String path = TileType.getTexturePath(type, 1);
+        TextureRegion textureRegion = new TextureRegion(assets.get(path, Texture.class));
         setTextureRegion(textureRegion);
     }
 
     /**
      * Create a static tile according to the type and set the texture dimension.
      *
-     * @param type The tile type.
-     * @param width The texture width.
+     * @param type   The tile type.
+     * @param width  The texture width.
      * @param height the texture height.
      */
     public Tile(int type, int width, int height) {

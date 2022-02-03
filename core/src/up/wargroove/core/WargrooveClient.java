@@ -1,8 +1,8 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.ClientController;
 import up.wargroove.core.ui.controller.Controller;
@@ -19,9 +19,9 @@ public class WargrooveClient extends Game {
      */
     SpriteBatch batch;
     /**
-     * The app asset manager.
+     * The app assets.
      */
-    private AssetManager assetManager;
+    private Assets assets;
     /**
      * The client controller.
      */
@@ -34,14 +34,10 @@ public class WargrooveClient extends Game {
     @Override
     public void create() {
         batch = new SpriteBatch();
-        assetManager = new AssetManager();
+        assets = new Assets();
         Model model = new Model();
         controller = new ClientController(model, this);
-        loadAssets();
-        /*while(assetManager.update()) {
-            float progress = assetManager.getProgress();
-            System.out.println("Loading ... " + progress * 100 +"%");
-        }*/
+        assets.load();
         controller.create();
         //scene = new GameView(controller.getModel(), this);
         scene = new MainMenu(controller.getModel(), this);
@@ -66,13 +62,11 @@ public class WargrooveClient extends Game {
     public void pause() {
     }
 
-    /**
-     * Loads assets in the assets' folder.
-     */
-    private void loadAssets() {
-    }
-
     public SpriteBatch getBatch() {
         return batch;
+    }
+
+    public Assets getAssets() {
+        return assets;
     }
 }

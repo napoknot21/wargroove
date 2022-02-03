@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.ScreenController;
 
@@ -130,5 +131,9 @@ public abstract class View extends ScreenAdapter {
 
     public Stage getStage() {
         return ui;
+    }
+
+    public Assets getAssets() {
+        return wargroove.getAssets();
     }
 }

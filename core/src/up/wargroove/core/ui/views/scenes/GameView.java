@@ -14,6 +14,7 @@ import up.wargroove.core.ui.views.objects.GameMap;
  * Represent the game screen.
  */
 public class GameView extends View {
+    private final GameController controller;
     /**
      * Visual of the world.
      */
@@ -21,7 +22,6 @@ public class GameView extends View {
     private StretchViewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
-    private final GameController controller;
 
     /**
      * Create the game screen.
@@ -38,7 +38,7 @@ public class GameView extends View {
     @Override
     public void init() {
         getModel().startGame();
-        gameMap = new GameMap(getModel().getWorld());
+        gameMap = new GameMap(getModel().getWorld(), getAssets());
         camera = new OrthographicCamera();
         var world = getModel().getWorld();
         viewport = new StretchViewport(world.length, world[0].length, camera);

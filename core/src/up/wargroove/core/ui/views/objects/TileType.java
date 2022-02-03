@@ -7,12 +7,13 @@ import java.io.File;
  */
 public enum TileType {
     TEST(false, "test"),
-    GRASS(true, "grass"),
+    PLAINS(true, "plains"),
     BRIDGE(true, "bridge"),
     FOREST(true, "forest"),
     MOUNTAIN(true, "mountain"),
     BEACH(true, "beach"),
     SEA(false, "sea"),
+    ROAD(false, "road"),
     DEEP_SEA(false, "deep_sea"),
     RIVER(true, "river"),
     REEF(false, "reef"),
@@ -53,7 +54,7 @@ public enum TileType {
         if (!tile.hasVariant) {
             return getTexturePath(tile);
         }
-        return TEXTURE_PATH + biome + File.separatorChar + tile.texture + extension;
+        return TEXTURE_PATH + Biome.values()[biome].dirName + '/' + tile.texture + extension;
     }
 
     /**
@@ -63,6 +64,7 @@ public enum TileType {
      * @return The texture path
      */
     private static String getTexturePath(TileType tile) {
+        System.out.println(tile.name());
         return TEXTURE_PATH + tile.texture + extension;
     }
 
@@ -73,41 +75,32 @@ public enum TileType {
      * @return The Tiletype equivalent of the id
      */
     private static TileType getTileType(int id) {
-        int it = 1;
-        switch (id) {
-            case 1:
-                return GRASS;
-            case 2:
-                return BRIDGE;
-            case 3:
-                return FOREST;
-            case 4:
-                return MOUNTAIN;
-            case 5:
-                return BEACH;
-            case 6:
-                return SEA;
-            case 7:
-                return DEEP_SEA;
-            case 8:
-                return RIVER;
-            case 9:
-                return REEF;
-            case 10:
-                return WALL;
-            case 11:
-                return FLAGSTONE;
-            case 12:
-                return CARPET;
-            default:
-                return TEST;
-        }
+        return TileType.values()[id];
+    }
+
+    /**
+     * Check if the given string equals the constant name.
+     *
+     * @param s the string compared against the constant name.
+     * @return true if the given object represents a String equivalent to this string, false otherwise.
+     */
+    public boolean equals(String s) {
+        return toString().equals(s);
     }
 
     /**
      * Represent the biome of a Tile related to its directory.
      */
     public enum Biome {
-        ICE, DEFAULT, LAVA
+        GRASS("grass"),
+        ICE("ice"),
+        DESERT("desert"),
+        VOLCANO("volcano");
+
+        private final String dirName;
+
+        Biome(String vo) {
+            this.dirName = vo;
+        }
     }
 }

@@ -23,7 +23,7 @@ public class Model {
         Random random = new Random();
         for (int i = 0; i < world.length; i++) {
             for (int j = 0; j < world[i].length; j++) {
-                world[i][j] = random.nextInt(12) + 1;
+                world[i][j] = random.nextInt(13) + 1;
             }
         }
         isActive = true;

@@ -14,7 +14,7 @@ public class GameController extends ScreenController {
     /**
      * Camera velocity.
      */
-    private static float sVelocity = 0.30f;
+    private static float sVelocity = 0.40f;
 
     public GameController(Model model, WargrooveClient wargroove, Screen screen) {
         super(model, wargroove, screen);
@@ -41,7 +41,7 @@ public class GameController extends ScreenController {
      * Drag the camera according to the user input and the configured camera velocity in the settings.
      *
      * @param pointer The pointer for the event.
-     * @param camera The screen camera.
+     * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
         float velocity = sVelocity * 50 * Gdx.graphics.getDeltaTime();
