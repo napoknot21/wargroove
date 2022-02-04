@@ -6,6 +6,8 @@ public class Movement {
 
     public enum MoveType {
 
+        NULL(Character.TypeUnit.GROUND), //No movement
+
         WALKING(Character.TypeUnit.GROUND),
         RIDING(Character.TypeUnit.GROUND),
         WHEELS(Character.TypeUnit.GROUND),

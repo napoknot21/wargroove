@@ -13,11 +13,10 @@ public class Character extends Entity {
     }
     private Faction faction;
 
-    enum TypeUnit  {
+    static enum TypeUnit {
         GROUND,
         SEA,
         AIR,
-        SUMMON;
 
         TypeUnit() {}
     }
@@ -50,10 +49,10 @@ public class Character extends Entity {
         HARPOON_SHIP(TypeUnit.SEA),
         WARSHIP(TypeUnit.SEA),
 
-        CRYSTAL(TypeUnit.SUMMON),
-        VINE(TypeUnit.SUMMON),
-        SPARROW_BOMB(TypeUnit.SUMMON),
-        SHADOW_SISTER(TypeUnit.SUMMON);
+        CRYSTAL(TypeUnit.GROUND),
+        VINE(TypeUnit.SEA),
+        SPARROW_BOMB(TypeUnit.AIR),
+        SHADOW_SISTER(TypeUnit.GROUND);
 
         Type(TypeUnit ut) {}
 
@@ -72,7 +71,7 @@ public class Character extends Entity {
         false = no
     */
     private Stats stats;
-    private Tile position;
+    private Tile position; //A gerer avec le tableau
 
     Character (String name, Faction faction, Type type, int cost, int range, boolean capture, Stats stats, Tile position) {
         super(name);
@@ -86,6 +85,37 @@ public class Character extends Entity {
         this.position = position;
     }
 
+    public Faction getFaction() {
+        return faction;
+    }
+
+    public TypeUnit getTypeUnit() {
+        return typeUnit;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public int getCost() {
+        return cost;
+    }
+
+    public int getRange() {
+        return range;
+    }
+
+    public boolean isCapture() {
+        return capture;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public Tile getPosition() {
+        return position;
+    }
 
     /*
      * Quelques fonctions de bases pour les personnages
@@ -101,6 +131,10 @@ public class Character extends Entity {
         return true;
     }
 
+    // A completer...
+    public boolean moving (Tile newPosition) {
+        return true;
+    }
 
 
 }
