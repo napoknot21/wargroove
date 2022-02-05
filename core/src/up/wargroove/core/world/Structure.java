@@ -4,9 +4,13 @@ public class Structure {
 
 	static enum Type {
 
+		NULL,
 		VILLAGE,
 		STRONGHOLD,
-		RECRUITMENT;
+		BARRACK,
+		TOWER,
+		PORT,
+		HIDEOUT;
 
 	}
 

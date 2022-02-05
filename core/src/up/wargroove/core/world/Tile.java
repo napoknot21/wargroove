@@ -1,36 +1,41 @@
 package up.wargroove.core.world;
 
-public class Tile extends Component {
+public class Tile {
 
 	public static final int PRIMARY_TILE_TYPE = 5;
 
-	static enum TileType implements Type {
+	public static enum Type {
 
-	//	ROAD('-'),
+		/*
+		 * Types de génération procédurale
+		 */
+
 		MOUNTAIN('^'),
-	//	BRIDGE,	
 		FOREST(':'),
 		PLAINS('/'),		
 		SEA('o'),
 		BEACH('_'),
-		RIVER('s');
-	//	DEEP_SEA('O'),	
-	//	REEF,
-	//	WALL('H');
-	//	FLAGSTONE,
-	//	CARPET;
+		RIVER('s'),
+		DEEP_SEA('O'),	
+		//REEF,
+		
+		ROAD('-'),
+		BRIDGE('h'),	
+		WALL('H'),
+		FLAGSTONE('.'),
+		CARPET('c');
 	
 		int defense;
 		char asciiFormat;
 
-		TileType(char asciiFormat) {
+		Type(char asciiFormat) {
 
 			this(0);
 			this.asciiFormat = asciiFormat;
 
 		}
 
-		TileType(int defense) {
+		Type(int defense) {
 
 			this.defense = defense;
 
@@ -38,6 +43,7 @@ public class Tile extends Component {
 
 	}
 	
+	private Type type;
 	private Structure structure;
 
 	public int[] mvt_cost = new int[7]; //{walking, riding, wheels, flying, hover, water, amphibious}
@@ -48,19 +54,25 @@ public class Tile extends Component {
 		 * Initialisé par défaut sur la plaine
 		 */
 
-		this(TileType.PLAINS);
+		this(Type.PLAINS);
 
 	}
 
 	public Tile(Type type) {
 	
-		super(type);
+		setType(type);	
+
+	}
+
+	public Type getType() {
+
+		return type;
 
 	}
 
 	public void setType(Type type) {
 
-		super.type = type;
+		this.type = type;
 
 	}
 
@@ -72,7 +84,7 @@ public class Tile extends Component {
 
 	public String toString() {
 
-		return new String(((TileType) type).asciiFormat + "");
+		return new String(type.asciiFormat + "");
 
 	}
 

@@ -1,16 +1,20 @@
 package up.wargroove.core.world;
 
+import up.wargroove.core.character.Entity;
 import up.wargroove.utils.Pair;
 import up.wargroove.utils.Log;
 
+import java.util.function.Predicate;
 import java.util.Random;
 import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Stack;
 import javax.sound.sampled.AudioInputStream;
 
 public class World {
 	
-//	private Vector<Entity> entities;
+	private Vector<Entity> entities;
 
 	public String name;
 	public String description;
@@ -39,7 +43,7 @@ public class World {
 
 		turn = 1;
 
-//		entities   = new Vector<>();
+		entities = new Vector<>();
 
 	}
 
@@ -97,6 +101,79 @@ public class World {
 
 	}
 
+	/**
+	 * Retourne les voisins d'une tuile
+	 * selon le degré indiqué
+	 *
+	 */
+
+	public List<Tile> neighbours(Pair<Integer, Integer> coordinates, Predicate<Tile> pred, int deg) {
+
+		ArrayList<Tile> array = new ArrayList<>();
+
+		if(!validCoordinates(coordinates)) return array;		
+
+		int beginX = coordinates.first - deg;
+		int beginY = coordinates.second - deg;
+
+		if(beginX < 0) beginX = 0;
+		if(beginY < 0) beginY = 0;
+
+		var startCoordinates = new Pair<Integer, Integer>(beginX, beginY);
+	
+		final int bor = 2 * deg + 1;
+		final int per = (int) Math.pow(bor, 2) - (int) Math.pow(bor - 2, 2);	
+
+		var directionalVector = new Pair<Boolean, Boolean>(true, false);
+		int blCoef = 1;
+
+		for(int k = 0; k < per; k++) {
+	
+			if(validCoordinates(startCoordinates)) {
+			
+				Tile tile = at(startCoordinates);	
+				if(pred == null || pred.test(tile)) array.add(tile);
+				
+				//predValue |= pred.test(tile);
+			
+			}	
+
+			startCoordinates.first += (directionalVector.first ? 1 : 0) * blCoef;
+			startCoordinates.second += (directionalVector.second ? 1 : 0) * blCoef;
+
+			int cor = (k + 1) % (bor - 1);
+
+			if(k > 0 && cor == 0) {
+
+				directionalVector.first = !directionalVector.first;
+				directionalVector.second = !directionalVector.second;
+
+				if((k + 1) == per / 2) blCoef *= -1;
+
+			}
+			
+		}
+
+		return array;
+		
+	}
+
+	/**
+	 * Validité de la coordonnée sur le plateau
+	 * @param Pair<Integer,Integer> coordonnée
+	 *
+	 * @return l'appartenance des coordonnées au plateau
+	 */
+
+	public boolean validCoordinates(Pair<Integer, Integer> coordinates) {
+
+		boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
+		boolean dim  = coordinates.first < dimension.first && coordinates.second < dimension.second;
+
+		return zero && dim;
+
+	}
+
 	public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
 
 		int x = k % dimension.first;
@@ -119,7 +196,7 @@ public class World {
 
 		for(Tile tile : terrain) {
 
-			builder.append(tile);
+			builder.append(tile + " ");
 			
 			if(++index % dimension.first == 0) builder.append('\n');
 

@@ -11,7 +11,7 @@ public class Generator {
 	private Pair<Integer, Integer> dimension;
 	private Tile [] terrain;
 
-	private final static float CELL_SUBDIVISION = 8.0f;
+	private final static float CELL_SUBDIVISION = 9.0f;
 	private final static int POLYGON_DIMENSION  = 4;
 
 	private Pair<Double, Double> [][] generationGradients;
@@ -41,10 +41,10 @@ public class Generator {
 			double noiseVal = noise(coordinates.first, coordinates.second);
 			int val = (int) Math.floor((noiseVal + 1) * fillFactor);
 
-			Tile.TileType type = Tile.TileType.values()[val];
+			Tile.Type type = Tile.Type.values()[val];
 			terrain[k] = new Tile(type);
 
-			if(type == Tile.TileType.MOUNTAIN) {
+			if(type == Tile.Type.MOUNTAIN) {
 
 				mountainsCoordinates.add(coordinates);
 
@@ -53,7 +53,7 @@ public class Generator {
 		}
 
 		/*
-		 * Quantité de rivière à générer ?
+		 * Quantité de rivières à générer ?
 		 */
 
 		if(mountainsCoordinates.size() > 0) generateRiver(mountainsCoordinates);
@@ -88,7 +88,7 @@ public class Generator {
 
 	}
 
-	/**
+	/*
 	 * Ajuster le type de certaines tuiles
 	 */
 
@@ -108,19 +108,12 @@ public class Generator {
 	 * du type indiqué
 	 */
 
-	private Pair<Integer, Integer> nearestOf(Pair<Integer, Integer> from, Tile.TileType type) {
+	private Pair<Integer, Integer> nearestOf(Pair<Integer, Integer> from, Tile.Type type) {
 
 		int index = 0;
 		double dist = -1.0;
 
-		Pair<Integer, Integer> res = new Pair<>();
-
-		/*
-		 * TODO
-		 * !! Parcourir à partir de la coordonée
-		 * initiale plutôt que de parcourir tout
-		 * le plateau
-		 */
+		Pair<Integer, Integer> res = new Pair<>(-1, -1);
 
 		for(Tile tile : terrain) {			
 
@@ -142,7 +135,7 @@ public class Generator {
 
 	}
 
-	/**
+	/*
 	 * Génère une rivière à partir des coordonnées
 	 * d'une montagne
 	 */
@@ -160,7 +153,7 @@ public class Generator {
 		 * plus proche 
 		 */
 	
-		var nearWater = nearestOf(coordinates, Tile.TileType.SEA);
+		var nearWater = nearestOf(coordinates, Tile.Type.SEA);
 
 		int nx, ny;
 		boolean swap = false;
@@ -179,7 +172,7 @@ public class Generator {
 			swap = !swap;	
 
 			int tile = World.coordinatesToInt(coordinates, dimension);
-			terrain[tile] = new Tile(Tile.TileType.RIVER);
+			terrain[tile] = new Tile(Tile.Type.RIVER);
 
 		} while(nx != 0 || ny != 0);
 
@@ -194,7 +187,7 @@ public class Generator {
 
 	private double smooth(double x) {
 
-		return 1.0 / (1.0 + Math.exp(-2.0 * x));
+		return 1.0 / (1.0 + Math.exp(-4.0 * x));
 
 	}
 
@@ -232,12 +225,8 @@ public class Generator {
 
 	private double noise(int x, int y) {
 
-		/*
-		 * Sous division de la cellule en 8
-		 */
-
-		double double_x = (float) x / (CELL_SUBDIVISION/* * dimension.first*/);
-		double double_y = (float) y / (CELL_SUBDIVISION/* * dimension.second*/);
+		double double_x = (double) x / (CELL_SUBDIVISION/* * dimension.first*/);
+		double double_y = (double) y / (CELL_SUBDIVISION/* * dimension.second*/);
 
 		int intCoXAlpha = (int) Math.floor(double_x);
 		int intCoYAlpha = (int) Math.floor(double_y);
