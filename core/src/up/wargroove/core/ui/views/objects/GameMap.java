@@ -25,8 +25,8 @@ public class GameMap extends TiledMap {
         this.board = board;
         initDimension();
         TiledMapTileLayer tileLayer = new TiledMapTileLayer(board.length, board[0].length, tileWidth, tileHeight);
-        for (int i = 0; i < 50; i++) {
-            for (int j = 0; j < 50; j++) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new Tile(board[i][j], assets));
                 tileLayer.setCell(i, j, cell);
