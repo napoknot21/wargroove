@@ -61,7 +61,7 @@ public class MainMenu extends View {
     public void draw(float delta) {
         Batch batch = getBatch();
         batch.begin();
-        startGame.draw(batch, 1);
+        getStage().draw();
         batch.end();
     }
 

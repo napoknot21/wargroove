@@ -6,11 +6,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.GameController;
+import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.GameMap;
 
 /**
@@ -52,6 +54,9 @@ public class GameView extends View {
         camera.zoom = DEFAULT_ZOOM;
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
+        Table table = new Table();
+        table.add(new CharacterUI());
+        addActor(table);
         initInput();
     }
 
@@ -100,6 +105,7 @@ public class GameView extends View {
     public void draw(float delta) {
         renderer.setView(camera);
         renderer.render();
+        getStage().draw();
 
     }
 
