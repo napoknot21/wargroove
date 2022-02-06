@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
 
 /**
@@ -23,6 +24,8 @@ public class GameMap extends TiledMap {
     public GameMap(int[][] board, Assets assets) {
         super();
         this.board = board;
+        width = board.length;
+        height = board[0].length;
         initDimension();
         TiledMapTileLayer tileLayer = new TiledMapTileLayer(board.length, board[0].length, tileWidth, tileHeight);
         for (int i = 0; i < board.length; i++) {
@@ -46,5 +49,25 @@ public class GameMap extends TiledMap {
 
     public void update() {
         initDimension();
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getTileHeight() {
+        return tileHeight;
+    }
+
+    public int getTileWidth() {
+        return tileWidth;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public Vector3 getCenter() {
+        return new Vector3((width * tileWidth) / 2f, (height * tileWidth) / 2f, 0);
     }
 }

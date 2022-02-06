@@ -3,9 +3,12 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.GameController;
 import up.wargroove.core.ui.views.objects.GameMap;
@@ -22,6 +25,8 @@ public class GameView extends View {
     private StretchViewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
+
+    private static final int DEFAULT_ZOOM = 10;
 
     /**
      * Create the game screen.
@@ -43,7 +48,8 @@ public class GameView extends View {
         var world = getModel().getWorld();
         viewport = new StretchViewport(world.length, world[0].length, camera);
         viewport.apply();
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.position.set(gameMap.getCenter());
+        camera.zoom = DEFAULT_ZOOM;
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         initInput();
@@ -106,7 +112,7 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.position.set(gameMap.getCenter());
         super.resize(width, height);
     }
 }

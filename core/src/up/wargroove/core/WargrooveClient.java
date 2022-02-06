@@ -37,7 +37,6 @@ public class WargrooveClient extends Game {
         assets = new Assets();
         Model model = new Model();
         controller = new ClientController(model, this);
-        assets.load();
         controller.create();
         //scene = new GameView(controller.getModel(), this);
         scene = new MainMenu(controller.getModel(), this);

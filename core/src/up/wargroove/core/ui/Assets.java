@@ -25,10 +25,84 @@ public class Assets {
     }
 
     /**
-     * Load the assets.
+     * Loads the assets.
      */
     public void load() {
         loadAllAssets();
+        printLoading();
+    }
+
+    /**
+     * Loads all the assets in the Asset dir given in parameter.
+     *
+     * @param dir The assetDir constant that contains the assets to load.
+     */
+    public void load(AssetDir dir) {
+        fileLoader(dir);
+        printLoading();
+    }
+
+    /**
+     * Loads all the assets in the manifest.
+     *
+     * @param manifestPath The manifest listing the assets to load
+     * @param isAlone      if true, the asset manager will load file,
+     *                     else the manager will put the file in queue waiting to be updated. <br>
+     *                     <b>You must call printLoading() to load all queued files. </b>
+     */
+    public void load(String manifestPath, boolean isAlone) {
+        FileHandle fileLoader = Gdx.files.internal(manifestPath);
+        if (fileLoader.extension().equals(asmext)) {
+            fileLoader(fileLoader.parent().path(), fileLoader.name());
+        }
+        if (isAlone) {
+            printLoading();
+        }
+    }
+
+    /**
+     * Loads a single file.
+     *
+     * @param path    The file path
+     * @param type    The assets type (Texture.class, etc.)
+     * @param isAlone if true, the asset manager will load file,
+     *                else the manager will put the file in queue waiting to be updated. <br>
+     *                <b>You must call printLoading() to load all queued files. </b>
+     */
+    public void load(String path, Class<?> type, boolean isAlone) {
+        manager.load(path, type);
+        if (isAlone) {
+            printLoading();
+        }
+    }
+
+    /**
+     * Loads all the assets contained in the AssetDir directories.
+     */
+    /*
+    private void loadAllAssets() {
+        for (AssetDir dir : AssetDir.values()) {
+            if (dir.manifest != null) {
+                fileLoader(dir);
+            }
+        }
+    }
+    */
+    private void loadAllAssets() {
+        ThreadGroup group = new ThreadGroup("allDir");
+        for (AssetDir dir : AssetDir.values()) {
+            if (dir.manifest != null) {
+                new Thread(group, () -> fileLoader(dir)).start();
+            }
+        }
+        while (group.activeCount() > 0){
+        }
+    }
+
+    /**
+     * Print the loading.
+     */
+    public void printLoading() {
         while (!manager.update()) {
             float progress = manager.getProgress();
             System.out.println("Loading ... " + progress * 100 + "%");
@@ -36,11 +110,25 @@ public class Assets {
         System.out.println("Loading ... " + 100.0 + "%");
     }
 
-    private void loadAllAssets() {
-        for (AssetDir dir : AssetDir.values()) {
-            if (dir.manifest != null) {
-                fileLoader(dir);
+    /**
+     * Load the assets in the AssetManager.
+     *
+     * @param dirPath  The directory path.
+     * @param manifest The manifest name with extension
+     */
+    private void fileLoader(String dirPath, String manifest) {
+        try {
+            FileHandle fileLoader = Gdx.files.internal(dirPath + fs + manifest);
+            Scanner scanner = new Scanner(fileLoader.read());
+            Class<?> c = AssetType.valueOf(scanner.nextLine()).type;
+
+            while (scanner.hasNextLine()) {
+                String path = dirPath + scanner.nextLine();
+                manager.load(path, c);
             }
+            scanner.close();
+        } catch (GdxRuntimeException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -50,19 +138,7 @@ public class Assets {
      * @param dir The constant linked to an asset dir.
      */
     private void fileLoader(AssetDir dir) {
-        try {
-            FileHandle fileLoader = Gdx.files.internal(dir.path + fs + dir.manifest);
-            Scanner scanner = new Scanner(fileLoader.read());
-            Class<?> c = AssetType.valueOf(scanner.nextLine()).type;
-
-            while (scanner.hasNextLine()) {
-                String path = dir.path + scanner.nextLine();
-                manager.load(path, c);
-            }
-            scanner.close();
-        } catch (GdxRuntimeException e) {
-            System.out.println(e.getMessage());
-        }
+        fileLoader(dir.path, dir.manifest);
     }
 
     /**
@@ -128,7 +204,7 @@ public class Assets {
     /**
      * List the assets directories and their manifest.
      */
-    enum AssetDir {
+    public enum AssetDir {
         DATA("data" + fs),
         SPRITES(DATA.path + "sprites" + fs),
         WORLD(SPRITES.path + "world" + fs, "test" + asmext),
@@ -148,12 +224,21 @@ public class Assets {
         AssetDir(String path) {
             this(path, null);
         }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getManifest() {
+            return manifest;
+        }
     }
+
 
     /**
      * List the Assets Textures.
      */
-    enum AssetType {
+    public enum AssetType {
         TEXTURE(Texture.class);
         //TODO : remplir la liste avec les type de donnees a charger
 

@@ -14,7 +14,8 @@ public class GameController extends ScreenController {
     /**
      * Camera velocity.
      */
-    private static float sVelocity = 0.40f;
+    private float settingVelocity = 0.40f;
+    private float settingZoom = 0.40f;
 
     public GameController(Model model, WargrooveClient wargroove, Screen screen) {
         super(model, wargroove, screen);
@@ -33,7 +34,9 @@ public class GameController extends ScreenController {
      * @param camera  The screen camera.
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
-        camera.zoom += amountY * Gdx.graphics.getDeltaTime();
+        camera.zoom += amountY * settingZoom * 50 * Gdx.graphics.getDeltaTime();
+        float max = (camera.viewportHeight + camera.viewportWidth) / 2 + 5;
+        camera.zoom = (camera.zoom < 1) ? 1 : Math.min(camera.zoom, max);
         camera.update();
     }
 
@@ -44,7 +47,7 @@ public class GameController extends ScreenController {
      * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
-        float velocity = sVelocity * 50 * Gdx.graphics.getDeltaTime();
+        float velocity = settingVelocity * 50 * Gdx.graphics.getDeltaTime();
         camera.translate(
                 -Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity
         );
@@ -55,6 +58,7 @@ public class GameController extends ScreenController {
      * Set the visual setting of the controller.
      */
     private void setSetting() {
-        sVelocity = 0;
+        settingZoom = 0;
+        settingVelocity = 0;
     }
 }

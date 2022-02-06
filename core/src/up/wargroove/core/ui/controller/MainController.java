@@ -21,6 +21,7 @@ public class MainController extends ScreenController {
      */
     public void startGame() {
         Model model = getModel();
+        getClient().getAssets().load();
         this.getClient().setScreen(new GameView(model, getClient()));
     }
 }

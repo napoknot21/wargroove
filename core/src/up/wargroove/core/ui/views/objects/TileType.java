@@ -64,7 +64,6 @@ public enum TileType {
      * @return The texture path
      */
     private static String getTexturePath(TileType tile) {
-        System.out.println(tile.name());
         return TEXTURE_PATH + tile.texture + extension;
     }
 
