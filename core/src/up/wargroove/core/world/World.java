@@ -26,6 +26,8 @@ public class World {
 	private final boolean fog;
 	private AudioInputStream music;
 
+	private GeneratorProperties genProperties;
+
 	private Stack<State> states;
 	private int turn;
 
@@ -39,7 +41,8 @@ public class World {
 		this.terrain = properties.terrain;
 		this.biome = properties.biome;	
 		this.fog = properties.fog;
-		this.music = music;
+		this.music = properties.music;
+		this.genProperties = properties.genProperties;
 
 		turn = 1;
 
@@ -58,9 +61,9 @@ public class World {
 		Log.print("Initialisation du monde ...");
 		terrain = new Tile[dimension.first * dimension.second];
 
-		if(generation) {
+		if(generation && genProperties != null) {
 		
-			Generator gen = new Generator(dimension);
+			Generator gen = new Generator(dimension, genProperties);
 			terrain = gen.build();
 		
 		} else {
@@ -111,7 +114,7 @@ public class World {
 
 		ArrayList<Tile> array = new ArrayList<>();
 
-		if(!validCoordinates(coordinates)) return array;		
+		if(!validCoordinates(coordinates, dimension)) return array;		
 
 		int beginX = coordinates.first - deg;
 		int beginY = coordinates.second - deg;
@@ -129,7 +132,7 @@ public class World {
 
 		for(int k = 0; k < per; k++) {
 	
-			if(validCoordinates(startCoordinates)) {
+			if(validCoordinates(startCoordinates, dimension)) {
 			
 				Tile tile = at(startCoordinates);	
 				if(pred == null || pred.test(tile)) array.add(tile);
@@ -165,7 +168,7 @@ public class World {
 	 * @return l'appartenance des coordonnées au plateau
 	 */
 
-	public boolean validCoordinates(Pair<Integer, Integer> coordinates) {
+	public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
 
 		boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
 		boolean dim  = coordinates.first < dimension.first && coordinates.second < dimension.second;

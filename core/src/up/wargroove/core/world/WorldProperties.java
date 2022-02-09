@@ -11,6 +11,7 @@ public class WorldProperties {
 	public Pair<Integer, Integer> dimension;
 	public Biome biome;
 	public Tile [] terrain;
+	public GeneratorProperties genProperties;
 
 	public boolean fog;		
 	public AudioInputStream music;

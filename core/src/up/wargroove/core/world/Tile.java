@@ -7,18 +7,17 @@ public class Tile {
 	public static enum Type {
 
 		/*
-		 * Types de génération procédurale
-		 */
-
-		MOUNTAIN('^'),
+		 * Types primaires de génération procédurale
+		 */	
+		MOUNTAIN('^'),				
 		FOREST(':'),
-		PLAINS('/'),		
+		PLAIN('/'),	
 		SEA('o'),
-		BEACH('_'),
-		RIVER('s'),
-		DEEP_SEA('O'),	
+		DEEP_SEA('O'),		
+
+		BEACH('_'),	
+		RIVER('s'),	
 		//REEF,
-		
 		ROAD('-'),
 		BRIDGE('h'),	
 		WALL('H'),
@@ -54,7 +53,7 @@ public class Tile {
 		 * Initialisé par défaut sur la plaine
 		 */
 
-		this(Type.PLAINS);
+		this(Type.PLAIN);
 
 	}
 

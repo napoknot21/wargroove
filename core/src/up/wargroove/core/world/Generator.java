@@ -9,6 +9,7 @@ import java.util.Vector;
 public class Generator {
 
 	private Pair<Integer, Integer> dimension;
+	private GeneratorProperties properties;
 	private Tile [] terrain;
 
 	private final static float CELL_SUBDIVISION = 9.0f;
@@ -18,30 +19,50 @@ public class Generator {
 
 	private Random rdSeed;
 	
-	public Generator(Pair<Integer, Integer> dimension) {
+	public Generator(Pair<Integer, Integer> dimension, GeneratorProperties properties) {
 	
 		this.dimension = dimension;
+		this.properties = properties;
 		terrain = new Tile[dimension.first * dimension.second];
 	
 		rdSeed = new Random();
 		
 		generateGradients();
+
+		var gaussianRepInit = this.properties.gaussianRep;
+
+		if(gaussianRepInit == null)
+			gaussianRepInit = new Vector<Tile.Type>();
+
+		if(gaussianRepInit.size() < Tile.PRIMARY_TILE_TYPE) {
+
+			for(int k = 0; k < Tile.PRIMARY_TILE_TYPE; k++) {
+			
+				Tile.Type type = Tile.Type.values()[k];	
+				if(gaussianRepInit.contains(type)) continue;
+
+				gaussianRepInit.add(type);
+		
+			}
+
+		}
 	
 	}
 	
 	public Tile [] build() {
-	
-		float fillFactor = Tile.PRIMARY_TILE_TYPE / 2.0f;
+		
 		Vector<Pair<Integer, Integer>> mountainsCoordinates = new Vector<>();	
 
 		for(int k = 0; k < terrain.length; k++) {
 					
 			var coordinates = World.intToCoordinates(k, dimension);	
 
-			double noiseVal = noise(coordinates.first, coordinates.second);
-			int val = (int) Math.floor((noiseVal + 1) * fillFactor);
+			double noiseVal = noise(coordinates.first, coordinates.second);	
+			double normalized = 1.0 / (0.5 + Math.exp(properties.normalization * noiseVal)) - 1.0;	
+		
+			int val = properties.repartitionFunction.apply(normalized);
 
-			Tile.Type type = Tile.Type.values()[val];
+			Tile.Type type = properties.gaussianRep.get(val);
 			terrain[k] = new Tile(type);
 
 			if(type == Tile.Type.MOUNTAIN) {
@@ -169,7 +190,8 @@ public class Generator {
 			if(swap && nx != 0) coordinates.first += nx;
 			else coordinates.second += ny;
 
-			swap = !swap;	
+			swap = !swap;
+			if(!World.validCoordinates(coordinates, dimension)) break;
 
 			int tile = World.coordinatesToInt(coordinates, dimension);
 			terrain[tile] = new Tile(Tile.Type.RIVER);
@@ -187,7 +209,7 @@ public class Generator {
 
 	private double smooth(double x) {
 
-		return 1.0 / (1.0 + Math.exp(-4.0 * x));
+		return 1.0 / (1.0 + Math.exp(properties.smooth * x));
 
 	}
 
