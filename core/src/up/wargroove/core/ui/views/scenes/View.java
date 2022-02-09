@@ -11,7 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.ScreenController;
+import up.wargroove.core.ui.controller.Controller;
 
 /**
  * Represent a basic screen.
@@ -23,7 +23,7 @@ public abstract class View extends ScreenAdapter {
     /**
      * Screen controller.
      */
-    private final ScreenController controller;
+    private final Controller controller;
     /**
      * UI model.
      */
@@ -45,7 +45,7 @@ public abstract class View extends ScreenAdapter {
      * @param model      The gui model.
      * @param wargroove  The client.
      */
-    public View(ScreenController controller, Model model, WargrooveClient wargroove) {
+    public View(Controller controller, Model model, WargrooveClient wargroove) {
         this.controller = controller;
         this.model = model;
         this.ui = new Stage();
@@ -108,7 +108,7 @@ public abstract class View extends ScreenAdapter {
         return model;
     }
 
-    public ScreenController getController() {
+    public Controller getController() {
         return controller;
     }
 

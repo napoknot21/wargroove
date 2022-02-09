@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.GameController;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.world.World;
@@ -17,7 +17,6 @@ import up.wargroove.core.world.World;
  * Represent the game screen.
  */
 public class GameView extends View {
-    private final GameController controller;
     /**
      * Visual of the world.
      */
@@ -34,10 +33,9 @@ public class GameView extends View {
      * @param model     The wargroove's model.
      * @param wargroove The client.
      */
-    public GameView(Model model, WargrooveClient wargroove) {
-        super(new GameController(model, wargroove), model, wargroove);
+    public GameView(Model model, Controller controller, WargrooveClient wargroove) {
+        super(controller,model, wargroove);
         getController().setScreen(this);
-        controller = (GameController) getController();
     }
 
     @Override
@@ -70,7 +68,7 @@ public class GameView extends View {
         InputMultiplexer input = new InputMultiplexer() {
             @Override
             public boolean scrolled(float amountX, float amountY) {
-                controller.zoom(amountX, amountY, camera);
+                getController().zoom(amountX, amountY, camera);
                 return true;
             }
 
@@ -81,7 +79,7 @@ public class GameView extends View {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                controller.drag(pointer, camera);
+                getController().drag(pointer, camera);
                 return true;
             }
         };

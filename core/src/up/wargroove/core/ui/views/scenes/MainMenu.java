@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.MainController;
+import up.wargroove.core.ui.controller.Controller;
 
 /**
  * The Main Menu.
@@ -27,20 +27,20 @@ public class MainMenu extends View {
     /**
      * Screen controller.
      */
-    private MainController controller;
+    private Controller controller;
 
-    public MainMenu(MainController controller, Model model, WargrooveClient wargroove) {
+    public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
     }
 
-    public MainMenu(MainController controller, WargrooveClient wargroove) {
+    public MainMenu(Controller controller, WargrooveClient wargroove) {
         this(controller, null, wargroove);
         this.controller = controller;
     }
 
     public MainMenu(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
-        this.controller = new MainController(model, wargroove, this);
+        this.controller = new Controller(model, wargroove, this);
     }
 
     @Override

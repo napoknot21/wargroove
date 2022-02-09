@@ -9,9 +9,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.ScreenController;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import up.wargroove.core.ui.controller.Controller;
 
 
 public class WorldSetting extends View{
@@ -23,7 +23,7 @@ public class WorldSetting extends View{
     private static int WIDTH = 600;
 
 
-    public WorldSetting(ScreenController controller, Model model, WargrooveClient wargroove) {
+    public WorldSetting(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         viewport = new FitViewport(WIDTH, HEIGHT, new OrthographicCamera());
         ui = new Stage(viewport);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.ClientController;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
@@ -36,7 +35,7 @@ public class WargrooveClient extends Game {
         batch = new SpriteBatch();
         assets = new Assets();
         Model model = new Model();
-        controller = new ClientController(model, this);
+        controller = new Controller(model, this);
         controller.create();
         //scene = new GameView(controller.getModel(), this);
         scene = new MainMenu(controller.getModel(), this);
