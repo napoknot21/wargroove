@@ -43,9 +43,7 @@ public class GameView extends View {
     public void init() {
         getModel().startGame();
         gameMap = new GameMap(getModel().getWorld(), getAssets());
-        Table table = new Table();
-        table.add(new CharacterUI(gameMap));
-        addActor(table);
+
         camera = new OrthographicCamera();
         var world = getModel().getWorld();
         viewport = new StretchViewport(world.length, world[0].length, camera);
@@ -54,6 +52,10 @@ public class GameView extends View {
         camera.zoom = DEFAULT_ZOOM;
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
+        setStage(viewport);
+        Table table = new Table();
+        table.add(new CharacterUI(gameMap,this));
+        addActor(table);
 
         initInput();
     }
@@ -118,5 +120,13 @@ public class GameView extends View {
         viewport.update(width, height);
         camera.position.set(gameMap.getCenter());
         super.resize(width, height);
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public StretchViewport getViewport() {
+        return viewport;
     }
 }

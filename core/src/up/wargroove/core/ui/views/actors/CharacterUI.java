@@ -2,27 +2,22 @@ package up.wargroove.core.ui.views.actors;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import up.wargroove.core.ui.views.objects.GameMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-
-
-import java.awt.event.InputEvent;
+import up.wargroove.core.ui.views.scenes.GameView;
 
 public class CharacterUI extends Actor {
     Texture texture;
     Sprite sprite;
     GameMap gameMap;
+    GameView gameView;
+
 /*
     private static String getPath(Character character) {
         return "data/sprites/character/" + character.getTypeUnit + File.separatorChar + character.getFaction + File.separatorChar+ fileName;
@@ -58,10 +53,13 @@ public class CharacterUI extends Actor {
         });
     }
 */
-    public CharacterUI(GameMap gameMap){
+    public CharacterUI(GameMap gameMap, GameView view){
         this.gameMap= gameMap;
+        this.gameView = view;
         this.texture= new Texture((Gdx.files.internal("data/sprites/character/test.png")));
-        this.sprite= new Sprite(texture);
+        this.sprite= new Sprite(texture,55,64,30,50);
+        sprite.setSize(20,30);
+
         //gameMap.getLayers().get(0).getOffsetY()
         this.setTouchable(Touchable.enabled);
 
@@ -101,14 +99,10 @@ public class CharacterUI extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //batch.draw(texture,  0f, 0f);
-        float x = gameMap.getTileLayer().getCell(0,0).getTile().getOffsetX();
-        float y= gameMap.getTileLayer().getCell(0,0).getTile().getOffsetY();
-        float heigth = texture.getWidth();
-        float width= texture.getWidth();
-        batch.draw(sprite,x,y);
+        //sprite.setScale(gameMap.getScale());
+        sprite.setPosition(100,100);
+        sprite.draw(batch);
         super.draw(batch,parentAlpha);
-
         //batch.draw(texture, Gdx.graphics.getWidth() / 2f,Gdx.graphics.getHeight() / 2f);
     }
 

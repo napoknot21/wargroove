@@ -82,4 +82,8 @@ public class GameMap extends TiledMap {
     public TiledMapTileLayer getTileLayer() {
         return tileLayer;
     }
+
+    public float getScale() {
+        return scale;
+    }
 }

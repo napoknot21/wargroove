@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
@@ -48,7 +48,7 @@ public abstract class View extends ScreenAdapter {
     public View(ScreenController controller, Model model, WargrooveClient wargroove) {
         this.controller = controller;
         this.model = model;
-        this.ui = new Stage(new ScreenViewport());
+        this.ui = new Stage();
         this.wargroove = wargroove;
     }
 
@@ -133,7 +133,13 @@ public abstract class View extends ScreenAdapter {
         return ui;
     }
 
+    public Stage setStage(Viewport viewport) {
+        this.ui = new Stage(viewport, getBatch());
+        return ui;
+    }
+
     public Assets getAssets() {
         return wargroove.getAssets();
     }
+
 }
