@@ -6,6 +6,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import up.wargroove.utils.Log;
+
 import java.io.File;
 import java.util.Scanner;
 
@@ -105,9 +107,9 @@ public class Assets {
     public void printLoading() {
         while (!manager.update()) {
             float progress = manager.getProgress();
-            System.out.println("Loading ... " + progress * 100 + "%");
+            Log.print("Loading ... " + progress * 100 + "%");
         }
-        System.out.println("Loading ... " + 100.0 + "%");
+        Log.print("Loading ... " + 100.0 + "%");
     }
 
     /**

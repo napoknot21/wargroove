@@ -4,18 +4,20 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.world.Tile;
 
 /**
  * Represent a visual tile of the world.
  */
-public class Tile extends StaticTiledMapTile {
+public class MapTile extends StaticTiledMapTile {
+    private Tile tile;
 
     /**
      * Creates a static tile with the given region.
      *
      * @param textureRegion the {@link TextureRegion} to use.
      */
-    public Tile(TextureRegion textureRegion) {
+    public MapTile(TextureRegion textureRegion) {
         super(textureRegion);
         getTextureRegion().setTexture(new Texture("data/sprites/world/test.png"));
     }
@@ -27,7 +29,7 @@ public class Tile extends StaticTiledMapTile {
      * @param width  the width of the Tile
      * @param height the height of the tile
      */
-    public Tile(int width, int height) {
+    public MapTile(int width, int height) {
         super(new TextureRegion());
         Texture texture = new Texture(getPath("test.png"));
         TextureRegion textureRegion = new TextureRegion(texture, width, height);
@@ -39,18 +41,18 @@ public class Tile extends StaticTiledMapTile {
      *
      * @param copy the StaticTiledMapTile to copy.
      */
-    public Tile(StaticTiledMapTile copy) {
+    public MapTile(StaticTiledMapTile copy) {
         super(copy);
     }
 
     /**
      * Create a static tile according to the type.
      *
-     * @param type The tile Type.
+     * @param tile The tile.
      */
-    public Tile(int type, Assets assets) {
+    public MapTile(Tile tile, Assets assets) {
         super(new TextureRegion());
-        String path = TileType.getTexturePath(type, 1);
+        String path = TileType.getTexturePath(tile, 1);
         TextureRegion textureRegion = new TextureRegion(assets.get(path, Texture.class));
         setTextureRegion(textureRegion);
     }
@@ -62,7 +64,7 @@ public class Tile extends StaticTiledMapTile {
      * @param width  The texture width.
      * @param height the texture height.
      */
-    public Tile(int type, int width, int height) {
+    public MapTile(int type, int width, int height) {
         super(new TextureRegion());
         Texture texture = new Texture(TileType.getTexturePath(type));
         TextureRegion textureRegion = new TextureRegion(texture, width, height);

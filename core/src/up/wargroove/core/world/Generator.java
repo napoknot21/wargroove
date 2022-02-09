@@ -18,15 +18,15 @@ public class Generator {
 	private Pair<Double, Double> [][] generationGradients;
 
 	private Random rdSeed;
-	
+
 	public Generator(Pair<Integer, Integer> dimension, GeneratorProperties properties) {
-	
+
 		this.dimension = dimension;
 		this.properties = properties;
 		terrain = new Tile[dimension.first * dimension.second];
-	
+
 		rdSeed = new Random();
-		
+
 		generateGradients();
 
 		var gaussianRepInit = this.properties.gaussianRep;
@@ -37,29 +37,30 @@ public class Generator {
 		if(gaussianRepInit.size() < Tile.PRIMARY_TILE_TYPE) {
 
 			for(int k = 0; k < Tile.PRIMARY_TILE_TYPE; k++) {
-			
-				Tile.Type type = Tile.Type.values()[k];	
+
+				Tile.Type type = Tile.Type.values()[k];
 				if(gaussianRepInit.contains(type)) continue;
 
 				gaussianRepInit.add(type);
-		
+
 			}
 
 		}
-	
+		this.properties.gaussianRep = gaussianRepInit;
+
 	}
-	
+
 	public Tile [] build() {
-		
-		Vector<Pair<Integer, Integer>> mountainsCoordinates = new Vector<>();	
+
+		Vector<Pair<Integer, Integer>> mountainsCoordinates = new Vector<>();
 
 		for(int k = 0; k < terrain.length; k++) {
-					
-			var coordinates = World.intToCoordinates(k, dimension);	
 
-			double noiseVal = noise(coordinates.first, coordinates.second);	
-			double normalized = 1.0 / (0.5 + Math.exp(properties.normalization * noiseVal)) - 1.0;	
-		
+			var coordinates = World.intToCoordinates(k, dimension);
+
+			double noiseVal = noise(coordinates.first, coordinates.second);
+			double normalized = 1.0 / (0.5 + Math.exp(properties.normalization * noiseVal)) - 1.0;
+
 			int val = properties.repartitionFunction.apply(normalized);
 
 			Tile.Type type = properties.gaussianRep.get(val);
@@ -78,11 +79,11 @@ public class Generator {
 		 */
 
 		if(mountainsCoordinates.size() > 0) generateRiver(mountainsCoordinates);
-		
+
 		return terrain;
-	
+
 	}
-	
+
 	/*
 	 * Génération procédurale basée
 	 * sur le bruit de Perlin
@@ -93,18 +94,18 @@ public class Generator {
 		int sizeX = dimension.first + 1;
 		int sizeY = dimension.second + 1;
 
-		generationGradients = new Pair[sizeY][sizeX];	
+		generationGradients = new Pair[sizeY][sizeX];
 
 		for(int k = 0; k < sizeX * sizeY; k++) {
-		
+
 			double radius = Math.toRadians(rdSeed.nextFloat() * 360.0);
-		
+
 			double x = Math.cos(radius);
 			double y = Math.sin(radius);
 
 			Pair<Double, Double> vector = new Pair<>(x, y);
 			generationGradients[(int) (k / sizeX)][k % sizeX] = vector;
-		
+
 		}
 
 	}
@@ -116,7 +117,7 @@ public class Generator {
 	private void sharp() {}
 
 	private double distance(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
-	
+
 		int dX = Math.abs(a.first - b.first);
 		int dY = Math.abs(a.second - b.second);
 
@@ -136,23 +137,23 @@ public class Generator {
 
 		Pair<Integer, Integer> res = new Pair<>(-1, -1);
 
-		for(Tile tile : terrain) {			
+		for(Tile tile : terrain) {
 
 			var to = World.intToCoordinates(index, dimension);
 			double tmpDistance = distance(from, to);
 
-			if(tile.getType() == type && (tmpDistance < dist || dist == -1.0)) {	
+			if(tile.getType() == type && (tmpDistance < dist || dist == -1.0)) {
 
 				dist = tmpDistance;
 				res.swap(to);
 
 			}
 
-			index++;	
+			index++;
 
 		}
 
-		return res; 
+		return res;
 
 	}
 
@@ -171,9 +172,9 @@ public class Generator {
 		/*
 		 * Simulation de l'écoulement
 		 * à partir du point d'eau le
-		 * plus proche 
+		 * plus proche
 		 */
-	
+
 		var nearWater = nearestOf(coordinates, Tile.Type.SEA);
 
 		int nx, ny;
@@ -182,7 +183,7 @@ public class Generator {
 		do {
 
 			nx = nearWater.first - coordinates.first;
-			ny = nearWater.second - coordinates.second;	
+			ny = nearWater.second - coordinates.second;
 
 			nx = nx == 0 ? 0 : nx / Math.abs(nx);
 			ny = ny == 0 ? 0 : ny / Math.abs(ny);
@@ -203,8 +204,8 @@ public class Generator {
 	/**
 	 * Permet une interpolation plus progressive
 	 *
-	 * @param double x compris entre -1.0 et 1.0
-	 * 
+	 * @param x compris entre -1.0 et 1.0
+	 *
 	 */
 
 	private double smooth(double x) {
@@ -214,7 +215,7 @@ public class Generator {
 	}
 
 	private double interpolation(double a, double b, double w) {
-	
+
 		return a + smooth(w) * (b - a);
 
 	}
@@ -223,10 +224,10 @@ public class Generator {
 	 * Produit du vecteur w (1x2) préalablement généré, à
 	 * la position de la coordonnée (x, y) entière
 	 *
-	 * @param int floor_x coordonnée en x entière
-	 * @param int floor_y coordonnée en y entière
-	 * @param double x coordonnée en x
-	 * @param double y coordonnée en y
+	 * @param floor_x coordonnée en x entière
+	 * @param floor_y coordonnée en y entière
+	 * @param x coordonnée en x
+	 * @param y coordonnée en y
 	 *
 	 * @return le produit scalaire des vecteurs de différence et w
 	 */
@@ -240,8 +241,8 @@ public class Generator {
 
 		double kX = deltaX * vector.first;
 		double kY = deltaY * vector.second;
-	
-		return kX + kY;	
+
+		return kX + kY;
 
 	}
 
@@ -260,8 +261,8 @@ public class Generator {
 		int intCoYBeta = intCoYAlpha + 1;
 
 		/*
-		 * Interpolation: 
-		 * 	
+		 * Interpolation:
+		 *
 		 * 	- Sur les deux vecteurs de coordonnée y_0
 		 * 	de la cellulle
 		 *
@@ -281,7 +282,7 @@ public class Generator {
 		cornerBeta  = cornerDotProduct(intCoXBeta, intCoYAlpha, double_x, double_y);
 
 		double interpolationAlpha = interpolation(cornerAlpha, cornerBeta, polX);
-		
+
 		/*
 		 * Seconde interpolation
 		 */

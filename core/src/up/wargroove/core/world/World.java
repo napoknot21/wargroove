@@ -13,7 +13,7 @@ import java.util.Stack;
 import javax.sound.sampled.AudioInputStream;
 
 public class World {
-	
+
 	private Vector<Entity> entities;
 
 	public String name;
@@ -39,7 +39,7 @@ public class World {
 		this.dimension = properties.dimension;
 		this.biome = properties.biome;
 		this.terrain = properties.terrain;
-		this.biome = properties.biome;	
+		this.biome = properties.biome;
 		this.fog = properties.fog;
 		this.music = properties.music;
 		this.genProperties = properties.genProperties;
@@ -53,7 +53,7 @@ public class World {
 	/**
 	 * Initialise le monde avec ou sans génération procédurale.
 	 *
-	 * @param boolean procède ou non à la génération
+	 * @param generation procède ou non à la génération
 	 */
 
 	public void initialize(boolean generation) {
@@ -62,16 +62,14 @@ public class World {
 		terrain = new Tile[dimension.first * dimension.second];
 
 		if(generation && genProperties != null) {
-		
 			Generator gen = new Generator(dimension, genProperties);
 			terrain = gen.build();
-		
-		} else {
-		
-			for(int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
-		
-		}
 
+		} else {
+			for(int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
+
+		}
+		Log.print("Initialisation terminee.");
 	}
 
 	public void push(State state) {
@@ -105,7 +103,7 @@ public class World {
 	}
 
 	/**
-	 * Retourne les voisins d'une tuile
+	 * Retourne les voisins d'une tuile.
 	 * selon le degré indiqué
 	 *
 	 */
@@ -114,7 +112,7 @@ public class World {
 
 		ArrayList<Tile> array = new ArrayList<>();
 
-		if(!validCoordinates(coordinates, dimension)) return array;		
+		if(!validCoordinates(coordinates, dimension)) return array;
 
 		int beginX = coordinates.first - deg;
 		int beginY = coordinates.second - deg;
@@ -123,23 +121,23 @@ public class World {
 		if(beginY < 0) beginY = 0;
 
 		var startCoordinates = new Pair<Integer, Integer>(beginX, beginY);
-	
+
 		final int bor = 2 * deg + 1;
-		final int per = (int) Math.pow(bor, 2) - (int) Math.pow(bor - 2, 2);	
+		final int per = (int) Math.pow(bor, 2) - (int) Math.pow(bor - 2, 2);
 
 		var directionalVector = new Pair<Boolean, Boolean>(true, false);
 		int blCoef = 1;
 
 		for(int k = 0; k < per; k++) {
-	
+
 			if(validCoordinates(startCoordinates, dimension)) {
-			
-				Tile tile = at(startCoordinates);	
+
+				Tile tile = at(startCoordinates);
 				if(pred == null || pred.test(tile)) array.add(tile);
-				
+
 				//predValue |= pred.test(tile);
-			
-			}	
+
+			}
 
 			startCoordinates.first += (directionalVector.first ? 1 : 0) * blCoef;
 			startCoordinates.second += (directionalVector.second ? 1 : 0) * blCoef;
@@ -154,16 +152,16 @@ public class World {
 				if((k + 1) == per / 2) blCoef *= -1;
 
 			}
-			
+
 		}
 
 		return array;
-		
+
 	}
 
 	/**
-	 * Validité de la coordonnée sur le plateau
-	 * @param Pair<Integer,Integer> coordonnée
+	 * Validité de la coordonnée sur le plateau.
+	 * @param coordinates les coordonnées
 	 *
 	 * @return l'appartenance des coordonnées au plateau
 	 */
@@ -200,7 +198,7 @@ public class World {
 		for(Tile tile : terrain) {
 
 			builder.append(tile + " ");
-			
+
 			if(++index % dimension.first == 0) builder.append('\n');
 
 		}
@@ -220,4 +218,7 @@ public class World {
 
 */
 
+	public Pair<Integer, Integer> getDimension() {
+		return dimension;
+	}
 }

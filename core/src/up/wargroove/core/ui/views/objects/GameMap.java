@@ -2,12 +2,9 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Cell;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import up.wargroove.core.ui.Assets;
-import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.world.World;
 
 /**
  * Represent the visual of the world.
@@ -18,24 +15,24 @@ public class GameMap extends TiledMap {
     int tileWidth;
     int tileHeight;
     float scale;
-    int[][] board;
+    World world;
     TiledMapTileLayer tileLayer;
     /**
      * Init the tiledMap according to the given model.
      *
-     * @param board The model that will be on the gui
+     * @param world The world that will be on the gui
      */
-    public GameMap(int[][] board, Assets assets) {
+    public GameMap(World world, Assets assets) {
         super();
-        this.board = board;
-        width = board.length;
-        height = board[0].length;
+        this.world = world;
+        width = world.getDimension().first;
+        height = world.getDimension().second;
         initDimension();
-        tileLayer = new TiledMapTileLayer(board.length, board[0].length, tileWidth, tileHeight);
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[0].length; j++) {
+        tileLayer = new TiledMapTileLayer(width, height, tileWidth, tileHeight);
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new Tile(board[i][j], assets));
+                cell.setTile(new MapTile(world.at(i,j), assets));
                 tileLayer.setCell(i, j, cell);
             }
         }
@@ -75,8 +72,8 @@ public class GameMap extends TiledMap {
         return new Vector3((width * tileWidth) / 2f, (height * tileWidth) / 2f, 0);
     }
 
-    public int[][] getBoard() {
-        return board;
+    public World getWorld() {
+        return world;
     }
 
     public TiledMapTileLayer getTileLayer() {

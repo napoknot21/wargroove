@@ -6,7 +6,7 @@ public class Log {
 
 	private static PrintStream out = System.out;
 
-	static enum Status {
+	public enum Status {
 
 		ERROR(-1, "[X]"),
 		SUCCESS(0, "[OK]"),

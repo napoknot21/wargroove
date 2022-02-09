@@ -11,6 +11,7 @@ import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.GameController;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.world.World;
 
 /**
  * Represent the game screen.
@@ -45,8 +46,10 @@ public class GameView extends View {
         gameMap = new GameMap(getModel().getWorld(), getAssets());
 
         camera = new OrthographicCamera();
-        var world = getModel().getWorld();
-        viewport = new StretchViewport(world.length, world[0].length, camera);
+        World world = getModel().getWorld();
+        int x = world.getDimension().first;
+        int y = world.getDimension().second;
+        viewport = new StretchViewport(x, y, camera);
         viewport.apply();
         camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;

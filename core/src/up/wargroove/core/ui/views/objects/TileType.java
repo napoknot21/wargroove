@@ -1,5 +1,8 @@
 package up.wargroove.core.ui.views.objects;
 
+import up.wargroove.core.world.Tile;
+import up.wargroove.utils.Log;
+
 import java.io.File;
 
 /**
@@ -7,7 +10,7 @@ import java.io.File;
  */
 public enum TileType {
     TEST(false, "test"),
-    PLAINS(true, "plains"),
+    PLAIN(true, "plains"),
     BRIDGE(true, "bridge"),
     FOREST(true, "forest"),
     MOUNTAIN(true, "mountain"),
@@ -45,16 +48,25 @@ public enum TileType {
     /**
      * Get the texture path.
      *
-     * @param id    The id of the tile type
+     * @param tile   The id of the tile type
      * @param biome The biome of the tile
      * @return The texture path
      */
-    public static String getTexturePath(int id, int biome) {
-        TileType tile = getTileType(id);
-        if (!tile.hasVariant) {
-            return getTexturePath(tile);
+    public static String getTexturePath(Tile tile, int biome) {
+        TileType t = getTileType(tile.getType());
+        if (!t.hasVariant) {
+            return getTexturePath(t);
         }
-        return TEXTURE_PATH + Biome.values()[biome].dirName + '/' + tile.texture + extension;
+        return TEXTURE_PATH + Biome.values()[biome].dirName + '/' + t.texture + extension;
+    }
+
+    private static TileType getTileType(Tile.Type type) {
+        try {
+            return TileType.valueOf(type.name());
+        } catch(IllegalArgumentException e) {
+            Log.print(Log.Status.ERROR,"This Tile type doesn't exist. ["+ type.name() + "]");
+            return TEST;
+        }
     }
 
     /**
