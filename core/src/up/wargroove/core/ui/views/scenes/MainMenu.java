@@ -21,6 +21,10 @@ public class MainMenu extends View {
      */
     private Button startGame;
     /**
+     * World settings button
+     */
+    private Button worldSettings;
+    /**
      * Screen controller.
      */
     private MainController controller;
@@ -42,6 +46,8 @@ public class MainMenu extends View {
     @Override
     public void init() {
         Table table = new Table();
+        //table.top();
+        //table.setFillParent(true);
         Skin skin = new Skin(Gdx.files.internal("data/gui/uiskin.json"));
         startGame = new TextButton("Start Game", skin);
         startGame.addListener(
@@ -52,7 +58,9 @@ public class MainMenu extends View {
                     }
                 }
         );
-        table.add(startGame);
+        table.add(startGame).expandX();
+        worldSettings = new TextButton("World Settings", skin);
+        //table.add(worldSettings).expandX();
         addActor(table);
         Gdx.input.setInputProcessor(getStage());
     }
