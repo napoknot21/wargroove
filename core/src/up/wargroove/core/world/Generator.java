@@ -46,6 +46,7 @@ public class Generator {
 			}
 
 		}
+
 		this.properties.gaussianRep = gaussianRepInit;
 
 	}

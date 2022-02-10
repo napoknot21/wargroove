@@ -6,19 +6,19 @@ public class Movement {
 
     public enum MoveType {
 
-        NULL(Character.TypeUnit.GROUND), //No movement
+        NULL(Character.Component.GROUND), //No movement
 
-        WALKING(Character.TypeUnit.GROUND),
-        RIDING(Character.TypeUnit.GROUND),
-        WHEELS(Character.TypeUnit.GROUND),
+        WALKING(Character.Component.GROUND),
+        RIDING(Character.Component.GROUND),
+        WHEELS(Character.Component.GROUND),
 
-        FLYING(Character.TypeUnit.AIR),
-        HOVER(Character.TypeUnit.AIR),
+        FLYING(Character.Component.AIR),
+        HOVER(Character.Component.AIR),
 
-        WATER(Character.TypeUnit.SEA),
-        AMPHIBIOUS(Character.TypeUnit.SEA);
+        WATER(Character.Component.SEA),
+        AMPHIBIOUS(Character.Component.SEA);
 
-        MoveType(Character.TypeUnit typeUnit) {}
+        MoveType(Character.Component Component) {}
     };
     private MoveType moveType;
 

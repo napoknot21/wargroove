@@ -2,7 +2,6 @@ package up.wargroove.core.character;
 
 public class Stats {
 
-
     private double health; //up to 100
     private double attack;
     private double defense; //pourcentage 0 to 100

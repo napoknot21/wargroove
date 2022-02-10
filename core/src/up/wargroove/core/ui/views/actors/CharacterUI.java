@@ -72,7 +72,7 @@ public class CharacterUI extends Actor {
     public CharacterUI(GameMap gameMap, GameView view, int x, int y, Character character){
         this.gameMap= gameMap;
         this.gameView = view;
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getTypeUnit() + "/"+ character.getType()+"/" + character.getFaction() +"/DIE/tile260.png")));
+        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/DIE/tile260.png")));
         this.sprite= new Sprite(texture);
         sprite.setSize(20,30);
         tile= (MapTile) gameMap.getTileLayer().getCell(x,y).getTile();

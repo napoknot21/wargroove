@@ -10,11 +10,15 @@ import java.util.Vector;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Stack;
+import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 import javax.sound.sampled.AudioInputStream;
 
 public class World {
 
-	private Vector<Entity> entities;
+	private Map<Integer, Entity> entities;
+	private Optional<Integer> currentEntityLinPosition;
 
 	public String name;
 	public String description;
@@ -46,7 +50,7 @@ public class World {
 
 		turn = 1;
 
-		entities = new Vector<>();
+		entities = new HashMap<>();
 
 	}
 
@@ -66,6 +70,7 @@ public class World {
 			terrain = gen.build();
 
 		} else {
+
 			for(int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
 
 		}
@@ -207,16 +212,54 @@ public class World {
 
 	}
 
-/*
-	public void addEntity(Entity entity) {
+	public void addEntity(Integer linCoordinate, Entity entity) {
 
-		entities.add(entity);
+		entities.put(linCoordinate, entity);
 
 	}
 
-	public void moveEntity() {}
+	public void addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
+		Integer linCoordinate = coordinatesToInt(coordinate, dimension);
+		addEntity(linCoordinate, entity);	
+
+	}
+
+	public void scopeEntity(Pair<Integer, Integer> coordinate) {
+
+		Integer linCoordinate = new Integer(coordinatesToInt(coordinate, dimension));
+		boolean exists = entities.containsKey(linCoordinate);
+
+		if(exists) currentEntityLinPosition = Optional.of(linCoordinate);	
+
+	}
+
+	public void unscopeEntity() {
+
+		currentEntityLinPosition = Optional.empty();
+
+	}
+/*
+	public Vector<Integer> validMovements() {
+
+		Vector<Integer> positions = new Vector<>();
+		if(currentEntityLinPosition.isPresent()) {
+
+			Entity e = entities.get(currentEntityLinPosition);
+			Entity.Type type = e.getType();
+
+		}
+
+		return positions;
+
+	}
 */
+	public void moveEntity() {
+	
+		
+
+	}
+
 
 	public Pair<Integer, Integer> getDimension() {
 		return dimension;
