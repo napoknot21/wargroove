@@ -7,6 +7,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
@@ -42,7 +43,6 @@ public class GameView extends View {
     public void init() {
         getModel().startGame();
         gameMap = new GameMap(getModel().getWorld(), getAssets());
-
         camera = new OrthographicCamera();
         World world = getModel().getWorld();
         int x = world.getDimension().first;
@@ -54,10 +54,15 @@ public class GameView extends View {
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         setStage(viewport);
+        addActor(CharacterUI.createActors(gameMap,this,20));
+        /*
         Table table = new Table();
-        table.add(new CharacterUI(gameMap,this));
-        addActor(table);
+        table.add(new CharacterUI(gameMap,this,0,0,
+                new Character("Superman", Character.Faction.CHERRRYSTONE_KINGDOM,)));
 
+        table.add(new CharacterUI(gameMap,this,5,5));
+        addActor(table);
+*/
         initInput();
     }
 

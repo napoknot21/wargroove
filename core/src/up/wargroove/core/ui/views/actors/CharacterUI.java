@@ -9,21 +9,31 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.ui.views.objects.MapTile;
 import up.wargroove.core.ui.views.scenes.GameView;
+import java.io.File;
+import java.util.Random;
 
 public class CharacterUI extends Actor {
     Texture texture;
     Sprite sprite;
     GameMap gameMap;
     GameView gameView;
+    int coordX;
+    int coordY;
+    MapTile tile;
 
-/*
-    private static String getPath(Character character) {
-        return "data/sprites/character/" + character.getTypeUnit + File.separatorChar + character.getFaction + File.separatorChar+ fileName;
+
+    private static String getPath() {
+        // return "data/sprites/character/" + character.getTypeUnit + File.separatorChar + character.getFaction + File.separatorChar+ fileName;
+        return "data/sprites/character/" + "GROUND" + File.separatorChar + "VILLAGER" + File.separatorChar + "1" + File.separatorChar + "DIE" + File.separatorChar +"tile260.png";
+
     }
 
-
+/*
     public CharacterUI(Character character){
         this.texture= new Texture((Gdx.files.internal(getPath( character))));
     }
@@ -53,13 +63,23 @@ public class CharacterUI extends Actor {
         });
     }
 */
-    public CharacterUI(GameMap gameMap, GameView view){
+
+    /**
+     * Represent a visual character.
+     */
+
+
+    public CharacterUI(GameMap gameMap, GameView view, int x, int y, Character character){
         this.gameMap= gameMap;
         this.gameView = view;
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/test.png")));
-        this.sprite= new Sprite(texture,55,64,30,50);
+        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getTypeUnit() + "/"+ character.getType()+"/" + character.getFaction() +"/DIE/tile260.png")));
+        this.sprite= new Sprite(texture);
         sprite.setSize(20,30);
+        tile= (MapTile) gameMap.getTileLayer().getCell(x,y).getTile();
+        coordX=x*20;
+        coordY=y*20;
 
+/*
         //gameMap.getLayers().get(0).getOffsetY()
         this.setTouchable(Touchable.enabled);
 
@@ -75,10 +95,21 @@ public class CharacterUI extends Actor {
                 return true;
             }
         });
-
+*/
     }
 
-    @Override
+    public CharacterUI(GameMap gameMap, GameView view, int x, int y, String faction) {
+        this.gameMap = gameMap;
+        this.gameView = view;
+        this.texture = new Texture((Gdx.files.internal("data/sprites/character/GROUND/VILLAGER/" + faction + "/DIE/tile260.png")));
+        this.sprite = new Sprite(texture);
+        sprite.setSize(20, 30);
+        tile = (MapTile) gameMap.getTileLayer().getCell(x, y).getTile();
+        coordX = x * 20;
+        coordY = y * 20;
+    }
+
+        @Override
     protected void positionChanged() {
         sprite.setPosition(getX(), getY());
         super.positionChanged();
@@ -100,10 +131,19 @@ public class CharacterUI extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         //sprite.setScale(gameMap.getScale());
-        sprite.setPosition(100,100);
+        sprite.setPosition(coordX,coordY);
         sprite.draw(batch);
         super.draw(batch,parentAlpha);
         //batch.draw(texture, Gdx.graphics.getWidth() / 2f,Gdx.graphics.getHeight() / 2f);
+    }
+
+
+    public static Table createActors(GameMap gameMap, GameView view, int nb){
+        Table table = new Table();
+        for (int i= 0;i< nb;i++ ){
+            table.add(new CharacterUI(gameMap,view, i, i, Integer.toString((i%4)+1)));
+        }
+        return table;
     }
 
 
