@@ -14,6 +14,8 @@ import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.ui.views.objects.MapTile;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.utils.Pair;
+
 import java.io.File;
 import java.util.Random;
 
@@ -22,6 +24,7 @@ public class CharacterUI extends Actor {
     Sprite sprite;
     GameMap gameMap;
     GameView gameView;
+    Pair<Integer, Integer> coordinate;
     int coordX;
     int coordY;
     MapTile tile;
@@ -69,15 +72,15 @@ public class CharacterUI extends Actor {
      */
 
 
-    public CharacterUI(GameMap gameMap, GameView view, int x, int y, Character character){
+    public CharacterUI(GameMap gameMap, GameView view, Pair<Integer, Integer> coord, Character character){
         this.gameMap= gameMap;
         this.gameView = view;
+        gameMap.getWorld().addEntity(coord,character);
         this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/DIE/tile260.png")));
         this.sprite= new Sprite(texture);
         sprite.setSize(20,30);
-        tile= (MapTile) gameMap.getTileLayer().getCell(x,y).getTile();
-        coordX=x*20;
-        coordY=y*20;
+        this.coordinate= coord;
+        this.tile= (MapTile) gameMap.getTileLayer().getCell(coordinate.first,coordinate.second).getTile();
 
 /*
         //gameMap.getLayers().get(0).getOffsetY()
@@ -105,8 +108,8 @@ public class CharacterUI extends Actor {
         this.sprite = new Sprite(texture);
         sprite.setSize(20, 30);
         tile = (MapTile) gameMap.getTileLayer().getCell(x, y).getTile();
-        coordX = x * 20;
-        coordY = y * 20;
+        coordX = x * gameMap.getTileWidth();
+        coordY = y * gameMap.getTileHeight();
     }
 
         @Override
@@ -145,7 +148,4 @@ public class CharacterUI extends Actor {
         }
         return table;
     }
-
-
-
 }

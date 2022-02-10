@@ -1,18 +1,25 @@
 package up.wargroove.core.ui.views.scenes;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.Stats;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.world.World;
+import up.wargroove.core.character.Character;
+import up.wargroove.utils.Pair;
 
 /**
  * Represent the game screen.
@@ -54,15 +61,13 @@ public class GameView extends View {
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         setStage(viewport);
-        addActor(CharacterUI.createActors(gameMap,this,20));
-        /*
-        Table table = new Table();
-        table.add(new CharacterUI(gameMap,this,0,0,
-                new Character("Superman", Character.Faction.CHERRRYSTONE_KINGDOM,)));
 
-        table.add(new CharacterUI(gameMap,this,5,5));
+        Character character= new Character("Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,0,0,false,null);
+        Table table= new Table();
+        table.add(new CharacterUI(gameMap,this, new Pair<>(0,0), character ));
         addActor(table);
-*/
+
+
         initInput();
     }
 
