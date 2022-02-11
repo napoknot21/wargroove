@@ -99,9 +99,7 @@ public class Assets {
     private void loadAllAssets() {
         ThreadGroup group = new ThreadGroup("allDir");
         for (AssetDir dir : AssetDir.values()) {
-            if (dir.manifest != null) {
-                new Thread(group, () -> fileLoader(dir)).start();
-            }
+            new Thread(group, () -> fileLoader(dir)).start();
         }
         while (group.activeCount() > 0) {
         }
@@ -159,6 +157,9 @@ public class Assets {
      * @param dir The constant linked to an asset dir.
      */
     private void fileLoader(AssetDir dir) {
+        if (dir.manifest.isBlank()) {
+            return;
+        }
         fileLoader(dir.path, dir.manifest);
     }
 
@@ -247,11 +248,11 @@ public class Assets {
 
         AssetDir(String path, String manifest) {
             this.path = path;
-            this.manifest = manifest + ((manifest != null) ? asmext : "");
+            this.manifest = manifest + ((!manifest.isBlank()) ? asmext : "");
         }
 
         AssetDir(String path) {
-            this(path, null);
+            this(path, "");
         }
 
         public String getPath() {
