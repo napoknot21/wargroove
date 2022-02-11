@@ -1,128 +1,124 @@
 package up.wargroove.core.world;
 
 import up.wargroove.core.character.Entity;
-import up.wargroove.utils.Pair;
-import up.wargroove.utils.Log;
 import up.wargroove.utils.BitSet;
+import up.wargroove.utils.Log;
+import up.wargroove.utils.Pair;
 
+import java.util.*;
 import java.util.function.Predicate;
-import java.util.Random;
-import java.util.Vector;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.Optional;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Queue;
-import java.util.LinkedList;
-import javax.sound.sampled.AudioInputStream;
 
 public class World {
 
-	private WorldProperties properties;
+    private final int[] adjDeltas;
+    private final WorldProperties properties;
+    private final Pair<Integer, Integer> dimension;
+    private final int turn;
+    private Optional<Integer> currentEntityLinPosition;
+    private Tile[] terrain;
+    private final Predicate<Pair<Integer, Integer>> canMoveOn = (linCoordinates) -> {
 
-	private Optional<Integer> currentEntityLinPosition;
+        Tile toTile = terrain[linCoordinates.second];
+        Tile fromTile = terrain[linCoordinates.first];
 
-	private Pair<Integer, Integer> dimension;
-	private final int [] adjDeltas;
+        Entity e = fromTile.entity.get();
 
-	private Tile [] terrain;
+        if (toTile.entity.isPresent() || e.tmpCost == 0) return false;
 
-	private Stack<State> states;
-	private int turn;
+        BitSet bitset = new BitSet(toTile.getType().enc, 32);
+        BitSet sub = bitset.sub(4 * 1/*e.getType().movement.id*/, 4);
 
-	private Predicate<Pair<Integer, Integer>> canMoveOn = (linCoordinates) -> {
+        int val = sub.toInt();
 
-		Tile toTile = terrain[linCoordinates.second];
-		Tile fromTile = terrain[linCoordinates.first];
+        return val <= e.tmpCost;
 
-		Entity e = fromTile.entity.get();
+    };
+    private Stack<State> states;
 
-		if(toTile.entity.isPresent() || e.tmpCost == 0) return false;
-	
-		BitSet bitset = new BitSet(toTile.getType().enc, 32);
-		BitSet sub = bitset.sub(4 * 1/*e.getType().movement.id*/, 4);
+    public World(WorldProperties properties) {
 
-		int val = sub.toInt();
+        this.properties = properties;
+        this.dimension = properties.dimension;
 
-		if(val > e.tmpCost) return false;
+        adjDeltas = new int[]{-dimension.first, 1, dimension.first, -1};
+        turn = 1;
 
-		return true;
+        //entities = new HashMap<>();
 
-	};
+    }
 
-	public World(WorldProperties properties) {
+    /**
+     * Validité de la coordonnée sur le plateau.
+     *
+     * @param linCoordinate les coordonnées
+     * @return l'appartenance des coordonnées au plateau
+     */
 
-		this.properties = properties;
-		this.dimension = properties.dimension;
+    public static boolean validCoordinates(Integer linCoordinate, Pair<Integer, Integer> dimension) {
 
-		adjDeltas = new int [] {-dimension.first, 1, dimension.first, -1};
-		turn = 1;
+        return validCoordinates(intToCoordinates(linCoordinate, dimension), dimension);
 
-		//entities = new HashMap<>();
+    }
 
-	}
+    public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
 
-	/**
-	 * Initialise le monde avec ou sans génération procédurale.
-	 *
-	 * @param generation procède ou non à la génération
-	 */
+        boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
+        boolean dim = coordinates.first < dimension.first && coordinates.second < dimension.second;
 
-	public void initialize(boolean generation) {
+        return zero && dim;
 
-		Log.print("Initialisation du monde ...");
-		terrain = new Tile[dimension.first * dimension.second];
+    }
 
-		if(generation && properties.genProperties != null) {
-			Generator gen = new Generator(dimension, properties.genProperties);
-			terrain = gen.build();
+    public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
 
-		} else {
+        int x = k % dimension.first;
+        int y = k / dimension.first;
 
-			for(int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
+        return new Pair<>(x, y);
 
-		}
+    }
 
-		Log.print("Initialisation terminée ...");
-	}
+    public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
 
-	public void push(State state) {
+        return dimension.first * co.second + co.first;
 
-		states.push(state);
+    }
 
-	}
+    /**
+     * Initialise le monde avec ou sans génération procédurale.
+     *
+     * @param generation procède ou non à la génération
+     */
 
-	public void pop() {
+    public void initialize(boolean generation) {
 
-		states.pop();
+        Log.print("Initialisation du monde ...");
+        terrain = new Tile[dimension.first * dimension.second];
 
-	}
+        if (generation && properties.genProperties != null) {
+            Generator gen = new Generator(dimension, properties.genProperties);
+            terrain = gen.build();
 
-	public State last() {
+        } else {
 
-		return states.peek();
+            for (int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
 
-	}
+        }
 
-	public Tile at(int x, int y) {
+        Log.print("Initialisation terminée ...");
+    }
 
-		return terrain[y * dimension.first + x];
+    public void push(State state) {
 
-	}
+        states.push(state);
 
-	public Tile at(Pair<Integer, Integer> coordinates) {
+    }
 
-		return at(coordinates.first, coordinates.second);
-
-	}
-
-	/*
-	 * Retourne les voisins d'une tuile.
-	 * selon le degré indiqué
-	 *
-	 */
+    /*
+     * Retourne les voisins d'une tuile.
+     * selon le degré indiqué
+     *
+     */
 
 	/*
 	public List<Tile> neighbours(Pair<Integer, Integer> coordinates, Predicate<Tile> pred, int deg) {
@@ -177,196 +173,183 @@ public class World {
 	}
 	*/
 
-	/**
-	 * Validité de la coordonnée sur le plateau.
-	 * @param coordinates les coordonnées
-	 *
-	 * @return l'appartenance des coordonnées au plateau
-	 */
+    public void pop() {
 
-	public static boolean validCoordinates(Integer linCoordinate, Pair<Integer, Integer> dimension) {
+        states.pop();
 
-		return validCoordinates(intToCoordinates(linCoordinate, dimension), dimension);
+    }
 
-	}
+    public State last() {
 
-	public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
+        return states.peek();
 
-		boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
-		boolean dim  = coordinates.first < dimension.first && coordinates.second < dimension.second;
+    }
 
-		return zero && dim;
+    public Tile at(int x, int y) {
 
-	}
+        return terrain[y * dimension.first + x];
 
-	public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
+    }
 
-		int x = k % dimension.first;
-		int y = (int) (k / dimension.first);
+    public Tile at(Pair<Integer, Integer> coordinates) {
 
-		return new Pair<>(x, y);
+        return at(coordinates.first, coordinates.second);
 
-	}
+    }
 
-	public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
+    @Override
+    public String toString() {
 
-		return dimension.first * co.second + co.first;
+        StringBuilder builder = new StringBuilder();
+        int index = 0;
 
-	}
+        for (Tile tile : terrain) {
 
-	@Override
-	public String toString() {
+            builder.append(tile).append(" ");
 
-		StringBuilder builder = new StringBuilder();
-		int index = 0;
+            if (++index % dimension.first == 0) builder.append('\n');
 
-		for(Tile tile : terrain) {
+        }
 
-			builder.append(tile + " ");
+        return builder.toString();
 
-			if(++index % dimension.first == 0) builder.append('\n');
+    }
 
-		}
+    public boolean addEntity(int linCoordinate, Entity entity) {
 
-		return builder.toString();
+        Tile spawnTile = terrain[linCoordinate];
+        if (spawnTile.entity.isPresent()) return false;
 
-	}
+        terrain[linCoordinate].entity = Optional.of(entity);
 
-	public boolean addEntity(int linCoordinate, Entity entity) {
+        return true;
 
-		Tile spawnTile = terrain[linCoordinate];
-		if(spawnTile.entity.isPresent()) return false;
+    }
 
-		terrain[linCoordinate].entity = Optional.of(entity);
-		
-		return true;
+    public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
-	}
+        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        return addEntity(linCoordinate, entity);
 
-	public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
+    }
 
-		int linCoordinate = coordinatesToInt(coordinate, dimension);
-		return addEntity(linCoordinate, entity);	
+    public void scopeEntity(Pair<Integer, Integer> coordinate) {
 
-	}
+        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        boolean exists = terrain[linCoordinate].entity.isPresent();
 
-	public void scopeEntity(Pair<Integer, Integer> coordinate) {
+        if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
 
-		int linCoordinate = coordinatesToInt(coordinate, dimension);
-		boolean exists = terrain[linCoordinate].entity.isPresent();
+    }
 
-		if(exists) currentEntityLinPosition = Optional.of(linCoordinate);	
+    public void unscopeEntity() {
 
-	}
+        currentEntityLinPosition = Optional.empty();
 
-	public void unscopeEntity() {
+    }
 
-		currentEntityLinPosition = Optional.empty();
+    public Vector<Integer> adjacentOf(int linCoordinate) {
 
-	}
+        var adjacent = new Vector<Integer>(adjDeltas.length);
 
-	public Vector<Integer> adjacentOf(int linCoordinate) {
+        for (int delta : adjDeltas) {
 
-		var adjacent = new Vector<Integer>(adjDeltas.length);
+            int lco = linCoordinate + delta;
+            boolean isValid = validCoordinates(lco, dimension);
 
-		for(int delta : adjDeltas) {
+            if (isValid) adjacent.add(linCoordinate + delta);
 
-			int lco = linCoordinate + delta;
-			boolean isValid = validCoordinates(lco, dimension);
+        }
 
-			if(isValid) adjacent.add(linCoordinate + delta);
+        return adjacent;
 
-		}
+    }
 
-		return adjacent;
+    /*
+     * Recherche par adjacence basée sur
+     * un breadth-first-search.
+     *
+     * @param int root la racine de l'arbre
+     * @param Predicate<Integer> un prédicat sur la validité de la recherche
+     *
+     * @return le vecteur des coordonnées valides
+     */
 
-	}
+    private Vector<Integer> breadthFirstSearch(int root, Predicate<Pair<Integer, Integer>> predicate) {
 
-	/*
-	 * Recherche par adjacence basée sur
-	 * un breadth-first-search.
-	 *
-	 * @param int root la racine de l'arbre
-	 * @param Predicate<Integer> un prédicat sur la validité de la recherche
-	 *
-	 * @return le vecteur des coordonnées valides
-	 */
+        Map<Integer, Boolean> checked = new HashMap<>();
+        Queue<Integer> emp = new LinkedList<>();
 
-	private Vector<Integer> breadthFirstSearch(int root, Predicate<Pair<Integer, Integer>> predicate) {
+        Vector<Integer> res = new Vector<>();
 
-		Map<Integer, Boolean> checked = new HashMap<>();
-		Queue<Integer> emp = new LinkedList<>();
+        emp.add(root);
 
-		Vector<Integer> res = new Vector<>();
+        while (emp.size() > 0) {
 
-		emp.add(root);
+            var element = emp.poll();
+            Vector<Integer> adjacent = adjacentOf(element);
 
-		while(emp.size() > 0) {
+            for (Integer lin : adjacent) {
 
-			var element = emp.poll();
-			Vector<Integer> adjacent = adjacentOf(element);
+                if (checked.containsKey(lin)) continue;
 
-			for(Integer lin : adjacent) {
+                checked.put(lin, true);
+                var couple = new Pair<>(root, lin);
 
-				if(checked.containsKey(lin)) continue;
+                if (predicate == null || predicate.test(couple)) {
 
-				checked.put(lin, true);	
-				var couple = new Pair<Integer, Integer>(root, lin);
+                    res.add(lin);
+                    emp.add(lin);
 
-				if(predicate == null || predicate.test(couple)) {
-			
-					res.add(lin);
-					emp.add(lin);
+                }
 
-				}	
+            }
 
-			}
+            terrain[root].entity.get().tmpCost--;
 
-			terrain[root].entity.get().tmpCost--;
+        }
 
-		}
+        return res;
 
-		return res;
+    }
 
-	}
+    /**
+     * Recherche des tuiles valides pour
+     * l'entité courrante
+     *
+     * @return le vecteur des positions valides
+     */
 
-	/**
-	 * Recherche des tuiles valides pour
-	 * l'entité courrante
-	 *
-	 * @return le vecteur des positions valides
-	 */
+    public Vector<Integer> validMovements() {
 
-	public Vector<Integer> validMovements() {
+        Vector<Integer> positions = new Vector<>();
 
-		Vector<Integer> positions = new Vector<>();
+        if (currentEntityLinPosition.isPresent()) {
 
-		if(currentEntityLinPosition.isPresent()) {	
+            positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn);
 
-			positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn);
+        }
 
-		}
+        return positions;
 
-		return positions;
+    }
 
-	}
+    public boolean moveEntity(Integer linCoordinate) {
 
-	public boolean moveEntity(Integer linCoordinate) {
-	
-		if(!currentEntityLinPosition.isPresent()) return false;
-		
-		Entity e = terrain[currentEntityLinPosition.get()].entity.get();
-		terrain[linCoordinate].entity = Optional.of(e);
+        if (currentEntityLinPosition.isEmpty()) return false;
 
-		terrain[currentEntityLinPosition.get()].entity = Optional.empty();	
-		return true;
+        Entity e = terrain[currentEntityLinPosition.get()].entity.get();
+        terrain[linCoordinate].entity = Optional.of(e);
 
-	}
+        terrain[currentEntityLinPosition.get()].entity = Optional.empty();
+        return true;
 
+    }
 
-	public Pair<Integer, Integer> getDimension() {
 
-		return dimension;
-	
-	}
+    public Pair<Integer, Integer> getDimension() {
+
+        return dimension;
+
+    }
 }

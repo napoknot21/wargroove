@@ -2,30 +2,30 @@ package up.wargroove.core.world;
 
 public class Structure {
 
-	static enum Type {
+    protected Type type;
 
-		NULL,
-		VILLAGE,
-		STRONGHOLD,
-		BARRACK,
-		TOWER,
-		PORT,
-		HIDEOUT;
+    public Structure(Type type) {
 
-	}
+        this.type = type;
 
-	protected Type type;
+    }
 
-	public Structure(Type type) {
+    public Type getType() {
 
-		this.type = type;
+        return type;
 
-	}
+    }
 
-	public Type getType() {
+    enum Type {
 
-		return type;
+        NULL,
+        VILLAGE,
+        STRONGHOLD,
+        BARRACK,
+        TOWER,
+        PORT,
+        HIDEOUT
 
-	}
+    }
 
 }

@@ -1,300 +1,331 @@
 package up.wargroove.core.world;
 
-import up.wargroove.utils.Pair;
-import up.wargroove.utils.Log;
 
 import java.util.Random;
 import java.util.Vector;
+import up.wargroove.utils.Pair;
 
+
+/**
+ * Terrain generator.
+ */
 public class Generator {
 
-	private Pair<Integer, Integer> dimension;
-	private GeneratorProperties properties;
-	private Tile [] terrain;
+    private static final float CELL_SUBDIVISION = 9.0f;
+    private static final int POLYGON_DIMENSION = 4;
+    private final Pair<Integer, Integer> dimension;
+    private final GeneratorProperties properties;
+    private final Tile[] terrain;
+    private final Random rdSeed;
+    private Pair<Double, Double>[][] generationGradients;
 
-	private final static float CELL_SUBDIVISION = 9.0f;
-	private final static int POLYGON_DIMENSION  = 4;
+    /**
+     * Init the generator with the given arguments.
+     *
+     * @param dimension  The world dimension.
+     * @param properties The generator properties.
+     */
+    public Generator(Pair<Integer, Integer> dimension, GeneratorProperties properties) {
 
-	private Pair<Double, Double> [][] generationGradients;
+        this.dimension = dimension;
+        this.properties = properties;
+        terrain = new Tile[dimension.first * dimension.second];
 
-	private Random rdSeed;
+        rdSeed = new Random();
 
-	public Generator(Pair<Integer, Integer> dimension, GeneratorProperties properties) {
+        generateGradients();
 
-		this.dimension = dimension;
-		this.properties = properties;
-		terrain = new Tile[dimension.first * dimension.second];
+        var gaussianRepInit = this.properties.gaussianRep;
 
-		rdSeed = new Random();
+        if (gaussianRepInit == null) {
+            gaussianRepInit = new Vector<>();
+        }
 
-		generateGradients();
+        if (gaussianRepInit.size() < Tile.PRIMARY_TILE_TYPE) {
 
-		var gaussianRepInit = this.properties.gaussianRep;
+            for (int k = 0; k < Tile.PRIMARY_TILE_TYPE; k++) {
 
-		if(gaussianRepInit == null)
-			gaussianRepInit = new Vector<Tile.Type>();
+                Tile.Type type = Tile.Type.values()[k];
+                if (gaussianRepInit.contains(type)) {
+                    continue;
+                }
 
-		if(gaussianRepInit.size() < Tile.PRIMARY_TILE_TYPE) {
+                gaussianRepInit.add(type);
 
-			for(int k = 0; k < Tile.PRIMARY_TILE_TYPE; k++) {
+            }
 
-				Tile.Type type = Tile.Type.values()[k];
-				if(gaussianRepInit.contains(type)) continue;
+        }
 
-				gaussianRepInit.add(type);
+        this.properties.gaussianRep = gaussianRepInit;
 
-			}
+    }
 
-		}
+    /**
+     * Builds the terrain.
+     *
+     * @return The build terrain.
+     */
+    public Tile[] build() {
 
-		this.properties.gaussianRep = gaussianRepInit;
+        Vector<Pair<Integer, Integer>> mountainsCoordinates = new Vector<>();
 
-	}
+        for (int k = 0; k < terrain.length; k++) {
 
-	public Tile [] build() {
+            var coordinates = World.intToCoordinates(k, dimension);
 
-		Vector<Pair<Integer, Integer>> mountainsCoordinates = new Vector<>();
+            double noiseVal = noise(coordinates.first, coordinates.second);
+            double normalized = 1.0 / (0.5 + Math.exp(properties.normalization * noiseVal)) - 1.0;
 
-		for(int k = 0; k < terrain.length; k++) {
+            int val = properties.repartitionFunction.apply(normalized);
 
-			var coordinates = World.intToCoordinates(k, dimension);
+            Tile.Type type = properties.gaussianRep.get(val);
+            terrain[k] = new Tile(type);
 
-			double noiseVal = noise(coordinates.first, coordinates.second);
-			double normalized = 1.0 / (0.5 + Math.exp(properties.normalization * noiseVal)) - 1.0;
+            if (type == Tile.Type.MOUNTAIN) {
 
-			int val = properties.repartitionFunction.apply(normalized);
+                mountainsCoordinates.add(coordinates);
 
-			Tile.Type type = properties.gaussianRep.get(val);
-			terrain[k] = new Tile(type);
+            }
 
-			if(type == Tile.Type.MOUNTAIN) {
+        }
 
-				mountainsCoordinates.add(coordinates);
+        /*
+         * Quantité de rivières à générer ?
+         */
 
-			}
+        if (mountainsCoordinates.size() > 0) {
+            generateRiver(mountainsCoordinates);
+        }
 
-		}
+        return terrain;
 
-		/*
-		 * Quantité de rivières à générer ?
-		 */
+    }
 
-		if(mountainsCoordinates.size() > 0) generateRiver(mountainsCoordinates);
+    /**
+     * Génération procédurale basée
+     * sur le bruit de Perlin.
+     */
 
-		return terrain;
+    private void generateGradients() {
 
-	}
+        int sizeX = dimension.first + 1;
+        int sizeY = dimension.second + 1;
 
-	/*
-	 * Génération procédurale basée
-	 * sur le bruit de Perlin
-	 */
+        generationGradients = new Pair[sizeY][sizeX];
 
-	private void generateGradients() {
+        for (int k = 0; k < sizeX * sizeY; k++) {
 
-		int sizeX = dimension.first + 1;
-		int sizeY = dimension.second + 1;
+            double radius = Math.toRadians(rdSeed.nextFloat() * 360.0);
 
-		generationGradients = new Pair[sizeY][sizeX];
+            double x = Math.cos(radius);
+            double y = Math.sin(radius);
 
-		for(int k = 0; k < sizeX * sizeY; k++) {
+            Pair<Double, Double> vector = new Pair<>(x, y);
+            generationGradients[k / sizeX][k % sizeX] = vector;
 
-			double radius = Math.toRadians(rdSeed.nextFloat() * 360.0);
+        }
 
-			double x = Math.cos(radius);
-			double y = Math.sin(radius);
+    }
 
-			Pair<Double, Double> vector = new Pair<>(x, y);
-			generationGradients[(int) (k / sizeX)][k % sizeX] = vector;
+    /**
+     * Ajustes le type de certaines tuiles.
+     */
 
-		}
+    private void sharp() {
+    }
 
-	}
+    /**
+     * Calculs the distance between a and b.
+     *
+     * @param a The a's world coordinate.
+     * @param b The b's world coordinate
+     * @return The distance between a and b.
+     */
+    private double distance(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
 
-	/*
-	 * Ajuster le type de certaines tuiles
-	 */
+        int dx = Math.abs(a.first - b.first);
+        int dy = Math.abs(a.second - b.second);
 
-	private void sharp() {}
+        return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-	private double distance(Pair<Integer, Integer> a, Pair<Integer, Integer> b) {
+    }
 
-		int dX = Math.abs(a.first - b.first);
-		int dY = Math.abs(a.second - b.second);
+    /**
+     * Renvoie la coordonnée de la tuile la plus proche
+     * du type indiqué.
+     */
 
-		return Math.sqrt(Math.pow(dX, 2) + Math.pow(dY, 2));
+    private Pair<Integer, Integer> nearestOf(Pair<Integer, Integer> from, Tile.Type type) {
 
-	}
+        int index = 0;
+        double dist = -1.0;
 
-	/**
-	 * Renvoie la coordonnée de la tuile la plus proche
-	 * du type indiqué
-	 */
+        Pair<Integer, Integer> res = new Pair<>(-1, -1);
 
-	private Pair<Integer, Integer> nearestOf(Pair<Integer, Integer> from, Tile.Type type) {
+        for (Tile tile : terrain) {
 
-		int index = 0;
-		double dist = -1.0;
+            var to = World.intToCoordinates(index, dimension);
+            double tmpDistance = distance(from, to);
 
-		Pair<Integer, Integer> res = new Pair<>(-1, -1);
+            if (tile.getType() == type && (tmpDistance < dist || dist == -1.0)) {
 
-		for(Tile tile : terrain) {
+                dist = tmpDistance;
+                res.swap(to);
 
-			var to = World.intToCoordinates(index, dimension);
-			double tmpDistance = distance(from, to);
+            }
 
-			if(tile.getType() == type && (tmpDistance < dist || dist == -1.0)) {
+            index++;
 
-				dist = tmpDistance;
-				res.swap(to);
+        }
 
-			}
+        return res;
 
-			index++;
+    }
 
-		}
+    /**
+     * Génère une rivière à partir des coordonnées
+     * d'une montagne.
+     */
 
-		return res;
+    private void generateRiver(Vector<Pair<Integer, Integer>> mountains) {
 
-	}
+        int index = rdSeed.nextInt(mountains.size());
+        var coordinates = mountains.get(index);
 
-	/*
-	 * Génère une rivière à partir des coordonnées
-	 * d'une montagne
-	 */
+        mountains.removeElementAt(index);
 
-	private void generateRiver(Vector<Pair<Integer, Integer>> mountains) {
+        /*
+         * Simulation de l'écoulement
+         * à partir du point d'eau le
+         * plus proche
+         */
 
-		int index = rdSeed.nextInt(mountains.size());
-		var coordinates = mountains.get(index);
+        var nearWater = nearestOf(coordinates, Tile.Type.SEA);
 
-		mountains.removeElementAt(index);
+        int nx;
+        int ny;
+        boolean swap = false;
 
-		/*
-		 * Simulation de l'écoulement
-		 * à partir du point d'eau le
-		 * plus proche
-		 */
+        do {
 
-		var nearWater = nearestOf(coordinates, Tile.Type.SEA);
+            nx = nearWater.first - coordinates.first;
+            ny = nearWater.second - coordinates.second;
 
-		int nx, ny;
-		boolean swap = false;
+            nx = nx == 0 ? 0 : nx / Math.abs(nx);
+            ny = ny == 0 ? 0 : ny / Math.abs(ny);
 
-		do {
+            if (swap && nx != 0) {
+                coordinates.first += nx;
+            } else {
+                coordinates.second += ny;
+            }
 
-			nx = nearWater.first - coordinates.first;
-			ny = nearWater.second - coordinates.second;
+            swap = !swap;
+            if (!World.validCoordinates(coordinates, dimension)) {
+                break;
+            }
 
-			nx = nx == 0 ? 0 : nx / Math.abs(nx);
-			ny = ny == 0 ? 0 : ny / Math.abs(ny);
+            int tile = World.coordinatesToInt(coordinates, dimension);
+            terrain[tile] = new Tile(Tile.Type.RIVER);
 
-			if(swap && nx != 0) coordinates.first += nx;
-			else coordinates.second += ny;
+        } while (nx != 0 || ny != 0);
 
-			swap = !swap;
-			if(!World.validCoordinates(coordinates, dimension)) break;
+    }
 
-			int tile = World.coordinatesToInt(coordinates, dimension);
-			terrain[tile] = new Tile(Tile.Type.RIVER);
+    /**
+     * Permet une interpolation plus progressive.
+     *
+     * @param x compris entre -1.0 et 1.0
+     */
 
-		} while(nx != 0 || ny != 0);
+    private double smooth(double x) {
 
-	}
+        return 1.0 / (1.0 + Math.exp(properties.smooth * x));
 
-	/**
-	 * Permet une interpolation plus progressive
-	 *
-	 * @param x compris entre -1.0 et 1.0
-	 *
-	 */
+    }
 
-	private double smooth(double x) {
+    private double interpolation(double a, double b, double w) {
 
-		return 1.0 / (1.0 + Math.exp(properties.smooth * x));
+        return a + smooth(w) * (b - a);
 
-	}
+    }
 
-	private double interpolation(double a, double b, double w) {
+    /**
+     * Produit du vecteur w (1x2) préalablement généré, à
+     * la position de la coordonnée (x, y) entière.
+     *
+     * @param floorX coordonnée en x entière
+     * @param floorY coordonnée en y entière
+     * @param x      coordonnée en x
+     * @param y      coordonnée en y
+     * @return le produit scalaire des vecteurs de différence et w
+     */
 
-		return a + smooth(w) * (b - a);
+    private double cornerDotProduct(int floorX, int floorY, double x, double y) {
 
-	}
+        double deltaX = x - (double) floorX;
+        double deltaY = y - (double) floorY;
 
-	/**
-	 * Produit du vecteur w (1x2) préalablement généré, à
-	 * la position de la coordonnée (x, y) entière
-	 *
-	 * @param floor_x coordonnée en x entière
-	 * @param floor_y coordonnée en y entière
-	 * @param x coordonnée en x
-	 * @param y coordonnée en y
-	 *
-	 * @return le produit scalaire des vecteurs de différence et w
-	 */
+        var vector = generationGradients[floorX][floorY];
 
-	private double cornerDotProduct(int floor_x, int floor_y, double x, double y) {
+        double kx = deltaX * vector.first;
+        double ky = deltaY * vector.second;
 
-		double deltaX = x - (double) floor_x;
-		double deltaY = y - (double) floor_y;
+        return kx + ky;
 
-		var vector = generationGradients[floor_x][floor_y];
+    }
 
-		double kX = deltaX * vector.first;
-		double kY = deltaY * vector.second;
+    private double noise(int x, int y) {
 
-		return kX + kY;
+        double doubleX = (double) x / (CELL_SUBDIVISION/* * dimension.first*/);
+        double double_y = (double) y / (CELL_SUBDIVISION/* * dimension.second*/);
 
-	}
+        int intCoXAlpha = (int) Math.floor(doubleX);
+        int intCoYAlpha = (int) Math.floor(double_y);
 
-	private double noise(int x, int y) {
 
-		double double_x = (double) x / (CELL_SUBDIVISION/* * dimension.first*/);
-		double double_y = (double) y / (CELL_SUBDIVISION/* * dimension.second*/);
 
-		int intCoXAlpha = (int) Math.floor(double_x);
-		int intCoYAlpha = (int) Math.floor(double_y);
+        int intCoXBeta = intCoXAlpha + 1;
+        int intCoYBeta = intCoYAlpha + 1;
 
-		double polX = double_x - (double) intCoXAlpha;
-		double polY = double_y - (double) intCoYAlpha;
+        /*
+         * Interpolation:
+         *
+         * - Sur les deux vecteurs de coordonnée y_0
+         * de la cellulle
+         *
+         * - Sur les deux dernières
+         *
+         * - Interpolation des deux interpolations
+         * obtenues
+         */
 
-		int intCoXBeta = intCoXAlpha + 1;
-		int intCoYBeta = intCoYAlpha + 1;
+        double cornerAlpha;
+        double cornerBeta;
 
-		/*
-		 * Interpolation:
-		 *
-		 * 	- Sur les deux vecteurs de coordonnée y_0
-		 * 	de la cellulle
-		 *
-		 * 	- Sur les deux dernières
-		 *
-		 * 	- Interpolation des deux interpolations
-		 * 	obtenues
-		 */
+        double polX = doubleX - (double) intCoXAlpha;
+        double polY = double_y - (double) intCoYAlpha;
 
-		double cornerAlpha, cornerBeta;
+        /*
+         * Première interpolation
+         */
 
-		/*
-		 * Première interpolation
-		 */
+        cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYAlpha, doubleX, double_y);
+        cornerBeta = cornerDotProduct(intCoXBeta, intCoYAlpha, doubleX, double_y);
 
-		cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYAlpha, double_x, double_y);
-		cornerBeta  = cornerDotProduct(intCoXBeta, intCoYAlpha, double_x, double_y);
+        double interpolationAlpha = interpolation(cornerAlpha, cornerBeta, polX);
 
-		double interpolationAlpha = interpolation(cornerAlpha, cornerBeta, polX);
+        /*
+         * Seconde interpolation
+         */
 
-		/*
-		 * Seconde interpolation
-		 */
+        cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYBeta, doubleX, double_y);
+        cornerBeta = cornerDotProduct(intCoXBeta, intCoYBeta, doubleX, double_y);
 
-		cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYBeta, double_x, double_y);
-		cornerBeta  = cornerDotProduct(intCoXBeta, intCoYBeta, double_x, double_y);
+        double interpolationBeta = interpolation(cornerAlpha, cornerBeta, polX);
 
-		double interpolationBeta = interpolation(cornerAlpha, cornerBeta, polX);
+        return interpolation(interpolationAlpha, interpolationBeta, polY);
 
-		return interpolation(interpolationAlpha, interpolationBeta, polY);
-
-	}
+    }
 
 }

@@ -3,76 +3,89 @@ package up.wargroove.core.world;
 import java.util.Vector;
 import java.util.function.Function;
 
+/**
+ * Terrain generator properties.
+ *
+ * @see Generator
+ */
 public class GeneratorProperties {
 
-	public static final int DEFAULT_REPARTITION = 1;
-	public static final double DEFAULT_NORMALIZATION = -3.5;
-	public static final double DEFAULT_SMOOTH = -12.0;
+    public static final int DEFAULT_REPARTITION = 1;
+    public static final double DEFAULT_NORMALIZATION = -3.5;
+    public static final double DEFAULT_SMOOTH = -12.0;
 
-	/*
-	 * La fonction de répartition par
-	 * défaut est un polynôme de degré
-	 * max, un entier impair.
-	 *
-	 * Représente le degré impair le plus haut
-	 * et d = 2*repartition + 1
-	 */
+    /**
+     * La fonction de répartition par
+     * défaut est un polynôme de degré
+     * max, un entier impair.
+     *
+     * Représente le degré impair le plus haut
+     * et d = 2*repartition + 1
+     */
 
-	public int repartition;
-	
-	/*
-	 * Permet d'indiquer une fonction de
-	 * répartition autre que celle donnée
-	 * par défaut
-	 *
-	 */
+    public int repartition;
 
-	public Function<Double, Integer> repartitionFunction;	
+    /**
+     * Permet d'indiquer une fonction de
+     * répartition autre que celle donnée
+     * par défaut
+     *
+     */
 
-	/*
-	 * Le coefficient de normalisation
-	 * est utilisé dans la fonction de
-	 * normalisation des valeurs obtenues
-	 * pour chaque coordonnée. Cette normalisation
-	 * devient uniforme quand la valeur
-	 * absolue du coef grandit
-	 */
+    public Function<Double, Integer> repartitionFunction;
 
-	public double normalization;
+    /**
+     * Le coefficient de normalisation
+     * est utilisé dans la fonction de
+     * normalisation des valeurs obtenues
+     * pour chaque coordonnée. Cette normalisation
+     * devient uniforme quand la valeur
+     * absolue du coef grandit
+     */
 
-	/*
-	 * De même, appliqué sur une sigmoïde.
-	 * Il permet la transition plus ou moins
-	 * douce entre les différents types de
-	 * tuiles.
-	 */
+    public double normalization;
 
-	public double smooth;
+    /**
+     * De même, appliqué sur une sigmoïde.
+     * Il permet la transition plus ou moins
+     * douce entre les différents types de
+     * tuiles.
+     */
 
-	/*
-	 * Définit la fréquence de types de tuiles
-	 * respectant une loi normale discrète.
-	 * Les types les moins enclins à apparaîtres
-	 * sont aux extrêmités
-	 */
+    public double smooth;
 
-	public Vector<Tile.Type> gaussianRep;
+    /**
+     * Définit la fréquence de types de tuiles
+     * respectant une loi normale discrète.
+     * Les types les moins enclins à apparaîtres
+     * sont aux extrêmités
+     */
 
-	public GeneratorProperties() {
+    public Vector<Tile.Type> gaussianRep;
 
-		this(DEFAULT_REPARTITION, DEFAULT_NORMALIZATION, DEFAULT_SMOOTH);
+    /**
+     * Generate default properties
+     */
+    public GeneratorProperties() {
 
-	}
+        this(DEFAULT_REPARTITION, DEFAULT_NORMALIZATION, DEFAULT_SMOOTH);
 
-	public GeneratorProperties(int repartition, double normalization, double smooth) {
+    }
 
-		this.repartition = repartition;
-		this.normalization = normalization;
-		this.smooth = smooth;
+    /**
+     * Generate custom properties
+     * @param repartition Higher polynomial degree.
+     * @param normalization Normalization coefficient.
+     * @param smooth Smooth value.
+     */
+    public GeneratorProperties(int repartition, double normalization, double smooth) {
 
-		repartitionFunction =
-			(x) -> (int) (Math.ceil(Tile.PRIMARY_TILE_TYPE / 2.0) * Math.pow(x, 2 * this.repartition + 1)) + 2; 
+        this.repartition = repartition;
+        this.normalization = normalization;
+        this.smooth = smooth;
 
-	}
+        repartitionFunction = (x) -> (int) (Math.ceil(Tile.PRIMARY_TILE_TYPE / 2.0) * Math.pow(x, 2 * this.repartition + 1)) + 2;
+
+    }
 
 }
