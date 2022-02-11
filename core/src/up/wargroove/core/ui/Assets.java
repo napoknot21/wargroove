@@ -179,6 +179,7 @@ public class Assets {
      * @throws GdxRuntimeException if the asset is not loaded.
      */
     public <T> T get(String fileName) {
+        fileName = fileName.replace('\\', '/');
         return manager.get(fileName);
     }
 
@@ -191,6 +192,7 @@ public class Assets {
      * @throws GdxRuntimeException if the asset is not loaded.
      */
     public <T> T get(String fileName, Class<T> type) {
+        fileName = fileName.replace('\\', '/');
         return manager.get(fileName, type);
     }
 
@@ -202,6 +204,7 @@ public class Assets {
      * @return the asset or null if it is not loaded and required is false.
      */
     public <T> T get(String fileName, boolean required) {
+        fileName = fileName.replace('\\', '/');
         return manager.get(fileName, required);
     }
 
@@ -214,6 +217,7 @@ public class Assets {
      * @return the asset or null if it is not loaded and required is false.
      */
     public <T> T get(String fileName, Class<T> type, boolean required) {
+        fileName = fileName.replace('\\', '/');
         return manager.get(fileName, type, required);
     }
 

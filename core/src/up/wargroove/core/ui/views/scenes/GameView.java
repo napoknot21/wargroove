@@ -4,16 +4,21 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.Cursor;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -23,6 +28,7 @@ import up.wargroove.utils.Pair;
  */
 public class GameView extends View {
     private static final int DEFAULT_ZOOM = 10;
+    private final Cursor cursor;
     /**
      * Visual of the world.
      */
@@ -40,19 +46,22 @@ public class GameView extends View {
     public GameView(Model model, Controller controller, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         getController().setScreen(this);
+        Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
+        cursor = new Cursor(texture);
     }
 
     @Override
     public void init() {
         getModel().startGame();
         gameMap = new GameMap(getModel().getWorld(), getAssets());
+        cursor.setWorldScale(gameMap.getScale());
         camera = new OrthographicCamera();
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
         viewport = new StretchViewport(x, y, camera);
         viewport.apply();
-        camera.position.set(gameMap.getCenter());
+        //camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
@@ -82,7 +91,16 @@ public class GameView extends View {
             }
 
             @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                Vector3 vector = getController().moveCursor(screenX, screenY, camera);
+                cursor.setPosition(vector);
+                return true;
+            }
+
+            @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                Vector3 vector = getController().moveCursor(screenX, screenY, camera);
+                cursor.setPosition(vector);
                 return true;
             }
 
@@ -115,6 +133,9 @@ public class GameView extends View {
     public void draw(float delta) {
         renderer.setView(camera);
         renderer.render();
+        getBatch().begin();
+        cursor.draw(getBatch());
+        getBatch().end();
         getStage().draw();
 
     }
@@ -138,5 +159,9 @@ public class GameView extends View {
 
     public StretchViewport getViewport() {
         return viewport;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
     }
 }
