@@ -17,6 +17,7 @@ public class GameMap extends TiledMap {
     float scale;
     World world;
     TiledMapTileLayer tileLayer;
+
     /**
      * Init the tiledMap according to the given model.
      *
@@ -32,7 +33,7 @@ public class GameMap extends TiledMap {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new MapTile(world.at(i,j), assets));
+                cell.setTile(new MapTile(world.at(i, j), assets));
                 tileLayer.setCell(i, j, cell);
             }
         }

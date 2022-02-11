@@ -1,6 +1,5 @@
 package up.wargroove.core.ui.controller;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,20 +27,33 @@ public class Controller {
     private Model model;
 
 
-
     /**
      * Camera velocity.
      */
-    private float settingVelocity = 0.40f, settingZoom = 0.40f;
+    private float settingVelocity = 0.40f;
+    private float settingZoom = 0.40f;
 
+    /**
+     * Create a controller.
+     *
+     * @param model The app model.
+     * @param wargroove The client.
+     * @param screen The current screen.
+     */
     public Controller(Model model, WargrooveClient wargroove, Screen screen) {
         this.wargroove = wargroove;
         this.model = model;
         this.screen = screen;
     }
 
-    public Controller (Model model, WargrooveClient wargroove) {
-        this(model,wargroove,null);
+    /**
+     * Create a controller without screen.
+     *
+     * @param model The app model.
+     * @param wargroove The client.
+     */
+    public Controller(Model model, WargrooveClient wargroove) {
+        this(model, wargroove, null);
     }
 
     /**
@@ -53,12 +65,11 @@ public class Controller {
 
     /**
      * Starts a new game.
-     *
      */
     public void startGame() {
         Model model = getModel();
         getClient().getAssets().load();
-        this.getClient().setScreen(new GameView(model,this,getClient()));
+        this.getClient().setScreen(new GameView(model, this, getClient()));
     }
 
     public Model getModel() {

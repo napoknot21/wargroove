@@ -5,26 +5,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.Stats;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.world.World;
-import up.wargroove.core.character.Character;
 import up.wargroove.utils.Pair;
 
 /**
  * Represent the game screen.
  */
 public class GameView extends View {
+    private static final int DEFAULT_ZOOM = 10;
     /**
      * Visual of the world.
      */
@@ -33,8 +31,6 @@ public class GameView extends View {
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
 
-    private static final int DEFAULT_ZOOM = 10;
-
     /**
      * Create the game screen.
      *
@@ -42,7 +38,7 @@ public class GameView extends View {
      * @param wargroove The client.
      */
     public GameView(Model model, Controller controller, WargrooveClient wargroove) {
-        super(controller,model, wargroove);
+        super(controller, model, wargroove);
         getController().setScreen(this);
     }
 
@@ -62,9 +58,12 @@ public class GameView extends View {
         renderer.setView(camera);
         setStage(viewport);
 
-        Character character= new Character("Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,0,0,false,null);
-        Table table= new Table();
-        table.add(new CharacterUI(gameMap,this, new Pair<>(0,0), character ));
+        Character character = new Character(
+                "Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,
+                0, 0, false, null
+        );
+        Table table = new Table();
+        table.add(new CharacterUI(gameMap, this, new Pair<>(0, 0), character));
         addActor(table);
 
 

@@ -3,8 +3,6 @@ package up.wargroove.core.ui.views.objects;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 
-import java.io.File;
-
 /**
  * Represent the type of Tile related to its file name.
  */
@@ -60,15 +58,6 @@ public enum TileType {
         return TEXTURE_PATH + Biome.values()[biome].getDirName() + '/' + t.texture + extension;
     }
 
-    private static TileType getTileType(Tile.Type type) {
-        try {
-            return TileType.valueOf(type.name());
-        } catch (IllegalArgumentException e) {
-            Log.print(Log.Status.ERROR, "This Tile type doesn't exist. [" + type.name() + "]");
-            return TEST;
-        }
-    }
-
     /**
      * Get the texture path.
      *
@@ -77,6 +66,15 @@ public enum TileType {
      */
     private static String getTexturePath(TileType tile) {
         return TEXTURE_PATH + tile.texture + extension;
+    }
+
+    private static TileType getTileType(Tile.Type type) {
+        try {
+            return TileType.valueOf(type.name());
+        } catch (IllegalArgumentException e) {
+            Log.print(Log.Status.ERROR, "This Tile type doesn't exist. [" + type.name() + "]");
+            return TEST;
+        }
     }
 
     /**
