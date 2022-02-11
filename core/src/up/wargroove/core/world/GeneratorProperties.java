@@ -5,9 +5,9 @@ import java.util.function.Function;
 
 public class GeneratorProperties {
 
-	public static int DEFAULT_REPARTITION = 1;
-	public static double DEFAULT_NORMALIZATION = -3.5;
-	public static double DEFAULT_SMOOTH = -12.0;
+	public static final int DEFAULT_REPARTITION = 1;
+	public static final double DEFAULT_NORMALIZATION = -3.5;
+	public static final double DEFAULT_SMOOTH = -12.0;
 
 	/*
 	 * La fonction de répartition par

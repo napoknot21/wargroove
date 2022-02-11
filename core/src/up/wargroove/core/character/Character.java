@@ -16,7 +16,8 @@ public class Character extends Entity {
     private Stats stats; 
 
     public Character(String name, Faction faction, Type type, int cost, int range, boolean capture, Stats stats) {
-        super(name, type);
+        
+	super(name, type);
 
         this.faction = faction; 
         this.cost = cost;

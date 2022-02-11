@@ -1,58 +1,37 @@
 package up.wargroove.core.character;
 
-public class Movement {
+public class Movement { 
 
-    private int nbOfCases; //Max des cases qui peut parcourir
+    public enum Type {
 
-    public enum MoveType {
+        NULL		(-1, Character.Component.GROUND),
+        WALKING		(0, Character.Component.GROUND),
+        RIDING		(1, Character.Component.GROUND),
+        WHEELS		(2, Character.Component.GROUND),
+        FLYING		(3, Character.Component.AIR),
+        HOVER		(4, Character.Component.AIR),
+        WATER		(5, Character.Component.SEA),
+        AMPHIBIOUS	(6, Character.Component.SEA);
 
-        NULL(Character.Component.GROUND), //No movement
+	public int id;
+	public Character.Component component;	
 
-        WALKING(Character.Component.GROUND),
-        RIDING(Character.Component.GROUND),
-        WHEELS(Character.Component.GROUND),
+        Type(int id, Character.Component component) {
+	
+		this.id = id;
+		this.component = component;	
 
-        FLYING(Character.Component.AIR),
-        HOVER(Character.Component.AIR),
-
-        WATER(Character.Component.SEA),
-        AMPHIBIOUS(Character.Component.SEA);
-
-        MoveType(Character.Component Component) {}
+	}
     };
-    private MoveType moveType;
+    private Type moveType;
 
-    enum TerrainType {
-        ROAD,
-        BRIDGE,
-        PLAINS,
-        MOUNTAIN,
-        BEACH,
-        SEA,
-        DEEP_SEA,
-        RIVER,
-        REEF,
-        WALL,
-        FLAGSTONE,
-        CARPET;
-    }
-    private TerrainType terrainType;
-
-    public Movement(int nbOfCases, MoveType moveType, TerrainType terrainType) {
-        this.nbOfCases = nbOfCases;
-        this.moveType = moveType;
-        this.terrainType = terrainType;
+    public Movement(Type moveType) { 
+    
+	    this.moveType = moveType;
+    
     }
 
-    public int getNbOfCases() {
-        return nbOfCases;
-    }
-
-    public MoveType getMoveType() {
+    public Type getMoveType() {
         return moveType;
-    }
-
-    public TerrainType getTerrainType() {
-        return terrainType;
     }
 }

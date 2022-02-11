@@ -4,7 +4,7 @@ import up.wargroove.core.world.Tile;
 
 public abstract class Entity {
 
-    private String name;
+    protected String name;
 
     public static enum Component {
         	
@@ -46,7 +46,9 @@ public abstract class Entity {
         SPARROW_BOMB(Component.AIR),
         SHADOW_SISTER(Component.GROUND);
 
+	public Movement.Type movement;
 	public Component component;
+	public int cost = 5;
 
         Type(Component component) {
 	
@@ -57,11 +59,14 @@ public abstract class Entity {
     };
 
     protected Type type;
+    public int tmpCost;
 
-    Entity (String name, Type type) {
+    protected Entity (String name, Type type) {
 
         this.name = name;
     	this.type = type;
+
+	tmpCost = type.cost;
 
     }
 
