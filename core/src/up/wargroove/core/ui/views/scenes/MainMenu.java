@@ -1,16 +1,20 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.utils.Log;
 
 /**
  * The Main Menu.
@@ -21,13 +25,17 @@ public class MainMenu extends View {
      */
     private Button startGame;
     /**
-     * World settings button
+     * World settings button.
      */
     private Button worldSettings;
     /**
      * Screen controller.
      */
     private Controller controller;
+
+    private Viewport viewport;
+
+    private OrthographicCamera camera;
 
     public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
@@ -45,32 +53,21 @@ public class MainMenu extends View {
 
     @Override
     public void init() {
-        Table table = new Table();
-        //table.top();
-        //table.setFillParent(true);
-        Skin skin = new Skin(Gdx.files.internal("data/gui/uiskin.json"));
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport.apply();
+        Skin skin = getAssets().getDefaultSkin();
         startGame = new TextButton("Start Game", skin);
-        startGame.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        controller.startGame();
-                    }
-                }
-        );
-        table.add(startGame).expandX();
         worldSettings = new TextButton("World Settings", skin);
-        //table.add(worldSettings).expandX();
-        addActor(table);
+        initListener();
+        setStage(viewport);
+        addActor(drawTable());
         Gdx.input.setInputProcessor(getStage());
     }
 
     @Override
     public void draw(float delta) {
-        Batch batch = getBatch();
-        batch.begin();
         getStage().draw();
-        batch.end();
     }
 
     @Override
@@ -91,5 +88,43 @@ public class MainMenu extends View {
     @Override
     public void dispose() {
         super.dispose();
+    }
+
+    /**
+     * Init the table.
+     *
+     * @return The table.
+     */
+    private Table drawTable() {
+        Table table = new Table();
+        table.setFillParent(true);
+        //table.top();
+        table.add(startGame);
+        table.row();
+        table.add(worldSettings);
+        return table;
+    }
+
+    /**
+     * Init the buttons listener.
+     */
+    private void initListener() {
+        startGame.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        controller.startGame();
+                    }
+                }
+        );
+
+        worldSettings.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        Log.print("World Settings");
+                    }
+                }
+        );
     }
 }

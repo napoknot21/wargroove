@@ -2,14 +2,15 @@ package up.wargroove.core.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import up.wargroove.utils.Log;
-
 import java.io.File;
 import java.util.Scanner;
+import up.wargroove.utils.Log;
 
 /**
  * Manage the assets.
@@ -21,6 +22,7 @@ public class Assets {
      */
     private static final String asmext = ".asman";
     private final AssetManager manager;
+    private Skin defaultSkin;
 
     public Assets() {
         manager = new AssetManager();
@@ -78,6 +80,10 @@ public class Assets {
         }
     }
 
+    public Skin getDefaultSkin() {
+        return defaultSkin;
+    }
+
     /**
      * Loads all the assets contained in the AssetDir directories.
      */
@@ -97,8 +103,17 @@ public class Assets {
                 new Thread(group, () -> fileLoader(dir)).start();
             }
         }
-        while (group.activeCount() > 0){
+        while (group.activeCount() > 0) {
         }
+    }
+
+    /**
+     * Loads the defaults assets.
+     */
+    public void loadDefault() {
+        load(AssetDir.GUI);
+        defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
+        printLoading();
     }
 
     /**
@@ -123,10 +138,14 @@ public class Assets {
             FileHandle fileLoader = Gdx.files.internal(dirPath + fs + manifest);
             Scanner scanner = new Scanner(fileLoader.read());
             Class<?> c = AssetType.valueOf(scanner.nextLine()).type;
+            if (c.equals(Skin.class)) {
+                loadSkin(dirPath, scanner);
+            } else {
 
-            while (scanner.hasNextLine()) {
-                String path = dirPath + scanner.nextLine();
-                manager.load(path, c);
+                while (scanner.hasNextLine()) {
+                    String path = dirPath + scanner.nextLine();
+                    manager.load(path, c);
+                }
             }
             scanner.close();
         } catch (GdxRuntimeException e) {
@@ -141,6 +160,14 @@ public class Assets {
      */
     private void fileLoader(AssetDir dir) {
         fileLoader(dir.path, dir.manifest);
+    }
+
+    private void loadSkin(String dirPath, Scanner scanner) {
+        while (scanner.hasNextLine()) {
+            String path = dirPath + "uiskin.atlas";
+            FileHandle file = Gdx.files.internal(dirPath + fs + scanner.nextLine());
+            manager.load(path, Skin.class, new SkinLoader.SkinParameter());
+        }
     }
 
     /**
@@ -207,11 +234,11 @@ public class Assets {
      * List the assets directories and their manifest.
      */
     public enum AssetDir {
-        DATA("data" + fs),
+        DATA("data" + fs), GUI(DATA.path + "gui" + fs),
         SPRITES(DATA.path + "sprites" + fs),
-        WORLD(SPRITES.path + "world" + fs, "test" + asmext),
+        WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
-        ICE(WORLD.path + "ice" + fs, "ice" + asmext);
+        ICE(WORLD.path + "ice" + fs, "ice");
 
         // TODO : remplir mes chemins menant au repertoire et leur manifest pour charger les donnees
 
@@ -220,7 +247,7 @@ public class Assets {
 
         AssetDir(String path, String manifest) {
             this.path = path;
-            this.manifest = manifest;
+            this.manifest = manifest + ((manifest != null) ? asmext : "");
         }
 
         AssetDir(String path) {
@@ -241,7 +268,7 @@ public class Assets {
      * List the Assets Textures.
      */
     public enum AssetType {
-        TEXTURE(Texture.class);
+        TEXTURE(Texture.class), SKIN(Skin.class);
         //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;

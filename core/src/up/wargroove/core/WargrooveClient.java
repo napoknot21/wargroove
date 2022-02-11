@@ -34,10 +34,10 @@ public class WargrooveClient extends Game {
     public void create() {
         batch = new SpriteBatch();
         assets = new Assets();
+        assets.loadDefault();
         Model model = new Model();
         controller = new Controller(model, this);
         controller.create();
-        //scene = new GameView(controller.getModel(), this);
         scene = new MainMenu(controller.getModel(), this);
         setScreen(scene);
     }
@@ -58,6 +58,11 @@ public class WargrooveClient extends Game {
 
     @Override
     public void pause() {
+    }
+
+    @Override
+    public void render() {
+        super.render();
     }
 
     public SpriteBatch getBatch() {

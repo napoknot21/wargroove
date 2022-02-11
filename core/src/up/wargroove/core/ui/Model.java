@@ -1,12 +1,9 @@
 package up.wargroove.core.ui;
 
-import up.wargroove.core.ui.views.scenes.WorldSetting;
 import up.wargroove.core.world.GeneratorProperties;
 import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.Pair;
-
-import java.util.Random;
 
 /**
  * The gui model.
@@ -31,11 +28,11 @@ public class Model {
      */
     public void startGame() {
         properties = new WorldProperties();
-        properties.dimension = new Pair<>(20,20);
-        properties.genProperties = new GeneratorProperties();
+        properties.dimension = new Pair<>(20, 20);
+        properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
         world = new World(properties);
 
-        Thread gen = new Thread(() ->world.initialize(true));
+        Thread gen = new Thread(() -> world.initialize(true));
         gen.start();
         try {
             gen.join();
