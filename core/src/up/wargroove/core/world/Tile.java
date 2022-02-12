@@ -1,72 +1,5 @@
 package up.wargroove.core.world;
 
-<<<<<<< HEAD
-public class Tile extends Component {
-
-	static enum TaleType implements Type {
-
-		ROAD,
-		BRIDGE,
-		PLAINS,
-		FOREST,
-		MOUNTAIN,
-		BEACH,
-		SEA,
-		DEEP_SEA,
-		RIVER,
-		REEF,
-		WALL,
-		FLAGSTONE,
-		CARPET;
-	
-		int defense;
-
-		TaleType() {
-
-			this(0);
-
-		}
-
-		TaleType(int defense) {
-
-			this.defense = defense;
-
-		}
-
-	}
-	
-	private Structure structure;
-
-	public int[] mvt_cost = new int[7]; //{walking, riding, wheels, flying, hover, water, amphibious}
-
-	public Tile() {
-
-		/*
-		 * Initialisé par défaut sur la plaine
-		 */
-
-		this(TaleType.PLAINS);
-
-	}
-
-	public Tile(Type type) {
-	
-		super(type);
-
-	}
-
-	public void setType(Type type) {
-
-		super.type = type;
-
-	}
-
-	public void setStructure(Structure structure) {
-
-		this.structure = structure;
-
-	}
-=======
 import up.wargroove.core.character.Entity;
 
 import java.util.Optional;
@@ -178,6 +111,6 @@ public class Tile {
         }
 
     }
->>>>>>> 3ff8bba9b6dcded30e114b21ce4168a7d4de8506
+
 
 }

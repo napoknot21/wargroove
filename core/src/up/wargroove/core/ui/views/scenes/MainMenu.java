@@ -122,7 +122,7 @@ public class MainMenu extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        Log.print("World Settings");
+                        controller.openSettings();
                     }
                 }
         );

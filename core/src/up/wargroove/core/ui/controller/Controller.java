@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.WorldSetting;
 
 /**
  * A basic gui controller.
@@ -70,6 +71,12 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         this.getClient().setScreen(new GameView(model, this, getClient()));
+    }
+
+    public void openSettings() {
+        Model model = getModel();
+        getClient().getAssets().load();
+        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
     }
 
     public Model getModel() {
