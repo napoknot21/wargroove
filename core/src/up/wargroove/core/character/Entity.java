@@ -1,8 +1,7 @@
 package up.wargroove.core.character;
 
 public abstract class Entity {
-
-    public int tmpCost;
+ 
     protected String name;
     protected Type type;
 
@@ -15,7 +14,6 @@ public abstract class Entity {
 
         this.name = name;
         this.type = type;
-        tmpCost = type.movementCost;
 
     }
 

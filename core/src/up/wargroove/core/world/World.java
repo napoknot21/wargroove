@@ -1,39 +1,38 @@
 package up.wargroove.core.world;
 
-
 import up.wargroove.core.character.Entity;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
+import up.wargroove.utils.Constants;
+import up.wargroove.utils.functional.WPredicate;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class World {
 
-    private final int[] adjDeltas;
+    private final int [] permutations;
     private final WorldProperties properties;
     private final Pair<Integer, Integer> dimension;
     private final int turn;
     private Optional<Integer> currentEntityLinPosition;
     private Tile[] terrain;
-    private final Predicate<Pair<Integer, Integer>> canMoveOn = (linCoordinates) -> {
 
-        Tile toTile = terrain[linCoordinates.second];
-        Tile fromTile = terrain[linCoordinates.first];
+    private final WPredicate<Integer> canMoveOn = (k) -> {
 
-        Entity e = fromTile.entity.get();
+        Tile toTile = terrain[k[Constants.WG_ZERO]];	
 
-        if (toTile.entity.isPresent() || e.tmpCost == 0) return false;
+        if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
-        BitSet sub = bitset.sub(4 * 1/*e.getType().movement.id*/, 4);
+        BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
 
         int val = sub.toInt();
 
-        return val <= e.tmpCost;
+        return val == 0 ? -1 : k[2] - val;
 
     };
+
     private Stack<State> states;
 
     public World(WorldProperties properties) {
@@ -41,47 +40,9 @@ public class World {
         this.properties = properties;
         this.dimension = properties.dimension;
 
-        adjDeltas = new int[]{-dimension.first, 1, dimension.first, -1};
-        turn = 1;
+	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
 
-        //entities = new HashMap<>();
-
-    }
-
-    /**
-     * Validité de la coordonnée sur le plateau.
-     *
-     * @param linCoordinate les coordonnées
-     * @return l'appartenance des coordonnées au plateau
-     */
-
-    public static boolean validCoordinates(Integer linCoordinate, Pair<Integer, Integer> dimension) {
-
-        return validCoordinates(intToCoordinates(linCoordinate, dimension), dimension);
-
-    }
-
-    public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
-
-        boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
-        boolean dim = coordinates.first < dimension.first && coordinates.second < dimension.second;
-
-        return zero && dim;
-
-    }
-
-    public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
-
-        int x = k % dimension.first;
-        int y = k / dimension.first;
-
-        return new Pair<>(x, y);
-
-    }
-
-    public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
-
-        return dimension.first * co.second + co.first;
+        turn = 1; 
 
     }
 
@@ -97,6 +58,7 @@ public class World {
         terrain = new Tile[dimension.first * dimension.second];
 
         if (generation && properties.genProperties != null) {
+
             Generator gen = new Generator(dimension, properties.genProperties);
             terrain = gen.build();
 
@@ -114,65 +76,6 @@ public class World {
         states.push(state);
 
     }
-
-    /*
-     * Retourne les voisins d'une tuile.
-     * selon le degré indiqué
-     *
-     */
-
-	/*
-	public List<Tile> neighbours(Pair<Integer, Integer> coordinates, Predicate<Tile> pred, int deg) {
-
-		ArrayList<Tile> array = new ArrayList<>();
-
-		if(!validCoordinates(coordinates, dimension)) return array;
-
-		int beginX = coordinates.first - deg;
-		int beginY = coordinates.second - deg;
-
-		if(beginX < 0) beginX = 0;
-		if(beginY < 0) beginY = 0;
-
-		var startCoordinates = new Pair<Integer, Integer>(beginX, beginY);
-
-		final int bor = 2 * deg + 1;
-		final int per = (int) Math.pow(bor, 2) - (int) Math.pow(bor - 2, 2);
-
-		var directionalVector = new Pair<Boolean, Boolean>(true, false);
-		int blCoef = 1;
-
-		for(int k = 0; k < per; k++) {
-
-			if(validCoordinates(startCoordinates, dimension)) {
-
-				Tile tile = at(startCoordinates);
-				if(pred == null || pred.test(tile)) array.add(tile);
-
-				//predValue |= pred.test(tile);
-
-			}
-
-			startCoordinates.first += (directionalVector.first ? 1 : 0) * blCoef;
-			startCoordinates.second += (directionalVector.second ? 1 : 0) * blCoef;
-
-			int cor = (k + 1) % (bor - 1);
-
-			if(k > 0 && cor == 0) {
-
-				directionalVector.first = !directionalVector.first;
-				directionalVector.second = !directionalVector.second;
-
-				if((k + 1) == per / 2) blCoef *= -1;
-
-			}
-
-		}
-
-		return array;
-
-	}
-	*/
 
     public void pop() {
 
@@ -198,24 +101,6 @@ public class World {
 
     }
 
-    @Override
-    public String toString() {
-
-        StringBuilder builder = new StringBuilder();
-        int index = 0;
-
-        for (Tile tile : terrain) {
-
-            builder.append(tile).append(" ");
-
-            if (++index % dimension.first == 0) builder.append('\n');
-
-        }
-
-        return builder.toString();
-
-    }
-
     public boolean addEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -227,12 +112,27 @@ public class World {
 
     }
 
+    /**
+     * Ajout d'une entité sur le monde
+     *
+     * @param Pair<Integer,Integer> la coordonnée
+     * @param Entity l'entité
+     *
+     * @return le succès de l'ajout
+     */
+
     public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
         int linCoordinate = coordinatesToInt(coordinate, dimension);
         return addEntity(linCoordinate, entity);
 
     }
+
+    /**
+     * Vérouille l'accès sur l'entité courrante
+     *
+     * @param Pair<Integer,Integer> la coordonnée
+     */
 
     public void scopeEntity(Pair<Integer, Integer> coordinate) {
 
@@ -243,20 +143,35 @@ public class World {
 
     }
 
+    /**
+     * Devérouille l'accès sur l'entité courrante
+     */
+
     public void unscopeEntity() {
 
         currentEntityLinPosition = Optional.empty();
 
     }
 
+    /**
+     * Retourne les tuiles adjacentes
+     *
+     * @param int la coordonnée sur une dimension
+     * @return le vecteur des coordonnées
+     */
+
     public Vector<Integer> adjacentOf(int linCoordinate) {
 
-        var adjacent = new Vector<Integer>(adjDeltas.length);
+        var adjacent = new Vector<Integer>(permutations.length);
 
-        for (int delta : adjDeltas) {
+        for (int delta : permutations) {
 
             int lco = linCoordinate + delta;
-            boolean isValid = validCoordinates(lco, dimension);
+
+	    int lncMod = linCoordinate % dimension.first;
+	    int lcoMod = lco % dimension.first;
+
+            boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, dimension);
 
             if (isValid) adjacent.add(linCoordinate + delta);
 
@@ -276,37 +191,45 @@ public class World {
      * @return le vecteur des coordonnées valides
      */
 
-    private Vector<Integer> breadthFirstSearch(int root, Predicate<Pair<Integer, Integer>> predicate) {
+    private Vector<Integer> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
-        Queue<Integer> emp = new LinkedList<>();
+	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
 
         Vector<Integer> res = new Vector<>();
 
-        emp.add(root);
+	if(predicate == null) return res;
+	
+	Entity entity    = terrain[root].entity.get();
+	Entity.Type type = entity.getType();
+
+	int movementId   = type.movement.id;
+	int movementCost = type.movementCost;
+
+	var rootElement = new Pair<>(root, movementCost);
+
+	emp.add(rootElement);	 
 
         while (emp.size() > 0) {
 
             var element = emp.poll();
-            Vector<Integer> adjacent = adjacentOf(element);
+            Vector<Integer> adjacent = adjacentOf(element.first);
 
             for (Integer lin : adjacent) {
 
-                if (checked.containsKey(lin)) continue;
+                if (checked.containsKey(lin)) continue; 
 
-                checked.put(lin, true);
-                var couple = new Pair<>(root, lin);
+                if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
 
-                if (predicate == null || predicate.test(couple)) {
-
+		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     res.add(lin);
-                    emp.add(lin);
+                    emp.add(predicateArg);
 
                 }
 
-            }
+		checked.put(lin, movementCost >= 0);
 
-            terrain[root].entity.get().tmpCost--;
+            } 
 
         }
 
@@ -354,4 +277,58 @@ public class World {
 
     }
 
+    /**
+     * Validité de la coordonnée sur le plateau.
+     *
+     * @param linCoordinate les coordonnées
+     * @return l'appartenance des coordonnées au plateau
+     */
+
+    public static boolean validCoordinates(Integer linCoordinate, Pair<Integer, Integer> dimension) {
+
+        return validCoordinates(intToCoordinates(linCoordinate, dimension), dimension);
+
+    }
+
+    public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
+
+        boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
+        boolean dim = coordinates.first < dimension.first && coordinates.second < dimension.second;
+
+        return zero && dim;
+
+    }
+
+    public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
+
+        int x = k % dimension.first;
+        int y = k / dimension.first;
+
+        return new Pair<>(x, y);
+
+    }
+
+    public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
+
+        return dimension.first * co.second + co.first;
+
+    }
+    
+    @Override
+    public String toString() {
+
+        StringBuilder builder = new StringBuilder();
+        int index = 0;
+
+        for (Tile tile : terrain) {
+
+            builder.append(tile).append(" ");
+
+            if (++index % dimension.first == 0) builder.append('\n');
+
+        }
+
+        return builder.toString();
+
+    }
 }
