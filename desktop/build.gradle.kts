@@ -29,7 +29,6 @@ application {
 	mainClass.set("up.wargroove.desktop.WargrooveLauncher")	
 
 }
-
 sourceSets {
 	main {
 		java {
