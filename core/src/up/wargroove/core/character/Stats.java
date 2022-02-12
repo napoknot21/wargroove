@@ -8,6 +8,14 @@ public class Stats {
     private int sight;
     private Movement movement;
 
+    /**
+     * Constructeur pour les stats d'un personnage
+     * @param health Total de vie
+     * @param attack Attaque du personnage
+     * @param defense Pourcentage qui réduit l'attaque du personnage attaquant
+     * @param sight Vue du personnage
+     * @param movement Type de mouvement
+     */
     public Stats (double health, double attack, double defense, int sight, Movement movement) {
         this.health = health;
         this.attack = attack;
@@ -15,6 +23,10 @@ public class Stats {
         this.sight = sight;
         this.movement = movement;
     }
+
+    /**
+     * Getters pour les différents attributs
+     */
 
     public double getHealth() {
         return health;
