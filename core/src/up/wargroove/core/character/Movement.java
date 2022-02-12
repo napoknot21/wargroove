@@ -13,15 +13,14 @@ public class Movement {
         WATER		(5, Character.Component.SEA),
         AMPHIBIOUS	(6, Character.Component.SEA);
 
-	public int id;
-	public Character.Component component;	
+        public int id;
+        public Character.Component component;
 
         Type(int id, Character.Component component) {
-	
-		this.id = id;
-		this.component = component;	
+            this.id = id;
+            this.component = component;
+        }
 
-	}
     };
     private Type moveType;
 
