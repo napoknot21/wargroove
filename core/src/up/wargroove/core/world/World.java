@@ -21,7 +21,6 @@ public class World {
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-
         if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
@@ -43,7 +42,7 @@ public class World {
 
 	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
 
-        turn = 1;
+        turn = 1; 
 
     }
 
@@ -128,7 +127,7 @@ public class World {
         return addEntity(linCoordinate, entity);
 
     }
-
+    
     public boolean delEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -156,7 +155,9 @@ public class World {
         boolean exists = terrain[linCoordinate].entity.isPresent();
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
-        return exists;
+
+	return exists;
+
     }
 
     /**
@@ -206,7 +207,53 @@ public class World {
      *
      * @return le vecteur des coordonnées valides
      */
+     /*
+    private Vector<Integer> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
+        Map<Integer, Boolean> checked = new HashMap<>();
+	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+
+        Vector<Integer> res = new Vector<>();
+
+	if(predicate == null) return res;
+	
+	Entity entity    = terrain[root].entity.get();
+	Entity.Type type = entity.getType();
+
+	int movementId   = type.movement.id;
+	int movementCost = type.movementCost;
+
+	var rootElement = new Pair<>(root, movementCost);
+
+	emp.add(rootElement);	 
+
+        while (emp.size() > 0) {
+
+            var element = emp.poll();
+            Vector<Integer> adjacent = adjacentOf(element.first);
+
+            for (Integer lin : adjacent) {
+
+                if (checked.containsKey(lin)) continue; 
+
+                if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
+
+		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+                    res.add(lin);
+                    emp.add(predicateArg);
+
+                }
+
+		checked.put(lin, movementCost >= 0);
+
+            } 
+
+        }
+
+        return res;
+
+    }
+    */
     private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
@@ -223,7 +270,7 @@ public class World {
 	int movementCost = type.movementCost;
 
 	var rootElement = new Pair<>(root, movementCost);
-    int parentIndex = -1;
+    	int parentIndex = -1;
 
 	emp.add(rootElement);
 
@@ -265,7 +312,7 @@ public class World {
      *
      * @return le vecteur des positions valides
      */
-
+    
     public Vector<Pair<Integer,Pair<Integer,Integer>>> validMovements() {
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
@@ -298,7 +345,7 @@ public class World {
         return dimension;
 
     }
-
+    
     @Null
     public Entity getScopedEntity(){
         if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {
@@ -343,7 +390,7 @@ public class World {
         return dimension.first * co.second + co.first;
 
     }
-
+    
     @Override
     public String toString() {
 
