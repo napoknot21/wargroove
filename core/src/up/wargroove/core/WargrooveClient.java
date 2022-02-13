@@ -47,7 +47,9 @@ public class WargrooveClient extends Game {
         controller.create();
         scene = new MainMenu(controller.getModel(), this);
         setScreen(scene);
-        setDebug(true);
+
+
+        //setDebug(true);
     }
 
     @Override

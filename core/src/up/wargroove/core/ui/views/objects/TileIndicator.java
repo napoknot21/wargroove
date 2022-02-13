@@ -35,7 +35,7 @@ public class TileIndicator extends Actor {
      */
     public TileIndicator(Assets assets, Biome biome) {
         super();
-        this.tile = new Sprite(assets.get(Assets.AssetDir.WORLD.getPath() + "grass.png", Texture.class));
+        this.tile = new Sprite(assets.get(Assets.AssetDir.WORLD.getPath() + "plains.png", Texture.class));
         tile.setSize(50, 50);
         this.tileStat = new Sprite();
         this.biome = biome;
