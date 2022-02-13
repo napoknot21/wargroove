@@ -56,7 +56,7 @@ public class MainMenu extends View {
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
-        Skin skin = getAssets().getDefaultSkin();
+        Skin skin = getAssets().getDefault(Skin.class);
         startGame = new TextButton("Start Game", skin);
         worldSettings = new TextButton("World Settings", skin);
         initListener();

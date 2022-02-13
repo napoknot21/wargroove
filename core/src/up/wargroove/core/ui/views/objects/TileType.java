@@ -50,12 +50,12 @@ public enum TileType {
      * @param biome The biome of the tile
      * @return The texture path
      */
-    public static String getTexturePath(Tile tile, int biome) {
+    public static String getTexturePath(Tile tile, Biome biome) {
         TileType t = getTileType(tile.getType());
         if (!t.hasVariant) {
             return getTexturePath(t);
         }
-        return TEXTURE_PATH + Biome.values()[biome].getDirName() + '/' + t.texture + extension;
+        return TEXTURE_PATH + biome.getDirName() + '/' + t.texture + extension;
     }
 
     /**

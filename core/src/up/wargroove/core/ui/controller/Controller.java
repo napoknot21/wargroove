@@ -145,21 +145,30 @@ public class Controller {
      *
      * @param screenX the x input.
      * @param screenY The y input.
-     * @param camera The Screen camera.
+     * @param camera  The Screen camera.
      * @return The new cursor's position.
      */
     public Vector3 moveCursor(int screenX, int screenY, Camera camera) {
         Vector3 v = new Vector3(screenX, screenY, 0);
         v = camera.unproject(v);
-        int x = (int) (v.x - v.x % worldScale);
-        int y = (int) (v.y - v.y % worldScale);
+        int x = (v.x < 0) ? 0 : (int) (v.x - v.x % worldScale);
+        int y = (v.y < 0) ? 0 : (int) (v.y - v.y % worldScale);
+        int first = (getModel().getWorld().getDimension().first - 1) * 20;
+        int second = (getModel().getWorld().getDimension().second - 1) * 20;
+        x = Math.min(first, x);
+        y = Math.min(second, y);
         v.set(x, y, 0);
         return v;
     }
 
-    public String setIndicator(Vector3 vector) {
-        vector.scl(1/worldScale);
-        Tile tile = getModel().getTile(vector);
-        return tile.getType().toString();
+    /**
+     * Finds the tile that will be displayed by the tile indicator.
+     *
+     * @param vector The cursor position.
+     * @return the tile that will be displayed by the tile indicator.
+     */
+    public Tile setIndicator(Vector3 vector) {
+        vector.scl(1 / worldScale);
+        return getModel().getTile(vector);
     }
 }

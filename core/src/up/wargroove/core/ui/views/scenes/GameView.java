@@ -22,8 +22,10 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.Biome;
 import up.wargroove.core.ui.views.objects.Cursor;
 import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.ui.views.objects.TileIndicator;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -41,7 +43,7 @@ public class GameView extends View {
     private StretchViewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
-    private TextButton indicator;
+    private TileIndicator indicator;
     private Stage gameViewUi;
 
     /**
@@ -74,7 +76,7 @@ public class GameView extends View {
     }
 
     /**
-     * Initializes the map;
+     * Initializes the map.
      */
     private void initMap() {
         getModel().startGame();
@@ -92,12 +94,18 @@ public class GameView extends View {
         setStage(viewport);
     }
 
-    private void initGameViewUI () {
-        Skin skin = getAssets().getDefaultSkin();
-        indicator = new TextButton("Empty",skin);
-        Viewport viewport = new FitViewport(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+    /**
+     * Initiates the gameView UI above the board.
+     */
+    private void initGameViewUI() {
+        indicator = new TileIndicator(getAssets(), Biome.ICE);
+        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
-        gameViewUi.addActor(indicator);
+        Table table = new Table();
+        table.setFillParent(true);
+        gameViewUi.addActor(table);
+        table.add(indicator).pad(10).width(indicator.getWidth());
+        table.bottom().right();
     }
 
     /**
@@ -115,7 +123,7 @@ public class GameView extends View {
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                indicator.setText(getController().setIndicator(vector));
+                indicator.setTexture(getAssets(), getController().setIndicator(vector));
                 return true;
             }
 
@@ -123,7 +131,7 @@ public class GameView extends View {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                indicator.setText(getController().setIndicator(vector));
+                indicator.setTexture(getAssets(), getController().setIndicator(vector));
                 return true;
             }
 
@@ -187,5 +195,12 @@ public class GameView extends View {
 
     public GameMap getGameMap() {
         return gameMap;
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        this.gameViewUi.setDebugAll(debug);
+        System.out.println(debug);
+        super.setDebug(debug);
     }
 }

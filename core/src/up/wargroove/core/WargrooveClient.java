@@ -1,6 +1,7 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
@@ -30,8 +31,14 @@ public class WargrooveClient extends Game {
      */
     private View scene;
 
+    /**
+     * Indicate if the client is in debug mode
+     */
+    private boolean debug;
+
     @Override
     public void create() {
+        debug = false;
         batch = new SpriteBatch();
         assets = new Assets();
         assets.loadDefault();
@@ -40,6 +47,7 @@ public class WargrooveClient extends Game {
         controller.create();
         scene = new MainMenu(controller.getModel(), this);
         setScreen(scene);
+        setDebug(true);
     }
 
     @Override
@@ -71,5 +79,31 @@ public class WargrooveClient extends Game {
 
     public Assets getAssets() {
         return assets;
+    }
+
+    /**
+     * Puts the app in debug mode
+     *
+     * @param debug if true, the app is in debug mod
+     */
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+        if (scene != null) {
+            scene.setDebug(debug);
+        }
+    }
+
+    /**
+     * Keeps the debug mode if it was already activated.
+     */
+    public void setDebug() {
+        setDebug(debug);
+    }
+
+    @Override
+    public void setScreen(Screen screen) {
+        super.setScreen(screen);
+        this.scene = (View) screen;
+        setDebug();
     }
 }

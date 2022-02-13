@@ -9,6 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import up.wargroove.utils.Log;
 
@@ -22,10 +24,11 @@ public class Assets {
      */
     private static final String asmext = ".asman";
     private final AssetManager manager;
-    private Skin defaultSkin;
+    private final Map<Class<?>, Object> defaults;
 
     public Assets() {
         manager = new AssetManager();
+        defaults = new HashMap<>();
     }
 
     /**
@@ -80,8 +83,9 @@ public class Assets {
         }
     }
 
-    public Skin getDefaultSkin() {
-        return defaultSkin;
+    @SuppressWarnings("all")
+    public <T> T getDefault(Class<T> defaultClass) {
+        return (T) defaults.get(defaultClass);
     }
 
     /**
@@ -109,9 +113,10 @@ public class Assets {
      * Loads the defaults assets.
      */
     public void loadDefault() {
-        load(AssetDir.GUI);
-        defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
-        printLoading();
+        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
+        defaults.put(Skin.class, defaultSkin);
+        Texture texture = new Texture(Gdx.files.internal(AssetDir.GUI.path + "uiskin.png"));
+        defaults.put(Texture.class, texture);
     }
 
     /**
@@ -165,8 +170,7 @@ public class Assets {
 
     private void loadSkin(String dirPath, Scanner scanner) {
         while (scanner.hasNextLine()) {
-            String path = dirPath + "uiskin.atlas";
-            FileHandle file = Gdx.files.internal(dirPath + fs + scanner.nextLine());
+            String path = dirPath + scanner.nextLine();
             manager.load(path, Skin.class, new SkinLoader.SkinParameter());
         }
     }
