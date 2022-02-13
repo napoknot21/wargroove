@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 
 /**
@@ -153,7 +154,12 @@ public class Controller {
         int x = (int) (v.x - v.x % worldScale);
         int y = (int) (v.y - v.y % worldScale);
         v.set(x, y, 0);
-        Log.print(v.x + " | " + v.y);
         return v;
+    }
+
+    public String setIndicator(Vector3 vector) {
+        vector.scl(1/worldScale);
+        Tile tile = getModel().getTile(vector);
+        return tile.getType().toString();
     }
 }

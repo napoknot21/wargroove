@@ -1,6 +1,8 @@
 package up.wargroove.core.ui;
 
+import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.world.GeneratorProperties;
+import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.Pair;
@@ -59,4 +61,9 @@ public class Model {
     }
 
 
+    public Tile getTile(Vector3 vector) {
+        int x = (int) Math.min(world.getDimension().first - 1, vector.x);
+        int y = (int) Math.min(world.getDimension().second - 1, vector.y);
+        return world.at(x,y);
+    }
 }
