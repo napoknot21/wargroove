@@ -2,12 +2,14 @@ package up.wargroove.core.ui.views.actors;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import up.wargroove.core.character.Character;
@@ -28,6 +30,7 @@ public class CharacterUI extends Actor {
     int coordX;
     int coordY;
     MapTile tile;
+    Character character;
 
 
     private static String getPath() {
@@ -75,8 +78,9 @@ public class CharacterUI extends Actor {
     public CharacterUI(GameMap gameMap, GameView view, Pair<Integer, Integer> coord, Character character){
         this.gameMap= gameMap;
         this.gameView = view;
+        this.character= character;
         gameMap.getWorld().addEntity(coord,character);
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/DIE/tile260.png")));
+        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/LIFE.png")));
         this.sprite= new Sprite(texture);
         sprite.setSize(20,30);
         this.coordinate= coord;
@@ -113,7 +117,7 @@ public class CharacterUI extends Actor {
     }
 
         @Override
-    protected void positionChanged() {
+    public void positionChanged() {
         sprite.setPosition(getX(), getY());
         super.positionChanged();
     }
@@ -148,4 +152,55 @@ public class CharacterUI extends Actor {
         }
         return table;
     }
+
+    /* Tests with actions
+
+   Problemes: Ça ne lis pas les actions, voir act() normalement à mettre sur le renderer
+                Si après on change les coordonnées ça n'utilise pas les actions, donc si on utilise actions, apres on va pas pouvoir modifier les coords??
+    * */
+
+    public void moveNorth(){
+        this.addAction(Actions.moveBy( 0,gameMap.getTileHeight(),5));
+        this.addAction(Actions.color(Color.RED));
+        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile008.png"))));
+        coordY+= gameMap.getTileHeight();
+
+    }
+
+    public void moveEast(){
+        MoveByAction mba = new MoveByAction();
+        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile011.png"))));
+        mba.setDuration(5f);
+        mba.setAmount( gameMap.getTileWidth(),0);
+        this.addAction(mba);
+        coordY+= gameMap.getTileWidth();
+
+    }
+
+    public void moveSouth(){
+        MoveByAction mba = new MoveByAction();
+        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile010.png"))));
+        mba.setDuration(5f);
+        mba.setAmount( 0,-gameMap.getTileHeight());
+        this.addAction(mba);
+        coordY-= gameMap.getTileHeight();
+
+    }
+
+    public void moveWest(){
+        MoveByAction mba = new MoveByAction();
+        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile009.png"))));
+        mba.setDuration(5f);
+        mba.setAmount( -gameMap.getTileWidth(),0);
+        this.addAction(mba);
+        coordY-= gameMap.getTileWidth();
+
+    }
+
+    public void die(){
+        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"DIE.png"))));
+
+    }
+
+
 }

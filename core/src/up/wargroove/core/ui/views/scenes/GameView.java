@@ -62,14 +62,15 @@ public class GameView extends View {
         initMap();
         initGameViewUI();
         Character character = new Character(
-                "Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,
+                "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
         );
         Table table = new Table();
         table.setFillParent(true);
-        table.add(new CharacterUI(gameMap, this, new Pair<>(0, 0), character));
+        CharacterUI jaimito= new CharacterUI(gameMap, this, new Pair<>(0, 0), character);
+        table.add(jaimito);
         addActor(table);
-
+        jaimito.moveNorth();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
         initInput();
