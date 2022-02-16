@@ -4,17 +4,29 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.Biome;
+import up.wargroove.core.ui.views.objects.Cursor;
 import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.ui.views.objects.TileIndicator;
+import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
@@ -23,6 +35,7 @@ import up.wargroove.utils.Pair;
  */
 public class GameView extends View {
     private static final int DEFAULT_ZOOM = 10;
+    private Cursor cursor;
     /**
      * Visual of the world.
      */
@@ -30,6 +43,8 @@ public class GameView extends View {
     private StretchViewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
+    private TileIndicator indicator;
+    private Stage gameViewUi;
 
     /**
      * Create the game screen.
@@ -44,6 +59,26 @@ public class GameView extends View {
 
     @Override
     public void init() {
+        initMap();
+        initGameViewUI();
+        Character character = new Character(
+                "Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,
+                0, 0, false, null
+        );
+        Table table = new Table();
+        table.setFillParent(true);
+        table.add(new CharacterUI(gameMap, this, new Pair<>(0, 0), character));
+        addActor(table);
+
+        Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
+        cursor = new Cursor(texture, gameMap.getScale());
+        initInput();
+    }
+
+    /**
+     * Initializes the map.
+     */
+    private void initMap() {
         getModel().startGame();
         gameMap = new GameMap(getModel().getWorld(), getAssets());
         camera = new OrthographicCamera();
@@ -52,22 +87,25 @@ public class GameView extends View {
         int y = world.getDimension().second;
         viewport = new StretchViewport(x, y, camera);
         viewport.apply();
-        camera.position.set(gameMap.getCenter());
+        //camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         setStage(viewport);
+    }
 
-        Character character = new Character(
-                "Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,
-                0, 0, false, null
-        );
+    /**
+     * Initiates the gameView UI above the board.
+     */
+    private void initGameViewUI() {
+        indicator = new TileIndicator(getAssets(), Biome.ICE);
+        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        gameViewUi = new Stage(viewport);
         Table table = new Table();
-        table.add(new CharacterUI(gameMap, this, new Pair<>(0, 0), character));
-        addActor(table);
-
-
-        initInput();
+        table.setFillParent(true);
+        gameViewUi.addActor(table);
+        table.add(indicator).pad(10).width(indicator.getWidth());
+        table.bottom().right();
     }
 
     /**
@@ -82,7 +120,18 @@ public class GameView extends View {
             }
 
             @Override
+            public boolean mouseMoved(int screenX, int screenY) {
+                Vector3 vector = getController().moveCursor(screenX, screenY, camera);
+                cursor.setPosition(vector);
+                indicator.setTexture(getAssets(), getController().setIndicator(vector));
+                return true;
+            }
+
+            @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                Vector3 vector = getController().moveCursor(screenX, screenY, camera);
+                cursor.setPosition(vector);
+                indicator.setTexture(getAssets(), getController().setIndicator(vector));
                 return true;
             }
 
@@ -115,7 +164,11 @@ public class GameView extends View {
     public void draw(float delta) {
         renderer.setView(camera);
         renderer.render();
+        getBatch().begin();
+        cursor.draw(getBatch());
+        getBatch().end();
         getStage().draw();
+        gameViewUi.draw();
 
     }
 
@@ -138,5 +191,16 @@ public class GameView extends View {
 
     public StretchViewport getViewport() {
         return viewport;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        this.gameViewUi.setDebugAll(debug);
+        System.out.println(debug);
+        super.setDebug(debug);
     }
 }

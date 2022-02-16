@@ -2,10 +2,17 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.world.Tile;
+import up.wargroove.utils.Log;
 import up.wargroove.core.ui.views.scenes.PlayerSetting;
 import up.wargroove.core.ui.views.scenes.WorldSetting;
 
@@ -29,6 +36,11 @@ public class Controller {
     private Model model;
 
     private Screen previous;
+    /**
+     * World scale.
+     */
+    private float worldScale;
+
 
     /**
      * Camera velocity.
@@ -39,9 +51,9 @@ public class Controller {
     /**
      * Create a controller.
      *
-     * @param model The app model.
+     * @param model     The app model.
      * @param wargroove The client.
-     * @param screen The current screen.
+     * @param screen    The current screen.
      */
     public Controller(Model model, WargrooveClient wargroove, Screen screen) {
         this.wargroove = wargroove;
@@ -53,7 +65,7 @@ public class Controller {
     /**
      * Create a controller without screen.
      *
-     * @param model The app model.
+     * @param model     The app model.
      * @param wargroove The client.
      */
     public Controller(Model model, WargrooveClient wargroove) {
@@ -73,7 +85,9 @@ public class Controller {
     public void startGame() {
         Model model = getModel();
         getClient().getAssets().load();
-        this.getClient().setScreen(new GameView(model, this, getClient()));
+        GameView view = new GameView(model, this, getClient());
+        this.getClient().setScreen(view);
+        worldScale = view.getGameMap().getScale();
     }
 
     public void openWorldSettings() {
@@ -151,5 +165,37 @@ public class Controller {
 
     public void setScreen(Screen screen) {
         this.screen = screen;
+    }
+
+    /**
+     * Move the cursor on the board.
+     *
+     * @param screenX the x input.
+     * @param screenY The y input.
+     * @param camera  The Screen camera.
+     * @return The new cursor's position.
+     */
+    public Vector3 moveCursor(int screenX, int screenY, Camera camera) {
+        Vector3 v = new Vector3(screenX, screenY, 0);
+        v = camera.unproject(v);
+        int x = (v.x < 0) ? 0 : (int) (v.x - v.x % worldScale);
+        int y = (v.y < 0) ? 0 : (int) (v.y - v.y % worldScale);
+        int first = (getModel().getWorld().getDimension().first - 1) * 20;
+        int second = (getModel().getWorld().getDimension().second - 1) * 20;
+        x = Math.min(first, x);
+        y = Math.min(second, y);
+        v.set(x, y, 0);
+        return v;
+    }
+
+    /**
+     * Finds the tile that will be displayed by the tile indicator.
+     *
+     * @param vector The cursor position.
+     * @return the tile that will be displayed by the tile indicator.
+     */
+    public Tile setIndicator(Vector3 vector) {
+        vector.scl(1 / worldScale);
+        return getModel().getTile(vector);
     }
 }

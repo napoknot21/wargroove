@@ -1,7 +1,9 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.world.World;
@@ -14,7 +16,10 @@ public class GameMap extends TiledMap {
     int width;
     int tileWidth;
     int tileHeight;
-    float scale;
+    /**
+     * scale pixels for one tile.
+     */
+    int scale;
     World world;
     TiledMapTileLayer tileLayer;
 
@@ -46,7 +51,7 @@ public class GameMap extends TiledMap {
     private void initDimension() {
         tileHeight = 20;
         tileWidth = 20;
-        scale = Math.max(1f / tileHeight, 1f / tileWidth);
+        scale = Math.max(tileHeight, tileWidth);
     }
 
     public void update() {
@@ -81,7 +86,8 @@ public class GameMap extends TiledMap {
         return tileLayer;
     }
 
-    public float getScale() {
+    public int getScale() {
         return scale;
     }
+
 }
