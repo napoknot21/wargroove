@@ -1,10 +1,10 @@
 package up.wargroove.core.world;
 
-public class Structure {
+public abstract class Structure {
 
     protected Type type;
 
-    public Structure(Type type) {
+    protected Structure(Type type) {
 
         this.type = type;
 

@@ -63,7 +63,7 @@ public class Generator {
     /**
      * Builds the terrain.
      *
-     * @return The build terrain.
+     * @return The built terrain.
      */
     public Tile[] build() {
 
