@@ -14,19 +14,23 @@ import up.wargroove.core.ui.controller.Controller;
 /**
  * The World Settings Menu.
  */
-public class WorldSetting extends View {
+public class PlayerSetting extends View {
     /**
-     * Dimension button.
-     */
-    private Label dimension;
-    /**
-     * Previous screen button.
+     * Full Screen button.
      */
     private Button back;
     /**
-     * Slider
+     * Sound title label.
      */
-    private Slider dimSlider;
+    private Label soundLabel;
+    /**
+     * Sound state label.
+     */
+    private Label stateLabel;
+    /**
+     * To put the sound on
+     */
+    private CheckBox sound;
     /**
      * Screen controller.
      */
@@ -36,20 +40,26 @@ public class WorldSetting extends View {
 
     private OrthographicCamera camera;
 
-    public WorldSetting(Controller controller, Model model, WargrooveClient wargroove) {
+    public PlayerSetting(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
+        soundLabel = new Label("Sound", skin);
+        sound = new CheckBox("On",skin);
+        sound.setChecked(true);
+        stateLabel = new Label("On", skin);
+        back = new TextButton("Back", skin);
+
     }
 
-    public WorldSetting(Controller controller, WargrooveClient wargroove) {
+    /*public PlayerSetting(Controller controller, WargrooveClient wargroove) {
         this(controller, null, wargroove);
         this.controller = controller;
     }
 
-    public WorldSetting(Model model, WargrooveClient wargroove) {
+    public PlayerSetting(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
         this.controller = new Controller(model, wargroove, this);
-    }
+    }*/
 
     @Override
     public void init() {
@@ -57,9 +67,7 @@ public class WorldSetting extends View {
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
 
-        dimSlider = new Slider(0.5f, 20f, 0.1f, false,skin);
-        dimension = new Label("Dimension", skin);
-        back = new TextButton("Back", skin);
+
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -100,11 +108,14 @@ public class WorldSetting extends View {
         Table table = new Table();
         table.setFillParent(true);
         //table.top();
-        table.add(dimension);
-        table.row();
-        table.add(dimSlider);
+        /*table.add(dimension);
+        table.row();*/
+        table.add(soundLabel).padRight(20f);
+        table.add(sound);
+        table.add(stateLabel);
         table.row();
         table.add(back);
+
 
         return table;
     }
@@ -113,19 +124,22 @@ public class WorldSetting extends View {
      * Init the buttons listener.
      */
     private void initListener() {
-        /*dimension.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                    }
-                }
-        );*/
-
         back.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         controller.back();
+                    }
+                }
+        );
+        sound.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if(sound.isChecked()) stateLabel.setText("On");
+                        else{
+                            stateLabel.setText("Off");
+                        }
                     }
                 }
         );

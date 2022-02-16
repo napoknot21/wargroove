@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.PlayerSetting;
 import up.wargroove.core.ui.views.scenes.WorldSetting;
 
 /**
@@ -27,6 +28,7 @@ public class Controller {
      */
     private Model model;
 
+    private Screen previous;
 
     /**
      * Camera velocity.
@@ -45,6 +47,7 @@ public class Controller {
         this.wargroove = wargroove;
         this.model = model;
         this.screen = screen;
+        this.previous = screen;
     }
 
     /**
@@ -73,10 +76,27 @@ public class Controller {
         this.getClient().setScreen(new GameView(model, this, getClient()));
     }
 
+    public void openWorldSettings() {
+        Model model = getModel();
+        getClient().getAssets().load();
+        setPrevious();
+        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
+    }
+
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
-        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
+        setPrevious();
+        this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
+    }
+
+    public void setPrevious(){
+        previous = getClient().getScreen();
+    }
+    public void back(){
+        Screen tmp = this.getClient().getScreen();
+        this.getClient().setScreen(previous);
+        tmp.dispose();
     }
 
     public Model getModel() {

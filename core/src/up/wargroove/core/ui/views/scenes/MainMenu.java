@@ -29,6 +29,10 @@ public class MainMenu extends View {
      */
     private Button worldSettings;
     /**
+     * Player settings button.
+     */
+    private Button playerSettings;
+    /**
      * Screen controller.
      */
     private Controller controller;
@@ -59,6 +63,7 @@ public class MainMenu extends View {
         Skin skin = getAssets().getDefaultSkin();
         startGame = new TextButton("Start Game", skin);
         worldSettings = new TextButton("World Settings", skin);
+        playerSettings = new TextButton("Settings", skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -102,6 +107,8 @@ public class MainMenu extends View {
         table.add(startGame);
         table.row();
         table.add(worldSettings);
+        table.row();
+        table.add(playerSettings).padTop(20f);
         return table;
     }
 
@@ -119,6 +126,14 @@ public class MainMenu extends View {
         );
 
         worldSettings.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        controller.openWorldSettings();
+                    }
+                }
+        );
+        playerSettings.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
@@ -36,6 +37,10 @@ public abstract class View extends ScreenAdapter {
      * The main stage of the screen.
      */
     private Stage ui;
+    /**
+     * The main skin
+     */
+    Skin skin;
 
 
     /**
@@ -50,6 +55,8 @@ public abstract class View extends ScreenAdapter {
         this.model = model;
         this.ui = new Stage();
         this.wargroove = wargroove;
+        this.skin = new Skin(Gdx.files.internal("data/gui/rusty-robot-ui.json"));
+
     }
 
     /**
