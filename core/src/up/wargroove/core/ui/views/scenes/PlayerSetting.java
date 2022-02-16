@@ -43,11 +43,11 @@ public class PlayerSetting extends View {
     public PlayerSetting(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
-        soundLabel = new Label("Sound", skin);
-        sound = new CheckBox("On",skin);
-        sound.setChecked(true);
-        stateLabel = new Label("On", skin);
-        back = new TextButton("Back", skin);
+        soundLabel = new Label("Sound", SKIN);
+        sound = new CheckBox("On",SKIN);
+        sound.setChecked(controller.isSoundOn());
+        stateLabel = new Label("", SKIN);
+        back = new TextButton("Back", SKIN);
 
     }
 
@@ -128,6 +128,7 @@ public class PlayerSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        makeSound(BUTTON_SOUND);
                         controller.back();
                     }
                 }
@@ -136,9 +137,14 @@ public class PlayerSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        if(sound.isChecked()) stateLabel.setText("On");
+                        makeSound(BUTTON_SOUND);
+                        if(sound.isChecked()){
+                            stateLabel.setText("On");
+                            controller.setSound(true);
+                        }
                         else{
                             stateLabel.setText("Off");
+                            controller.setSound(false);
                         }
                     }
                 }

@@ -57,9 +57,9 @@ public class WorldSetting extends View {
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
 
-        dimSlider = new Slider(0.5f, 20f, 0.1f, false,skin);
-        dimension = new Label("Dimension", skin);
-        back = new TextButton("Back", skin);
+        dimSlider = new Slider(0.5f, 20f, 0.1f, false,SKIN);
+        dimension = new Label("Dimension", SKIN);
+        back = new TextButton("Back", SKIN);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -125,6 +125,7 @@ public class WorldSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        makeSound(BUTTON_SOUND);
                         controller.back();
                     }
                 }

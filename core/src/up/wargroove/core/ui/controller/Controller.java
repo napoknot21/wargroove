@@ -30,6 +30,8 @@ public class Controller {
 
     private Screen previous;
 
+    private boolean sound;
+
     /**
      * Camera velocity.
      */
@@ -48,6 +50,7 @@ public class Controller {
         this.model = model;
         this.screen = screen;
         this.previous = screen;
+        this.sound = true;
     }
 
     /**
@@ -151,5 +154,13 @@ public class Controller {
 
     public void setScreen(Screen screen) {
         this.screen = screen;
+    }
+
+    public boolean isSoundOn() {
+        return sound;
+    }
+
+    public void setSound(boolean sound) {
+        this.sound = sound;
     }
 }

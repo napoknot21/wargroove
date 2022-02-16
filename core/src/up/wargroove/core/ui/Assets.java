@@ -3,6 +3,7 @@ package up.wargroove.core.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -110,7 +111,7 @@ public class Assets {
      */
     public void loadDefault() {
         load(AssetDir.GUI);
-        defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
+        defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "uiskin.json"));
         printLoading();
     }
 
@@ -236,6 +237,7 @@ public class Assets {
      */
     public enum AssetDir {
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
+        SKIN(GUI.path + "skin" +fs), SOUND(GUI.path + "sound" + fs),
         SPRITES(DATA.path + "sprites" + fs),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
@@ -269,7 +271,7 @@ public class Assets {
      * List the Assets Textures.
      */
     public enum AssetType {
-        TEXTURE(Texture.class), SKIN(Skin.class);
+        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class);
         //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;

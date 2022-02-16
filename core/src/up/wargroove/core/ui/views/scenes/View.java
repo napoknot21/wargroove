@@ -3,6 +3,8 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.backends.lwjgl.audio.Wav;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -40,7 +42,8 @@ public abstract class View extends ScreenAdapter {
     /**
      * The main skin
      */
-    Skin skin;
+    final Skin SKIN;
+    final Sound BUTTON_SOUND;
 
 
     /**
@@ -55,7 +58,9 @@ public abstract class View extends ScreenAdapter {
         this.model = model;
         this.ui = new Stage();
         this.wargroove = wargroove;
-        this.skin = new Skin(Gdx.files.internal("data/gui/rusty-robot-ui.json"));
+        this.SKIN = new Skin(Gdx.files.internal("data/gui/skin/rusty-robot-ui.json"));
+        this.BUTTON_SOUND = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
+
 
     }
 
@@ -146,6 +151,10 @@ public abstract class View extends ScreenAdapter {
 
     public Assets getAssets() {
         return wargroove.getAssets();
+    }
+
+    public void makeSound(Sound s){
+        if(controller.isSoundOn()) s.play();
     }
 
 }
