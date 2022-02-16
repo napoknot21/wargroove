@@ -52,7 +52,7 @@ public class MapTile extends StaticTiledMapTile {
      */
     public MapTile(Tile tile, Assets assets) {
         super(new TextureRegion());
-        String path = TileType.getTexturePath(tile, 1);
+        String path = TileType.getTexturePath(tile, Biome.ICE);
         TextureRegion textureRegion = new TextureRegion(assets.get(path, Texture.class));
         setTextureRegion(textureRegion);
     }
