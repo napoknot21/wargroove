@@ -29,9 +29,11 @@ public class CharacterUI extends Actor {
     Pair<Integer, Integer> coordinate;
     MapTile tile;
     Character character;
-    //Animation animation;
+    //Animation animationMove;
     float temps;
     ArrayList<Integer> move= new ArrayList<>();
+    float TIME_LAPSE=0.30f;
+
 
     private Texture getPath(String nameFile) {
         return new Texture((Gdx.files.internal("data/sprites/character/" + character.getType().component + "/" + character.getType() + "/" + character.getFaction() + "/" + nameFile)));
@@ -99,8 +101,6 @@ public class CharacterUI extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        //sprite.setScale(gameMap.getScale());
-        //sprite= (Sprite) animation.getKeyFrame(parentAlpha);
         move();
         sprite.draw(batch);
         super.draw(batch,parentAlpha);
@@ -168,49 +168,31 @@ public class CharacterUI extends Actor {
             return;
         }
         if (temps<20){
-            temps+=0.25f;
+            temps+=TIME_LAPSE;
         }
         switch (move.get(0)){
-            case 0: caseNorth(); return;
-            case 1: caseEast(); return;
-            case 2: caseSouth(); return;
-            case 3: caseWest(); return;
+            case 0: moveTo(0,1, getPath("MOVE/tile008.png")); return;
+            case 1: moveTo(1,0,getPath("MOVE/tile011.png")); return;
+            case 2: moveTo(0,-1,getPath("MOVE/tile009.png")); return;
+            case 3: moveTo(-1,0,getPath("MOVE/tile010.png")); return;
         }
     }
 
-    private void caseNorth(){
-        sprite.setPosition(coordinate.first*gameMap.getTileWidth(),coordinate.second*gameMap.getTileHeight()+temps);
-        if (temps==20){
-            temps=0;
-            coordinate.second++;
-            move.remove(0);
-        }
-    }
 
-    private void caseEast(){
-        sprite.setPosition(coordinate.first*gameMap.getTileWidth()+temps,coordinate.second*gameMap.getTileHeight());
-        if (temps==20){
-            temps=0;
-            coordinate.first++;
-            move.remove(0);
+    private void moveTo(int x, int y, Texture texture){
+        if(temps==TIME_LAPSE){
+            //AnimationMWalk(texture);
         }
-    }
-
-    private void caseSouth(){
-        sprite.setPosition(coordinate.first*gameMap.getTileWidth(),coordinate.second*gameMap.getTileHeight()-temps);
-        if (temps==20){
+        //sprite= (Sprite) animationMove.getKeyFrame(temps);
+        sprite.setPosition(coordinate.first*gameMap.getTileWidth()+temps*x,coordinate.second*gameMap.getTileHeight()+temps*y);
+        if (temps>=gameMap.getTileHeight()){
             temps=0;
-            coordinate.second--;
+            gameMap.getWorld().delEntity(coordinate, character);
+            coordinate.first+=x;
+            coordinate.second+=y;
+            gameMap.getWorld().addEntity( coordinate, character);
             move.remove(0);
-        }
-    }
 
-    private void caseWest(){
-        sprite.setPosition(coordinate.first*gameMap.getTileWidth()-temps,coordinate.second*gameMap.getTileHeight());
-        if (temps==20){
-            temps=0;
-            coordinate.first--;
-            move.remove(0);
         }
     }
 
@@ -218,18 +200,19 @@ public class CharacterUI extends Actor {
 
     /**
      * Create the animation accordig with the texture you want to show
-     * @param nbOfFrames
      * DOESNT WORK
      */
 
-    /*
-    public void animation(int nbOfFrames){
-        TextureRegion [][] tmp = TextureRegion.split(sprite.getTexture(), sprite.getTexture().getWidth()/nbOfFrames,30);
-        TextureRegion [] move= new TextureRegion[nbOfFrames];
-        for (int i=0; i<nbOfFrames; i++) move[1]= tmp[0][i];
-        animation= new Animation(0.25f,move);
+/*
+    public void AnimationMWalk(Texture texture){
+        TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/8,30);
+        TextureRegion [] move= new TextureRegion[8];
+        for (int i=0; i<8; i++) move[1]= tmp[0][i];
+        animationMove= new Animation(0.25f,move);
     }
     */
+
+
 
 
 

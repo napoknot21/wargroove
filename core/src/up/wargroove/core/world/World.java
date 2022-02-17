@@ -233,6 +233,21 @@ public class World {
 
     }
 
+    public boolean delEntity(int linCoordinate, Entity entity) {
+
+        Tile spawnTile = terrain[linCoordinate];
+        terrain[linCoordinate].entity = Optional.empty();
+        return true;
+
+    }
+
+    public boolean delEntity(Pair<Integer, Integer> coordinate, Entity entity) {
+
+        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        return delEntity(linCoordinate, entity);
+
+    }
+
     public void scopeEntity(Pair<Integer, Integer> coordinate) {
 
         int linCoordinate = coordinatesToInt(coordinate, dimension);

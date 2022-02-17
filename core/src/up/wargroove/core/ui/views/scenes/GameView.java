@@ -69,7 +69,7 @@ public class GameView extends View {
         jaimito.moveNorth();
         jaimito.moveEast();
         jaimito.moveSouth();
-        jaimito.moveWest();
+        //jaimito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
 
