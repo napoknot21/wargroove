@@ -115,8 +115,8 @@ public class World {
     /**
      * Ajout d'une entité sur le monde
      *
-     * @param Pair<Integer,Integer> la coordonnée
-     * @param Entity l'entité
+     * @param coordinate la coordonnée
+     * @param entity l'entité
      *
      * @return le succès de l'ajout
      */
@@ -146,7 +146,7 @@ public class World {
     /**
      * Vérouille l'accès sur l'entité courrante
      *
-     * @param Pair<Integer,Integer> la coordonnée
+     * @param coordinate la coordonnée
      */
 
     public boolean scopeEntity(Pair<Integer, Integer> coordinate) {
@@ -173,7 +173,7 @@ public class World {
     /**
      * Retourne les tuiles adjacentes
      *
-     * @param int la coordonnée sur une dimension
+     * @param linCoordinate la coordonnée sur une dimension
      * @return le vecteur des coordonnées
      */
 

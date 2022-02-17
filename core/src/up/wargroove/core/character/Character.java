@@ -1,44 +1,26 @@
 package up.wargroove.core.character;
 
-import up.wargroove.core.world.Tile;
-
-public class Character extends Entity { 
+public abstract class Character extends Entity {
 
     private Faction faction;
-
-    private int cost;
-    private int range;
-    private boolean capture;
-    /*
-        true = yes
-        false = no
-    */
     private Stats stats;
-
 
     /**
      * Constructeur pour Character
      * @param name nom du personnage
      * @param faction Faction du personnage
      * @param type Type d'unité du personnage
-     * @param cost Prix du personnage (monnaie du jeu)
-     * @param range Rang d'attaque du personnage
-     * @param capture Capacité à capture un village
-     * @param stats Stats du personnage
      */
-    public Character(String name, Faction faction, Type type, int cost, int range, boolean capture, Stats stats) {
+    public Character(String name, Faction faction, Type type, int movementCost, Movement.Type movement) {
 
-        super(name, type);
+        super(name,type,movementCost,movement);
         this.faction = faction;
-        this.cost = cost;
-        this.range = range;
-        this.capture = capture;
-        this.stats = stats;
+        this.stats = new Stats();
 
     }
 
     /**
-     * getter pour la faction
+     * getter et setters pour la faction
      * @return faction du personnage
      */
     public Faction getFaction() {
@@ -46,32 +28,101 @@ public class Character extends Entity {
     }
 
     public int getCost() {
-        return cost;
+        return this.stats.cost;
     }
 
     public int getRange() {
-        return range;
-    }
-
-    public boolean isCapture() {
-        return capture;
+        return this.stats.range;
     }
 
     public Stats getStats() {
         return stats;
     }
 
-    /*
-     * Quelques fonctions de bases pour les personnages
-     */
-
-    public boolean isAlive () {
-        return (stats.getHealth() > 0);
+    public double getHealth() {
+        return this.stats.health;
     }
 
-    public boolean attack (Character ch) {
-        if (!this.isAlive() || !ch.isAlive()) return false;
-        ch.stats.setHealth(ch.stats.getHealth()-(ch.stats.getDefense()*this.stats.getAttack()/100));
-        return true;
+    public double getAttack() {
+        return this.stats.health;
     }
+
+    public double getDefense() {
+        return this.stats.defense;
+    }
+
+    public void setHealth(double health) {
+        this.stats.health = health;
+    }
+
+    public void setAttack(double attack) {
+        this.stats.attack = attack;
+    }
+
+    public void setDefense(double defense) {
+        this.stats.defense = defense;
+    }
+
+    public void setCapture(boolean capture) {
+        this.stats.capture = capture;
+    }
+
+    public void setSight (int sight) {
+        this.stats.sight = sight;
+    }
+
+    public void setRange (int range) {
+        this.stats.range = range;
+    }
+
+    public void setCost (int cost) {
+        this.stats.cost = cost;
+    }
+
+    protected static class Stats {
+
+        public double health; //up to 100
+        public double attack;
+        public double defense; //pourcentage 0 to 100
+        public boolean capture; // true = yes, false = no
+        public int sight;
+        public int range;
+        public int cost;
+
+        public Stats() {
+            this.health = 0;
+            this.attack = 0;
+            this.defense = 0;
+            this.capture = false;
+            this.sight = 0;
+            this.range = 0;
+            this.cost = 0;
+        }
+
+        /**
+         * Constructeur pour les stats d'un personnage
+         * //@param health Total de vie
+         * //@param attack Attaque du personnage
+         * //@param cost Prix du personnage (monnaie du jeu)
+         * //@param range Rang d'attaque du personnage
+         * //@param defense Pourcentage qui réduit l'attaque du personnage attaquant
+         * //@param sight Vue du personnage
+         * //@param capture Capacité à capture un village
+         */
+
+
+        /*
+        public Stats (double health, double attack, double defense, int sight, int cost, Movement movement, int range) {
+            this.health = health;
+            this.attack = attack;
+            this.defense = defense;
+            this.sight = sight;
+            this.cost = cost;
+            this.range = range;
+            this.movement = movement;
+        }
+        */
+
+    }
+
 }
