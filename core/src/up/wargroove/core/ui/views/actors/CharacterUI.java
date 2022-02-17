@@ -6,36 +6,35 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.ui.views.objects.MapTile;
 import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.utils.Pair;
+import com.badlogic.gdx.graphics.g2d.Animation;
+
 
 import java.io.File;
-import java.util.Random;
+import java.util.ArrayList;
 
 public class CharacterUI extends Actor {
-    Texture texture;
     Sprite sprite;
     GameMap gameMap;
     GameView gameView;
     Pair<Integer, Integer> coordinate;
-    int coordX;
-    int coordY;
     MapTile tile;
     Character character;
+    //Animation animation;
+    float temps;
+    ArrayList<Integer> move= new ArrayList<>();
 
-
-    private static String getPath() {
-        // return "data/sprites/character/" + character.getTypeUnit + File.separatorChar + character.getFaction + File.separatorChar+ fileName;
-        return "data/sprites/character/" + "GROUND" + File.separatorChar + "VILLAGER" + File.separatorChar + "1" + File.separatorChar + "DIE" + File.separatorChar +"tile260.png";
+    private Texture getPath(String nameFile) {
+        return new Texture((Gdx.files.internal("data/sprites/character/" + character.getType().component + "/" + character.getType() + "/" + character.getFaction() + "/" + nameFile)));
 
     }
 
@@ -45,9 +44,6 @@ public class CharacterUI extends Actor {
     }
 */
 
-    public Texture getTexture() {
-        return texture;
-    }
 /*
     public CharacterUI(){
         this.texture= new Texture((Gdx.files.internal("data/sprites/character/test.png")));
@@ -75,45 +71,17 @@ public class CharacterUI extends Actor {
      */
 
 
-    public CharacterUI(GameMap gameMap, GameView view, Pair<Integer, Integer> coord, Character character){
-        this.gameMap= gameMap;
-        this.gameView = view;
-        this.character= character;
-        gameMap.getWorld().addEntity(coord,character);
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/LIFE.png")));
-        this.sprite= new Sprite(texture);
-        sprite.setSize(20,30);
-        this.coordinate= coord;
-        this.tile= (MapTile) gameMap.getTileLayer().getCell(coordinate.first,coordinate.second).getTile();
-
-/*
-        //gameMap.getLayers().get(0).getOffsetY()
-        this.setTouchable(Touchable.enabled);
-
-
-        addListener(new InputListener(){
-            public boolean move() {
-                if (Gdx.input.isTouched()) {
-                    MoveByAction mba = new MoveByAction();
-                    mba.setAmount(sprite.getX() + Gdx.input.getX(), sprite.getY() + Gdx.input.getY());
-                    mba.setDuration(5f);
-                    CharacterUI.this.addAction(mba);
-                }
-                return true;
-            }
-        });
-*/
-    }
-
-    public CharacterUI(GameMap gameMap, GameView view, int x, int y, String faction) {
+    public CharacterUI(GameMap gameMap, GameView view, Pair<Integer, Integer> coord, Character character) {
         this.gameMap = gameMap;
         this.gameView = view;
-        this.texture = new Texture((Gdx.files.internal("data/sprites/character/GROUND/VILLAGER/" + faction + "/DIE/tile260.png")));
-        this.sprite = new Sprite(texture);
-        sprite.setSize(20, 30);
-        tile = (MapTile) gameMap.getTileLayer().getCell(x, y).getTile();
-        coordX = x * gameMap.getTileWidth();
-        coordY = y * gameMap.getTileHeight();
+        this.character = character;
+        this.coordinate = coord;
+        gameMap.getWorld().addEntity(coord, character);
+        this.sprite = new Sprite(getPath("LIFE.png"));
+        //sprite.setSize(260,30);
+        sprite.setSize(20,30);
+        //animation(8);
+        this.tile = (MapTile) gameMap.getTileLayer().getCell(coordinate.first, coordinate.second).getTile();
     }
 
         @Override
@@ -124,12 +92,6 @@ public class CharacterUI extends Actor {
 
 
 
-
-    public CharacterUI(CharacterType characterType){
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/test.png")));
-        this.setTouchable(Touchable.enabled);
-    }
-
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -138,69 +100,137 @@ public class CharacterUI extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         //sprite.setScale(gameMap.getScale());
-        sprite.setPosition(coordX,coordY);
+        //sprite= (Sprite) animation.getKeyFrame(parentAlpha);
+        move();
         sprite.draw(batch);
         super.draw(batch,parentAlpha);
         //batch.draw(texture, Gdx.graphics.getWidth() / 2f,Gdx.graphics.getHeight() / 2f);
     }
 
 
-    public static Table createActors(GameMap gameMap, GameView view, int nb){
-        Table table = new Table();
-        for (int i= 0;i< nb;i++ ){
-            table.add(new CharacterUI(gameMap,view, i, i, Integer.toString((i%4)+1)));
-        }
-        return table;
-    }
+
 
     /* Tests with actions
 
-   Problemes: Ça ne lis pas les actions, voir act() normalement à mettre sur le renderer
-                Si après on change les coordonnées ça n'utilise pas les actions, donc si on utilise actions, apres on va pas pouvoir modifier les coords??
+   Problemes avec Action: Ça ne lis pas les actions, voir act() normalement à mettre sur le renderer
     * */
 
     public void moveNorth(){
-        this.addAction(Actions.moveBy( 0,gameMap.getTileHeight(),5));
+        move.add(0);
+        /*
+        this.addAction(Actions.moveBy( coordinate.first*gameMap.getTileWidth(),gameMap.getTileHeight()+coordinate.second*gameMap.getTileHeight(),5f));
         this.addAction(Actions.color(Color.RED));
-        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile008.png"))));
-        coordY+= gameMap.getTileHeight();
+        this.sprite.setTexture(getPath("MOVE/tile008.png"));
+        */
 
     }
 
     public void moveEast(){
+        move.add(1);
+        /*
         MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile011.png"))));
+        this.sprite.setTexture(getPath("MOVE/tile011.png"));
         mba.setDuration(5f);
         mba.setAmount( gameMap.getTileWidth(),0);
         this.addAction(mba);
-        coordY+= gameMap.getTileWidth();
-
+*/
     }
 
     public void moveSouth(){
+        move.add(2);
+        /*
         MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile010.png"))));
+        this.sprite.setTexture(getPath("MOVE/tile010.png"));
         mba.setDuration(5f);
         mba.setAmount( 0,-gameMap.getTileHeight());
         this.addAction(mba);
-        coordY-= gameMap.getTileHeight();
-
+        */
     }
 
     public void moveWest(){
+        move.add(3);
+
+        /*
         MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"/MOVE/tile009.png"))));
+        this.sprite.setTexture(getPath("MOVE/tile009.png"));
         mba.setDuration(5f);
         mba.setAmount( -gameMap.getTileWidth(),0);
         this.addAction(mba);
-        coordY-= gameMap.getTileWidth();
-
+*/
     }
 
     public void die(){
-        this.sprite.setTexture(new Texture((Gdx.files.internal("data/sprites/character/"+ character.getType().component + "/"+ character.getType()+"/" + character.getFaction() +"DIE.png"))));
-
+        this.sprite.setTexture(getPath("DIE.png"));
     }
+
+    public void move(){
+        if (move.isEmpty()){
+            return;
+        }
+        if (temps<20){
+            temps+=0.25f;
+        }
+        switch (move.get(0)){
+            case 0: caseNorth(); return;
+            case 1: caseEast(); return;
+            case 2: caseSouth(); return;
+            case 3: caseWest(); return;
+        }
+    }
+
+    private void caseNorth(){
+        sprite.setPosition(coordinate.first*gameMap.getTileWidth(),coordinate.second*gameMap.getTileHeight()+temps);
+        if (temps==20){
+            temps=0;
+            coordinate.second++;
+            move.remove(0);
+        }
+    }
+
+    private void caseEast(){
+        sprite.setPosition(coordinate.first*gameMap.getTileWidth()+temps,coordinate.second*gameMap.getTileHeight());
+        if (temps==20){
+            temps=0;
+            coordinate.first++;
+            move.remove(0);
+        }
+    }
+
+    private void caseSouth(){
+        sprite.setPosition(coordinate.first*gameMap.getTileWidth(),coordinate.second*gameMap.getTileHeight()-temps);
+        if (temps==20){
+            temps=0;
+            coordinate.second--;
+            move.remove(0);
+        }
+    }
+
+    private void caseWest(){
+        sprite.setPosition(coordinate.first*gameMap.getTileWidth()-temps,coordinate.second*gameMap.getTileHeight());
+        if (temps==20){
+            temps=0;
+            coordinate.first--;
+            move.remove(0);
+        }
+    }
+
+
+
+    /**
+     * Create the animation accordig with the texture you want to show
+     * @param nbOfFrames
+     * DOESNT WORK
+     */
+
+    /*
+    public void animation(int nbOfFrames){
+        TextureRegion [][] tmp = TextureRegion.split(sprite.getTexture(), sprite.getTexture().getWidth()/nbOfFrames,30);
+        TextureRegion [] move= new TextureRegion[nbOfFrames];
+        for (int i=0; i<nbOfFrames; i++) move[1]= tmp[0][i];
+        animation= new Animation(0.25f,move);
+    }
+    */
+
 
 
 }
