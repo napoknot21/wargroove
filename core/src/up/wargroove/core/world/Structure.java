@@ -16,17 +16,6 @@ public abstract class Structure {
 
     }
 
-    enum Type {
-
-        NULL,
-        VILLAGE,
-        STRONGHOLD,
-        BARRACK,
-        TOWER,
-        PORT,
-        HIDEOUT
-
-    }
-
+    public interface Type {}
 
 }
