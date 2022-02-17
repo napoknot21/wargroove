@@ -243,6 +243,7 @@ public class Assets {
      * List the assets directories and their manifest.
      */
     public enum AssetDir {
+        // TODO: 17/02/2022 Find a way to improve the assets management with the characters sprites
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
         SPRITES(DATA.path + "sprites" + fs),
         WORLD(SPRITES.path + "world" + fs, "test"),

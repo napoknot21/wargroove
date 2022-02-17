@@ -8,10 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -22,10 +19,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
-import up.wargroove.core.ui.views.objects.Biome;
-import up.wargroove.core.ui.views.objects.Cursor;
-import up.wargroove.core.ui.views.objects.GameMap;
-import up.wargroove.core.ui.views.objects.TileIndicator;
+import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -43,7 +37,8 @@ public class GameView extends View {
     private StretchViewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
-    private TileIndicator indicator;
+    private TileIndicator tileIndicator;
+    private UnitIndicator unitIndicator;
     private Stage gameViewUi;
 
     /**
@@ -65,6 +60,7 @@ public class GameView extends View {
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
         );
+        //getModel().getWorld().addEntity(new Pair<>(0,0),character);
         Table table = new Table();
         table.setFillParent(true);
         CharacterUI jaimito= new CharacterUI(gameMap, this, new Pair<>(0, 0), character);
@@ -99,13 +95,15 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        indicator = new TileIndicator(getAssets(), Biome.ICE);
+        tileIndicator = new TileIndicator(getAssets(), Biome.ICE);
+        unitIndicator = new UnitIndicator(getAssets(),Biome.ICE);
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
         Table table = new Table();
         table.setFillParent(true);
         gameViewUi.addActor(table);
-        table.add(indicator).pad(10).width(indicator.getWidth());
+        table.add(unitIndicator).pad(10).width(unitIndicator.getWidth());
+        table.add(tileIndicator).pad(10).width(tileIndicator.getWidth());
         table.bottom().right();
     }
 
@@ -124,7 +122,9 @@ public class GameView extends View {
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                indicator.setTexture(getAssets(), getController().setIndicator(vector));
+                Tile tile = getController().setIndicator(cursor.getWorldPosition());
+                tileIndicator.setTexture(getAssets(),tile);
+                unitIndicator.setTexture(getAssets(), tile);
                 return true;
             }
 
@@ -132,7 +132,9 @@ public class GameView extends View {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                indicator.setTexture(getAssets(), getController().setIndicator(vector));
+                Tile tile = getController().setIndicator(vector);
+                tileIndicator.setTexture(getAssets(),tile);
+                unitIndicator.setTexture(getAssets(), tile);
                 return true;
             }
 

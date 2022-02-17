@@ -1,6 +1,11 @@
 package up.wargroove.core.ui.views.actors;
 
 
+import com.badlogic.gdx.utils.Null;
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.ui.views.objects.TileType;
+import up.wargroove.core.world.Tile;
+import up.wargroove.utils.Log;
 
 public enum CharacterType {
         VILLAGER("villager"),

@@ -168,7 +168,6 @@ public class Controller {
      * @return the tile that will be displayed by the tile indicator.
      */
     public Tile setIndicator(Vector3 vector) {
-        vector.scl(1 / worldScale);
         return getModel().getTile(vector);
     }
 }

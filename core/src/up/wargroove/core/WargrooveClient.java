@@ -1,7 +1,10 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
@@ -48,8 +51,6 @@ public class WargrooveClient extends Game {
         scene = new MainMenu(controller.getModel(), this);
         setScreen(scene);
 
-
-        //setDebug(true);
     }
 
     @Override
