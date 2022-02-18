@@ -6,7 +6,6 @@ import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.functional.WPredicate;
-
 import java.util.*;
 
 public class World {
@@ -39,6 +38,7 @@ public class World {
 
         this.properties = properties;
         this.dimension = properties.dimension;
+        currentEntityLinPosition = Optional.empty();
 
 	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
 

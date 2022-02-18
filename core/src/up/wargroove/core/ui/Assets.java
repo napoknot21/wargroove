@@ -180,6 +180,10 @@ public class Assets {
         }
     }
 
+    public Texture getTest() {
+        return get(AssetDir.WORLD.getPath() + "test.png");
+    }
+
     /**
      * Gets the fileName's asset.
      *

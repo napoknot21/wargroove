@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.Vector;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
@@ -19,10 +20,16 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
-import up.wargroove.core.ui.views.objects.*;
+import up.wargroove.core.ui.views.objects.Biome;
+import up.wargroove.core.ui.views.objects.Cursor;
+import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.ui.views.objects.Movements;
+import up.wargroove.core.ui.views.objects.TileIndicator;
+import up.wargroove.core.ui.views.objects.UnitIndicator;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
+
 
 /**
  * Represent the game screen.
@@ -40,6 +47,11 @@ public class GameView extends View {
     private TileIndicator tileIndicator;
     private UnitIndicator unitIndicator;
     private Stage gameViewUi;
+    private boolean movement;
+    /**
+     * The current character possible movement.
+     */
+    private Movements possiblePosition;
 
     /**
      * Create the game screen.
@@ -56,6 +68,7 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
+        possiblePosition = new Movements();
         Character character = new Character(
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
@@ -63,7 +76,7 @@ public class GameView extends View {
         //getModel().getWorld().addEntity(new Pair<>(0,0),character);
         Table table = new Table();
         table.setFillParent(true);
-        CharacterUI jaimito= new CharacterUI(gameMap, this, new Pair<>(10, 10), character);
+        CharacterUI jaimito = new CharacterUI(gameMap, this, new Pair<>(10, 10), character);
         table.add(jaimito);
         addActor(table);
         jaimito.moveNorth();
@@ -100,7 +113,7 @@ public class GameView extends View {
      */
     private void initGameViewUI() {
         tileIndicator = new TileIndicator(getAssets(), Biome.ICE);
-        unitIndicator = new UnitIndicator(getAssets(),Biome.ICE);
+        unitIndicator = new UnitIndicator(getAssets(), Biome.ICE);
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
         Table table = new Table();
@@ -127,7 +140,7 @@ public class GameView extends View {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
                 Tile tile = getController().setIndicator(cursor.getWorldPosition());
-                tileIndicator.setTexture(getAssets(),tile);
+                tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 return true;
             }
@@ -136,9 +149,17 @@ public class GameView extends View {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                Tile tile = getController().setIndicator(vector);
-                tileIndicator.setTexture(getAssets(),tile);
+                Tile tile = getController().setIndicator(cursor.getWorldPosition());
+                tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
+                if (!movement) {
+                    getController().setScopeEntity(cursor.getWorldPosition());
+                    var vectors = getController().getMovementPossibilities();
+                    showPossibleMovement(vectors);
+                } else {
+                    movement = false;
+                    possiblePosition.reset();
+                }
                 return true;
             }
 
@@ -150,6 +171,16 @@ public class GameView extends View {
         };
         input.addProcessor(getStage());
         Gdx.input.setInputProcessor(input);
+    }
+
+    /**
+     * Shows the possible movements.
+     *
+     * @param vectors The list of movements coordinates
+     */
+    private void showPossibleMovement(Vector<Pair<Integer, Integer>> vectors) {
+        movement = true;
+        vectors.forEach(c -> possiblePosition.add(getAssets(), c));
     }
 
     @Override
@@ -176,6 +207,9 @@ public class GameView extends View {
         getBatch().end();
         getStage().draw();
         gameViewUi.draw();
+        if (movement) {
+            possiblePosition.draw(getBatch());
+        }
 
     }
 

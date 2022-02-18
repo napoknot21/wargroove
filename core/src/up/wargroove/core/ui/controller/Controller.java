@@ -2,18 +2,18 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import java.util.Vector;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.core.ui.views.scenes.WorldSetting;
 import up.wargroove.core.world.Tile;
-import up.wargroove.utils.Log;
+import up.wargroove.core.world.World;
+import up.wargroove.utils.Pair;
+
 
 /**
  * A basic gui controller.
@@ -160,8 +160,8 @@ public class Controller {
         v = camera.unproject(v);
         int x = (v.x < 0) ? 0 : (int) (v.x - v.x % worldScale);
         int y = (v.y < 0) ? 0 : (int) (v.y - v.y % worldScale);
-        int first = (getModel().getWorld().getDimension().first - 1) * 20;
-        int second = (getModel().getWorld().getDimension().second - 1) * 20;
+        int first = (getWorld().getDimension().first - 1) * 20;
+        int second = (getWorld().getDimension().second - 1) * 20;
         x = Math.min(first, x);
         y = Math.min(second, y);
         v.set(x, y, 0);
@@ -176,5 +176,38 @@ public class Controller {
      */
     public Tile setIndicator(Vector3 vector) {
         return getModel().getTile(vector);
+    }
+
+    /**
+     * Gets the scoped character possibles movements.
+     *
+     * @return A vector of all the possible movements in world screen coordinate.
+     */
+    public Vector<Pair<Integer, Integer>> getMovementPossibilities() {
+        Vector<Integer> valids = getWorld().validMovements();
+        Vector<Pair<Integer, Integer>> vectors = new Vector<>();
+        valids.forEach(v -> {
+            Pair<Integer, Integer> coord = World.intToCoordinates(v, getWorld().getDimension());
+            vectors.add(new Pair<>((int) (coord.first * worldScale), (int) (coord.second * worldScale)));
+        });
+        return vectors;
+    }
+
+    /**
+     * Scope the entity at the vector position into the world.
+     *
+     * @param vector The entity coordinate in world terrain coordinate.
+     */
+    public void setScopeEntity(Vector3 vector) {
+        getWorld().scopeEntity(new Pair<>((int) vector.x, (int) vector.y));
+    }
+
+    /**
+     * Gets the world.
+     *
+     * @return The model's world
+     */
+    public World getWorld() {
+        return getModel().getWorld();
     }
 }
