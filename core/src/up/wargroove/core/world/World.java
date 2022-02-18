@@ -20,7 +20,7 @@ public class World {
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
-        Tile toTile = terrain[k[Constants.WG_ZERO]];	
+        Tile toTile = terrain[k[Constants.WG_ZERO]];
 
         if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
@@ -42,7 +42,7 @@ public class World {
 
 	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
 
-        turn = 1; 
+        turn = 1;
 
     }
 
@@ -128,6 +128,21 @@ public class World {
 
     }
 
+    public boolean delEntity(int linCoordinate, Entity entity) {
+
+        Tile spawnTile = terrain[linCoordinate];
+        terrain[linCoordinate].entity = Optional.empty();
+        return true;
+
+    }
+
+    public boolean delEntity(Pair<Integer, Integer> coordinate, Entity entity) {
+
+        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        return delEntity(linCoordinate, entity);
+
+    }
+
     /**
      * Vérouille l'accès sur l'entité courrante
      *
@@ -199,7 +214,7 @@ public class World {
         Vector<Integer> res = new Vector<>();
 
 	if(predicate == null) return res;
-	
+
 	Entity entity    = terrain[root].entity.get();
 	Entity.Type type = entity.getType();
 
@@ -208,7 +223,7 @@ public class World {
 
 	var rootElement = new Pair<>(root, movementCost);
 
-	emp.add(rootElement);	 
+	emp.add(rootElement);
 
         while (emp.size() > 0) {
 
@@ -217,7 +232,7 @@ public class World {
 
             for (Integer lin : adjacent) {
 
-                if (checked.containsKey(lin)) continue; 
+                if (checked.containsKey(lin)) continue;
 
                 if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
 
@@ -229,7 +244,7 @@ public class World {
 
 		checked.put(lin, movementCost >= 0);
 
-            } 
+            }
 
         }
 
@@ -313,7 +328,7 @@ public class World {
         return dimension.first * co.second + co.first;
 
     }
-    
+
     @Override
     public String toString() {
 

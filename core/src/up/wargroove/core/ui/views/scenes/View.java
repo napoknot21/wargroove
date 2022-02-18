@@ -141,4 +141,12 @@ public abstract class View extends ScreenAdapter {
         return wargroove.getAssets();
     }
 
+    /**
+     * Puts the view in debug mode.
+     *
+     * @param debug if true, the app is in debug mode
+     */
+    public void setDebug(boolean debug) {
+        ui.setDebugAll(debug);
+    }
 }

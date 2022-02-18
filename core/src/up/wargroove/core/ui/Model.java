@@ -1,6 +1,8 @@
 package up.wargroove.core.ui;
 
+import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.world.GeneratorProperties;
+import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.Pair;
@@ -27,6 +29,9 @@ public class Model {
      * Start a new game.
      */
     public void startGame() {
+        if (world != null) {
+            return;
+        }
         properties = new WorldProperties();
         properties.dimension = new Pair<>(20, 20);
         properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
@@ -58,5 +63,16 @@ public class Model {
         isActive = false;
     }
 
+    /**
+     * Gets the tile at the given vector.
+     *
+     * @param vector The tile position.
+     * @return The tile indicated by the vector.
+     */
+    public Tile getTile(Vector3 vector) {
 
+        int x = (vector.x < 0) ? 0 : (int) Math.min(world.getDimension().first - 1, vector.x);
+        int y = (vector.y < 0) ? 0 : (int) Math.min(world.getDimension().second - 1, vector.y);
+        return world.at(x, y);
+    }
 }
