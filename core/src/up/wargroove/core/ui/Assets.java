@@ -137,6 +137,9 @@ public class Assets {
      * @param manifest The manifest name with extension
      */
     private void fileLoader(String dirPath, String manifest) {
+        if (manifest.isBlank()) {
+            return;
+        }
         try {
             FileHandle fileLoader = Gdx.files.internal(dirPath + fs + manifest);
             Scanner scanner = new Scanner(fileLoader.read());
@@ -162,10 +165,12 @@ public class Assets {
      * @param dir The constant linked to an asset dir.
      */
     private void fileLoader(AssetDir dir) {
-        if (dir.manifest.isBlank()) {
+        if (dir.manifest == null) {
             return;
         }
-        fileLoader(dir.path, dir.manifest);
+        for (String s : dir.manifest) {
+            fileLoader(dir.path, s);
+        }
     }
 
     private void loadSkin(String dirPath, Scanner scanner) {
@@ -246,6 +251,7 @@ public class Assets {
         // TODO: 17/02/2022 Find a way to improve the assets management with the characters sprites
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
         SPRITES(DATA.path + "sprites" + fs),
+        ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice");
@@ -253,11 +259,16 @@ public class Assets {
         // TODO : remplir mes chemins menant au repertoire et leur manifest pour charger les donnees
 
         private final String path;
-        private final String manifest;
+        private final String[] manifest;
 
-        AssetDir(String path, String manifest) {
+        AssetDir(String path, String... manifest) {
             this.path = path;
-            this.manifest = manifest + ((!manifest.isBlank()) ? asmext : "");
+            this.manifest = manifest;
+            if (manifest != null) {
+                for (int i = 0; i < manifest.length; i++) {
+                    manifest[i] += asmext;
+                }
+            }
         }
 
         AssetDir(String path) {
@@ -268,7 +279,7 @@ public class Assets {
             return path;
         }
 
-        public String getManifest() {
+        public String[] getManifest() {
             return manifest;
         }
     }
