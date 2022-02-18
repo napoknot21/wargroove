@@ -36,7 +36,7 @@ public class CharacterUI extends Actor {
 
 
     private Texture getPath(String nameFile) {
-        return new Texture((Gdx.files.internal("data/sprites/character/" + character.getType().component + "/" + character.getType() + "/" + character.getFaction() + "/" + nameFile)));
+        return new Texture((Gdx.files.internal("data/sprites/character/" + character.getType().movement.component + "/" + character.getType() + "/" + character.getFaction() + "/" + nameFile)));
 
     }
 

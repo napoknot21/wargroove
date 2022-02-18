@@ -29,6 +29,9 @@ public class Model {
      * Start a new game.
      */
     public void startGame() {
+        if (world != null) {
+            return;
+        }
         properties = new WorldProperties();
         properties.dimension = new Pair<>(20, 20);
         properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);

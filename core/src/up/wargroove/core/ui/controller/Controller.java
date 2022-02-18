@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.WorldSetting;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 
@@ -84,6 +85,12 @@ public class Controller {
         GameView view = new GameView(model, this, getClient());
         this.getClient().setScreen(view);
         worldScale = view.getGameMap().getScale();
+    }
+
+    public void openSettings() {
+        Model model = getModel();
+        getClient().getAssets().load();
+        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
     }
 
     public Model getModel() {
