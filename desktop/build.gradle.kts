@@ -7,19 +7,12 @@ tasks.withType<Jar> {
 
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-	from(files(sourceSets["main"].output.classesDirs))
-	from(files(sourceSets["main"].output.resourcesDir))
-
-	configurations["compileClasspath"].forEach { file: File ->
-        	if(file.isDirectory) {
-			from(file)
-		} else {
-			from(zipTree(file.absoluteFile))
-    		}
-	}	
-
+	dependsOn(configurations.runtimeClasspath)
+	from (
+	configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+	)
 	manifest {
-		attributes["Main-Class"] = "up.wargroove.desktop.WargrooveLauncher"
+		attributes["Main-Class"] = application.mainClass
 	}
 
 }
