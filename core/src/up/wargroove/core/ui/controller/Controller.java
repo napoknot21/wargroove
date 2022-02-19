@@ -5,7 +5,9 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
+
 import java.util.Vector;
+
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
@@ -181,14 +183,14 @@ public class Controller {
     /**
      * Gets the scoped character possibles movements.
      *
-     * @return A vector of all the possible movements in world screen coordinate.
+     * @return A vector of all the possible movements in world terrain coordinate.
      */
     public Vector<Pair<Integer, Integer>> getMovementPossibilities() {
         Vector<Integer> valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         valids.forEach(v -> {
             Pair<Integer, Integer> coord = World.intToCoordinates(v, getWorld().getDimension());
-            vectors.add(new Pair<>((int) (coord.first * worldScale), (int) (coord.second * worldScale)));
+            vectors.add(new Pair<>(coord.first, coord.second));
         });
         return vectors;
     }

@@ -11,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import java.util.Vector;
+
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
@@ -20,12 +22,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
-import up.wargroove.core.ui.views.objects.Biome;
-import up.wargroove.core.ui.views.objects.Cursor;
-import up.wargroove.core.ui.views.objects.GameMap;
-import up.wargroove.core.ui.views.objects.Movements;
-import up.wargroove.core.ui.views.objects.TileIndicator;
-import up.wargroove.core.ui.views.objects.UnitIndicator;
+import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -52,6 +49,7 @@ public class GameView extends View {
      * The current character possible movement.
      */
     private Movements possiblePosition;
+    private MovementSelection movementSelection;
 
     /**
      * Create the game screen.
@@ -68,7 +66,8 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
-        possiblePosition = new Movements();
+        possiblePosition = new Movements(gameMap.getScale());
+        movementSelection = new MovementSelection(gameMap.getScale());
         Character character = new Character(
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
@@ -142,6 +141,9 @@ public class GameView extends View {
                 Tile tile = getController().setIndicator(cursor.getWorldPosition());
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
+                if (movement) {
+                    movementSelection.add(getAssets(), cursor.getWorldPosition());
+                }
                 return true;
             }
 
@@ -156,9 +158,11 @@ public class GameView extends View {
                     getController().setScopeEntity(cursor.getWorldPosition());
                     var vectors = getController().getMovementPossibilities();
                     showPossibleMovement(vectors);
+                    movementSelection.setInitialPosition(cursor.getWorldPosition());
                 } else {
                     movement = false;
                     possiblePosition.reset();
+                    movementSelection.reset();
                 }
                 return true;
             }
@@ -209,6 +213,7 @@ public class GameView extends View {
         gameViewUi.draw();
         if (movement) {
             possiblePosition.draw(getBatch());
+            movementSelection.draw(getBatch());
         }
 
     }
