@@ -48,8 +48,7 @@ public class GameView extends View {
     /**
      * The current character possible movement.
      */
-    private Movements possiblePosition;
-    private MovementSelection movementSelection;
+    private MovementSelector movementSelector;
 
     /**
      * Create the game screen.
@@ -66,8 +65,7 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
-        possiblePosition = new Movements(gameMap.getScale());
-        movementSelection = new MovementSelection(gameMap.getScale());
+        movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
@@ -142,7 +140,7 @@ public class GameView extends View {
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 if (movement) {
-                    movementSelection.add(getAssets(), cursor.getWorldPosition());
+                    movementSelector.add(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
             }
@@ -158,11 +156,10 @@ public class GameView extends View {
                     getController().setScopeEntity(cursor.getWorldPosition());
                     var vectors = getController().getMovementPossibilities();
                     showPossibleMovement(vectors);
-                    movementSelection.setInitialPosition(cursor.getWorldPosition());
+                    movementSelector.setInitialPosition(cursor.getWorldPosition());
                 } else {
                     movement = false;
-                    possiblePosition.reset();
-                    movementSelection.reset();
+                    movementSelector.reset();
                 }
                 return true;
             }
@@ -184,7 +181,7 @@ public class GameView extends View {
      */
     private void showPossibleMovement(Vector<Pair<Integer, Integer>> vectors) {
         movement = true;
-        vectors.forEach(c -> possiblePosition.add(getAssets(), c));
+        vectors.forEach(c -> movementSelector.addValids(getAssets(), c));
     }
 
     @Override
@@ -212,8 +209,7 @@ public class GameView extends View {
         getStage().draw();
         gameViewUi.draw();
         if (movement) {
-            possiblePosition.draw(getBatch());
-            movementSelection.draw(getBatch());
+            movementSelector.draw(getBatch());
         }
 
     }
