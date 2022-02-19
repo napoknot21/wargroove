@@ -19,6 +19,7 @@ public class MovementSelector {
     private final StringBuilder path;
     private int initX;
     private int initY;
+    private int cost;
     /**
      * Index that point to the last used sprite.
      */
@@ -36,6 +37,7 @@ public class MovementSelector {
         movements = new ArrayList<>();
         initX = 0;
         initY = 0;
+        cost = 0;
     }
 
     /**
@@ -54,8 +56,56 @@ public class MovementSelector {
      * @param assets The app assets.
      * @param v      The step coordinates.
      */
-    public void add(Assets assets, Vector3 v) {
-        add(assets, new Pair<>((int) v.x, (int) v.y));
+    public void addMovement(Assets assets, Vector3 v) {
+        this.addMovement(assets, new Pair<>((int) v.x, (int) v.y));
+    }
+
+    /**
+     * Add a new step on the movement path.
+     *
+     * @param assets The app assets.
+     * @param coord      The step coordinates.
+     */
+    public void addMovement(Assets assets, Pair<Integer, Integer> coord) {
+        if (!isValid(coord)) {
+            movements.clear();
+        }
+        if (movements.size() > cost) {
+            addDefaultMovement(assets, coord);
+        } else {
+            addMovementList(assets, coord);
+        }
+    }
+
+    private void addDefaultMovement(Assets assets, Pair<Integer, Integer> coord) {
+        int dx = coord.first - initX;
+        int dy = coord.second - initY;
+        Pair<Integer, Integer> init = new Pair<>(initX, initY);
+        movements.clear();
+        var c = getDefaultPath(assets, init, dx, true);
+        getDefaultPath(assets, c, dy, false);
+    }
+
+    private Pair<Integer, Integer> getDefaultPath(Assets assets, Pair<Integer, Integer> coord, int delta, boolean h) {
+        boolean neg = delta < 0;
+        for (int i = 1; i < Math.abs(delta); i++) {
+            if (h) {
+                coord.first += (neg) ? -i : i;
+            } else {
+                coord.second += (neg) ? -i : i;
+            }
+            addMovementList(assets, coord);
+        }
+        return coord;
+    }
+
+    private boolean isValid(Pair<Integer, Integer> coord) {
+        for (int i = 0; i < index; i++) {
+            if (valid.get(i).second.equals(coord)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -64,13 +114,14 @@ public class MovementSelector {
      * @param assets The app assets.
      * @param coord  The step coordinates.
      */
-    public void add(Assets assets, Pair<Integer, Integer> coord) {
+    private void addMovementList(Assets assets, Pair<Integer, Integer> coord) {
         String d = direction(coord);
         if (d.isBlank()) {
             return;
         }
+        path.append(d);
         if (d.length() > 1) {
-            add(assets, d);
+            addMovementList(assets, d);
         } else {
             Sprite sprite = new Sprite(getArrow(assets, d.charAt(0)));
             sprite.setPosition(coord.first * worldScale, coord.second * worldScale);
@@ -84,7 +135,7 @@ public class MovementSelector {
      * @param assets The app assets
      * @param d      the path.
      */
-    private void add(Assets assets, String d) {
+    private void addMovementList(Assets assets, String d) {
         if (d.isBlank()) {
             return;
         }
@@ -95,6 +146,41 @@ public class MovementSelector {
             movements.add(new Pair<>(sprite, c));
         }
     }
+
+    /**
+     * Add a new sprite to the list if all the sprites are already used
+     * else it will take a free sprite.
+     *
+     * @param assets The app assets
+     * @param coord  The sprites coordinates
+     */
+    public void addValids(Assets assets, Pair<Integer, Integer> coord) {
+        addValids(assets.getTest(), coord);
+    }
+
+    /**
+     * Add a new sprite to the list if all the sprites are already used
+     * else it will take a free sprite.
+     *
+     * @param texture The sprite texture.
+     * @param coord   The sprites coordinates
+     */
+    public void addValids(Texture texture, Pair<Integer, Integer> coord) {
+        int x = (int) (coord.first * worldScale);
+        int y = (int) (coord.second * worldScale);
+        if (index < valid.size()) {
+            var tmp = valid.get(index);
+            tmp.first.setPosition(x, y);
+            tmp.second = coord;
+            index++;
+            return;
+        }
+        index++;
+        Sprite sprite = new Sprite(texture);
+        sprite.setPosition(x, y);
+        valid.add(new Pair<>(sprite, coord));
+    }
+
 
     /**
      * Gets the next coordinate according to the next direction.
@@ -195,9 +281,10 @@ public class MovementSelector {
      *
      * @param v the unit coordinates in world terrain coordinates.
      */
-    public void setInitialPosition(Vector3 v) {
+    public void setEntityInformation(Vector3 v, int cost) {
         initX = (int) v.x;
         initY = (int) v.y;
+        this.cost = cost;
     }
 
     /**
@@ -205,9 +292,10 @@ public class MovementSelector {
      *
      * @param coord the unit coordinates in world terrain coordinates.
      */
-    public void setInitialPosition(Pair<Integer, Integer> coord) {
+    public void setEntityInformation(Pair<Integer, Integer> coord, int cost) {
         initX = coord.first;
         initY = coord.second;
+        this.cost = cost;
     }
 
     /**
@@ -246,39 +334,4 @@ public class MovementSelector {
     public String getPath() {
         return path.toString();
     }
-
-    /**
-     * Add a new sprite to the list if all the sprites are already used
-     * else it will take a free sprite.
-     *
-     * @param assets The app assets
-     * @param coord  The sprites coordinates
-     */
-    public void addValids(Assets assets, Pair<Integer, Integer> coord) {
-        addValids(assets.getTest(), coord);
-    }
-
-    /**
-     * Add a new sprite to the list if all the sprites are already used
-     * else it will take a free sprite.
-     *
-     * @param texture The sprite texture.
-     * @param coord   The sprites coordinates
-     */
-    public void addValids(Texture texture, Pair<Integer, Integer> coord) {
-        int x = (int) (coord.first * worldScale);
-        int y = (int) (coord.second * worldScale);
-        if (index < valid.size()) {
-            var tmp = valid.get(index);
-            tmp.first.setPosition(x, y);
-            tmp.second = coord;
-            index++;
-            return;
-        }
-        index++;
-        Sprite sprite = new Sprite(texture);
-        sprite.setPosition(x, y);
-        valid.add(new Pair<>(sprite, coord));
-    }
-
 }

@@ -140,7 +140,7 @@ public class GameView extends View {
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 if (movement) {
-                    movementSelector.add(getAssets(), cursor.getWorldPosition());
+                    movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
             }
@@ -156,7 +156,9 @@ public class GameView extends View {
                     getController().setScopeEntity(cursor.getWorldPosition());
                     var vectors = getController().getMovementPossibilities();
                     showPossibleMovement(vectors);
-                    movementSelector.setInitialPosition(cursor.getWorldPosition());
+                    movementSelector.setEntityInformation(
+                            cursor.getWorldPosition(), getController().getScopedEntityMovementCost()
+                    );
                 } else {
                     movement = false;
                     movementSelector.reset();

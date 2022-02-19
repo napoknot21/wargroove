@@ -8,7 +8,10 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.util.Vector;
 
+import com.badlogic.gdx.utils.Null;
+import org.lwjgl.Sys;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.core.ui.views.scenes.WorldSetting;
@@ -211,5 +214,14 @@ public class Controller {
      */
     public World getWorld() {
         return getModel().getWorld();
+    }
+
+    public @Null Entity getScopedEntity() {
+        return getWorld().getScopedEntity();
+    }
+
+    public int getScopedEntityMovementCost() {
+        Entity entity = getScopedEntity();
+        return (entity == null) ? 0 : entity.getType().movementCost;
     }
 }

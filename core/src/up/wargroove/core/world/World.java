@@ -1,5 +1,6 @@
 package up.wargroove.core.world;
 
+import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
@@ -290,6 +291,14 @@ public class World {
 
         return dimension;
 
+    }
+
+    @Null
+    public Entity getScopedEntity(){
+        if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {
+            return null;
+        }
+        return terrain[currentEntityLinPosition.get()].entity.get();
     }
 
     /**
