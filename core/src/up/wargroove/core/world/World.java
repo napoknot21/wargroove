@@ -220,8 +220,8 @@ public class World {
 	Entity entity    = terrain[root].entity.get();
 	Entity.Type type = entity.getType();
 
-	int movementId   = type.movement.id;
-	int movementCost = type.movementCost;
+	int movementId   = entity.getMovement().id;
+	int movementCost = entity.getRange();
 
 	var rootElement = new Pair<>(root, movementCost);
 

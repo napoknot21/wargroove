@@ -2,8 +2,10 @@ package up.wargroove.core.character;
 
 public abstract class Character extends Entity {
 
+    protected String name;
+
     private Faction faction;
-    private Stats stats;
+    protected Stats stats; 
 
     /**
      * Constructeur pour Character
@@ -11,11 +13,14 @@ public abstract class Character extends Entity {
      * @param faction Faction du personnage
      * @param type Type d'unité du personnage
      */
-    public Character(String name, Faction faction, Type type, int movementCost, Movement.Type movement) {
+    public Character(String name, Entity.Type type, Faction faction) {
 
-        super(name,type,movementCost,movement);
+        super(type);
+
+	this.name = name;
         this.faction = faction;
-        this.stats = new Stats();
+
+        stats = new Stats();
 
     }
 

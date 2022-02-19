@@ -45,7 +45,9 @@ public class EntityManager {
 					"." + 
 					typeStr.charAt(0) + 
 					typeStr.substring(1, typeStr.length()).toLowerCase();
-	
+
+				Log.print("Refléxion sur " + fmt);
+
 				Class<Entity> subClass = (Class<Entity>) Class.forName(fmt);
 				entitySubClasses.add(subClass);
 
@@ -56,7 +58,7 @@ public class EntityManager {
 				Entity e = instantiate(subClass);
 				if(e == null) throw new Exception();
 
-				Movement mov = e.getType().movement;
+				Movement mov = e.movement;
 
 				switch(mov.component) {
 
@@ -103,6 +105,7 @@ public class EntityManager {
 		
 		} catch(Exception e) {
 
+			e.printStackTrace();
 			Log.print(Log.Status.ERROR, "Erreur lors de l'instantiation!");
 
 		}

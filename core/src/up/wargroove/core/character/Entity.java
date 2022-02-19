@@ -1,25 +1,26 @@
 package up.wargroove.core.character;
 
 public abstract class Entity {
-
-    protected String name;
+ 
     protected Type type;
-    public int movementCost;
-    protected Movement.Type movement;
+
+    protected Movement movement;
+    protected int movRange;
 
     /**
      * constructeur pour Entity
      * @param name Nom de l'entité
      * @param type Type d'unité de l'entité
      */
-    protected Entity(String name, Type type, int movementCost, Movement.Type movement) {
+    protected Entity(Type type) {
 
-        this.name = name;
         this.type = type;
-        this.movementCost = movementCost;
-        this.movement = movement;
+        //this.movRange = movRange;
+        //this.movement = movement;
 
     }
+
+    public abstract void initialize();
 
     public Type getType() {
 
@@ -27,15 +28,15 @@ public abstract class Entity {
 
     }
 
-    public Movement.Type getMovement () {
+    public Movement getMovement() {
 
         return this.movement;
 
     }
 
-    public int getMovementCost () {
+    public int getRange() {
 
-        return this.movementCost;
+        return this.movRange;
 
     }
 

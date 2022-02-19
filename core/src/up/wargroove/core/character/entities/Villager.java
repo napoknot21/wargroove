@@ -6,19 +6,32 @@ import up.wargroove.core.character.Movement;
 
 public class Villager extends Character {
 
+	public Villager() {
+
+		this("", Faction.OUTLAWS);
+
+	}
+
     public Villager(String name, Faction faction) {
-        super(name, faction, Type.VILLAGER, 4, Movement.Type.WALKING);
-        initStats();
+        
+	    super(name, Type.VILLAGER, faction);
+	    initialize();
+
     }
 
-    public void initStats() {
-        super.setAttack(0);
-        super.setDefense(10);
-        super.setHealth(100);
-        super.setCapture(true);
-        super.setSight(2);
-        super.setRange(0);
-        super.setCost(50);
+    @Override
+    public void initialize()
+    { 
+	    super.movRange = 4;
+	    super.movement = Movement.WALKING;
+
+	    stats.attack = 0;
+	    stats.defense = 10;
+	    stats.health = 100;
+	    stats.capture = true;
+	    stats.sight = 2;
+	    stats.range = 0;
+	    stats.cost = 50;
     }
 
 }

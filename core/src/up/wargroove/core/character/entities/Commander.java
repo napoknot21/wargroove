@@ -7,24 +7,33 @@ import up.wargroove.core.character.Movement;
 
 public class Commander extends Character {
 
+	public Commander() {
+
+		this("", Faction.OUTLAWS);
+
+	}
+
     public Commander (String name, Faction faction) {
 
-        super(name, faction, Type.COMMANDER, 4, Movement.Type.WALKING);
-        initStats();
+        super(name, Type.COMMANDER, faction);
+        initialize();
 
     }
 
-    public void initStats () {
+    @Override
+    public void initialize() {
 
-        super.setAttack(20);
-        super.setDefense(20);
-        super.setHealth(100);
-        super.setCapture(true);
-        super.setSight(3);
-        super.setRange(1);
-        super.setCost(500);
+	    super.movement = Movement.WALKING;
+	    super.movRange = 4;
+
+	    stats.attack = 20;
+	    stats.defense = 20;
+	    stats.health = 100;
+	    stats.capture = true;
+	    stats.sight = 3;
+	    stats.range = 1;
+	    stats.cost = 500;
 
     }
-
 
 }
