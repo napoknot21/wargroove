@@ -70,7 +70,7 @@ public class GameView extends View {
         //getModel().getWorld().addEntity(new Pair<>(0,0),character);
         Table table = new Table();
         table.setFillParent(true);
-        CharacterUI jaimito = new CharacterUI(gameMap, this, new Pair<>(10, 10), character);
+        CharacterUI jaimito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
         table.add(jaimito);
         addActor(table);
         jaimito.moveNorth();

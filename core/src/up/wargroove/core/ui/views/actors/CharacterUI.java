@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.ui.views.objects.MapTile;
 import up.wargroove.core.ui.views.scenes.GameView;
@@ -23,9 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class CharacterUI extends Actor {
+    Controller controller;
     Sprite sprite;
-    GameMap gameMap;
-    GameView gameView;
     Pair<Integer, Integer> coordinate;
     MapTile tile;
     Character character;
@@ -33,6 +33,7 @@ public class CharacterUI extends Actor {
     float temps;
     ArrayList<Integer> move= new ArrayList<>();
     float TIME_LAPSE=0.30f;
+    static final int TILE_SIZE= 20;
 
 
     private Texture getPath(String nameFile) {
@@ -73,17 +74,18 @@ public class CharacterUI extends Actor {
      */
 
 
-    public CharacterUI(GameMap gameMap, GameView view, Pair<Integer, Integer> coord, Character character) {
-        this.gameMap = gameMap;
-        this.gameView = view;
+    public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
+        this.controller= controller;
         this.character = character;
         this.coordinate = coord;
-        gameMap.getWorld().addEntity(coord, character);
+        controller.getWorld().addEntity(coord, character);
         this.sprite = new Sprite(getPath("LIFE.png"));
         //sprite.setSize(260,30);
         sprite.setSize(20,30);
+        setPosition(coord.first*TILE_SIZE,coord.second*TILE_SIZE);
+        positionChanged();
         //animation(8);
-        this.tile = (MapTile) gameMap.getTileLayer().getCell(coordinate.first, coordinate.second).getTile();
+        //this.tile = (MapTile) gameMap.getTileLayer().getCell(coordinate.first, coordinate.second).getTile();
     }
 
         @Override
@@ -167,7 +169,7 @@ public class CharacterUI extends Actor {
         if (move.isEmpty()){
             return;
         }
-        if (temps<20){
+        if (temps<TILE_SIZE){
             temps+=TIME_LAPSE;
         }
         switch (move.get(0)){
@@ -184,15 +186,18 @@ public class CharacterUI extends Actor {
             //AnimationMWalk(texture);
         }
         //sprite= (Sprite) animationMove.getKeyFrame(temps);
-        sprite.setPosition(coordinate.first*gameMap.getTileWidth()+temps*x,coordinate.second*gameMap.getTileHeight()+temps*y);
-        if (temps>=gameMap.getTileHeight()){
+        setPosition(getX()*TILE_SIZE+temps*x,getY()*TILE_SIZE+temps*y);
+        //System.out.println(getX()+" "+ getY());
+
+        if (temps>=TILE_SIZE){
             temps=0;
-            gameMap.getWorld().delEntity(coordinate, character);
+            //System.out.println(getX()+" + "+ getY());
+            positionChanged();
+            controller.getWorld().delEntity(coordinate, character);
             coordinate.first+=x;
             coordinate.second+=y;
-            gameMap.getWorld().addEntity( coordinate, character);
+            controller.getWorld().addEntity( coordinate, character);
             move.remove(0);
-
         }
     }
 
