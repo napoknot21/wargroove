@@ -69,8 +69,6 @@ public class MovementSelector {
      * @param v the unit coordinates in world terrain coordinates.
      */
     public void setEntityInformation(Vector3 v, int cost) {
-        System.out.println(cost);
-        System.out.println(cost);
         if (cost == -1) {
             active = false;
             initX = 0;
@@ -425,7 +423,8 @@ public class MovementSelector {
          * @param batch The drawer.
          */
         private void draw(Batch batch) {
-            for (int i = 0; i < index; i++) {
+            int end = Math.min(cost,index);
+            for (int i = 0; i < end; i++) {
                 this.get(i).first.draw(batch);
             }
         }
