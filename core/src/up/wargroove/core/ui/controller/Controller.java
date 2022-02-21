@@ -13,7 +13,9 @@ import org.lwjgl.Sys;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Model;
+import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.View;
 import up.wargroove.core.ui.views.scenes.WorldSetting;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
@@ -32,7 +34,7 @@ public class Controller {
     /**
      * The screen to control.
      */
-    private Screen screen;
+    private View screen;
 
     /**
      * The game model.
@@ -58,7 +60,7 @@ public class Controller {
      * @param wargroove The client.
      * @param screen    The current screen.
      */
-    public Controller(Model model, WargrooveClient wargroove, Screen screen) {
+    public Controller(Model model, WargrooveClient wargroove, View screen) {
         this.wargroove = wargroove;
         this.model = model;
         this.screen = screen;
@@ -144,11 +146,11 @@ public class Controller {
         return wargroove;
     }
 
-    public Screen getScreen() {
+    public View getScreen() {
         return screen;
     }
 
-    public void setScreen(Screen screen) {
+    public void setScreen(View screen) {
         this.screen = screen;
     }
 
@@ -203,8 +205,8 @@ public class Controller {
      *
      * @param vector The entity coordinate in world terrain coordinate.
      */
-    public void setScopeEntity(Vector3 vector) {
-        getWorld().scopeEntity(new Pair<>((int) vector.x, (int) vector.y));
+    public boolean setScopeEntity(Vector3 vector) {
+        return getWorld().scopeEntity(new Pair<>((int) vector.x, (int) vector.y));
     }
 
     /**
@@ -222,6 +224,22 @@ public class Controller {
 
     public int getScopedEntityMovementCost() {
         Entity entity = getScopedEntity();
-        return (entity == null) ? 0 : entity.getType().movementCost;
+        return (entity == null) ? -1 : entity.getType().movementCost;
     }
+
+    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
+        if (!movement) {
+            if (!setScopeEntity(worldPosition)) {
+                return false;
+            }
+            var vectors = getMovementPossibilities();
+            movementSelector.showValids(getScreen().getAssets(), vectors);
+            movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+            return true;
+        }
+        movementSelector.reset();
+        return false;
+    }
+
+
 }

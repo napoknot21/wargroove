@@ -11,9 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-
-import java.util.Vector;
-
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
@@ -152,17 +149,7 @@ public class GameView extends View {
                 Tile tile = getController().setIndicator(cursor.getWorldPosition());
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                if (!movement) {
-                    getController().setScopeEntity(cursor.getWorldPosition());
-                    var vectors = getController().getMovementPossibilities();
-                    showPossibleMovement(vectors);
-                    movementSelector.setEntityInformation(
-                            cursor.getWorldPosition(), getController().getScopedEntityMovementCost()
-                    );
-                } else {
-                    movement = false;
-                    movementSelector.reset();
-                }
+                movement = getController().showMovements(movement, movementSelector, cursor.getWorldPosition());
                 return true;
             }
 
@@ -174,16 +161,6 @@ public class GameView extends View {
         };
         input.addProcessor(getStage());
         Gdx.input.setInputProcessor(input);
-    }
-
-    /**
-     * Shows the possible movements.
-     *
-     * @param vectors The list of movements coordinates
-     */
-    private void showPossibleMovement(Vector<Pair<Integer, Integer>> vectors) {
-        movement = true;
-        vectors.forEach(c -> movementSelector.addValids(getAssets(), c));
     }
 
     @Override

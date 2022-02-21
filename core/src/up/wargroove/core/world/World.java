@@ -150,13 +150,13 @@ public class World {
      * @param Pair<Integer,Integer> la coordonnée
      */
 
-    public void scopeEntity(Pair<Integer, Integer> coordinate) {
+    public boolean scopeEntity(Pair<Integer, Integer> coordinate) {
 
         int linCoordinate = coordinatesToInt(coordinate, dimension);
         boolean exists = terrain[linCoordinate].entity.isPresent();
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
-
+        return exists;
     }
 
     /**
