@@ -186,8 +186,8 @@ public class CharacterUI extends Actor {
             //AnimationMWalk(texture);
         }
         //sprite= (Sprite) animationMove.getKeyFrame(temps);
-        setPosition(getX()*TILE_SIZE+temps*x,getY()*TILE_SIZE+temps*y);
-        //System.out.println(getX()+" "+ getY());
+        setPosition(coordinate.first * TILE_SIZE+temps*x,coordinate.second * TILE_SIZE+temps*y);
+        //System.out.println(temps);
 
         if (temps>=TILE_SIZE){
             temps=0;

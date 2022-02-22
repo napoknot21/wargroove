@@ -68,14 +68,12 @@ public class GameView extends View {
                 0, 0, false, null
         );
         //getModel().getWorld().addEntity(new Pair<>(0,0),character);
-        Table table = new Table();
-        table.setFillParent(true);
         CharacterUI jaimito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        table.add(jaimito);
-        addActor(table);
+        addActor(jaimito);
         jaimito.moveNorth();
         jaimito.moveEast();
         jaimito.moveSouth();
+
         //jaimito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
