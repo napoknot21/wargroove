@@ -2,37 +2,29 @@ package up.wargroove.core.ui.views.actors;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.core.ui.views.objects.GameMap;
 import up.wargroove.core.ui.views.objects.MapTile;
-import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.utils.Pair;
-import com.badlogic.gdx.graphics.g2d.Animation;
-
-
-import java.io.File;
 import java.util.ArrayList;
+
 
 public class CharacterUI extends Actor {
     Controller controller;
     Sprite sprite;
+    Sprite spriteWaiting;
     Pair<Integer, Integer> coordinate;
     MapTile tile;
     Character character;
-    //Animation animationMove;
+    TextureRegion[] animationMove;
     float temps;
-    ArrayList<Integer> move= new ArrayList<>();
-    float TIME_LAPSE=0.30f;
+    ArrayList<java.lang.Character> move= new ArrayList<>();
+    static float TIME_LAPSE=0.5f;
     static final int TILE_SIZE= 20;
 
 
@@ -80,15 +72,14 @@ public class CharacterUI extends Actor {
         this.coordinate = coord;
         controller.getWorld().addEntity(coord, character);
         this.sprite = new Sprite(getPath("LIFE.png"));
-        //sprite.setSize(260,30);
         sprite.setSize(20,30);
-        setPosition(coord.first*TILE_SIZE,coord.second*TILE_SIZE);
+        setPosition(coord.first * TILE_SIZE,coord.second * TILE_SIZE);
         positionChanged();
-        //animation(8);
-        //this.tile = (MapTile) gameMap.getTileLayer().getCell(coordinate.first, coordinate.second).getTile();
+        this.spriteWaiting = sprite;
+
     }
 
-        @Override
+    @Override
     public void positionChanged() {
         sprite.setPosition(getX(), getY());
         super.positionChanged();
@@ -105,52 +96,29 @@ public class CharacterUI extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         move();
         sprite.draw(batch);
-        super.draw(batch,parentAlpha);
-        //batch.draw(texture, Gdx.graphics.getWidth() / 2f,Gdx.graphics.getHeight() / 2f);
+        super.draw(batch, parentAlpha);
     }
 
 
+    /**
+     * Functions for tests
+     *
+     */
 
-
-    /* Tests with actions
-
-   Problemes avec Action: Ça ne lis pas les actions, voir act() normalement à mettre sur le renderer
-    * */
-
-    public void moveNorth(){
-        move.add(0);
-        /*
-        this.addAction(Actions.moveBy( coordinate.first*gameMap.getTileWidth(),gameMap.getTileHeight()+coordinate.second*gameMap.getTileHeight(),5f));
-        this.addAction(Actions.color(Color.RED));
-        this.sprite.setTexture(getPath("MOVE/tile008.png"));
-        */
-
+    public void moveNorth() {
+        move.add('U');
     }
 
-    public void moveEast(){
-        move.add(1);
-        /*
-        MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(getPath("MOVE/tile011.png"));
-        mba.setDuration(5f);
-        mba.setAmount( gameMap.getTileWidth(),0);
-        this.addAction(mba);
-*/
+    public void moveEast() {
+        move.add('R');
     }
 
-    public void moveSouth(){
-        move.add(2);
-        /*
-        MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(getPath("MOVE/tile010.png"));
-        mba.setDuration(5f);
-        mba.setAmount( 0,-gameMap.getTileHeight());
-        this.addAction(mba);
-        */
+    public void moveSouth() {
+        move.add('D');
     }
 
-    public void moveWest(){
-        move.add(3);
+    public void moveWest() {
+        move.add('L');
 
         /*
         MoveByAction mba = new MoveByAction();
@@ -161,41 +129,45 @@ public class CharacterUI extends Actor {
 */
     }
 
-    public void die(){
+    public void die() {
         this.sprite.setTexture(getPath("DIE.png"));
     }
 
-    public void move(){
+
+    /**
+     * Decides the mouvement
+     */
+    public void move() {
         if (move.isEmpty()){
+            sprite=spriteWaiting;
             return;
         }
         if (temps<TILE_SIZE){
             temps+=TIME_LAPSE;
         }
         switch (move.get(0)){
-            case 0: moveTo(0,1, getPath("MOVE/tile008.png")); return;
-            case 1: moveTo(1,0,getPath("MOVE/tile011.png")); return;
-            case 2: moveTo(0,-1,getPath("MOVE/tile009.png")); return;
-            case 3: moveTo(-1,0,getPath("MOVE/tile010.png")); return;
+            case 'U': moveTo(0,1, getPath("MOVE/tile008.png")); return;
+            case 'R': moveTo(1,0, getPath("MOVE/tile011.png")); return;
+            case 'D': moveTo(0,-1, getPath("MOVE/tile010.png")); return;
+            case 'L': moveTo(-1,0, getPath("MOVE/tile009.png"));
         }
     }
 
 
     private void moveTo(int x, int y, Texture texture){
         if(temps==TIME_LAPSE){
-            //AnimationMWalk(texture);
-        }
-        //sprite= (Sprite) animationMove.getKeyFrame(temps);
-        setPosition(coordinate.first * TILE_SIZE+temps*x,coordinate.second * TILE_SIZE+temps*y);
-        //System.out.println(temps);
-
-        if (temps>=TILE_SIZE){
-            temps=0;
-            //System.out.println(getX()+" + "+ getY());
-            positionChanged();
+            animationMove = AnimationWalk(texture);
             controller.getWorld().delEntity(coordinate, character);
-            coordinate.first+=x;
-            coordinate.second+=y;
+        }
+        sprite= new Sprite(animationMove[(int) temps%8]);
+        sprite.setSize(20,30);
+        setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
+        if (temps>=20f){
+            temps=0;
+            coordinate.first+= x;
+            coordinate.second+= y;
+            setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
+            spriteWaiting.setPosition(getX(),getY());
             controller.getWorld().addEntity( coordinate, character);
             move.remove(0);
         }
@@ -205,17 +177,19 @@ public class CharacterUI extends Actor {
 
     /**
      * Create the animation accordig with the texture you want to show
-     * DOESNT WORK
+     *@return Frames
      */
 
-/*
-    public void AnimationMWalk(Texture texture){
-        TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/8,30);
-        TextureRegion [] move= new TextureRegion[8];
-        for (int i=0; i<8; i++) move[1]= tmp[0][i];
-        animationMove= new Animation(0.25f,move);
+
+    public TextureRegion[] AnimationWalk(Texture texture){
+        TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
+        TextureRegion [] move = new TextureRegion[8];
+        for (int i = 0; i < 8 ; i++){
+            move[i] = tmp[0][i];
+        }
+        return move;
     }
-    */
+
 
 
 

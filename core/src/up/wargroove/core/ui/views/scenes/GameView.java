@@ -68,13 +68,13 @@ public class GameView extends View {
                 0, 0, false, null
         );
         //getModel().getWorld().addEntity(new Pair<>(0,0),character);
-        CharacterUI jaimito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        addActor(jaimito);
-        jaimito.moveNorth();
-        jaimito.moveEast();
-        jaimito.moveSouth();
-
-        //jaimito.moveWest();
+        CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
+        addActor(pepito);
+        pepito.moveNorth();
+        pepito.moveNorth();
+        pepito.moveEast();
+        pepito.moveSouth();
+        pepito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
 
