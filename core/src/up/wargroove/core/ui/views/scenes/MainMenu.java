@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -33,6 +34,10 @@ public class MainMenu extends View {
      */
     private Button playerSettings;
     /**
+     * Player settings button.
+     */
+    private Button mapSelection;
+    /**
      * Screen controller.
      */
     private Controller controller;
@@ -41,8 +46,11 @@ public class MainMenu extends View {
 
     private OrthographicCamera camera;
 
+    private Sound buttonSound;
+
     public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
+        this.controller = controller;
     }
 
     public MainMenu(Controller controller, WargrooveClient wargroove) {
@@ -61,9 +69,12 @@ public class MainMenu extends View {
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
         Skin skin = getAssets().getDefault(Skin.class);
+        buttonSound = getAssets().getDefault(Sound.class);
+
         startGame = new TextButton("Start Game", skin);
         worldSettings = new TextButton("World Settings", skin);
         playerSettings = new TextButton("Settings", skin);
+        //mapSelection = new TextButton("Choose Map",skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -106,9 +117,10 @@ public class MainMenu extends View {
         //table.top();
         table.add(startGame);
         table.row();
-        table.add(worldSettings);
+        table.add(worldSettings).padTop(20f);
         table.row();
-        table.add(playerSettings).padTop(20f);
+        table.add(playerSettings);
+
         return table;
     }
 
@@ -120,6 +132,7 @@ public class MainMenu extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        //makeSound(buttonSound);
                         controller.startGame();
                     }
                 }
@@ -129,6 +142,7 @@ public class MainMenu extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        //makeSound(buttonSound);
                         controller.openWorldSettings();
                     }
                 }
@@ -137,6 +151,7 @@ public class MainMenu extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        //makeSound(buttonSound);
                         controller.openSettings();
                     }
                 }

@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -40,14 +41,18 @@ public class PlayerSetting extends View {
 
     private OrthographicCamera camera;
 
+    Sound buttonSound;
+
     public PlayerSetting(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
-        soundLabel = new Label("Sound", SKIN);
-        sound = new CheckBox("On",SKIN);
+        Skin skin = getAssets().getDefault(Skin.class);
+        buttonSound = getAssets().getDefault(Sound.class);
+        soundLabel = new Label("Sound", skin);
+        sound = new CheckBox("On",skin);
         sound.setChecked(controller.isSoundOn());
-        stateLabel = new Label("", SKIN);
-        back = new TextButton("Back", SKIN);
+        stateLabel = new Label("", skin);
+        back = new TextButton("Back", skin);
 
     }
 
@@ -66,8 +71,6 @@ public class PlayerSetting extends View {
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
-
-
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -128,7 +131,7 @@ public class PlayerSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        makeSound(BUTTON_SOUND);
+                        makeSound(buttonSound);
                         controller.back();
                     }
                 }
@@ -137,7 +140,7 @@ public class PlayerSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        makeSound(BUTTON_SOUND);
+                        makeSound(buttonSound);
                         if(sound.isChecked()){
                             stateLabel.setText("On");
                             controller.setSound(true);

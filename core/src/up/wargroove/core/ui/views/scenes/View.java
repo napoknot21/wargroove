@@ -42,8 +42,8 @@ public abstract class View extends ScreenAdapter {
     /**
      * The main skin
      */
-    final Skin SKIN;
-    final Sound BUTTON_SOUND;
+    //final Skin SKIN;
+    //final Sound BUTTON_SOUND;
 
 
     /**
@@ -58,8 +58,8 @@ public abstract class View extends ScreenAdapter {
         this.model = model;
         this.ui = new Stage();
         this.wargroove = wargroove;
-        this.SKIN = new Skin(Gdx.files.internal("data/gui/skin/rusty-robot-ui.json"));
-        this.BUTTON_SOUND = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
+        //this.SKIN = new Skin(Gdx.files.internal("data/gui/skin/rusty-robot-ui.json"));
+        //this.BUTTON_SOUND = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
 
 
     }

@@ -114,10 +114,12 @@ public class Assets {
      * Loads the defaults assets.
      */
     public void loadDefault() {
-        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
+        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "rusty-robot-ui.json"));
         defaults.put(Skin.class, defaultSkin);
-        Texture texture = new Texture(Gdx.files.internal(AssetDir.GUI.path + "uiskin.png"));
+        Texture texture = new Texture(Gdx.files.internal(AssetDir.SKIN.path + "uiskin.png"));
         defaults.put(Texture.class, texture);
+        Sound defaultSound = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
+        defaults.put(Sound.class, defaultSound);
     }
 
     /**
@@ -245,13 +247,13 @@ public class Assets {
      */
     public enum AssetDir {
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
-        SKIN(GUI.path + "skin" +fs), SOUND(GUI.path + "sound" + fs),
+        SKIN(GUI.path + "skin" +fs), SOUND(GUI.path + "sound" + fs, "sound"),
         SPRITES(DATA.path + "sprites" + fs),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice");
 
-        // TODO : remplir mes chemins menant au repertoire et leur manifest pour charger les donnees
+        // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 
         private final String path;
         private final String manifest;
