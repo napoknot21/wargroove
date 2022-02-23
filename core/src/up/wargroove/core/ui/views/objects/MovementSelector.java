@@ -348,15 +348,18 @@ public class MovementSelector {
             } else if (!reuse(d.charAt(0), assets, coord)) {
                 Sprite sprite = new Sprite(getArrow(assets, d.charAt(0)));
                 sprite.setPosition(coord.first * worldScale, coord.second * worldScale);
-                add(new Pair<>(sprite, coord));
-                path.append(d);
+                if (add(new Pair<>(sprite, coord))) {
+                    path.append(d);
+                }
 
             }
         }
 
         @Override
         public boolean add(Pair<Sprite, Pair<Integer, Integer>> spritePairPair) {
-            index++;
+            if (++index > cost) {
+                return false;
+            }
             return super.add(spritePairPair);
         }
 
@@ -409,7 +412,7 @@ public class MovementSelector {
          * @return The sprite texture.
          */
         private Texture getArrow(Assets assets, char d) {
-            if (index > 0) {
+            if (index > 0 && index < cost) {
                 String last = String.valueOf(path.charAt(index - 1)) + d;
                 get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
             }
