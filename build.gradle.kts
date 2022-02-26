@@ -35,7 +35,9 @@ project(":core") {
 
 		implementation("com.badlogicgames.gdx:gdx:$gdxVersion")
     		implementation("com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion")
-		implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
+		implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")	
+		implementation("javax.json:javax.json-api:1.0")
+		implementation("org.glassfish:javax.json:1.0.4")	
 		implementation(project(":utils"))
 
 	}
@@ -51,6 +53,19 @@ project(":desktop") {
         	implementation("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop")
 		implementation(project(":core"))
 	}
+
+}
+
+project(":utils") {
+
+	dependencies {
+
+		implementation("javax.json:javax.json-api:1.0")
+		implementation("org.glassfish:javax.json:1.0.4")	
+
+	}
+
+
 
 }
 

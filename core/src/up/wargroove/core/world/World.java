@@ -7,13 +7,16 @@ import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.functional.WPredicate;
+import up.wargroove.utils.DBEngine;
+import up.wargroove.utils.Database;
+import up.wargroove.utils.DbObject;
 import java.util.*;
+import java.io.IOException;
 
 public class World {
 
     private final int [] permutations;
-    private final WorldProperties properties;
-    private final Pair<Integer, Integer> dimension;
+    private final WorldProperties properties; 
     private final int turn;
     private Optional<Integer> currentEntityLinPosition;
     private Tile[] terrain;
@@ -37,10 +40,16 @@ public class World {
     public World(WorldProperties properties) {
 
         this.properties = properties;
+
         this.dimension = properties.dimension;
         currentEntityLinPosition = Optional.empty();
 
-	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
+	permutations = new int[] {
+		-properties.dimension.first, 
+		1, 
+		properties.dimension.first, 
+		-1
+	};
 
         turn = 1; 
 
@@ -55,11 +64,11 @@ public class World {
     public void initialize(boolean generation) {
 
         Log.print("Initialisation du monde ...");
-        terrain = new Tile[dimension.first * dimension.second];
+        terrain = new Tile[properties.dimension.first * properties.dimension.second];
 
         if (generation && properties.genProperties != null) {
 
-            Generator gen = new Generator(dimension, properties.genProperties);
+            Generator gen = new Generator(properties.dimension, properties.genProperties);
             terrain = gen.build();
 
         } else {
@@ -91,7 +100,7 @@ public class World {
 
     public Tile at(int x, int y) {
 
-        return terrain[y * dimension.first + x];
+        return terrain[y * properties.dimension.first + x];
 
     }
 
@@ -123,7 +132,7 @@ public class World {
 
     public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         return addEntity(linCoordinate, entity);
 
     }
@@ -151,7 +160,7 @@ public class World {
 
     public boolean scopeEntity(Pair<Integer, Integer> coordinate) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         boolean exists = terrain[linCoordinate].entity.isPresent();
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
@@ -185,10 +194,10 @@ public class World {
 
             int lco = linCoordinate + delta;
 
-	    int lncMod = linCoordinate % dimension.first;
-	    int lcoMod = lco % dimension.first;
+	    int lncMod = linCoordinate % properties.dimension.first;
+	    int lcoMod = lco % properties.dimension.first;
 
-            boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, dimension);
+            boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, properties.dimension);
 
             if (isValid) adjacent.add(linCoordinate + delta);
 
@@ -342,7 +351,19 @@ public class World {
 
     public Pair<Integer, Integer> getDimension() {
 
-        return dimension;
+        return properties.dimension;
+
+    }
+
+    public String getName() {
+
+	    return properties.name;
+
+    }
+
+    public String getDescription() {
+
+	    return properties.description;
 
     }
     
@@ -390,6 +411,23 @@ public class World {
         return dimension.first * co.second + co.first;
 
     }
+
+    public boolean save() {
+
+	DBEngine engine = DBEngine.getInstance();
+	engine.connect();
+
+	Database db = engine.getDatabase("wargroove");
+	db.selectCollection("worlds");
+
+	DbObject worldDBO = properties.toDBO();
+	boolean status = db.insert(properties.name, worldDBO);
+
+	db.flush();	
+
+	return status;
+
+    }
     
     @Override
     public String toString() {
@@ -401,7 +439,7 @@ public class World {
 
             builder.append(tile).append(" ");
 
-            if (++index % dimension.first == 0) builder.append('\n');
+            if (++index % properties.dimension.first == 0) builder.append('\n');
 
         }
 
