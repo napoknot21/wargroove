@@ -190,14 +190,16 @@ public class Controller {
      *
      * @return A vector of all the possible movements in world terrain coordinate.
      */
-    public Vector<Pair<Integer, Integer>> getMovementPossibilities() {
-        Vector<Integer> valids = getWorld().validMovements();
+    public Pair<Vector<Pair<Integer, Integer>>,Vector<Pair<Integer, Integer>>> getMovementPossibilities() {
+        var valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
+        Vector<Pair<Integer,Integer>> intel = new Vector<>();
         valids.forEach(v -> {
-            Pair<Integer, Integer> coord = World.intToCoordinates(v, getWorld().getDimension());
+            Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
             vectors.add(new Pair<>(coord.first, coord.second));
+            intel.add(v.second);
         });
-        return vectors;
+        return new Pair<>(vectors,intel);
     }
 
     /**
@@ -232,8 +234,8 @@ public class Controller {
             if (!setScopeEntity(worldPosition)) {
                 return false;
             }
-            var vectors = getMovementPossibilities();
-            movementSelector.showValids(getScreen().getAssets(), vectors);
+            var pair = getMovementPossibilities();
+            movementSelector.showValids(getScreen().getAssets(), pair);
             movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
             return true;
         }

@@ -207,12 +207,12 @@ public class World {
      * @return le vecteur des coordonnées valides
      */
 
-    private Vector<Integer> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
+    private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
 	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
 
-        Vector<Integer> res = new Vector<>();
+        Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
 	if(predicate == null) return res;
 
@@ -223,6 +223,7 @@ public class World {
 	int movementCost = type.movementCost;
 
 	var rootElement = new Pair<>(root, movementCost);
+    int parentIndex = -1;
 
 	emp.add(rootElement);
 
@@ -231,6 +232,7 @@ public class World {
             var element = emp.poll();
             Vector<Integer> adjacent = adjacentOf(element.first);
 
+
             for (Integer lin : adjacent) {
 
                 if (checked.containsKey(lin)) continue;
@@ -238,7 +240,10 @@ public class World {
                 if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
 
 		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
-                    res.add(lin);
+                    BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
+                    BitSet sub = bitset.sub(4 * movementId, 4);
+                    Pair<Integer,Integer> intel = new Pair<>(parentIndex,sub.toInt());
+                    res.add(new Pair<>(lin,intel));
                     emp.add(predicateArg);
 
                 }
@@ -246,6 +251,7 @@ public class World {
 		checked.put(lin, movementCost >= 0);
 
             }
+            parentIndex++;
 
         }
 
@@ -260,9 +266,9 @@ public class World {
      * @return le vecteur des positions valides
      */
 
-    public Vector<Integer> validMovements() {
+    public Vector<Pair<Integer,Pair<Integer,Integer>>> validMovements() {
 
-        Vector<Integer> positions = new Vector<>();
+        Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
 
         if (currentEntityLinPosition.isPresent()) {
 
