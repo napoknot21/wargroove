@@ -44,6 +44,8 @@ public class MovementSelector {
      */
     private int cost;
 
+    private boolean validPosition;
+
 
     /**
      * Constructs a Movement selector.
@@ -58,6 +60,7 @@ public class MovementSelector {
         initY = 0;
         cost = 0;
         active = false;
+        validPosition = false;
     }
 
     /**
@@ -85,12 +88,17 @@ public class MovementSelector {
         }
     }
 
+    public boolean isValidPosition() {
+        return validPosition;
+    }
+
     /**
      * Sets the unit original position.
      *
      * @param v the unit coordinates in world terrain coordinates.
      */
     public void setEntityInformation(Vector3 v, int cost) {
+        movements.reset();
         if (cost == -1) {
             active = false;
             initX = 0;
@@ -130,9 +138,14 @@ public class MovementSelector {
             return;
         }
         batch.begin();
-        valid.draw(batch);
         movements.draw(batch);
         batch.end();
+    }
+
+    public void drawValid(Batch batch) {
+        //batch.begin();
+        valid.draw(batch);
+        //batch.end();
     }
 
     /**
@@ -144,6 +157,10 @@ public class MovementSelector {
         return movements.getPath();
     }
 
+    public Pair<Integer,Integer> getDestination() {
+        return movements.getLastMovement();
+    }
+
     /**
      * Reset the movement selector.
      */
@@ -151,6 +168,7 @@ public class MovementSelector {
         valid.reset();
         movements.reset();
         active = false;
+        validPosition = false;
     }
 
     /**
@@ -224,6 +242,7 @@ public class MovementSelector {
     private class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         /**
          * Tile useful information. The order of intel is the same as this.
+         * The first is the parentIndex, the second is the tile's movement cost.
          */
         private final ArrayList<Pair<Integer, Integer>> intel;
         /**
@@ -277,9 +296,11 @@ public class MovementSelector {
         private int isValid(Pair<Integer, Integer> coordinate) {
             for (int i = 0; i < this.index; i++) {
                 if (this.get(i).second.equals(coordinate)) {
+                    validPosition = true;
                     return i;
                 }
             }
+            validPosition = false;
             return -1;
         }
 
@@ -372,12 +393,12 @@ public class MovementSelector {
             return new Pair<>(x, y);
         }
 
-        private synchronized void addDefaultMovement(Assets assets, int tileIndex) {
+        private synchronized void addDefaultMovement(Assets assets, int tileIndex, String d) {
             movements.reset();
             var stack = valid.getDefault(tileIndex);
             while (!stack.empty()) {
                 var tmp = stack.pop();
-                add(assets, tmp.first, tmp.second);
+                add(assets, tmp.first, tmp.second,direction(tmp.first).charAt(0));
             }
         }
 
@@ -412,14 +433,16 @@ public class MovementSelector {
             if (d.isBlank() || isPresent(assets, coord, tileIndex)) {
                 return;
             }
-            if (currentCost + valid.getTileCost(tileIndex) > cost) {
-                addDefaultMovement(assets, tileIndex);
+            if (currentCost + valid.getTileCost(tileIndex) > cost || d.length() > 1) {
+                addDefaultMovement(assets, tileIndex, d);
                 return;
             }
-            if (d.length() > 1) {
-                addDefaultMovement(assets, tileIndex);
-            } else if (!reuse(d.charAt(0), assets, coord, tileIndex)) {
-                Sprite sprite = new Sprite(getArrow(assets, d.charAt(0)));
+            add(assets,coord,tileIndex,d.charAt(0));
+        }
+
+        private void add(Assets assets, Pair<Integer, Integer> coord, int tileIndex, char d) {
+            if (!reuse(d, assets, coord, tileIndex)) {
+                Sprite sprite = new Sprite(getArrow(assets, d));
                 if (add(new Pair<>(sprite, coord))) {
                     currentCost += valid.getTileCost(tileIndex);
                     path.append(d);
@@ -507,8 +530,7 @@ public class MovementSelector {
          */
         private void draw(Batch batch) {
             for (int i = 0; i < index; i++) {
-                Pair<Sprite, Pair<Integer, Integer>> tmp = this.get(i);
-                tmp.first.draw(batch);
+                this.get(i).first.draw(batch);
             }
         }
 

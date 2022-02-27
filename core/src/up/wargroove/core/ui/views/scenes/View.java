@@ -1,8 +1,6 @@
 package up.wargroove.core.ui.views.scenes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -37,6 +35,11 @@ public abstract class View extends ScreenAdapter {
      */
     private Stage ui;
 
+    /**
+     * The Screen input manager
+     */
+    private final InputMultiplexer inputs;
+
 
     /**
      * Initialize the screen.
@@ -50,6 +53,7 @@ public abstract class View extends ScreenAdapter {
         this.model = model;
         this.ui = new Stage();
         this.wargroove = wargroove;
+        inputs = new InputMultiplexer();
     }
 
     /**
@@ -65,9 +69,8 @@ public abstract class View extends ScreenAdapter {
 
     @Override
     public void show() {
-        InputMultiplexer input = new InputMultiplexer();
-        input.addProcessor(ui);
-        Gdx.input.setInputProcessor(input);
+        inputs.addProcessor(ui);
+        Gdx.input.setInputProcessor(inputs);
         init();
     }
 
@@ -134,6 +137,7 @@ public abstract class View extends ScreenAdapter {
 
     public Stage setStage(Viewport viewport) {
         this.ui = new Stage(viewport, getBatch());
+        inputs.addProcessor(ui);
         return ui;
     }
 
@@ -148,5 +152,13 @@ public abstract class View extends ScreenAdapter {
      */
     public void setDebug(boolean debug) {
         ui.setDebugAll(debug);
+    }
+
+    public InputMultiplexer getInputs() {
+        return inputs;
+    }
+
+    public void addInput(InputProcessor input) {
+        inputs.addProcessor(input);
     }
 }
