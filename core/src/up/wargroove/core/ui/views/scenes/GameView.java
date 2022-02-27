@@ -2,11 +2,12 @@ package up.wargroove.core.ui.views.scenes;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -19,6 +20,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.actors.MoveDialog;
 import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
@@ -42,6 +44,8 @@ public class GameView extends View {
     private UnitIndicator unitIndicator;
     private Stage gameViewUi;
     private boolean movement;
+    private MoveDialog moveDialog;
+    private Actor scopedEntity;
     /**
      * The current character possible movement.
      */
@@ -62,6 +66,7 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
+        moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
@@ -77,7 +82,7 @@ public class GameView extends View {
         pepito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
-
+        addActor(moveDialog);
         initInput();
     }
 
@@ -120,7 +125,7 @@ public class GameView extends View {
      * Initializes the user inputs.
      */
     private void initInput() {
-        InputMultiplexer input = new InputMultiplexer() {
+        InputAdapter input = new InputAdapter() {
             @Override
             public boolean scrolled(float amountX, float amountY) {
                 getController().zoom(amountX, amountY, camera);
@@ -144,10 +149,16 @@ public class GameView extends View {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                Tile tile = getController().setIndicator(cursor.getWorldPosition());
+                Vector3 worldPosition = cursor.getWorldPosition();
+                Tile tile = getController().setIndicator(worldPosition);
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, cursor.getWorldPosition());
+                moveDialog.setPosition(vector.x,vector.y);
+                if (!movement) {
+                    scopeEntity(worldPosition);
+                }
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                moveDialog.setVisible(movement || movementSelector.isValidPosition());
                 return true;
             }
 
@@ -157,8 +168,7 @@ public class GameView extends View {
                 return true;
             }
         };
-        input.addProcessor(getStage());
-        Gdx.input.setInputProcessor(input);
+        addInput(input);
     }
 
     @Override
@@ -182,13 +192,13 @@ public class GameView extends View {
         renderer.render();
         getBatch().begin();
         cursor.draw(getBatch());
+        movementSelector.drawValid(getBatch());
         getBatch().end();
-        getStage().draw();
         gameViewUi.draw();
         if (movement) {
             movementSelector.draw(getBatch());
         }
-
+        getStage().draw();
     }
 
     @Override
@@ -216,10 +226,46 @@ public class GameView extends View {
         return gameMap;
     }
 
+    public void setMovement(boolean movement) {
+        this.movement = movement;
+    }
+
     @Override
     public void setDebug(boolean debug) {
         this.gameViewUi.setDebugAll(debug);
         System.out.println(debug);
         super.setDebug(debug);
+    }
+
+    public String getMovementPath() {
+        return movementSelector.getPath();
+    }
+
+    public Pair<Integer,Integer> getDestination() {
+        return movementSelector.getDestination();
+    }
+
+    private void scopeEntity(Pair<Integer,Integer> worldCoordinate) {
+        var array = getStage().getActors();
+        for (int i = 0; i < array.size; i++) {
+             Actor tmp = array.get(i);
+             if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
+                 scopedEntity = tmp;
+                 return;
+             }
+             scopedEntity = null;
+        }
+    }
+
+    private void scopeEntity(Vector3 worldCoordinate) {
+        scopeEntity(new Pair<>((int)worldCoordinate.x,(int)worldCoordinate.y));
+    }
+
+    public Actor getScopedEntity() {
+        return scopedEntity;
+    }
+
+    public MovementSelector getMovementSelector() {
+        return movementSelector;
     }
 }

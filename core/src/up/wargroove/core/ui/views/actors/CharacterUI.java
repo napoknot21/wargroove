@@ -190,9 +190,14 @@ public class CharacterUI extends Actor {
         return move;
     }
 
+    // TODO: 27/02/2022 : Amelioration du move
+    public void setMove(String path) {
+        for (int i = 0; i < path.length(); i++) {
+            move.add(path.charAt(i));
+        }
+    }
 
-
-
-
-
+    public Pair<Integer, Integer> getCoordinate() {
+        return coordinate;
+    }
 }

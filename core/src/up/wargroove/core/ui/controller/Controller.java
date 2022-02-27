@@ -8,11 +8,13 @@ import com.badlogic.gdx.math.Vector3;
 
 import java.util.Vector;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import org.lwjgl.Sys;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Model;
+import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.core.ui.views.scenes.View;
@@ -239,9 +241,26 @@ public class Controller {
             movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
             return true;
         }
-        movementSelector.reset();
         return false;
     }
 
 
+    public void startMoving() {
+        ((GameView)getScreen()).setMovement(true);
+    }
+
+    public void endMoving() {
+        GameView gameView = (GameView)getScreen();
+        MovementSelector selector = gameView.getMovementSelector();
+        gameView.setMovement(false);
+        String path = selector.getPath();
+        //Pair<Integer,Integer> destination = selector.getDestination();
+        selector.reset();
+        //getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
+        Actor entity = gameView.getScopedEntity();
+        if (entity instanceof CharacterUI) {
+            ((CharacterUI) entity).setMove(path);
+            ((CharacterUI) entity).move();
+        }
+    }
 }
