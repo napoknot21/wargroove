@@ -393,12 +393,16 @@ public class MovementSelector {
             return new Pair<>(x, y);
         }
 
-        private synchronized void addDefaultMovement(Assets assets, int tileIndex, String d) {
+        private synchronized void addDefaultMovement(Assets assets, int tileIndex) {
             movements.reset();
             var stack = valid.getDefault(tileIndex);
+            if(stack.size() > cost) {
+                System.out.println("here");
+            }
             while (!stack.empty()) {
                 var tmp = stack.pop();
-                add(assets, tmp.first, tmp.second,direction(tmp.first).charAt(0));
+                String d = direction(tmp.first);
+                add(assets, tmp.first, tmp.second, d.charAt(0));
             }
         }
 
@@ -434,7 +438,7 @@ public class MovementSelector {
                 return;
             }
             if (currentCost + valid.getTileCost(tileIndex) > cost || d.length() > 1) {
-                addDefaultMovement(assets, tileIndex, d);
+                addDefaultMovement(assets, tileIndex);
                 return;
             }
             add(assets,coord,tileIndex,d.charAt(0));
@@ -516,7 +520,7 @@ public class MovementSelector {
          * @return The sprite texture.
          */
         private synchronized Texture getArrow(Assets assets, char d) {
-            if (index > 0 && index < cost) {
+            if (index > 0) {
                 String last = String.valueOf(path.charAt(index - 1)) + d;
                 get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
             }
