@@ -221,17 +221,17 @@ public class MovementSelector {
     /**
      * Gets the next step direction according to the current position.
      *
-     * @param x The next movement
-     * @param y The next movement
+     * @param dx The next movement
+     * @param dy The next movement
      * @return a string that symbolizes the directions to take.
      */
-    private synchronized String directionSelector(int x, int y) {
+    private synchronized String directionSelector(int dx, int dy) {
         StringBuilder s = new StringBuilder();
-        char d = (x < 0) ? 'R' : 'L';
-        int end = Math.abs(x);
+        char d = (dx < 0) ? 'R' : 'L';
+        int end = Math.abs(dx);
         s.append(String.valueOf(d).repeat(end));
-        d = (y < 0) ? 'U' : 'D';
-        end = Math.abs(y);
+        d = (dy < 0) ? 'U' : 'D';
+        end = Math.abs(dy);
         s.append(String.valueOf(d).repeat(end));
         return s.toString();
     }
@@ -248,10 +248,8 @@ public class MovementSelector {
         /**
          * Index that point to the last used sprite.
          */
-        private int index;
 
         private Valid() {
-            index = 0;
             intel = new ArrayList<>();
         }
 
@@ -265,14 +263,6 @@ public class MovementSelector {
         private void add(Texture texture, Pair<Integer, Integer> coord) {
             int x = (int) (coord.first * worldScale);
             int y = (int) (coord.second * worldScale);
-            if (this.index < this.size()) {
-                var tmp = this.get(index);
-                tmp.first.setPosition(x, y);
-                tmp.second = coord;
-                this.index++;
-                return;
-            }
-            this.index++;
             Sprite sprite = new Sprite(texture);
             sprite.setPosition(x, y);
             this.add(new Pair<>(sprite, (coord)));
@@ -294,7 +284,7 @@ public class MovementSelector {
          * @return the index of the corresponding tile, -1 otherwise.
          */
         private int isValid(Pair<Integer, Integer> coordinate) {
-            for (int i = 0; i < this.index; i++) {
+            for (int i = 0; i < size(); i++) {
                 if (this.get(i).second.equals(coordinate)) {
                     validPosition = true;
                     return i;
@@ -336,7 +326,8 @@ public class MovementSelector {
          * are now considered free.
          */
         private void reset() {
-            index = 0;
+            intel.clear();
+            clear();
         }
 
         /**
@@ -345,7 +336,7 @@ public class MovementSelector {
          * @param batch The drawer.
          */
         private void draw(Batch batch) {
-            for (int i = 0; i < index; i++) {
+            for (int i = 0; i < size(); i++) {
                 valid.get(i).first.draw(batch);
             }
         }
@@ -396,9 +387,6 @@ public class MovementSelector {
         private synchronized void addDefaultMovement(Assets assets, int tileIndex) {
             movements.reset();
             var stack = valid.getDefault(tileIndex);
-            if(stack.size() > cost) {
-                System.out.println("here");
-            }
             while (!stack.empty()) {
                 var tmp = stack.pop();
                 String d = direction(tmp.first);
