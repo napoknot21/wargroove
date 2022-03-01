@@ -8,8 +8,14 @@ public abstract class Constants {
 
 	public static String DEFAULT_DB_ROOT = "../db/";
 
-	public static String WORLD_DESCRIPTION_DB_KEY = "description";
-	public static String WORLD_WIDTH_DB_KEY = "width";
-	public static String WORLD_HEIGHT_DB_KEY = "height";
+	public static String WORLD_DESCRIPTION_DB_KEY 	= "description";
+	public static String WORLD_WIDTH_DB_KEY 	= "width";
+	public static String WORLD_HEIGHT_DB_KEY 	= "height";
+	
+	/*
+	 * Clés de la sauvegarde des mondes
+	 */
+	public static String WORLD_MAP_DB_KEY 		= "map";
+	public static String WORLD_TILE_TYPE_DB_KEY 	= "type";	
 
 }

@@ -40,6 +40,7 @@ public class World {
     public World(WorldProperties properties) {
 
         this.properties = properties;
+	//this.terrain = terrain;
 
         this.dimension = properties.dimension;
         currentEntityLinPosition = Optional.empty();
@@ -76,6 +77,8 @@ public class World {
             for (int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
 
         }
+
+	properties.terrain = terrain;
 
         Log.print("Initialisation terminée ...");
     }
@@ -423,7 +426,8 @@ public class World {
 	DbObject worldDBO = properties.toDBO();
 	boolean status = db.insert(properties.name, worldDBO);
 
-	db.flush();	
+	db.flush();
+	engine.disconnect();	
 
 	return status;
 
