@@ -9,13 +9,14 @@ tasks.withType<Jar> {
 
 	dependsOn(configurations.runtimeClasspath)
 	from (
-	configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
+		configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }	
 	)
 	manifest {
 		attributes["Main-Class"] = application.mainClass
 	}
 
 }
+
 
 application {
 

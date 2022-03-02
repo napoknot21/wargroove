@@ -432,6 +432,14 @@ public class World {
 	return status;
 
     }
+
+    public boolean save(Database db) {
+        db.selectCollection("worlds");
+        DbObject worldDBO = properties.toDBO();
+        boolean status = db.insert(properties.name, worldDBO);
+        db.flush();
+        return status;
+    }
     
     @Override
     public String toString() {
