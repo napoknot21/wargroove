@@ -71,7 +71,7 @@ public class ExportTextures extends DefaultTask {
             return new File(path);
         }
         File file = new File(path);
-        return new File(file.getParent() + name);
+        return new File(file.getParent() +'/'+ name);
     }
 
     private void copy(File origin, File destination) throws Exception {
