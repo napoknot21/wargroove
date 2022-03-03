@@ -8,29 +8,32 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.core.ui.views.objects.MapTile;
 import up.wargroove.utils.Pair;
 import java.util.ArrayList;
 
 
 public class CharacterUI extends Actor {
-    Controller controller;
-    Sprite sprite;
-    Sprite spriteWaiting;
-    Pair<Integer, Integer> coordinate;
-    MapTile tile;
-    Character character;
-    TextureRegion[] animationMove;
-    float temps;
-    ArrayList<java.lang.Character> move= new ArrayList<>();
-    static float TIME_LAPSE=0.5f;
-    static final int TILE_SIZE= 20;
+    private Controller controller;
+    private Sprite sprite;
+    private Sprite spriteWaiting;
+    private Pair<Integer, Integer> coordinate;
+    private Character character;
+    private TextureRegion[] animationMove;
+    private float temps;
+    private ArrayList<java.lang.Character> move= new ArrayList<>();
+    private static float TIME_LAPSE=0.5f;
+    private static final int TILE_SIZE= 20;
+    private static final String TEXTURE_PATH = "data/sprites/character/";
 
 
     private Texture getPath(String nameFile) {
-        return new Texture((Gdx.files.internal("data/sprites/character/" + character.getType().movement.component + "/" + character.getType() + "/" + character.getFaction() + "/" + nameFile)));
+        return new Texture((Gdx.files.internal("data/sprites/character/" +  character.getType() + "/" + character.getFaction() + "/" + nameFile)));
+    }
 
+    private String getTexturePath(String nameFile) {
+        return  TEXTURE_PATH + character.getType() + "/" + character.getFaction() + "/" + nameFile;
     }
 
 /*
@@ -76,7 +79,8 @@ public class CharacterUI extends Actor {
         setPosition(coord.first * TILE_SIZE,coord.second * TILE_SIZE);
         positionChanged();
         this.spriteWaiting = sprite;
-
+        Assets assets= controller.getWargroove().getAssets();
+        controller.getScreen().getStage().addActor(this);
     }
 
     @Override
@@ -146,10 +150,10 @@ public class CharacterUI extends Actor {
             temps+=TIME_LAPSE;
         }
         switch (move.get(0)){
-            case 'U': moveTo(0,1, getPath("MOVE/tile008.png")); return;
-            case 'R': moveTo(1,0, getPath("MOVE/tile011.png")); return;
-            case 'D': moveTo(0,-1, getPath("MOVE/tile010.png")); return;
-            case 'L': moveTo(-1,0, getPath("MOVE/tile009.png"));
+            case 'U': moveTo(0,1, getPath("tile008.png")); return;
+            case 'R': moveTo(1,0, getPath("tile011.png")); return;
+            case 'D': moveTo(0,-1, getPath("tile010.png")); return;
+            case 'L': moveTo(-1,0, getPath("tile009.png"));
         }
     }
 
@@ -184,7 +188,25 @@ public class CharacterUI extends Actor {
     public TextureRegion[] AnimationWalk(Texture texture){
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
         TextureRegion [] move = new TextureRegion[8];
-        for (int i = 0; i < 8 ; i++){
+        for (int i = 0; i < move.length ; i++){
+            move[i] = tmp[0][i];
+        }
+        return move;
+    }
+
+    public TextureRegion[] AnimationAttack(Texture texture){
+        TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
+        TextureRegion [] move = new TextureRegion[8];
+        for (int i = 0; i < move.length ; i++){
+            move[i] = tmp[0][i];
+        }
+        return move;
+    }
+
+    public TextureRegion[] AnimationDie(Texture texture){
+        TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
+        TextureRegion [] move = new TextureRegion[6];
+        for (int i = 0; i < move.length ; i++){
             move[i] = tmp[0][i];
         }
         return move;

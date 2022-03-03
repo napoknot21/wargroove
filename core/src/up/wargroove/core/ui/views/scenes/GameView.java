@@ -72,13 +72,12 @@ public class GameView extends View {
                 "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
                 0, 0, false, null
         );
-        //getModel().getWorld().addEntity(new Pair<>(0,0),character);
         CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        addActor(pepito);
+        CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), character);
         pepito.moveNorth();
         pepito.moveNorth();
-        pepito.moveEast();
-        pepito.moveSouth();
+        menganito.moveEast();
+        menganito.moveSouth();
         pepito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());

@@ -244,7 +244,9 @@ public class Controller {
         return false;
     }
 
-
+    public WargrooveClient getWargroove() {
+        return wargroove;
+    }
     public void startMoving() {
         ((GameView)getScreen()).setMovement(true);
     }
