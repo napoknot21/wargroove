@@ -36,7 +36,7 @@ public class UnitIndicator extends Indicator {
         setBackground(assets.get(path, Texture.class));
         var character = (Character) tile.entity.get();
         var t = new Texture(
-                (Gdx.files.internal("data/sprites/character/" + character.getType().movement.component
+                (Gdx.files.internal("data/sprites/character/"
                         + "/" + character.getType() + "/" + character.getFaction() + "/LIFE.png")
                 )
         );
