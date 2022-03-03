@@ -1,5 +1,5 @@
 rootProject.name = "wargroove"
-include("config", "core", "utils", "desktop", "mapLoader")
+include("config", "core", "utils", "desktop", "plugins")
 
 pluginManagement {
 

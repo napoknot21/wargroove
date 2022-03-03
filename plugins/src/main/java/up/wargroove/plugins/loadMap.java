@@ -1,4 +1,4 @@
-package up.wargroove.mapLoader;
+package up.wargroove.plugins;
 
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
@@ -72,7 +72,7 @@ public class loadMap extends DefaultTask {
     }
 
     /**
-     * Traducts from a csv file the data needed by the world.
+     * Translate from a csv file the data needed by the world.
      *
      * @param file The csv file.
      * @return The generated world properties.

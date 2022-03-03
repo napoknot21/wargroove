@@ -12,18 +12,19 @@ sourceSets {
         java {
             srcDirs("src/")
         }
-        resources {
-            srcDirs("assets/")
-        }
     }
 }
-
 
 gradlePlugin {
     plugins {
         create("mapLoader") {
             id = "up.wargroove.mapLoader"
-            implementationClass = "up.wargroove.mapLoader.MapLoader"
+            implementationClass = "up.wargroove.plugins.MapLoader"
+            version = "0.0.1"
+        }
+        create("exportTexture") {
+            id = "up.wargroove.exportTextures"
+            implementationClass = "up.wargroove.plugins.ExportTexturesPlugin"
             version = "0.0.1"
         }
     }

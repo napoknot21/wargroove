@@ -1,4 +1,4 @@
-package up.wargroove.mapLoader;
+package up.wargroove.plugins;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;

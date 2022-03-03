@@ -4,6 +4,7 @@ plugins {
 	`maven-publish`
 
 	id("up.wargroove.mapLoader") version "0.0.1"
+	id("up.wargroove.exportTextures") version "0.0.1"
 }
 
 var gdxVersion = "1.10.0"
@@ -70,6 +71,6 @@ project(":utils") {
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
-	implementation(project(":mapLoader"))
+	implementation(project(":plugins"))
 }
 
