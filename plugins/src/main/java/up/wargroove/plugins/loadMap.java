@@ -25,7 +25,7 @@ public class loadMap extends DefaultTask {
 
     @Input
     public String getRoot() {
-        return "db/test.db";
+        return "db/wargroove.db";
     }
 
     @Option(option = "paths", description = "List of file paths that point to a map that needed to be loaded")
