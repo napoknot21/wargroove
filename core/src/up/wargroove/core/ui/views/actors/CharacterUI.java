@@ -21,15 +21,21 @@ public class CharacterUI extends Actor {
     private Pair<Integer, Integer> coordinate;
     private Character character;
     private TextureRegion[] animationMove;
+    private TextureRegion[] animationDie;
     private float temps;
     private ArrayList<java.lang.Character> move= new ArrayList<>();
     private static float TIME_LAPSE=0.5f;
     private static final int TILE_SIZE= 20;
     private static final String TEXTURE_PATH = "data/sprites/character/";
+    private Assets assets;
+
 
 
     private Texture getPath(String nameFile) {
-        return new Texture((Gdx.files.internal("data/sprites/character/" +  character.getType() + "/" + character.getFaction() + "/" + nameFile)));
+        //return new Texture((Gdx.files.internal("data/sprites/character/" +  character.getType() + "/" + character.getFaction() + "/" + nameFile)));
+        //System.out.println(TEXTURE_PATH+character.getFaction()+ "/"+character.getType()+"_"+nameFile);
+        return assets.get(TEXTURE_PATH+character.getFaction()+ "/"+character.getType()+"_"+nameFile, Texture.class);
+
     }
 
     private String getTexturePath(String nameFile) {
@@ -74,12 +80,13 @@ public class CharacterUI extends Actor {
         this.character = character;
         this.coordinate = coord;
         controller.getWorld().addEntity(coord, character);
-        this.sprite = new Sprite(getPath("LIFE.png"));
+        assets= controller.getWargroove().getAssets();
+        AnimationDie();
+        this.sprite = new Sprite(animationDie[0]);
         sprite.setSize(20,30);
         setPosition(coord.first * TILE_SIZE,coord.second * TILE_SIZE);
         positionChanged();
-        this.spriteWaiting = sprite;
-        Assets assets= controller.getWargroove().getAssets();
+        spriteWaiting=sprite;
         controller.getScreen().getStage().addActor(this);
     }
 
@@ -150,17 +157,17 @@ public class CharacterUI extends Actor {
             temps+=TIME_LAPSE;
         }
         switch (move.get(0)){
-            case 'U': moveTo(0,1, getPath("tile008.png")); return;
-            case 'R': moveTo(1,0, getPath("tile011.png")); return;
-            case 'D': moveTo(0,-1, getPath("tile010.png")); return;
-            case 'L': moveTo(-1,0, getPath("tile009.png"));
+            case 'U': moveTo(0,1, getPath("MOVE_U.png")); return;
+            case 'R': moveTo(1,0, getPath("MOVE_R.png")); return;
+            case 'D': moveTo(0,-1, getPath("MOVE_D.png")); return;
+            case 'L': moveTo(-1,0, getPath("MOVE_L.png"));
         }
     }
 
 
     private void moveTo(int x, int y, Texture texture){
         if(temps==TIME_LAPSE){
-            animationMove = AnimationWalk(texture);
+            AnimationWalk(texture);
             controller.getWorld().delEntity(coordinate, character);
         }
         sprite= new Sprite(animationMove[(int) temps%8]);
@@ -181,35 +188,32 @@ public class CharacterUI extends Actor {
 
     /**
      * Create the animation accordig with the texture you want to show
-     *@return Frames
      */
 
 
-    public TextureRegion[] AnimationWalk(Texture texture){
+    public void AnimationWalk(Texture texture){
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
-        TextureRegion [] move = new TextureRegion[8];
-        for (int i = 0; i < move.length ; i++){
-            move[i] = tmp[0][i];
+        animationMove = new TextureRegion[8];
+        for (int i = 0; i < animationMove.length ; i++){
+            animationMove[i] = tmp[0][i];
         }
-        return move;
     }
 
-    public TextureRegion[] AnimationAttack(Texture texture){
+    public void AnimationAttack(Texture texture){
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
-        TextureRegion [] move = new TextureRegion[8];
-        for (int i = 0; i < move.length ; i++){
-            move[i] = tmp[0][i];
+        animationMove = new TextureRegion[8];
+        for (int i = 0; i < animationMove.length ; i++){
+            animationMove[i] = tmp[0][i];
         }
-        return move;
     }
 
-    public TextureRegion[] AnimationDie(Texture texture){
+    public void AnimationDie(){
+        Texture texture= getPath(("DIE.png"));
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
-        TextureRegion [] move = new TextureRegion[6];
-        for (int i = 0; i < move.length ; i++){
-            move[i] = tmp[0][i];
+        animationDie = new TextureRegion[6];
+        for (int i = 0; i < animationDie.length ; i++){
+            animationDie[i] = tmp[0][i];
         }
-        return move;
     }
 
     // TODO: 27/02/2022 : Amelioration du move
@@ -217,6 +221,10 @@ public class CharacterUI extends Actor {
         for (int i = 0; i < path.length(); i++) {
             move.add(path.charAt(i));
         }
+    }
+
+    public Texture characterTextureDefault() {
+        return spriteWaiting.getTexture();
     }
 
     public Pair<Integer, Integer> getCoordinate() {

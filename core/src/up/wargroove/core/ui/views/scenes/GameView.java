@@ -69,7 +69,7 @@ public class GameView extends View {
         moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
-                "Superman", Faction.FELHEIM_LEGION, Entity.Type.VILLAGER,
+                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
                 0, 0, false, null
         );
         CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);

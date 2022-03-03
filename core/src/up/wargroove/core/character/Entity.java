@@ -35,7 +35,7 @@ public abstract class Entity {
 
         VILLAGER(Movement.Type.WALKING, 3),
         COMMANDER(Movement.Type.WALKING, 4),
-        SPAREMAN(Movement.Type.WALKING, 3),
+        SPEARMAN(Movement.Type.WALKING, 3),
         DOG(Movement.Type.WALKING, 5),
         ARCHER(Movement.Type.WALKING, 3),
         SOLDIER(Movement.Type.WALKING, 4),

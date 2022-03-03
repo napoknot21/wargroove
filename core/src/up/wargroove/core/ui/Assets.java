@@ -256,6 +256,11 @@ public class Assets {
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
         SPRITES(DATA.path + "sprites" + fs),
         ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
+        CHARACTER(SPRITES.path + "character" + fs),
+        CHERRYSTONE_KINGDOM(CHARACTER.path + "CHERRYSTONE_KINGDOM" + fs,"cherrystone_kingdom"),
+        FELHEIM_LEGION(CHARACTER.path + "FELHEIM_LEGION" + fs, "felheim_legion"),
+        FLORAN_TRIBES(CHARACTER.path + "FLORAN_TRIBES" + fs, "floran_tribes"),
+        HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "heavensong_empire"),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice");
