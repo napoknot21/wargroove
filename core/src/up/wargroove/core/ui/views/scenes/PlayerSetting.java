@@ -4,39 +4,34 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.utils.Log;
 
 /**
- * The Main Menu.
+ * The World Settings Menu.
  */
-public class MainMenu extends View {
+public class PlayerSetting extends View {
     /**
-     * Start game button.
+     * Full Screen button.
      */
-    private Button startGame;
+    private Button back;
     /**
-     * Match settings button.
+     * Sound title label.
      */
-    private Button matchSettings;
+    private Label soundLabel;
     /**
-     * Player settings button.
+     * Sound state label.
      */
-    private Button playerSettings;
+    private Label stateLabel;
     /**
-     * Player settings button.
+     * To put the sound on
      */
-    private Button mapSelection;
+    private CheckBox sound;
     /**
      * Screen controller.
      */
@@ -46,35 +41,36 @@ public class MainMenu extends View {
 
     private OrthographicCamera camera;
 
-    private Sound buttonSound;
+    Sound buttonSound;
 
-    public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
+    public PlayerSetting(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
+        Skin skin = getAssets().getDefault(Skin.class);
+        buttonSound = getAssets().getDefault(Sound.class);
+        soundLabel = new Label("Sound", skin);
+        sound = new CheckBox("On",skin);
+        sound.setChecked(controller.isSoundOn());
+        stateLabel = new Label("", skin);
+        back = new TextButton("Back", skin);
+
     }
 
-    public MainMenu(Controller controller, WargrooveClient wargroove) {
+    /*public PlayerSetting(Controller controller, WargrooveClient wargroove) {
         this(controller, null, wargroove);
         this.controller = controller;
     }
 
-    public MainMenu(Model model, WargrooveClient wargroove) {
+    public PlayerSetting(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
         this.controller = new Controller(model, wargroove, this);
-    }
+    }*/
 
     @Override
     public void init() {
         camera = new OrthographicCamera();
         viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
         viewport.apply();
-        Skin skin = getAssets().getDefault(Skin.class);
-        buttonSound = getAssets().getDefault(Sound.class);
-
-        startGame = new TextButton("Start Game", skin);
-        matchSettings = new TextButton("Match Settings", skin);
-        playerSettings = new TextButton("Settings", skin);
-        mapSelection = new TextButton("Choose Map",skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -115,13 +111,14 @@ public class MainMenu extends View {
         Table table = new Table();
         table.setFillParent(true);
         //table.top();
-        table.add(startGame);
+        /*table.add(dimension);
+        table.row();*/
+        table.add(soundLabel).padRight(20f);
+        table.add(sound);
+        table.add(stateLabel);
         table.row();
-        table.add(matchSettings);
-        table.row();
-        table.add(mapSelection);
-        table.row();
-        table.add(playerSettings);
+        table.add(back);
+
 
         return table;
     }
@@ -130,43 +127,30 @@ public class MainMenu extends View {
      * Init the buttons listener.
      */
     private void initListener() {
-        startGame.addListener(
+        back.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        controller.startGame();
+                        makeSound(buttonSound);
+                        controller.back();
                     }
                 }
         );
-
-        mapSelection.addListener(
+        sound.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        controller.openMapSelection();
+                        makeSound(buttonSound);
+                        if(sound.isChecked()){
+                            stateLabel.setText("On");
+                            controller.setSound(true);
+                        }
+                        else{
+                            stateLabel.setText("Off");
+                            controller.setSound(false);
+                        }
                     }
                 }
         );
-        playerSettings.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        controller.openSettings();
-                    }
-                }
-        );
-        matchSettings.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        controller.openMatchSettings();
-                    }
-                }
-        );
-
     }
 }

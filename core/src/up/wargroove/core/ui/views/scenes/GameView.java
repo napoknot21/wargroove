@@ -43,6 +43,7 @@ public class GameView extends View {
     private TileIndicator tileIndicator;
     private UnitIndicator unitIndicator;
     private Stage gameViewUi;
+
     private boolean movement;
     private MoveDialog moveDialog;
     private Actor scopedEntity;
@@ -50,6 +51,7 @@ public class GameView extends View {
      * The current character possible movement.
      */
     private MovementSelector movementSelector;
+
 
     /**
      * Create the game screen.
@@ -72,6 +74,7 @@ public class GameView extends View {
                 "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
                 0, 0, false, null
         );
+
         CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
         CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), character);
         pepito.moveNorth();
@@ -79,6 +82,11 @@ public class GameView extends View {
         menganito.moveEast();
         menganito.moveSouth();
         pepito.moveWest();
+
+
+
+
+
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
         addActor(moveDialog);

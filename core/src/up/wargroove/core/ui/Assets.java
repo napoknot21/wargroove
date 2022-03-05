@@ -3,6 +3,7 @@ package up.wargroove.core.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -113,10 +114,12 @@ public class Assets {
      * Loads the defaults assets.
      */
     public void loadDefault() {
-        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.GUI.path + "uiskin.json"));
+        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "rusty-robot-ui.json"));
         defaults.put(Skin.class, defaultSkin);
-        Texture texture = new Texture(Gdx.files.internal(AssetDir.GUI.path + "uiskin.png"));
+        Texture texture = new Texture(Gdx.files.internal(AssetDir.SKIN.path + "uiskin.png"));
         defaults.put(Texture.class, texture);
+        Sound defaultSound = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
+        defaults.put(Sound.class, defaultSound);
     }
 
     /**
@@ -254,6 +257,7 @@ public class Assets {
     public enum AssetDir {
         // TODO: 17/02/2022 Find a way to improve the assets management with the characters sprites
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
+        SKIN(GUI.path + "skin" +fs), SOUND(GUI.path + "sound" + fs, "sound"),
         SPRITES(DATA.path + "sprites" + fs),
         ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
         CHARACTER(SPRITES.path + "character" + fs),
@@ -265,7 +269,7 @@ public class Assets {
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice");
 
-        // TODO : remplir mes chemins menant au repertoire et leur manifest pour charger les donnees
+        // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 
         private final String path;
         private final String[] manifest;
@@ -298,7 +302,7 @@ public class Assets {
      * List the Assets Textures.
      */
     public enum AssetType {
-        TEXTURE(Texture.class), SKIN(Skin.class);
+        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class);
         //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;

@@ -6,22 +6,29 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 
+
 import java.util.Vector;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import org.lwjgl.Sys;
+
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.GameView;
+
 import up.wargroove.core.ui.views.scenes.View;
-import up.wargroove.core.ui.views.scenes.WorldSetting;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
+
+
+import up.wargroove.core.ui.views.scenes.MatchSettings;
+import up.wargroove.core.ui.views.scenes.PlayerSetting;
+import up.wargroove.core.ui.views.scenes.SelectMap;
 
 
 /**
@@ -43,11 +50,14 @@ public class Controller {
      */
     private Model model;
 
+    private Screen previous;
     /**
      * World scale.
      */
     private float worldScale;
 
+
+    private boolean sound;
 
     /**
      * Camera velocity.
@@ -66,6 +76,8 @@ public class Controller {
         this.wargroove = wargroove;
         this.model = model;
         this.screen = screen;
+        this.previous = screen;
+        this.sound = true;
     }
 
     /**
@@ -96,10 +108,37 @@ public class Controller {
         worldScale = view.getGameMap().getScale();
     }
 
+    /**
+     * Open the menu to choose the map.
+     */
+    public void openMapSelection() {
+        Model model = getModel();
+        getClient().getAssets().load();
+        setPrevious();
+        this.getClient().setScreen(new SelectMap(this, model, getClient()));
+    }
+
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
-        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
+        setPrevious();
+        this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
+    }
+
+    public void openMatchSettings(){
+        Model model = getModel();
+        getClient().getAssets().load();
+        setPrevious();
+        this.getClient().setScreen(new MatchSettings(this, model, getClient()));
+    }
+
+    public void setPrevious(){
+        previous = getClient().getScreen();
+    }
+    public void back(){
+        Screen tmp = this.getClient().getScreen();
+        this.getClient().setScreen(previous);
+        tmp.dispose();
     }
 
     public Model getModel() {
@@ -156,6 +195,15 @@ public class Controller {
         this.screen = screen;
     }
 
+
+    public boolean isSoundOn() {
+        return sound;
+    }
+
+    public void setSound(boolean sound) {
+        this.sound = sound;
+    }
+
     /**
      * Move the cursor on the board.
      *
@@ -185,6 +233,7 @@ public class Controller {
      */
     public Tile setIndicator(Vector3 vector) {
         return getModel().getTile(vector);
+
     }
 
     /**

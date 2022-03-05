@@ -1,6 +1,12 @@
 package up.wargroove.core.ui.views.scenes;
 
+
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.ScreenAdapter;
+
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -34,6 +40,11 @@ public abstract class View extends ScreenAdapter {
      * The main stage of the screen.
      */
     private Stage ui;
+    /**
+     * The main skin
+     */
+    //final Skin SKIN;
+    //final Sound BUTTON_SOUND;
 
     /**
      * The Screen input manager
@@ -53,7 +64,9 @@ public abstract class View extends ScreenAdapter {
         this.model = model;
         this.ui = new Stage();
         this.wargroove = wargroove;
+
         inputs = new InputMultiplexer();
+
     }
 
     /**
@@ -145,6 +158,14 @@ public abstract class View extends ScreenAdapter {
         return wargroove.getAssets();
     }
 
+
+    public void makeSound(Sound s){
+        if(controller.isSoundOn()){
+            s.play();
+        }
+    }
+
+
     /**
      * Puts the view in debug mode.
      *
@@ -154,6 +175,7 @@ public abstract class View extends ScreenAdapter {
         ui.setDebugAll(debug);
     }
 
+
     public InputMultiplexer getInputs() {
         return inputs;
     }
@@ -161,4 +183,5 @@ public abstract class View extends ScreenAdapter {
     public void addInput(InputProcessor input) {
         inputs.addProcessor(input);
     }
+
 }
