@@ -26,9 +26,9 @@ public class MainMenu extends View {
      */
     private Button startGame;
     /**
-     * World settings button.
+     * Match settings button.
      */
-    private Button worldSettings;
+    private Button matchSettings;
     /**
      * Player settings button.
      */
@@ -72,9 +72,9 @@ public class MainMenu extends View {
         buttonSound = getAssets().getDefault(Sound.class);
 
         startGame = new TextButton("Start Game", skin);
-        worldSettings = new TextButton("World Settings", skin);
+        matchSettings = new TextButton("Match Settings", skin);
         playerSettings = new TextButton("Settings", skin);
-        //mapSelection = new TextButton("Choose Map",skin);
+        mapSelection = new TextButton("Choose Map",skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -117,7 +117,9 @@ public class MainMenu extends View {
         //table.top();
         table.add(startGame);
         table.row();
-        table.add(worldSettings).padTop(20f);
+        table.add(matchSettings);
+        table.row();
+        table.add(mapSelection);
         table.row();
         table.add(playerSettings);
 
@@ -138,12 +140,12 @@ public class MainMenu extends View {
                 }
         );
 
-        worldSettings.addListener(
+        mapSelection.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
-                        controller.openWorldSettings();
+                        controller.openMapSelection();
                     }
                 }
         );
@@ -156,5 +158,15 @@ public class MainMenu extends View {
                     }
                 }
         );
+        matchSettings.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        //makeSound(buttonSound);
+                        controller.openMatchSettings();
+                    }
+                }
+        );
+
     }
 }

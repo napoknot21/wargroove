@@ -155,7 +155,9 @@ public abstract class View extends ScreenAdapter {
 
 
     public void makeSound(Sound s){
-        if(controller.isSoundOn()) s.play();
+        if(controller.isSoundOn()){
+            s.play();
+        }
     }
 
 

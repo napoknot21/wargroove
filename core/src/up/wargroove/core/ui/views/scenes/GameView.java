@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -45,6 +46,9 @@ public class GameView extends View {
     private OrthogonalTiledMapRenderer renderer;
     private TileIndicator indicator;
     private Stage gameViewUi;
+    private Button quit;
+    private Button money;
+    private Button pos;
 
     /**
      * Create the game screen.
@@ -65,8 +69,22 @@ public class GameView extends View {
                 "Superman", Faction.CHERRRYSTONE_KINGDOM, Entity.Type.VILLAGER,
                 0, 0, false, null
         );
+        Skin skin = getAssets().getDefault(Skin.class);
+        quit = new TextButton("Quit",skin);
+        money = new TextButton("Money",skin);
+        pos = new TextButton("Position",skin);
+        Table menu = new Table( skin );
+        menu.add(quit);
+        menu.add(money);
+        menu.add(pos);
+
+
+
+
         Table table = new Table();
         table.setFillParent(true);
+        table.bottom();
+        table.add(menu);
         table.add(new CharacterUI(gameMap, this, new Pair<>(0, 0), character));
         addActor(table);
 

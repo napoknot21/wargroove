@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
@@ -19,7 +18,7 @@ import up.wargroove.core.ui.controller.Controller;
 /**
  * The World Settings Menu.
  */
-public class WorldSetting extends View {
+public class SelectMap extends View {
     /**
      * Dimension button.
      */
@@ -63,17 +62,17 @@ public class WorldSetting extends View {
     private int HEIGHT = Gdx.graphics.getHeight();
     private int WIDTH = Gdx.graphics.getWidth();
 
-    public WorldSetting(Controller controller, Model model, WargrooveClient wargroove) {
+    public SelectMap(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
     }
 
-    public WorldSetting(Controller controller, WargrooveClient wargroove) {
+    public SelectMap(Controller controller, WargrooveClient wargroove) {
         this(controller, null, wargroove);
         this.controller = controller;
     }
 
-    public WorldSetting(Model model, WargrooveClient wargroove) {
+    public SelectMap(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
         this.controller = new Controller(model, wargroove, this);
     }
@@ -142,7 +141,7 @@ public class WorldSetting extends View {
         super.dispose();
         sb.dispose();
         mapText1.dispose();
-        buttonSound.dispose();
+        //buttonSound.dispose();
     }
 
     /**
@@ -170,13 +169,31 @@ public class WorldSetting extends View {
      * Init the buttons listener.
      */
     private void initListener() {
-        /*dimension.addListener(
+        map1.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
                     }
                 }
-        );*/
+        );
+
+        map2.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                    }
+                }
+        );
+        map3.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                    }
+                }
+        );
 
         back.addListener(
                 new ClickListener() {

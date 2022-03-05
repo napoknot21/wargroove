@@ -2,19 +2,16 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.ui.views.scenes.MatchSettings;
 import up.wargroove.core.world.Tile;
-import up.wargroove.utils.Log;
 import up.wargroove.core.ui.views.scenes.PlayerSetting;
-import up.wargroove.core.ui.views.scenes.WorldSetting;
+import up.wargroove.core.ui.views.scenes.SelectMap;
 
 /**
  * A basic gui controller.
@@ -93,11 +90,14 @@ public class Controller {
         worldScale = view.getGameMap().getScale();
     }
 
-    public void openWorldSettings() {
+    /**
+     * Open the menu to choose the map.
+     */
+    public void openMapSelection() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        this.getClient().setScreen(new WorldSetting(this, model, getClient()));
+        this.getClient().setScreen(new SelectMap(this, model, getClient()));
     }
 
     public void openSettings() {
@@ -105,6 +105,13 @@ public class Controller {
         getClient().getAssets().load();
         setPrevious();
         this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
+    }
+
+    public void openMatchSettings(){
+        Model model = getModel();
+        getClient().getAssets().load();
+        setPrevious();
+        this.getClient().setScreen(new MatchSettings(this, model, getClient()));
     }
 
     public void setPrevious(){
