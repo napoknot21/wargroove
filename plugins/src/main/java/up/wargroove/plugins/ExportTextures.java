@@ -5,6 +5,7 @@ import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import up.wargroove.core.world.Biome;
+
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,8 +14,8 @@ import java.util.Locale;
 public class ExportTextures extends DefaultTask {
     private String biome;
     private String path;
-    private boolean overwrite;
-    
+    private boolean overwrite = false;
+
     @Input
     public String getWorldTexturePath() {
         return "core/assets/data/sprites/world/";
@@ -29,49 +30,51 @@ public class ExportTextures extends DefaultTask {
     public void setPath(String path) {
         this.path = path;
     }
+
     @Option(option = "overwrite", description = "indicate if a file a the same name a the one given " +
             "in the path or the default one will be be overwritten (Y/N)")
     public void setOverwrite(String overwrite) {
-        this.overwrite = overwrite.equals("Y");
+        this.overwrite = overwrite.equalsIgnoreCase("Y");
     }
-    
+
     @TaskAction
     public void run() throws Exception {
         if (path == null || path.isEmpty()) {
             throw new Exception("The path cannot be empty");
         }
-        Biome b = (biome == null)? Biome.GRASS : Biome.valueOf(biome.toUpperCase(Locale.ROOT));
+        Biome b = (biome == null) ? Biome.GRASS : Biome.valueOf(biome.toUpperCase(Locale.ROOT));
         String name = b.name().toLowerCase() + ".png";
         Path source = Paths.get(getWorldTexturePath() + name);
-        File destination = getDestination(name);
+        File destination = createDestination(getDestination(name));
         File origin = new File(String.valueOf(source));
         if (!origin.isFile()) {
             throw new Exception("A problem occurred during the loading of the requested texture.");
         }
-        createDestination(destination);
-        copy(origin,destination);
+
+        copy(origin, destination);
         System.out.println("Exportation successful");
     }
 
-    private void createDestination(File destination) throws Exception{
+    private File createDestination(File destination) throws Exception {
         if (overwrite && destination.exists()) {
-            return;
+            return destination;
         }
         if (!destination.createNewFile()) {
             throw new Exception("A problem occurred during the creation of the destination file");
         }
+        return destination;
     }
 
     private File getDestination(String name) {
         char last = path.charAt(path.length() - 1);
-        if (last =='/' || last == '\\') {
-            return new File(path+name);
-            }
+        if (last == '/' || last == '\\') {
+            return new File(path + name);
+        }
         if (path.endsWith(".png")) {
             return new File(path);
         }
         File file = new File(path);
-        return new File(file.getParent() +'/'+ name);
+        return new File(file.getParent() + '/' + name);
     }
 
     private void copy(File origin, File destination) throws Exception {

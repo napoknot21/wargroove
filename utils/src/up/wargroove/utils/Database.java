@@ -69,7 +69,9 @@ public class Database {
 	}
 
 	private int findCollections() {
-
+		if (jsonData == null) {
+			return -1;
+		}
 		Set<String> keys = jsonData.keySet();
 		int kc = 0;
 

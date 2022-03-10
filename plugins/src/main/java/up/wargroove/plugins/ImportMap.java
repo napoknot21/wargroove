@@ -1,7 +1,7 @@
 package up.wargroove.plugins;
 
 import org.gradle.api.DefaultTask;
-import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
 import up.wargroove.core.world.Biome;
@@ -10,22 +10,24 @@ import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.Database;
 import up.wargroove.utils.Pair;
+
 import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class loadMap extends DefaultTask {
+public class ImportMap extends DefaultTask {
     private final StringBuilder log = new StringBuilder();
     private final Tile.Type[] tileType = Tile.Type.values();
-    private final Database db = new Database(new File(getRoot()));
+    private final Database db = new Database(getRoot());
     private String[] paths;
     private String biome;
 
-    @Input
-    public String getRoot() {
-        return "db/wargroove.db";
+    @InputFile
+    public File getRoot() {
+        return new File("db/wargroove.db");
     }
 
     @Option(option = "paths", description = "List of file paths that point to a map that needed to be loaded")
@@ -41,21 +43,22 @@ public class loadMap extends DefaultTask {
 
     @TaskAction
     public void run() throws Exception {
+        System.out.println(Paths.get(".").toAbsolutePath());
         if (paths == null || paths.length == 0) {
             throw new Exception("The args cannot be empty");
         }
 
-            for (String path : paths) {
-                try {
+        for (String path : paths) {
+            try {
                 File file = new File(path);
                 if (!file.exists() || file.isDirectory()) {
                     log.append("The specified path must indicate a file (").append(path).append(")").append('\n');
                 }
                 load(file);
-                } catch (Exception e) {
-                    log.append("An error occurred during the load of ").append(path).append("(").append(e.getMessage()).append(")");
-                }
+            } catch (Exception e) {
+                log.append("An error occurred during the load of ").append(path).append("(").append(e.getMessage()).append(")");
             }
+        }
 
         if (log.length() != 0) {
             throw new Exception(log.toString());
@@ -87,8 +90,8 @@ public class loadMap extends DefaultTask {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             height++;
-            width = line.length();
             String[] data = line.split(",");
+            width = data.length;
             for (String d : data) {
                 array.add(getTile(Integer.parseInt(d)));
             }
@@ -99,10 +102,10 @@ public class loadMap extends DefaultTask {
     /**
      * Generates the World properties.
      *
-     * @param array the world terrain.
-     * @param width the world terrain width.
+     * @param array  the world terrain.
+     * @param width  the world terrain width.
      * @param height the world terrain height.
-     * @param file the csv file.
+     * @param file   the csv file.
      * @return The world properties corresponding to the file.
      */
     private WorldProperties generateProperties(ArrayList<Tile> array, int width, int height, File file) {

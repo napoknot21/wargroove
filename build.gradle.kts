@@ -3,8 +3,9 @@ plugins {
 	checkstyle
 	`maven-publish`
 
-	id("up.wargroove.mapLoader") version "0.0.1"
+	id("up.wargroove.importMap") version "0.0.1"
 	id("up.wargroove.exportTextures") version "0.0.1"
+	id("up.wargroove.exportMap") version "0.0.1"
 }
 
 var gdxVersion = "1.10.0"

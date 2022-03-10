@@ -17,14 +17,19 @@ sourceSets {
 
 gradlePlugin {
     plugins {
-        create("mapLoader") {
-            id = "up.wargroove.mapLoader"
-            implementationClass = "up.wargroove.plugins.MapLoader"
+        create("importMap") {
+            id = "up.wargroove.importMap"
+            implementationClass = "up.wargroove.plugins.ImportMapPlugin"
             version = "0.0.1"
         }
         create("exportTexture") {
             id = "up.wargroove.exportTextures"
             implementationClass = "up.wargroove.plugins.ExportTexturesPlugin"
+            version = "0.0.1"
+        }
+        create("exportMap") {
+            id = "up.wargroove.exportMap"
+            implementationClass = "up.wargroove.plugins.ExportMapPlugin"
             version = "0.0.1"
         }
     }
