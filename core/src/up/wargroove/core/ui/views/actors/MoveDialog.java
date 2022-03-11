@@ -18,9 +18,11 @@ public class MoveDialog extends Table {
 
     public MoveDialog(Assets assets, Controller controller) {
         setVisible(false);
-        cancel = new TextButton("Cancel", assets.getDefault(Skin.class));
-        wait = new TextButton("wait", assets.getDefault(Skin.class));
-        move = new TextButton("move", assets.getDefault(Skin.class));
+        Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json",Skin.class);
+        cancel = new TextButton("Cancel", skin);
+        wait = new TextButton("wait", skin);
+        move = new TextButton("move", skin);
+
         initDialog();
         initInput(controller);
     }
@@ -47,11 +49,12 @@ public class MoveDialog extends Table {
     }
 
     private void initDialog() {
-        add(cancel);
+        center();
+        add(cancel).pad(0).left();
         row();
-        add(wait);
+        add(wait).pad(0).left();
         row();
-        add(move);
+        add(move).pad(0).left();
     }
 
     @Override

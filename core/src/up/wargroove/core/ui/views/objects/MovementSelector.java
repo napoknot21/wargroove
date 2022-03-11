@@ -179,6 +179,7 @@ public class MovementSelector {
      * @param pair The sprites coordinates.
      */
     public void showValids(Assets assets, Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> pair) {
+        reset();
         pair.first.forEach(v -> valid.add(assets.getTest(), v));
         valid.addIntel(pair.second);
     }
@@ -509,8 +510,12 @@ public class MovementSelector {
          */
         private synchronized Texture getArrow(Assets assets, char d) {
             if (index > 0) {
-                String last = String.valueOf(path.charAt(index - 1)) + d;
-                get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
+                try {
+                    String last = String.valueOf(path.charAt(index - 1)) + d;
+                    get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return assets.get(Assets.AssetDir.ARROWS.getPath() + d + ".png");
         }

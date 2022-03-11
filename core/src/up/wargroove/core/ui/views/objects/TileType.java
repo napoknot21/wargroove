@@ -7,30 +7,32 @@ import up.wargroove.utils.Log;
  * Represent the type of Tile related to its file name.
  */
 public enum TileType {
-    TEST(false, "test"),
-    PLAIN(true, "plains"),
-    BRIDGE(true, "bridge"),
-    FOREST(true, "forest"),
-    MOUNTAIN(true, "mountain"),
-    BEACH(true, "beach"),
-    SEA(false, "sea"),
-    ROAD(false, "road"),
-    DEEP_SEA(false, "deep_sea"),
-    RIVER(true, "river"),
-    REEF(false, "reef"),
-    WALL(true, "wall"),
-    FLAGSTONE(true, "flagstone"),
-    CARPET(false, "carpet");
+    TEST(false, "test", null),
+    PLAIN(true, "plains", Tile.Type.PLAIN),
+    BRIDGE(true, "bridge", Tile.Type.BRIDGE),
+    FOREST(true, "forest", Tile.Type.FOREST),
+    MOUNTAIN(true, "mountain", Tile.Type.MOUNTAIN),
+    BEACH(true, "beach", Tile.Type.BEACH),
+    SEA(false, "sea", Tile.Type.SEA),
+    ROAD(false, "road", Tile.Type.SEA),
+    DEEP_SEA(false, "deep_sea", Tile.Type.DEEP_SEA),
+    RIVER(true, "river", Tile.Type.RIVER),
+    REEF(false, "reef", Tile.Type.REEF),
+    WALL(true, "wall", Tile.Type.WALL),
+    FLAGSTONE(true, "flagstone", Tile.Type.FLAGSTONE),
+    CARPET(false, "carpet", Tile.Type.CARPET);
 
 
     private static final String extension = ".png";
     private static final String TEXTURE_PATH = "data/sprites/world/";
     private final boolean hasVariant;
     private final String texture;
+    private Tile.Type type;
 
-    TileType(boolean hasVariant, String texture) {
+    TileType(boolean hasVariant, String texture, Tile.Type type) {
         this.texture = texture;
         this.hasVariant = hasVariant;
+        this.type = type;
     }
 
     /**
@@ -84,7 +86,7 @@ public enum TileType {
      * @return The Tiletype equivalent of the id
      */
     private static TileType getTileType(int id) {
-        return TileType.values()[id];
+        return values()[id];
     }
 
 

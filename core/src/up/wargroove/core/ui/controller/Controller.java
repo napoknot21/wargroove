@@ -290,6 +290,7 @@ public class Controller {
             movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
             return true;
         }
+        endMoving();
         return false;
     }
 
@@ -305,9 +306,9 @@ public class Controller {
         MovementSelector selector = gameView.getMovementSelector();
         gameView.setMovement(false);
         String path = selector.getPath();
-        //Pair<Integer,Integer> destination = selector.getDestination();
+        Pair<Integer,Integer> destination = selector.getDestination();
         selector.reset();
-        //getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
+        getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path);

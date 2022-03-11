@@ -168,7 +168,6 @@ public class CharacterUI extends Actor {
     private void moveTo(int x, int y, Texture texture){
         if(temps==TIME_LAPSE){
             AnimationWalk(texture);
-            controller.getWorld().delEntity(coordinate, character);
         }
         sprite= new Sprite(animationMove[(int) temps%8]);
         sprite.setSize(20,30);
@@ -179,7 +178,6 @@ public class CharacterUI extends Actor {
             coordinate.second+= y;
             setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
             spriteWaiting.setPosition(getX(),getY());
-            controller.getWorld().addEntity( coordinate, character);
             move.remove(0);
         }
     }

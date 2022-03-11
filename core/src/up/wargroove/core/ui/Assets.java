@@ -260,7 +260,7 @@ public class Assets {
     public enum AssetDir {
         // TODO: 17/02/2022 Find a way to improve the assets management with the characters sprites
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
-        SKIN(GUI.path + "skin" +fs), SOUND(GUI.path + "sound" + fs, "sound"),
+        SKIN(GUI.path + "skin" +fs, "skin"), SOUND(GUI.path + "sound" + fs, "sound"),
         SPRITES(DATA.path + "sprites" + fs),
         ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
         CHARACTER(SPRITES.path + "character" + fs),

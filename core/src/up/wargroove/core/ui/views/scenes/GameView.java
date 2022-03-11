@@ -72,6 +72,7 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
+        initMap();
 
         theme = getAssets().getDefault(Music.class);
         makeMusic(theme);
@@ -81,22 +82,20 @@ public class GameView extends View {
         Character character = new Villager(
                 "Superman", Faction.CHERRYSTONE_KINGDOM
         );
+        Character c = new Character(
+                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
+                0, 0, false, null
+        );
 
         CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), character);
-        pepito.moveNorth();
-        pepito.moveNorth();
-        menganito.moveEast();
-        menganito.moveSouth();
-        pepito.moveWest();
-
-
-
-
-
+        CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), c);
+        //pepito.moveNorth();
+        //pepito.moveNorth();
+        //menganito.moveEast();
+        //menganito.moveSouth();
+        //pepito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
-        addActor(moveDialog);
         initInput();
     }
 
@@ -125,14 +124,25 @@ public class GameView extends View {
     private void initGameViewUI() {
         tileIndicator = new TileIndicator(getAssets(), Biome.ICE);
         unitIndicator = new UnitIndicator(getAssets(), Biome.ICE);
+        moveDialog = new MoveDialog(getAssets(),getController());
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
+
         Table table = new Table();
         table.setFillParent(true);
+        Table buttons = new Table();
+        buttons.bottom().add(moveDialog);
+        moveDialog.setVisible(true);
+
+        Table indicators = new Table();
+        indicators.bottom().right();
+        indicators.add(unitIndicator).pad(10);
+        indicators.add(tileIndicator).pad(10);
+
+
+        table.add(buttons).expand().left().bottom().pad(10);
+        table.add(indicators).expand().right().bottom().pad(10);
         gameViewUi.addActor(table);
-        table.add(unitIndicator).pad(10).width(unitIndicator.getWidth());
-        table.add(tileIndicator).pad(10).width(tileIndicator.getWidth());
-        table.bottom().right();
     }
 
     /**
@@ -167,12 +177,10 @@ public class GameView extends View {
                 Tile tile = getController().setIndicator(worldPosition);
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                moveDialog.setPosition(vector.x,vector.y);
                 if (!movement) {
                     scopeEntity(worldPosition);
                 }
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
-                moveDialog.setVisible(movement || movementSelector.isValidPosition());
                 return true;
             }
 
@@ -209,16 +217,15 @@ public class GameView extends View {
         movementSelector.drawValid(getBatch());
         getBatch().end();
         gameViewUi.draw();
-        if (movement) {
+
             movementSelector.draw(getBatch());
-        }
+
         getStage().draw();
     }
 
     @Override
     public void dispose() {
         gameMap = null;
-        theme.dispose();
         super.dispose();
     }
 
