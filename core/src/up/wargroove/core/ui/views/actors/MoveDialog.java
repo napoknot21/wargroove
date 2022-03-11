@@ -11,50 +11,31 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 
 public class MoveDialog extends Table {
-    private final TextButton cancel;
     private final TextButton wait;
-    private final TextButton move;
     private boolean moving;
 
     public MoveDialog(Assets assets, Controller controller) {
         setVisible(false);
         Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json",Skin.class);
-        cancel = new TextButton("Cancel", skin);
         wait = new TextButton("wait", skin);
-        move = new TextButton("move", skin);
 
         initDialog();
         initInput(controller);
     }
 
     private void initInput(Controller controller) {
-        move.addListener(
+        wait.addListener(
                 new ClickListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                         if(!moving) {
-                             controller.startMoving();
-                             moving = true;
-                             move.setText("Move to");
-                             setVisible(false);
-                         } else {
-                             controller.endMoving();
-                             moving = false;
-                             move.setText("Move");
-                             setVisible(false);
-                         }
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        controller.entityWait();
+                        return super.touchDown(event, x, y, pointer, button);
                     }
-                }
-        );
+                });
     }
 
     private void initDialog() {
-        center();
-        add(cancel).pad(0).left();
-        row();
-        add(wait).pad(0).left();
-        row();
-        add(move).pad(0).left();
+        add(wait).left();
     }
 
     @Override

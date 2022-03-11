@@ -132,7 +132,6 @@ public class GameView extends View {
         table.setFillParent(true);
         Table buttons = new Table();
         buttons.bottom().add(moveDialog);
-        moveDialog.setVisible(true);
 
         Table indicators = new Table();
         indicators.bottom().right();
@@ -143,6 +142,7 @@ public class GameView extends View {
         table.add(buttons).expand().left().bottom().pad(10);
         table.add(indicators).expand().right().bottom().pad(10);
         gameViewUi.addActor(table);
+        addInput(gameViewUi);
     }
 
     /**
@@ -181,6 +181,7 @@ public class GameView extends View {
                     scopeEntity(worldPosition);
                 }
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
+                moveDialog.setVisible(movement);
                 return true;
             }
 

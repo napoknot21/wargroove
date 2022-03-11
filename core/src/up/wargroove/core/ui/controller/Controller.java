@@ -307,6 +307,10 @@ public class Controller {
         gameView.setMovement(false);
         String path = selector.getPath();
         Pair<Integer,Integer> destination = selector.getDestination();
+        if (path.isBlank()) {
+            selector.reset();
+            return;
+        }
         selector.reset();
         getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -314,5 +318,12 @@ public class Controller {
             ((CharacterUI) entity).setMove(path);
             ((CharacterUI) entity).move();
         }
+    }
+
+    public void entityWait() {
+        GameView gameView = (GameView)getScreen();
+        MovementSelector selector = gameView.getMovementSelector();
+        selector.reset();
+        gameView.setMovement(false);
     }
 }
