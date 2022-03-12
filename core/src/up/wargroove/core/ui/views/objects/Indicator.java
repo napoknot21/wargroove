@@ -72,6 +72,19 @@ public abstract class Indicator extends Actor {
         }
     }
 
+    /**
+     * Set the foreground texture.
+     *
+     * @param texture The foreground texture.
+     */
+    public void setForeground(TextureRegion texture) {
+        if (texture != null) {
+            foreground.setRegion(texture);
+        } else {
+            foreground.setTexture(null);
+        }
+    }
+
     public Sprite getBackground() {
         return background;
     }
@@ -82,6 +95,19 @@ public abstract class Indicator extends Actor {
      * @param texture The background texture.
      */
     public void setBackground(Texture texture) {
+        if (texture != null) {
+            background.setRegion(new TextureRegion(texture));
+        } else {
+            background.setTexture(null);
+        }
+    }
+
+    /**
+     * Set the background texture.
+     *
+     * @param texture The background texture.
+     */
+    public void setBackground(TextureRegion texture) {
         if (texture != null) {
             background.setRegion(new TextureRegion(texture));
         } else {

@@ -29,16 +29,18 @@ public class UnitIndicator extends Indicator {
     @Override
     public void setTexture(Assets assets, Tile tile) {
         if (tile.entity.isEmpty()) {
-            setForeground(null);
-            setBackground(null);
+            setForeground((Texture) null);
+            setBackground((Texture) null);
             return;
         }
         String path = TileType.getTexturePath(tile, getBiome());
         setBackground(assets.get(path, Texture.class));
         var character = (Character) tile.entity.get();
-        var texture = assets.get("data/sprites/character/"+character.getFaction()+ "/"+character.getType()+"_DIE.png", Texture.class);
+        var texture = assets.get(
+                "data/sprites/character/"+character.getFaction()+ "/"+character.getType()+"_DIE.png", Texture.class
+        );
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
-        setForeground((tmp[0][0]).getTexture());
+        setForeground((tmp[0][0]));
     }
 
 

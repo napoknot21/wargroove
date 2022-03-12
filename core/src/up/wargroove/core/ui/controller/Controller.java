@@ -281,6 +281,7 @@ public class Controller {
     }
 
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
+        movement = getWorld().at((int) worldPosition.x,(int)worldPosition.y).entity.isEmpty();
         if (!movement) {
             if (!setScopeEntity(worldPosition)) {
                 return false;
@@ -290,7 +291,6 @@ public class Controller {
             movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
             return true;
         }
-        endMoving();
         return false;
     }
 

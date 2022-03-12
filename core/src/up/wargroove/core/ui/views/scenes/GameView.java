@@ -177,11 +177,11 @@ public class GameView extends View {
                 Tile tile = getController().setIndicator(worldPosition);
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                if (!movement) {
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                if (movement) {
                     scopeEntity(worldPosition);
                 }
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
-                moveDialog.setVisible(movement);
+                moveDialog.startMoving(movement);
                 return true;
             }
 
