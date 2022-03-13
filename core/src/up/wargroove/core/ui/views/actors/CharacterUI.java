@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
@@ -18,6 +19,7 @@ public class CharacterUI extends Actor {
     private Controller controller;
     private Sprite sprite;
     private Sprite spriteWaiting;
+    private Sprite stats;
     private Pair<Integer, Integer> coordinate;
     private Character character;
     private TextureRegion[] animationMove;
@@ -26,49 +28,26 @@ public class CharacterUI extends Actor {
     private ArrayList<java.lang.Character> move= new ArrayList<>();
     private static float TIME_LAPSE=0.5f;
     private static final int TILE_SIZE= 20;
+    private static final int DEFAULT_FRAMES= 13;
+    private static int ATTACK_FRAMES;
+    public boolean alive= true;
+
+
     private static final String TEXTURE_PATH = "data/sprites/character/";
     private Assets assets;
 
 
 
     private Texture getPath(String nameFile) {
-        //return new Texture((Gdx.files.internal("data/sprites/character/" +  character.getType() + "/" + character.getFaction() + "/" + nameFile)));
-        //System.out.println(TEXTURE_PATH+character.getFaction()+ "/"+character.getType()+"_"+nameFile);
         return assets.get(TEXTURE_PATH+character.getFaction()+ "/"+character.getType()+"_"+nameFile, Texture.class);
-
     }
 
-    private String getTexturePath(String nameFile) {
-        return  TEXTURE_PATH + character.getType() + "/" + character.getFaction() + "/" + nameFile;
+    private Texture getPathSTATS(int file) {
+        return assets.get(TEXTURE_PATH+ "STATS/Stats"+file+".png", Texture.class);
     }
 
-/*
-    public CharacterUI(Character character){
-        this.texture= new Texture((Gdx.files.internal(getPath( character))));
-    }
-*/
-
-/*
-    public CharacterUI(){
-        this.texture= new Texture((Gdx.files.internal("data/sprites/character/test.png")));
-        this.sprite= new Sprite(texture);
-        setBounds(sprite.getX(),sprite.getY(),sprite.getWidth(),sprite.getHeight());
-        this.setTouchable(Touchable.enabled);
 
 
-        addListener(new InputListener(){
-            public boolean move() {
-                if (Gdx.input.isTouched()) {
-                    MoveByAction mba = new MoveByAction();
-                    mba.setAmount(sprite.getX() + Gdx.input.getX(), sprite.getY() + Gdx.input.getY());
-                    mba.setDuration(5f);
-                    CharacterUI.this.addAction(mba);
-                }
-                return true;
-            }
-        });
-    }
-*/
 
     /**
      * Represent a visual character.
@@ -81,18 +60,40 @@ public class CharacterUI extends Actor {
         this.coordinate = coord;
         controller.getWorld().addEntity(coord, character);
         assets= controller.getWargroove().getAssets();
+        initialiseSprites();
+        controller.getScreen().getStage().addActor(this);
+
+    }
+
+    private void initialiseSprites(){
         AnimationDie();
         this.sprite = new Sprite(animationDie[0]);
-        sprite.setSize(20,30);
-        setPosition(coord.first * TILE_SIZE,coord.second * TILE_SIZE);
+        sprite.setSize(TILE_SIZE,TILE_SIZE+TILE_SIZE/2);
+        this.stats= new Sprite(getPathSTATS(0));
+        stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
+        setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
         positionChanged();
         spriteWaiting=sprite;
-        controller.getScreen().getStage().addActor(this);
     }
+
+    public int actualiseStats(){
+        if (character.getStats().getHealth()<100){
+            this.stats= new Sprite(getPathSTATS((int) (character.getStats().getHealth()/10)));
+            return 1;
+        }
+        if (character.getStats().getHealth()<=0){
+            this.stats= new Sprite(getPathSTATS( 0));
+            return 0;
+        }
+        return -1;
+    }
+
+
 
     @Override
     public void positionChanged() {
         sprite.setPosition(getX(), getY());
+        stats.setPosition(getX()+sprite.getWidth()-stats.getWidth()-1,getY()+1);
         super.positionChanged();
     }
 
@@ -103,11 +104,19 @@ public class CharacterUI extends Actor {
         super.act(delta);
     }
 
+    //TODO Ajout condition si la vie n'est pas a 100% (quand merge sera fait)
+
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        move();
+        if (!move.isEmpty()) move();
+        if (move.isEmpty()) {
+            //actualiseStats();
+            stats.draw(batch);
+        }
+        //if (coordinate.first.equals(new Integer(9))) die();
         sprite.draw(batch);
         super.draw(batch, parentAlpha);
+
     }
 
 
@@ -130,29 +139,14 @@ public class CharacterUI extends Actor {
 
     public void moveWest() {
         move.add('L');
-
-        /*
-        MoveByAction mba = new MoveByAction();
-        this.sprite.setTexture(getPath("MOVE/tile009.png"));
-        mba.setDuration(5f);
-        mba.setAmount( -gameMap.getTileWidth(),0);
-        this.addAction(mba);
-*/
     }
 
-    public void die() {
-        this.sprite.setTexture(getPath("DIE.png"));
-    }
 
 
     /**
      * Decides the mouvement
      */
     public void move() {
-        if (move.isEmpty()){
-            sprite=spriteWaiting;
-            return;
-        }
         if (temps<TILE_SIZE){
             temps+=TIME_LAPSE;
         }
@@ -164,7 +158,9 @@ public class CharacterUI extends Actor {
         }
     }
 
-
+/**
+ * According with the direction, moves the animation to a tile next of the origin tile
+ */
     private void moveTo(int x, int y, Texture texture){
         if(temps==TIME_LAPSE){
             AnimationWalk(texture);
@@ -172,20 +168,23 @@ public class CharacterUI extends Actor {
         sprite= new Sprite(animationMove[(int) temps%8]);
         sprite.setSize(20,30);
         setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
-        if (temps>=20f){
+        if (temps>=TILE_SIZE){
             temps=0;
             coordinate.first+= x;
             coordinate.second+= y;
             setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
             spriteWaiting.setPosition(getX(),getY());
             move.remove(0);
+            if (move.isEmpty()){
+                sprite=spriteWaiting;
+            }
         }
     }
 
 
 
     /**
-     * Create the animation according to the texture you want to show
+     * Create the animation showing the character walking
      */
 
 
@@ -197,6 +196,9 @@ public class CharacterUI extends Actor {
         }
     }
 
+    /**
+     * Create the animation showing the character doing his attack
+     */
     public void AnimationAttack(Texture texture){
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
         animationMove = new TextureRegion[8];
@@ -205,10 +207,29 @@ public class CharacterUI extends Actor {
         }
     }
 
+
+    private void die(){
+        controller.getWorld().delEntity(coordinate, character);
+
+        if (temps<=40){
+            temps+=TIME_LAPSE;
+        }   else if (temps<=60){
+            temps+= TIME_LAPSE/3;
+        }
+        sprite= new Sprite(animationDie[(int) temps/10]);
+        sprite.setSize(20,30);
+        positionChanged();
+    }
+
+
+    /**
+     * Create the animation showing the character dying
+     */
+
     public void AnimationDie(){
         Texture texture= getPath(("DIE.png"));
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
-        animationDie = new TextureRegion[6];
+        animationDie = new TextureRegion[7];
         for (int i = 0; i < animationDie.length ; i++){
             animationDie[i] = tmp[0][i];
         }
@@ -227,5 +248,15 @@ public class CharacterUI extends Actor {
 
     public Pair<Integer, Integer> getCoordinate() {
         return coordinate;
+    }
+
+    private void defineAttackFrames(){
+        switch (character.getType()){
+            case ARCHER: ATTACK_FRAMES=13;
+            case SOLDIER: ATTACK_FRAMES=6;
+            case SPEARMAN: ATTACK_FRAMES=8;
+            case AMPHIBIAN: ATTACK_FRAMES=8;
+                // case MAGE: ATTACK_FRAMES= 7;
+        }
     }
 }
