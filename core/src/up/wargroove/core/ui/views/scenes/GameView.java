@@ -3,6 +3,7 @@ package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -52,6 +53,8 @@ public class GameView extends View {
      */
     private MovementSelector movementSelector;
 
+    private Music theme;
+
 
     /**
      * Create the game screen.
@@ -68,6 +71,10 @@ public class GameView extends View {
     public void init() {
         initMap();
         initGameViewUI();
+
+        theme = getAssets().getDefault(Music.class);
+        makeMusic(theme);
+
         moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
