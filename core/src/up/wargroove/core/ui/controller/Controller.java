@@ -281,17 +281,24 @@ public class Controller {
     }
 
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
-        movement = getWorld().at((int) worldPosition.x,(int)worldPosition.y).entity.isEmpty();
-        if (!movement) {
-            if (!setScopeEntity(worldPosition)) {
+        if (movement) {
+            if (!movementSelector.isValidPosition()) {
+                movementSelector.reset();
+                ((GameView)getScreen()).getMoveDialog().clear();
                 return false;
             }
-            var pair = getMovementPossibilities();
-            movementSelector.showValids(getScreen().getAssets(), pair);
-            movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
-            return true;
+            ((GameView)getScreen()).getCursor().setLock(true);
+            return false;
         }
-        return false;
+        if (!setScopeEntity(worldPosition)) {
+            movementSelector.reset();
+            ((GameView) getScreen()).getMoveDialog().clear();
+            return false;
+        }
+        var pair = getMovementPossibilities();
+        movementSelector.showValids(getScreen().getAssets(), pair);
+        movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        return true;
     }
 
     public WargrooveClient getWargroove() {
@@ -305,6 +312,7 @@ public class Controller {
         GameView gameView = (GameView)getScreen();
         MovementSelector selector = gameView.getMovementSelector();
         gameView.setMovement(false);
+        gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer,Integer> destination = selector.getDestination();
         if (path.isBlank()) {
@@ -325,5 +333,6 @@ public class Controller {
         MovementSelector selector = gameView.getMovementSelector();
         selector.reset();
         gameView.setMovement(false);
+        gameView.getCursor().setLock(false);
     }
 }
