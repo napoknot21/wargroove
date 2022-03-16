@@ -19,7 +19,7 @@ public class MoveDialog extends Table {
     private final TextButton wait;
     private final TextButton attack;
     private final TextButton move;
-    private final Table moving, waiting;
+    private final TextButton buy;
 
     public MoveDialog(Assets assets, Controller controller) {
         super();
@@ -28,16 +28,8 @@ public class MoveDialog extends Table {
         wait = new TextButton("wait", skin);
         attack = new TextButton("attack", skin);
         move = new TextButton("move", skin);
-        moving = new Table();
-        waiting = new Table();
-        initTables();
+        buy = new TextButton("buy", skin);
         initInput(controller);
-    }
-
-    private void initTables() {
-        moving.add(move).pad(5);
-        moving.row();
-        moving.add(wait).pad(5);
     }
 
     private void initInput(Controller controller) {
@@ -63,6 +55,12 @@ public class MoveDialog extends Table {
                 moving = false;
                 return super.touchDown(event, x, y, pointer, button);
             }*/
+        });
+        buy.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                controller.openStructureMenu();
+            }
         });
     }
 
@@ -100,5 +98,6 @@ public class MoveDialog extends Table {
     }
 
     public void addBuy() {
+        addButton(buy);
     }
 }

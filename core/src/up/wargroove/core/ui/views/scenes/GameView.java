@@ -2,8 +2,9 @@ package up.wargroove.core.ui.views.scenes;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -11,13 +12,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.character.entities.*;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
@@ -25,10 +26,13 @@ import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.actors.MoveDialog;
+import up.wargroove.core.ui.views.actors.StructureMenu;
 import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
+
+import java.util.LinkedList;
 
 
 /**
@@ -46,7 +50,9 @@ public class GameView extends View {
     private OrthogonalTiledMapRenderer renderer;
     private TileIndicator tileIndicator;
     private UnitIndicator unitIndicator;
+    private StructureMenu structureMenu;
     private Stage gameViewUi;
+    private SnapshotArray<InputProcessor> lastInputs;
 
     private boolean movement;
     private MoveDialog moveDialog;
@@ -55,8 +61,6 @@ public class GameView extends View {
      * The current character possible movement.
      */
     private MovementSelector movementSelector;
-
-    private Music theme;
 
 
     /**
@@ -72,17 +76,13 @@ public class GameView extends View {
 
     @Override
     public void init() {
-        initMap();
         initGameViewUI();
         initMap();
-
-        theme = getAssets().getDefault(Music.class);
-        makeMusic(theme);
-
-        moveDialog = new MoveDialog(getAssets(),getController());
+        structureMenu = new StructureMenu(getAssets(), getController());
         movementSelector = new MovementSelector(gameMap.getScale());
-        Character character = new Villager(
-                "Superman", Faction.CHERRYSTONE_KINGDOM
+        Character character = new Character(
+                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
+                0, 0, false, null
         );
         Character c = new Character(
                 "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
@@ -177,14 +177,18 @@ public class GameView extends View {
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
                 Tile tile = getController().setIndicator(worldPosition);
-                tile.getStructure().ifPresent(structure -> System.out.println(structure.getType().name()));
+                if (tile.getStructure().isPresent()) {
+                    moveDialog.addBuy();
+                    return true;
+                }
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
                 if (movement) {
                     scopeEntity(worldPosition);
+                    moveDialog.addWait();
                 }
-                moveDialog.startMoving(movement);
+                if (movementSelector.getPath().length() > 0) moveDialog.addMove();
                 return true;
             }
 
@@ -222,8 +226,8 @@ public class GameView extends View {
         getBatch().end();
         gameViewUi.draw();
         movementSelector.draw(getBatch());
-
         getStage().draw();
+        structureMenu.draw();
     }
 
     @Override
@@ -237,6 +241,7 @@ public class GameView extends View {
         viewport.update(width, height);
         gameViewUi.getViewport().update(width,height);
         camera.position.set(gameMap.getCenter());
+        structureMenu.resize(width,height);
         super.resize(width, height);
     }
 
@@ -255,7 +260,7 @@ public class GameView extends View {
     @Override
     public void setDebug(boolean debug) {
         this.gameViewUi.setDebugAll(debug);
-        System.out.println(debug);
+        structureMenu.setDebug(debug);
         super.setDebug(debug);
     }
 
@@ -279,6 +284,10 @@ public class GameView extends View {
         }
     }
 
+    public void showsStructureMenu(LinkedList<Character> characters) {
+        structureMenu.shows(characters,getAssets());
+    }
+
     private void scopeEntity(Vector3 worldCoordinate) {
         scopeEntity(new Pair<>((int)worldCoordinate.x,(int)worldCoordinate.y));
     }
@@ -289,5 +298,13 @@ public class GameView extends View {
 
     public MovementSelector getMovementSelector() {
         return movementSelector;
+    }
+
+    public MoveDialog getMoveDialog() {
+        return moveDialog;
+    }
+
+    public Cursor getCursor() {
+        return cursor;
     }
 }

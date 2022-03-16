@@ -133,5 +133,7 @@ public class Tile implements Savable {
 
     }
 
-
+    public Optional<Structure> getStructure() {
+        return structure;
+    }
 }
