@@ -40,9 +40,6 @@ public class World {
     public World(WorldProperties properties) {
 
         this.properties = properties;
-	//this.terrain = terrain;
-
-        this.dimension = properties.dimension;
         currentEntityLinPosition = Optional.empty();
 
 	permutations = new int[] {
@@ -150,7 +147,7 @@ public class World {
 
     public boolean delEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         return delEntity(linCoordinate, entity);
 
     }
@@ -275,11 +272,10 @@ public class World {
 
 	if(predicate == null) return res;
 
-	Entity entity    = terrain[root].entity.get();
-	Entity.Type type = entity.getType();
+	Entity entity    = terrain[root].entity.get();	
 
-	int movementId   = type.movement.id;
-	int movementCost = type.movementCost;
+	int movementId   = entity.getMovement().id;
+	int movementCost = entity.getRange();
 
 	var rootElement = new Pair<>(root, movementCost);
     	int parentIndex = -1;
