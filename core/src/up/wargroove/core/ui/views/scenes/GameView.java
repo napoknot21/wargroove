@@ -11,6 +11,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -39,7 +41,7 @@ public class GameView extends View {
      * Visual of the world.
      */
     private GameMap gameMap;
-    private StretchViewport viewport;
+    private Viewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
     private TileIndicator tileIndicator;
@@ -122,8 +124,8 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(getAssets(), Biome.ICE);
-        unitIndicator = new UnitIndicator(getAssets(), Biome.ICE);
+        tileIndicator = new TileIndicator(getController(),Biome.ICE);
+        unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(),getController());
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
@@ -140,7 +142,7 @@ public class GameView extends View {
 
 
         table.add(buttons).expand().left().bottom().pad(10);
-        table.add(indicators).expand().right().bottom().pad(10);
+        table.add(indicators).expand().right().bottom();
         gameViewUi.addActor(table);
         addInput(gameViewUi);
     }
@@ -175,6 +177,7 @@ public class GameView extends View {
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
                 Tile tile = getController().setIndicator(worldPosition);
+                tile.getStructure().ifPresent(structure -> System.out.println(structure.getType().name()));
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
@@ -218,8 +221,7 @@ public class GameView extends View {
         movementSelector.drawValid(getBatch());
         getBatch().end();
         gameViewUi.draw();
-
-            movementSelector.draw(getBatch());
+        movementSelector.draw(getBatch());
 
         getStage().draw();
     }
@@ -233,16 +235,13 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        gameViewUi.getViewport().update(width,height);
         camera.position.set(gameMap.getCenter());
         super.resize(width, height);
     }
 
     public OrthographicCamera getCamera() {
         return camera;
-    }
-
-    public StretchViewport getViewport() {
-        return viewport;
     }
 
     public GameMap getGameMap() {
