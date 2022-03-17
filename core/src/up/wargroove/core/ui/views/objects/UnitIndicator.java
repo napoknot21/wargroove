@@ -1,11 +1,11 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Tile;
 
 /**
@@ -18,11 +18,11 @@ public class UnitIndicator extends Indicator {
     /**
      * Create a unit indicator.
      *
-     * @param assets the app assets.
+     * @param controller the app controller.
      * @param biome  the world biome.
      */
-    public UnitIndicator(Assets assets, Biome biome) {
-        super(assets, biome);
+    public UnitIndicator(Controller controller, Biome biome) {
+        super(biome);
     }
 
 

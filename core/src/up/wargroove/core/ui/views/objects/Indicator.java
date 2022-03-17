@@ -1,15 +1,13 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Tile;
-import up.wargroove.utils.Log;
 
 /**
  * A game UI indicator.
@@ -35,10 +33,9 @@ public abstract class Indicator extends Actor {
     /**
      * Create an indicator.
      *
-     * @param assets the app assets.
      * @param biome  the world biome.
      */
-    public Indicator(Assets assets, Biome biome) {
+    public Indicator(Biome biome) {
         super();
         this.foreground = new Sprite();
         foreground.setSize(50, 50);

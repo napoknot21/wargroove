@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.World;
 
 /**
@@ -20,7 +21,6 @@ public class GameMap extends TiledMap {
      * scale pixels for one tile.
      */
     int scale;
-    World world;
     TiledMapTileLayer tileLayer;
 
     /**
@@ -30,7 +30,6 @@ public class GameMap extends TiledMap {
      */
     public GameMap(World world, Assets assets) {
         super();
-        this.world = world;
         width = world.getDimension().first;
         height = world.getDimension().second;
         initDimension();
@@ -42,6 +41,7 @@ public class GameMap extends TiledMap {
                 tileLayer.setCell(i, j, cell);
             }
         }
+        world.at(0,0).setStructure(new Structure(Structure.Type.BARRACK));
         this.getLayers().add(tileLayer);
     }
 
@@ -76,10 +76,6 @@ public class GameMap extends TiledMap {
 
     public Vector3 getCenter() {
         return new Vector3((width * tileWidth) / 2f, (height * tileWidth) / 2f, 0);
-    }
-
-    public World getWorld() {
-        return world;
     }
 
     public TiledMapTileLayer getTileLayer() {

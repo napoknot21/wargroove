@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.graphics.Texture;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Tile;
 
 /**
@@ -14,11 +15,11 @@ public class TileIndicator extends Indicator {
     /**
      * Create a tile indicator.
      *
-     * @param assets the app assets.
+     * @param controller the app controller
      * @param biome  the world biome.
      */
-    public TileIndicator(Assets assets, Biome biome) {
-        super(assets, biome);
+    public TileIndicator(Controller controller,Biome biome) {
+        super(biome);
     }
 
 
