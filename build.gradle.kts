@@ -1,11 +1,9 @@
+import java.util.concurrent.ExecutionException
+
 plugins {
 	java
 	checkstyle
 	`maven-publish`
-
-	id("up.wargroove.importMap") version "0.0.1"
-	id("up.wargroove.exportTextures") version "0.0.1"
-	id("up.wargroove.exportMap") version "0.0.1"
 }
 
 var gdxVersion = "1.10.0"
@@ -31,6 +29,11 @@ allprojects {
     	plugins.apply("checkstyle")
 	    plugins.apply("maven-publish")
 		plugins.apply("java-gradle-plugin")
+		try {
+			plugins.apply("up.wargroove.importMap")
+			plugins.apply("up.wargroove.exportTextures")
+			plugins.apply("up.wargroove.exportMap")
+		} catch(_: UnknownPluginException){}
 
     	java.sourceCompatibility = JavaVersion.VERSION_11
 }

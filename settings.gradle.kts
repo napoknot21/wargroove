@@ -5,6 +5,8 @@ pluginManagement {
 
     plugins {
         id("up.wargroove.mapLoader")
+        id("up.wargroove.exportMap")
+        id("up.wargroove.importMap")
     }
 
     repositories {
