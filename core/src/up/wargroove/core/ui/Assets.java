@@ -12,8 +12,13 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.ui.views.objects.TileType;
+import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 
 /**
@@ -27,10 +32,14 @@ public class Assets {
     private static final String asmext = ".asman";
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
+    private final Map<FileHandle, Entity.Type> entitiesDescriptions;
+    private final Map<FileHandle, Tile.Type> tilesDescriptions;
 
     public Assets() {
         manager = new AssetManager();
         defaults = new HashMap<>();
+        entitiesDescriptions = new HashMap<>();
+        tilesDescriptions = new HashMap<>();
     }
 
     /**
@@ -67,6 +76,32 @@ public class Assets {
         if (isAlone) {
             printLoading();
         }
+    }
+
+    public void loadEntitiesDescription() {
+            FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
+            Scanner scanner = new Scanner(fileLoader.read());
+            while (scanner.hasNextLine()) {
+                String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
+                FileHandle file = new FileHandle(path);
+                Entity.Type type = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+
+                entitiesDescriptions.put(file, type);
+            }
+            scanner.close();
+    }
+
+    public void loadTilesDescription() {
+        FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[1]);
+        Scanner scanner = new Scanner(fileLoader.read());
+        while (scanner.hasNextLine()) {
+            String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
+            FileHandle file = new FileHandle(path);
+            Tile.Type type = Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+
+            tilesDescriptions.put(file, type);
+        }
+        scanner.close();
     }
 
     /**
@@ -271,7 +306,8 @@ public class Assets {
         STATS(CHARACTER.path + "STATS" + fs,"STATS"),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
-        ICE(WORLD.path + "ice" + fs, "ice");
+        ICE(WORLD.path + "ice" + fs, "ice"),
+        DESCRIPTION(DATA.path + "descriptions" + fs,"entities","tiles");
 
         // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 

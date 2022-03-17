@@ -41,10 +41,11 @@ public class WargrooveClient extends Game {
 
     @Override
     public void create() {
-        debug = false;
+        debug = true;
         batch = new SpriteBatch();
         assets = new Assets();
         assets.loadDefault();
+        assets.loadEntitiesDescription();
         Model model = new Model();
         controller = new Controller(model, this);
         controller.create();
