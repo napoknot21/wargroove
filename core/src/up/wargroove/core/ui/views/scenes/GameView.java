@@ -218,6 +218,7 @@ public class GameView extends View {
     @Override
     public void dispose() {
         gameMap = null;
+        theme.dispose();
         super.dispose();
     }
 

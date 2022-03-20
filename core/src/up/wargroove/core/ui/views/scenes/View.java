@@ -168,7 +168,8 @@ public abstract class View extends ScreenAdapter {
 
     public void makeMusic(Music m){
         if(controller.isSoundOn()){
-            m.setLooping(true);
+            m.setVolume(0.5f);
+            //m.setLooping(true);
             m.play();
         }
     }
