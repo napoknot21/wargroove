@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.*;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
@@ -77,9 +78,8 @@ public class GameView extends View {
 
         moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());
-        Character character = new Character(
-                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
-                0, 0, false, null
+        Character character = new Commander(
+                "Superman", Faction.CHERRYSTONE_KINGDOM
         );
 
         CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);

@@ -1,10 +1,10 @@
 package up.wargroove.core.world;
 
-public class Structure {
+public abstract class Structure {
 
     protected Type type;
 
-    public Structure(Type type) {
+    protected Structure(Type type) {
 
         this.type = type;
 
@@ -16,17 +16,6 @@ public class Structure {
 
     }
 
-    enum Type {
-
-        NULL,
-        VILLAGE,
-        STRONGHOLD,
-        BARRACK,
-        TOWER,
-        PORT,
-        HIDEOUT
-
-    }
-
+    public interface Type {}
 
 }

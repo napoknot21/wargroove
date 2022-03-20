@@ -277,7 +277,7 @@ public class Controller {
 
     public int getScopedEntityMovementCost() {
         Entity entity = getScopedEntity();
-        return (entity == null) ? -1 : entity.getType().movementCost;
+        return (entity == null) ? -1 : entity.getRange();
     }
 
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {

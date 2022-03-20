@@ -7,13 +7,16 @@ import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.functional.WPredicate;
+import up.wargroove.utils.DBEngine;
+import up.wargroove.utils.Database;
+import up.wargroove.utils.DbObject;
 import java.util.*;
+import java.io.IOException;
 
 public class World {
 
     private final int [] permutations;
-    private final WorldProperties properties;
-    private final Pair<Integer, Integer> dimension;
+    private final WorldProperties properties; 
     private final int turn;
     private Optional<Integer> currentEntityLinPosition;
     private Tile[] terrain;
@@ -21,7 +24,6 @@ public class World {
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-
         if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
@@ -38,12 +40,16 @@ public class World {
     public World(WorldProperties properties) {
 
         this.properties = properties;
-        this.dimension = properties.dimension;
         currentEntityLinPosition = Optional.empty();
 
-	permutations = new int[]{-dimension.first, 1, dimension.first, -1};
+	permutations = new int[] {
+		-properties.dimension.first, 
+		1, 
+		properties.dimension.first, 
+		-1
+	};
 
-        turn = 1;
+        turn = 1; 
 
     }
 
@@ -56,11 +62,11 @@ public class World {
     public void initialize(boolean generation) {
 
         Log.print("Initialisation du monde ...");
-        terrain = new Tile[dimension.first * dimension.second];
+        terrain = new Tile[properties.dimension.first * properties.dimension.second];
 
         if (generation && properties.genProperties != null) {
 
-            Generator gen = new Generator(dimension, properties.genProperties);
+            Generator gen = new Generator(properties.dimension, properties.genProperties);
             terrain = gen.build();
 
         } else {
@@ -68,6 +74,8 @@ public class World {
             for (int k = 0; k < terrain.length; k++) terrain[k] = new Tile();
 
         }
+
+	properties.terrain = terrain;
 
         Log.print("Initialisation terminée ...");
     }
@@ -92,7 +100,7 @@ public class World {
 
     public Tile at(int x, int y) {
 
-        return terrain[y * dimension.first + x];
+        return terrain[y * properties.dimension.first + x];
 
     }
 
@@ -116,19 +124,19 @@ public class World {
     /**
      * Ajout d'une entité sur le monde
      *
-     * @param Pair<Integer,Integer> la coordonnée
-     * @param Entity l'entité
+     * @param coordinate la coordonnée
+     * @param entity l'entité
      *
      * @return le succès de l'ajout
      */
 
     public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         return addEntity(linCoordinate, entity);
 
     }
-
+    
     public boolean delEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -139,7 +147,7 @@ public class World {
 
     public boolean delEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         return delEntity(linCoordinate, entity);
 
     }
@@ -147,16 +155,18 @@ public class World {
     /**
      * Vérouille l'accès sur l'entité courrante
      *
-     * @param Pair<Integer,Integer> la coordonnée
+     * @param coordinate la coordonnée
      */
 
     public boolean scopeEntity(Pair<Integer, Integer> coordinate) {
 
-        int linCoordinate = coordinatesToInt(coordinate, dimension);
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
         boolean exists = terrain[linCoordinate].entity.isPresent();
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
-        return exists;
+
+	return exists;
+
     }
 
     /**
@@ -172,7 +182,7 @@ public class World {
     /**
      * Retourne les tuiles adjacentes
      *
-     * @param int la coordonnée sur une dimension
+     * @param linCoordinate la coordonnée sur une dimension
      * @return le vecteur des coordonnées
      */
 
@@ -184,10 +194,10 @@ public class World {
 
             int lco = linCoordinate + delta;
 
-	    int lncMod = linCoordinate % dimension.first;
-	    int lcoMod = lco % dimension.first;
+	    int lncMod = linCoordinate % properties.dimension.first;
+	    int lcoMod = lco % properties.dimension.first;
 
-            boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, dimension);
+            boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, properties.dimension);
 
             if (isValid) adjacent.add(linCoordinate + delta);
 
@@ -206,7 +216,53 @@ public class World {
      *
      * @return le vecteur des coordonnées valides
      */
+     /*
+    private Vector<Integer> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
+        Map<Integer, Boolean> checked = new HashMap<>();
+	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+
+        Vector<Integer> res = new Vector<>();
+
+	if(predicate == null) return res;
+	
+	Entity entity    = terrain[root].entity.get();
+	Entity.Type type = entity.getType();
+
+	int movementId   = entity.getMovement().id;
+	int movementCost = entity.getRange();
+
+	var rootElement = new Pair<>(root, movementCost);
+
+	emp.add(rootElement);	 
+
+        while (emp.size() > 0) {
+
+            var element = emp.poll();
+            Vector<Integer> adjacent = adjacentOf(element.first);
+
+            for (Integer lin : adjacent) {
+
+                if (checked.containsKey(lin)) continue; 
+
+                if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
+
+		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+                    res.add(lin);
+                    emp.add(predicateArg);
+
+                }
+
+		checked.put(lin, movementCost >= 0);
+
+            } 
+
+        }
+
+        return res;
+
+    }
+    */
     private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
@@ -216,14 +272,13 @@ public class World {
 
 	if(predicate == null) return res;
 
-	Entity entity    = terrain[root].entity.get();
-	Entity.Type type = entity.getType();
+	Entity entity    = terrain[root].entity.get();	
 
-	int movementId   = type.movement.id;
-	int movementCost = type.movementCost;
+	int movementId   = entity.getMovement().id;
+	int movementCost = entity.getRange();
 
 	var rootElement = new Pair<>(root, movementCost);
-    int parentIndex = -1;
+    	int parentIndex = -1;
 
 	emp.add(rootElement);
 
@@ -265,7 +320,7 @@ public class World {
      *
      * @return le vecteur des positions valides
      */
-
+    
     public Vector<Pair<Integer,Pair<Integer,Integer>>> validMovements() {
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
@@ -295,10 +350,22 @@ public class World {
 
     public Pair<Integer, Integer> getDimension() {
 
-        return dimension;
+        return properties.dimension;
 
     }
 
+    public String getName() {
+
+	    return properties.name;
+
+    }
+
+    public String getDescription() {
+
+	    return properties.description;
+
+    }
+    
     @Null
     public Entity getScopedEntity(){
         if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {
@@ -344,6 +411,32 @@ public class World {
 
     }
 
+    public boolean save() {
+
+	DBEngine engine = DBEngine.getInstance();
+	engine.connect();
+
+	Database db = engine.getDatabase("wargroove");
+	db.selectCollection("worlds");
+
+	DbObject worldDBO = properties.toDBO();
+	boolean status = db.insert(properties.name, worldDBO);
+
+	db.flush();
+	engine.disconnect();	
+
+	return status;
+
+    }
+
+    public boolean save(Database db) {
+        db.selectCollection("worlds");
+        DbObject worldDBO = properties.toDBO();
+        boolean status = db.insert(properties.name, worldDBO);
+        db.flush();
+        return status;
+    }
+    
     @Override
     public String toString() {
 
@@ -354,7 +447,7 @@ public class World {
 
             builder.append(tile).append(" ");
 
-            if (++index % dimension.first == 0) builder.append('\n');
+            if (++index % properties.dimension.first == 0) builder.append('\n');
 
         }
 

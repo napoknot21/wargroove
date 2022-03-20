@@ -1,8 +1,6 @@
 package up.wargroove.core.character;
 
-public class Movement { 
-
-    public enum Type {
+public enum Movement { 
 
         NULL		(-1, Character.Component.GROUND),
         WALKING		(6, Character.Component.GROUND),
@@ -14,23 +12,12 @@ public class Movement {
         AMPHIBIOUS	(0, Character.Component.SEA);
 
         public int id;
-        public Character.Component component;
+        public Entity.Component component;
 
-        Type(int id, Character.Component component) {
-            this.id = id;
-            this.component = component;
-        }
+        Movement(int id, Character.Component component) {
 
-    };
-    private Type moveType;
-
-    public Movement(Type moveType) { 
-    
-	    this.moveType = moveType;
-    
-    }
-
-    public Type getMoveType() {
-        return moveType;
-    }
+    		this.id = id;
+		this.component = component;
+        
+	}
 }

@@ -1,10 +1,13 @@
 package up.wargroove.core.world;
 
 import up.wargroove.core.character.Entity;
+import up.wargroove.utils.DbObject;
+import up.wargroove.utils.Constants;
+import up.wargroove.utils.Savable;
 
 import java.util.Optional;
 
-public class Tile {
+public class Tile implements Savable {
 
     public static final int PRIMARY_TILE_TYPE = 5;
 
@@ -76,6 +79,24 @@ public class Tile {
         return type.asciiFormat + "";
 
     }
+
+    @Override
+    public void load(DbObject dbo) {
+
+	String typeStr = dbo.get(Constants.WORLD_TILE_TYPE_DB_KEY).get();
+	type = Type.valueOf(typeStr);
+
+    }
+
+    @Override
+    public DbObject toDBO() {
+
+	DbObject dbo = new DbObject();
+
+	dbo.put(Constants.WORLD_TILE_TYPE_DB_KEY, type.toString());
+	return dbo;
+
+    } 
 
     public enum Type {
 
