@@ -1,6 +1,6 @@
-# Fire Emblem
+# Wargroove
 
-A tactical RPG game based on the Fire Emblem game
+A tactical RPG game based on the Wargroove game
 
 ## Usage
 
@@ -18,8 +18,8 @@ A tactical RPG game based on the Fire Emblem game
     ```
     cd wargroove
     ```
-4. run gradle wrapper (it will download all dependencies, including gradle itself)
-    ```
+3. run gradle wrapper (it will download all dependencies, including gradle itself)
+   ```
     ./gradlew build
     ```
 
@@ -73,3 +73,74 @@ db.flush();
 engine.disconnect();
 
 ```
+
+# Plugins
+
+Il existe plusieurs plugins d'aide au développement, notamment pour la creation de cartes.
+Tous ces plugins sont accessibles à partir d'un interpréteur de commande qui est lui-même accessible grâce à
+
+``./gradlew selectPlugin``
+
+Le programme va se lancer et va vous demander de choisir entre les plugins suivants :
+
+* ExportMap
+* ImportMap
+* ExportTextures
+
+La syntaxe du nom des plugins n'est pas sensible à la case.
+
+Voici un exemple de syntaxe :
+``importMap --paths=core/assets/importedMap/test.csv``
+
+Chaque plugin s'accompagne de leurs propres paramètres à entrer en même temps que le nom du plugin.
+
+### ExportMap
+
+Commande CLI : `exportTextures --name --path --overwrite --gen --r --n --s --dim`
+
+```
+\--path=path               depuis la racine du projet ou absolue = emplacement ou la map sera exportée
+
+\--name=name               le nom de la map dans la db
+
+\--gen=(Y/N ou y/n)        indique si la map doit être générée, si oui la map ne provient pas de la db.
+
+--r=Interger               paramètre repartirion de la génération.
+
+--n=Double               paramètre normalization de la génération.
+
+--s=Double               paramètre smooth de la generation.
+
+--overwrite=(Y/N)          indique si il y a déjà un fichier, si celui ci doit être modifié.
+
+--dim=Interger,Interger    La dimension du monde généré (default= 20,20)
+```
+
+L'ordre des paramètres est indépendant
+
+La map exportée est un fichier CSV modifiable facilement avec le logiciel Tiled
+
+### ExportTextures
+
+Commande CLI : ` exportTextures --path --biome --overwrite`
+
+```
+--path=path               path depuis la racine du projet ou absolue = emplacement ou la texture du biome sera copié
+
+--biome=biome             le biome peut être facultatif (default=grass) ou précisé.
+
+--overwrite=(Y/N)         overwrite indique si il y a déjà un fichier, si celui ci doit être modifié.
+```
+L'ordre des paramètres est indépendant
+
+Pour assurer la compatibilité entre le plugin d'importation et Tiled, il faut utiliser ce plugin pour obtenir les textures
+
+### ImportMap
+
+Commande CLI : `importMap --paths --biome`
+
+```
+--paths="path1;paths2..."                    paths depuis la racine du projet ou absolue
+--biome=biome                                le biome peut être facultatif (default=grass) ou precisé.
+```
+L'ordre des paramètres est indépendant
