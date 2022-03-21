@@ -1,6 +1,6 @@
-package up.wargroove.plugins;
+package up.wargroove.plugins.tasks;
 
-import org.gradle.api.DefaultTask;
+import org.gradle.api.Project;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
@@ -15,15 +15,57 @@ import up.wargroove.utils.Pair;
 import java.io.File;
 import java.io.FileWriter;
 
-public class ExportMap extends DefaultTask {
+public class ExportMap {
     private String name;
     private String path;
+    private Project project;
     private boolean gen = false;
     private boolean overwrite = false;
     private int repartition = 3;
     private double normalization = -3.2;
     private double smooth = -12D;
     private Pair<Integer, Integer> dimension;
+
+    public ExportMap(String... args) throws Exception {
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
+    }
+
+    private void initParameter(String... parameter) throws Exception {
+        if (parameter.length != 2) return;
+        switch (parameter[0]) {
+            case "name":
+                setName(parameter[1]);
+                break;
+            case "path":
+                setPath(parameter[1]);
+                break;
+            case "gen":
+                setGeneration(parameter[1]);
+                break;
+            case "dim":
+                setDimension(parameter[1]);
+                break;
+            case "r":
+                setRepartition(parameter[1]);
+                break;
+            case "overwrite":
+                setOverwrite(parameter[1]);
+                break;
+            case "n":
+                setNormalization(parameter[1]);
+                break;
+            case "s":
+                setSmooth(parameter[1]);
+                break;
+            default:
+        }
+    }
+
 
     @Option(option = "name", description = "name of the map stored in the database")
     public void setName(String name) {
