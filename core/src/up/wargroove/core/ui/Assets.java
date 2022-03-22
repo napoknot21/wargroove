@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -32,8 +33,8 @@ public class Assets {
     private static final String asmext = ".asman";
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
-    private final Map<FileHandle, Entity.Type> entitiesDescriptions;
-    private final Map<FileHandle, Tile.Type> tilesDescriptions;
+    private final Map<Entity.Type,FileHandle> entitiesDescriptions;
+    private final Map<Tile.Type, FileHandle> tilesDescriptions;
 
     public Assets() {
         manager = new AssetManager();
@@ -83,10 +84,10 @@ public class Assets {
             Scanner scanner = new Scanner(fileLoader.read());
             while (scanner.hasNextLine()) {
                 String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
-                FileHandle file = new FileHandle(path);
+                FileHandle file = Gdx.files.internal(path);
                 Entity.Type type = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
 
-                entitiesDescriptions.put(file, type);
+                entitiesDescriptions.put(type, file);
             }
             scanner.close();
     }
@@ -96,10 +97,10 @@ public class Assets {
         Scanner scanner = new Scanner(fileLoader.read());
         while (scanner.hasNextLine()) {
             String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
-            FileHandle file = new FileHandle(path);
+            FileHandle file = Gdx.files.internal(path);
             Tile.Type type = Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
 
-            tilesDescriptions.put(file, type);
+            tilesDescriptions.put(type,file);
         }
         scanner.close();
     }
@@ -273,6 +274,38 @@ public class Assets {
     public <T> T get(String fileName, Class<T> type, boolean required) {
         fileName = fileName.replace('\\', '/');
         return manager.get(fileName, type, required);
+    }
+
+    public String get(Tile.Type type, int lineLength) throws FileNotFoundException {
+        FileHandle f = tilesDescriptions.get(type);
+        if (f == null) throw new RuntimeException("The asset was not loaded for the Tile type : " + type.name());
+        return readFile(f,lineLength);
+    }
+
+    public String get(Entity.Type type, int lineLength) throws FileNotFoundException {
+        FileHandle f = entitiesDescriptions.get(type);
+        if (f == null) throw new RuntimeException("The asset was not loaded for the Entity type : " + type.name());
+        return readFile(f,lineLength);
+    }
+
+    private String readFile(FileHandle file, int lineLength) throws FileNotFoundException {
+        Scanner scanner = new Scanner(file.read());
+        StringBuilder builder = new StringBuilder();
+        int len = 0;
+        while(scanner.hasNextLine()) {
+            String[] line = scanner.nextLine().split(" ");
+            for (String l : line) {
+                if (len + l.length() >= lineLength) {
+                    builder.append("\n");
+                    len = 0;
+                }
+                builder.append(l).append(" ");
+                len += l.length() + 1;
+            }
+            builder.append("\n");
+        }
+        scanner.close();
+        return builder.toString();
     }
 
     /**
