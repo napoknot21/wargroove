@@ -5,32 +5,21 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-
-
-import java.util.LinkedList;
-import java.util.Vector;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
-import org.lwjgl.Sys;
-
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.*;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
-import up.wargroove.core.ui.views.scenes.GameView;
-
-import up.wargroove.core.ui.views.scenes.View;
+import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-
-import up.wargroove.core.ui.views.scenes.MatchSettings;
-import up.wargroove.core.ui.views.scenes.PlayerSetting;
-import up.wargroove.core.ui.views.scenes.SelectMap;
+import java.util.LinkedList;
+import java.util.Vector;
 
 
 /**
@@ -127,17 +116,18 @@ public class Controller {
         this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
     }
 
-    public void openMatchSettings(){
+    public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
         this.getClient().setScreen(new MatchSettings(this, model, getClient()));
     }
 
-    public void setPrevious(){
+    public void setPrevious() {
         previous = getClient().getScreen();
     }
-    public void back(){
+
+    public void back() {
         Screen tmp = this.getClient().getScreen();
         this.getClient().setScreen(previous);
         tmp.dispose();
@@ -243,16 +233,16 @@ public class Controller {
      *
      * @return A vector of all the possible movements in world terrain coordinate.
      */
-    public Pair<Vector<Pair<Integer, Integer>>,Vector<Pair<Integer, Integer>>> getMovementPossibilities() {
+    public Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> getMovementPossibilities() {
         var valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
-        Vector<Pair<Integer,Integer>> intel = new Vector<>();
+        Vector<Pair<Integer, Integer>> intel = new Vector<>();
         valids.forEach(v -> {
             Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
             vectors.add(new Pair<>(coord.first, coord.second));
             intel.add(v.second);
         });
-        return new Pair<>(vectors,intel);
+        return new Pair<>(vectors, intel);
     }
 
     /**
@@ -273,7 +263,8 @@ public class Controller {
         return getModel().getWorld();
     }
 
-    public @Null Entity getScopedEntity() {
+    public @Null
+    Entity getScopedEntity() {
         return getWorld().getScopedEntity();
     }
 
@@ -286,10 +277,10 @@ public class Controller {
         if (movement) {
             if (!movementSelector.isValidPosition()) {
                 movementSelector.reset();
-                ((GameView)getScreen()).getMoveDialog().clear();
+                ((GameView) getScreen()).getMoveDialog().clear();
                 return false;
             }
-            ((GameView)getScreen()).getCursor().setLock(true);
+            ((GameView) getScreen()).getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
@@ -306,23 +297,24 @@ public class Controller {
     public WargrooveClient getWargroove() {
         return wargroove;
     }
+
     public void startMoving() {
-        ((GameView)getScreen()).setMovement(true);
+        ((GameView) getScreen()).setMovement(true);
     }
 
     public void endMoving() {
-        GameView gameView = (GameView)getScreen();
+        GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
         gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
-        Pair<Integer,Integer> destination = selector.getDestination();
+        Pair<Integer, Integer> destination = selector.getDestination();
         if (path.isBlank()) {
             selector.reset();
             return;
         }
         selector.reset();
-        getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
+        getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path);
@@ -331,7 +323,7 @@ public class Controller {
     }
 
     public void entityWait() {
-        GameView gameView = (GameView)getScreen();
+        GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
         selector.reset();
         gameView.setMovement(false);
@@ -339,10 +331,10 @@ public class Controller {
     }
 
     public void openStructureMenu() {
-        GameView gameView = (GameView)getScreen();
+        GameView gameView = (GameView) getScreen();
         LinkedList<Character> characters = new LinkedList<>();
-        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,10,5,false, new Stats(20.0,75.0,20.0,5, new Movement(Movement.Type.WALKING))));
-        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.AMPHIBIAN,10,5,false, new Stats(20.0,75.0,20.0,5, new Movement(Movement.Type.WALKING))));
+        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER, 10, 5, false, new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))));
+        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.AMPHIBIAN, 10, 5, false, new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))));
         gameView.showsStructureMenu(characters);
     }
 

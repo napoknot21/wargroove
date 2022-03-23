@@ -10,17 +10,16 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.world.Tile;
+import up.wargroove.utils.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
-
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.ui.views.objects.TileType;
-import up.wargroove.core.world.Tile;
-import up.wargroove.utils.Log;
 
 /**
  * Manage the assets.
@@ -31,9 +30,10 @@ public class Assets {
      * Asset manifest extension.
      */
     private static final String asmext = ".asman";
+    private static Assets instance;
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
-    private final Map<Entity.Type,FileHandle> entitiesDescriptions;
+    private final Map<Entity.Type, FileHandle> entitiesDescriptions;
     private final Map<Tile.Type, FileHandle> tilesDescriptions;
 
     public Assets() {
@@ -41,6 +41,11 @@ public class Assets {
         defaults = new HashMap<>();
         entitiesDescriptions = new HashMap<>();
         tilesDescriptions = new HashMap<>();
+        instance = this;
+    }
+
+    public static Assets getInstance() {
+        return instance;
     }
 
     /**
@@ -80,16 +85,16 @@ public class Assets {
     }
 
     public void loadEntitiesDescription() {
-            FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
-            Scanner scanner = new Scanner(fileLoader.read());
-            while (scanner.hasNextLine()) {
-                String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
-                FileHandle file = Gdx.files.internal(path);
-                Entity.Type type = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+        FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
+        Scanner scanner = new Scanner(fileLoader.read());
+        while (scanner.hasNextLine()) {
+            String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
+            FileHandle file = Gdx.files.internal(path);
+            Entity.Type type = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
 
-                entitiesDescriptions.put(type, file);
-            }
-            scanner.close();
+            entitiesDescriptions.put(type, file);
+        }
+        scanner.close();
     }
 
     public void loadTilesDescription() {
@@ -100,7 +105,7 @@ public class Assets {
             FileHandle file = Gdx.files.internal(path);
             Tile.Type type = Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
 
-            tilesDescriptions.put(type,file);
+            tilesDescriptions.put(type, file);
         }
         scanner.close();
     }
@@ -279,20 +284,20 @@ public class Assets {
     public String get(Tile.Type type, int lineLength) throws FileNotFoundException {
         FileHandle f = tilesDescriptions.get(type);
         if (f == null) throw new RuntimeException("The asset was not loaded for the Tile type : " + type.name());
-        return readFile(f,lineLength);
+        return readFile(f, lineLength);
     }
 
     public String get(Entity.Type type, int lineLength) throws FileNotFoundException {
         FileHandle f = entitiesDescriptions.get(type);
         if (f == null) throw new RuntimeException("The asset was not loaded for the Entity type : " + type.name());
-        return readFile(f,lineLength);
+        return readFile(f, lineLength);
     }
 
     private String readFile(FileHandle file, int lineLength) throws FileNotFoundException {
         Scanner scanner = new Scanner(file.read());
         StringBuilder builder = new StringBuilder();
         int len = 0;
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             String[] line = scanner.nextLine().split(" ");
             for (String l : line) {
                 if (len + l.length() >= lineLength) {
@@ -328,19 +333,19 @@ public class Assets {
     public enum AssetDir {
         // TODO: 17/02/2022 Find a way to improve the assets management with the characters sprites
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
-        SKIN(GUI.path + "skin" +fs, "skin"), SOUND(GUI.path + "sound" + fs, "sound"),
+        SKIN(GUI.path + "skin" + fs, "skin"), SOUND(GUI.path + "sound" + fs, "sound"),
         SPRITES(DATA.path + "sprites" + fs),
         ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
         CHARACTER(SPRITES.path + "character" + fs),
-        CHERRYSTONE_KINGDOM(CHARACTER.path + "CHERRYSTONE_KINGDOM" + fs,"CHERRYSTONE_KINGDOM"),
+        CHERRYSTONE_KINGDOM(CHARACTER.path + "CHERRYSTONE_KINGDOM" + fs, "CHERRYSTONE_KINGDOM"),
         FELHEIM_LEGION(CHARACTER.path + "FELHEIM_LEGION" + fs, "FELHEIM_LEGION"),
         FLORAN_TRIBES(CHARACTER.path + "FLORAN_TRIBES" + fs, "FLORAN_TRIBES"),
         HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "HEAVENSONG_EMPIRE"),
-        STATS(CHARACTER.path + "STATS" + fs,"STATS"),
+        STATS(CHARACTER.path + "STATS" + fs, "STATS"),
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice"),
-        DESCRIPTION(DATA.path + "descriptions" + fs,"entities","tiles");
+        DESCRIPTION(DATA.path + "descriptions" + fs, "entities", "tiles");
 
         // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 
@@ -350,7 +355,7 @@ public class Assets {
         AssetDir(String path, String... manifest) {
             this.path = path;
             this.manifest = manifest;
-            if (manifest != null ) {
+            if (manifest != null) {
                 for (int i = 0; i < manifest.length; i++) {
                     if (!manifest[i].isBlank()) {
                         manifest[i] += asmext;

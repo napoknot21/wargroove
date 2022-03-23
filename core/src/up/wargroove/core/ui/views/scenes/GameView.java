@@ -2,7 +2,6 @@ package up.wargroove.core.ui.views.scenes;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SnapshotArray;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -78,7 +75,7 @@ public class GameView extends View {
     public void init() {
         initGameViewUI();
         initMap();
-        structureMenu = new StructureMenu(getAssets(), getController());
+        //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
                 "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
@@ -89,8 +86,8 @@ public class GameView extends View {
                 0, 0, false, null
         );
 
-        CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), c);
+        CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
+        CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);
         //pepito.moveNorth();
         //pepito.moveNorth();
         //menganito.moveEast();
@@ -124,9 +121,9 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(getController(),Biome.ICE);
+        tileIndicator = new TileIndicator(getController(), Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
-        moveDialog = new MoveDialog(getAssets(),getController());
+        moveDialog = new MoveDialog(getAssets(), getController());
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
 
@@ -227,7 +224,6 @@ public class GameView extends View {
         gameViewUi.draw();
         movementSelector.draw(getBatch());
         getStage().draw();
-        structureMenu.draw();
     }
 
     @Override
@@ -239,9 +235,8 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        gameViewUi.getViewport().update(width,height);
+        gameViewUi.getViewport().update(width, height);
         camera.position.set(gameMap.getCenter());
-        structureMenu.resize(width,height);
         super.resize(width, height);
     }
 
@@ -260,7 +255,7 @@ public class GameView extends View {
     @Override
     public void setDebug(boolean debug) {
         this.gameViewUi.setDebugAll(debug);
-        structureMenu.setDebug(debug);
+        //structureMenu.setDebug(debug);
         super.setDebug(debug);
     }
 
@@ -268,28 +263,30 @@ public class GameView extends View {
         return movementSelector.getPath();
     }
 
-    public Pair<Integer,Integer> getDestination() {
+    public Pair<Integer, Integer> getDestination() {
         return movementSelector.getDestination();
     }
 
-    private void scopeEntity(Pair<Integer,Integer> worldCoordinate) {
+    private void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
-             Actor tmp = array.get(i);
-             if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
-                 scopedEntity = tmp;
-                 return;
-             }
-             scopedEntity = null;
+            Actor tmp = array.get(i);
+            if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
+                scopedEntity = tmp;
+                return;
+            }
+            scopedEntity = null;
         }
     }
 
     public void showsStructureMenu(LinkedList<Character> characters) {
-        structureMenu.shows(characters,getAssets());
+        structureMenu = null;
+        StructureMenu menu = new StructureMenu(getAssets(), getController());
+        StructureMenu.shows(characters, getAssets(), getController(), getStage());
     }
 
     private void scopeEntity(Vector3 worldCoordinate) {
-        scopeEntity(new Pair<>((int)worldCoordinate.x,(int)worldCoordinate.y));
+        scopeEntity(new Pair<>((int) worldCoordinate.x, (int) worldCoordinate.y));
     }
 
     public Actor getScopedEntity() {

@@ -1,16 +1,14 @@
 package up.wargroove.core.ui.views.actors;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.BaseDrawable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
@@ -34,12 +32,11 @@ public class MoveDialog extends Table {
 
     private void initInput(Controller controller) {
         wait.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    public void changed(ChangeEvent event, Actor actor) {
                         controller.entityWait();
                         clear();
-                        return super.touchDown(event, x, y, pointer, button);
                     }
                 });
         move.addListener(new ChangeListener() {
@@ -60,6 +57,7 @@ public class MoveDialog extends Table {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 controller.openStructureMenu();
+                clear();
             }
         });
     }
