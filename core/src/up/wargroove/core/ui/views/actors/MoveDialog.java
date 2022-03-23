@@ -60,7 +60,14 @@ public class MoveDialog extends Table {
                 clear();
             }
         });
-    }
+        attack.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                controller.endAttack();
+                clear();
+            }
+        });
+        }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -98,4 +105,9 @@ public class MoveDialog extends Table {
     public void addBuy() {
         addButton(buy);
     }
+
+    public void addAttack() {
+        addButton(attack);
+    }
+
 }

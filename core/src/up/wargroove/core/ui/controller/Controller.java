@@ -318,7 +318,25 @@ public class Controller {
         Actor entity = gameView.getScopedEntity();
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path);
-            ((CharacterUI) entity).move();
+        }
+    }
+    public void endAttack() {
+        GameView gameView = (GameView)getScreen();
+        MovementSelector selector = gameView.getMovementSelector();
+        gameView.setMovement(false);
+        gameView.getCursor().setLock(false);
+        String path = selector.getPath();
+        Pair<Integer,Integer> position = selector.getPositionAttack();
+        if (path.isBlank()) {
+            selector.reset();
+            return;
+        }
+        selector.reset();
+        Actor entity = gameView.getScopedEntity();
+        if (path.length()>1)getWorld().moveEntity(World.coordinatesToInt(position,getWorld().getDimension()));
+        if (entity instanceof CharacterUI) {
+            ((CharacterUI) entity).setMove(path.substring(0,path.length()-1));
+            ((CharacterUI) entity).setAttackDirection( path.charAt(path.length()-1));
         }
     }
 

@@ -161,6 +161,10 @@ public class MovementSelector {
         return movements.getLastMovement();
     }
 
+    public Pair<Integer,Integer> getPositionAttack() {
+        return movements.getNextToLastMovement();
+    }
+
     /**
      * Reset the movement selector.
      */
@@ -376,6 +380,25 @@ public class MovementSelector {
             int y;
             if (movements.index != 0) {
                 var last = movements.get(index - 1).second;
+                x = last.first;
+                y = last.second;
+            } else {
+                x = initX;
+                y = initY;
+            }
+            return new Pair<>(x, y);
+        }
+
+        /**
+         * Retrieves the next to last movements stored in movements. If movements is empty, gets the initial position.
+         *
+         * @return The last movement coordinates
+         */
+        private synchronized Pair<Integer, Integer> getNextToLastMovement() {
+            int x;
+            int y;
+            if ((movements.index != 0)&&(movements.index != 1)) {
+                var last = movements.get(index - 2).second;
                 x = last.first;
                 y = last.second;
             } else {

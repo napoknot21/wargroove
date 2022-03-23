@@ -78,21 +78,16 @@ public class GameView extends View {
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
         Character character = new Character(
-                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
+                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.SOLDIER,
                 0, 0, false, null
         );
         Character c = new Character(
-                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER,
+                "Superman", Faction.FLORAN_TRIBES, Entity.Type.ARCHER,
                 0, 0, false, null
         );
 
         CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
         CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);
-        //pepito.moveNorth();
-        //pepito.moveNorth();
-        //menganito.moveEast();
-        //menganito.moveSouth();
-        //pepito.moveWest();
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
         initInput();
@@ -185,7 +180,10 @@ public class GameView extends View {
                     scopeEntity(worldPosition);
                     moveDialog.addWait();
                 }
-                if (movementSelector.getPath().length() > 0) moveDialog.addMove();
+                if (movementSelector.getPath().length() > 0) {
+                    moveDialog.addMove();
+                    moveDialog.addAttack();
+                }
                 return true;
             }
 
