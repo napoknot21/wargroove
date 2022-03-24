@@ -77,6 +77,8 @@ public class MoveDialog extends Table {
         super.draw(batch, parentAlpha);
     }
 
+
+
     private void checkStatus() {
 
 
@@ -98,11 +100,14 @@ public class MoveDialog extends Table {
     }
 
     private void addButton(Button b) {
-        add(b).pad(5);
-        row();
+        if(!getChildren().contains(b,true)) {
+            add(b).pad(5);
+            row();
+        }
     }
 
     public void addBuy() {
+
         addButton(buy);
     }
 

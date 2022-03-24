@@ -1,5 +1,9 @@
 package up.wargroove.core.ui.views.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -8,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
@@ -20,21 +25,33 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
 public class StructureMenu extends Dialog {
     private static StructureMenu instance;
     private final Description description;
+
     Controller controller;
 
     public StructureMenu(Assets assets, Controller controller) {
-        super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class), "dialog");
+        super("",assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json",Skin.class));
         this.description = new Description(assets);
         this.controller = controller;
         button("close", Buttons.CLOSE);
+        setKeepWithinStage(false);
+        setMovable(false);
     }
 
     public static void shows(LinkedList<Character> characters, Assets assets, Controller controller, Stage stage) {
         instance = new StructureMenu(assets, controller);
         instance.setup(characters, assets);
-        instance.setPosition(0, 0);
-        stage.addActor(instance);
+        stage.getViewport().setScreenSize(Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
         instance.show(stage);
+    }
+
+    @Override
+    public Dialog show(Stage stage) {
+        show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
+        int x = Math.round((stage.getWidth() + getWidth()) / 4);
+        int y = Math.round((stage.getHeight() + getHeight()) / 4);
+        setPosition(x,y);
+        setPosition(getX() + x, getY() + y);
+        return this;
     }
 
     private void setup(LinkedList<Character> characters, Assets assets) {
@@ -42,6 +59,22 @@ public class StructureMenu extends Dialog {
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).pad(5).row());
         instance.getContentTable().add(buttons).height(buttons.getPrefHeight()).expandY().pad(10);
         instance.getContentTable().add(instance.description).height(buttons.getPrefHeight()).expandY().pad(10);
+    }
+
+    @Override
+    public float getPrefHeight() {
+        return 200;
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return 200;
+    }
+
+    @Override
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y);
     }
 
     @Override
@@ -59,19 +92,16 @@ public class StructureMenu extends Dialog {
         }
     }
 
+    @Override
+    public void keepWithinStage() {
+        super.keepWithinStage();
+    }
 
     private void close() {
         clear();
         controller.closeStructureMenu();
         getStage().getActors().removeValue(instance, true);
         instance = null;
-    }
-
-    @Override
-    public Dialog show(Stage stage) {
-        show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
-        setPosition(0, 0);
-        return this;
     }
 
     public void setDebug(boolean debug) {
@@ -108,6 +138,7 @@ public class StructureMenu extends Dialog {
             Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
             text = new Label("", skin);
             cost = new Label("", skin);
+            text.setWrap(true);
             add(cost);
             row();
             add(text);
