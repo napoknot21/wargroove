@@ -327,7 +327,7 @@ public class Controller {
     public void endAttack() {
         GameView gameView = (GameView)getScreen();
         MovementSelector selector = gameView.getMovementSelector();
-        gameView.setMovement(false);
+        //gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer,Integer> position = selector.getPositionAttack();

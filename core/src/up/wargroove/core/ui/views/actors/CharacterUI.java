@@ -34,6 +34,9 @@ public class CharacterUI extends Actor {
     private static final int DEFAULT_FRAMES= 13;
     private int ATTACK_FRAMES;
     public boolean alive= true;
+    private Pair<Integer,Integer> size;
+    private Pair<Integer,Integer> decalage;
+
 
 
     private static final String TEXTURE_PATH = "data/sprites/character/";
@@ -72,12 +75,13 @@ public class CharacterUI extends Actor {
 
     private void initialiseSprites(){
         this.sprite = new Sprite(animationDie[0]);
-        sprite.setSize(20,30);
+        sprite.setSize(size.first,size.second);
         this.stats= new Sprite(getPathSTATS(0));
         stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
         setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
         positionChanged();
         spriteWaiting=sprite;
+
     }
     private void initialiseAnimation() {
         defineAttackFrames();
@@ -103,7 +107,8 @@ public class CharacterUI extends Actor {
 
     @Override
     public void positionChanged() {
-        sprite.setPosition(getX(), getY());
+        sprite.setPosition(getX()+decalage.first, getY()+decalage.second);
+        if(spriteWaiting!=null) spriteWaiting.setPosition(getX()+decalage.first, getY()+decalage.second);
         stats.setPosition(getX()+sprite.getWidth()-stats.getWidth()-1,getY()+1);
         super.positionChanged();
     }
@@ -178,7 +183,7 @@ public class CharacterUI extends Actor {
             AnimationWalk(texture);
         }
         sprite= new Sprite(animationMove[(int) temps%8]);
-        sprite.setSize(20,30);
+        sprite.setSize(size.first,size.second);
         setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
         if (temps>=TILE_SIZE){
             temps=0;
@@ -189,6 +194,7 @@ public class CharacterUI extends Actor {
             move.remove(0);
             if (move.isEmpty()){
                 sprite=spriteWaiting;
+                positionChanged();
             }
         }
     }
@@ -225,13 +231,14 @@ public class CharacterUI extends Actor {
             AnimationAttack(texture);
         }
         sprite= new Sprite(animationAttack[(int) (temps/10)%ATTACK_FRAMES]);
-        sprite.setSize(20,30);
+        sprite.setSize(size.first,size.second);
         positionChanged();
         System.out.println(temps);
         if (temps>=ATTACK_FRAMES*10-2*TIME_LAPSE) {
             temps = 0;
             attackDirection=null;
             sprite=spriteWaiting;
+            positionChanged();
         }
     }
 
@@ -254,7 +261,7 @@ public class CharacterUI extends Actor {
             temps+= TIME_LAPSE/3;
         }
         sprite= new Sprite(animationDie[(int) temps/10]);
-        sprite.setSize(20,30);
+        sprite.setSize(size.first,size.second);
         positionChanged();
     }
 
@@ -292,12 +299,14 @@ public class CharacterUI extends Actor {
     }
 
     private void defineAttackFrames(){
-        System.out.println(character.getType().name());
+        size = new Pair<>(20,30);
+        decalage = new Pair<>(0,0);
         switch (character.getType().name()){
             case "ARCHER": ATTACK_FRAMES=13; break;
             case "SOLDIER": ATTACK_FRAMES=6; break;
             case "SPEARMAN": ATTACK_FRAMES=8; break;
             case "AMPHIBIAN": ATTACK_FRAMES=8; break;
+            case "GIANT": ATTACK_FRAMES=6; size.first=30;size.second=50; decalage.first=-5;
                 // case MAGE: ATTACK_FRAMES= 7;
         }
     }

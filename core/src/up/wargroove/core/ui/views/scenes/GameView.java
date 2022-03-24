@@ -82,7 +82,7 @@ public class GameView extends View {
                 0, 0, false, null
         );
         Character c = new Character(
-                "Superman", Faction.FLORAN_TRIBES, Entity.Type.ARCHER,
+                "Superman", Faction.HEAVENSONG_EMPIRE, Entity.Type.GIANT,
                 0, 0, false, null
         );
 
