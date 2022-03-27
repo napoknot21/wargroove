@@ -1,6 +1,5 @@
-package up.wargroove.plugins;
+package up.wargroove.plugins.tasks;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
@@ -11,10 +10,34 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Locale;
 
-public class ExportTextures extends DefaultTask {
+public class ExportTextures {
     private String biome;
     private String path;
     private boolean overwrite = false;
+
+    public ExportTextures(String... args) {
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
+    }
+
+    private void initParameter(String... parameter) {
+        if (parameter.length != 2) return;
+        switch (parameter[0]) {
+            case "biome":
+                setBiome(parameter[1]);
+                break;
+            case "path":
+                setPath(parameter[1]);
+                break;
+            case "overwrite":
+                setOverwrite(parameter[1]);
+                break;
+        }
+    }
 
     @Input
     public String getWorldTexturePath() {

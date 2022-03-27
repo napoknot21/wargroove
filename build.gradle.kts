@@ -3,7 +3,6 @@ import java.util.concurrent.ExecutionException
 plugins {
 	java
 	checkstyle
-	`maven-publish`
 }
 
 var gdxVersion = "1.10.0"
@@ -55,14 +54,16 @@ project(":core") {
 project(":desktop") {
 
 	dependencies {
-
+		implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.10")
 		implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion")
-        	implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
-        	implementation("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop")
+		implementation("com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop")
+		implementation("com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop")
 		implementation(project(":core"))
+		implementation(project(":plugins"))
 	}
 
 }
+
 
 project(":utils") {
 	dependencies {
@@ -73,8 +74,15 @@ project(":utils") {
 	}
 }
 
+project(":plugins") {
+	dependencies {
+		implementation(gradleApi())
+		implementation(project(":core"))
+		implementation(project(":utils"))
+	}
+}
+
 dependencies {
     testImplementation("junit:junit:4.13.2")
-	implementation(project(":plugins"))
 }
 

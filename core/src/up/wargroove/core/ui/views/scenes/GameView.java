@@ -78,7 +78,7 @@ public class GameView extends View {
 
         moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());
-        Character character = new Commander(
+        Character character = new Villager(
                 "Superman", Faction.CHERRYSTONE_KINGDOM
         );
 

@@ -1,6 +1,5 @@
-package up.wargroove.plugins;
+package up.wargroove.plugins.tasks;
 
-import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.InputFile;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.api.tasks.options.Option;
@@ -18,12 +17,33 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class ImportMap extends DefaultTask {
+public class ImportMap {
     private final StringBuilder log = new StringBuilder();
     private final Tile.Type[] tileType = Tile.Type.values();
     private final Database db = new Database(getRoot());
     private String[] paths;
     private String biome;
+
+    public ImportMap(String... args) {
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
+    }
+
+    private void initParameter(String... parameter) {
+        if (parameter.length != 2) return;
+        switch (parameter[0]) {
+            case "paths":
+                setPaths(parameter[1]);
+                break;
+            case "biome":
+                setBiome(parameter[1]);
+                break;
+        }
+    }
 
     @InputFile
     public File getRoot() {
@@ -32,7 +52,7 @@ public class ImportMap extends DefaultTask {
 
     @Option(option = "paths", description = "List of file paths that point to a map that needed to be loaded")
     public void setPaths(String args) {
-        this.paths = args.split(" ");
+        this.paths = args.split(";");
     }
 
     @Option(option = "biome", description = "Biome of the world")
