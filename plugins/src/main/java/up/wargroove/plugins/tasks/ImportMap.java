@@ -132,9 +132,9 @@ public class ImportMap {
         WorldProperties properties = new WorldProperties();
         properties.dimension = new Pair<>(width, height);
         properties.terrain = array.toArray(new Tile[0]);
-        properties.description = "Map imported from " + file.getName() + " on " + Calendar.getInstance().getTime();
-        properties.name = file.getName().split("\\.")[0];
-        properties.biome = (biome == null) ? Biome.GRASS : Biome.valueOf(biome.toUpperCase(Locale.ROOT));
+        properties.setDescription("Map imported from " + file.getName() + " on " + Calendar.getInstance().getTime());
+        properties.setName(file.getName().split("\\.")[0]);
+        properties.setBiome((biome == null) ? Biome.GRASS : Biome.valueOf(biome.toUpperCase(Locale.ROOT)));
         return properties;
     }
 

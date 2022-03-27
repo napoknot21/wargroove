@@ -195,7 +195,7 @@ public class ExportMap {
         WorldProperties properties = new WorldProperties();
         properties.dimension = (dimension == null) ? getDimension() : dimension;
         properties.genProperties = new GeneratorProperties(repartition, normalization, smooth);
-        properties.name = name;
+        properties.setName(name);
         World world = new World(properties);
         world.initialize(true);
         return properties;
