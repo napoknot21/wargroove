@@ -9,18 +9,74 @@ import javax.sound.sampled.AudioInputStream;
 
 public class WorldProperties implements Savable {
 
-    public String name;
-    public String description;
+    private String name;
+    private String description;
 
     public Pair<Integer, Integer> dimension;
-    public Biome biome;
+    private Biome biome;
     public Tile[] terrain;
     public GeneratorProperties genProperties;
 
-    public boolean fog;
+    private boolean fog;
+	private int income;
     public AudioInputStream music;
 
-    public void load(DbObject from) {
+
+	public WorldProperties(Biome biome, boolean fog, int income){
+		this.biome = biome;
+		this.fog = fog;
+		this.income = income;
+	}
+
+	public WorldProperties() {
+
+	}
+
+	public Biome getBiome() {
+		return biome;
+	}
+
+	public void setBiome(Biome biome) {
+		this.biome = biome;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public int getIncome() {
+		return income;
+	}
+
+	public void setIncome(int income) {
+		this.income = income;
+	}
+
+	public boolean isFog() {
+		return fog;
+	}
+
+	public void setFog(boolean fog) {
+		this.fog = fog;
+	}
+
+	public Pair<Integer, Integer> getDimension() {
+		return dimension;
+	}
+
+	public void load(DbObject from) {
 
 	    if(from == null) return;
 

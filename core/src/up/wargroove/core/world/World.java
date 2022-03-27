@@ -356,13 +356,13 @@ public class World {
 
     public String getName() {
 
-	    return properties.name;
+	    return properties.getName();
 
     }
 
     public String getDescription() {
 
-	    return properties.description;
+	    return properties.getDescription();
 
     }
     
@@ -420,7 +420,7 @@ public class World {
 	db.selectCollection("worlds");
 
 	DbObject worldDBO = properties.toDBO();
-	boolean status = db.insert(properties.name, worldDBO);
+	boolean status = db.insert(properties.getName(), worldDBO);
 
 	db.flush();
 	engine.disconnect();	
@@ -432,7 +432,7 @@ public class World {
     public boolean save(Database db) {
         db.selectCollection("worlds");
         DbObject worldDBO = properties.toDBO();
-        boolean status = db.insert(properties.name, worldDBO);
+        boolean status = db.insert(properties.getName(), worldDBO);
         db.flush();
         return status;
     }

@@ -32,7 +32,9 @@ public class Model {
         if (world != null) {
             return;
         }
-        properties = new WorldProperties();
+        if(properties == null){
+            properties = new WorldProperties();
+        }
         properties.dimension = new Pair<>(20, 20);
         properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
         world = new World(properties);
@@ -49,6 +51,10 @@ public class Model {
 
     public World getWorld() {
         return world;
+    }
+
+    public void setProperties(WorldProperties properties) {
+        this.properties = properties;
     }
 
     public boolean isActive() {

@@ -135,6 +135,7 @@ public class MainMenu extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
+                        if(controller.isSoundOn()) buttonSound.play();
                         controller.startGame();
                     }
                 }
@@ -145,6 +146,7 @@ public class MainMenu extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
+                        if(controller.isSoundOn()) buttonSound.play();
                         controller.openMapSelection();
                     }
                 }
@@ -154,6 +156,7 @@ public class MainMenu extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
+                        if(controller.isSoundOn()) buttonSound.play();
                         controller.openSettings();
                     }
                 }
@@ -162,7 +165,7 @@ public class MainMenu extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
+                        if(controller.isSoundOn()) buttonSound.play();
                         controller.openMatchSettings();
                     }
                 }

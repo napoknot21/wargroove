@@ -187,7 +187,7 @@ public class CharacterUI extends Actor {
 
 
     /**
-     * Create the animation accordig with the texture you want to show
+     * Create the animation according to the texture you want to show
      */
 
 

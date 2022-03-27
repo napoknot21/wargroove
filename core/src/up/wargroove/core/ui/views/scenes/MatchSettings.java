@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Biome;
+import up.wargroove.core.world.WorldProperties;
 
 import java.util.ArrayList;
 
@@ -34,6 +36,10 @@ public class MatchSettings extends View {
      */
     private Controller controller;
     /**
+     * Button to send the configuration into the model
+     */
+    private Button chooseConfig;
+    /**
      * the viewport
      */
     private Viewport viewport;
@@ -52,7 +58,7 @@ public class MatchSettings extends View {
     /**
      * label of the timer SelectBox
      */
-    private Label turnTimeLabel;
+    //private Label turnTimeLabel;
     /**
      * label of the fog SelectBox
      */
@@ -60,20 +66,25 @@ public class MatchSettings extends View {
     private Label incomeLabel;
     private Label printIncome;
     private Label biomeLabel;
-    private Label commandersLabel;
-    private Label teamLabel;
+    //private Label commandersLabel;
+    //private Label teamLabel;
     /**
      * Weather SelectBox
      */
     private SelectBox weather;
-    private SelectBox turnTime;
+    //private SelectBox turnTime;
     private SelectBox fog;
     private Slider income;
     private SelectBox biome;
-    private SelectBox commanders;
-    private SelectBox team;
+    //private SelectBox commanders;
+    //private SelectBox team;
+
+    private CheckBox checkFog;
+    private Label checkText;
 
     private Skin skin;
+
+    WorldProperties properties = new WorldProperties();
 
 
 
@@ -108,30 +119,34 @@ public class MatchSettings extends View {
 
         back = new TextButton("Back", skin);
         reset = new TextButton("Reset", skin);
+        chooseConfig = new TextButton("Choose this configuration", skin);
 
         weatherLabel = new Label("Weather :", skin);
-        turnTimeLabel = new Label("Turn Timer :", skin);
+        //turnTimeLabel = new Label("Turn Timer :", skin);
         fogLabel = new Label("Fog of War :", skin);
+        checkText = new Label("On", skin);
         incomeLabel = new Label("Income :", skin);
-        printIncome = new Label("0",skin);
+        printIncome = new Label("500.0",skin);
         biomeLabel = new Label("Biome :", skin);
-        commandersLabel = new Label("Commanders :", skin);
-        teamLabel = new Label("Teams :", skin);
+        //commandersLabel = new Label("Commanders :", skin);
+        //teamLabel = new Label("Teams :", skin);
 
         weather = new SelectBox<String>(skin);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
-        turnTime = new SelectBox<String>(skin);
-        turnTime.setItems("Off","On");
-        fog = new SelectBox(skin);
-        fog.setItems("Off", "On");
+        //turnTime = new SelectBox<String>(skin);
+        //turnTime.setItems("Off","On");
+        //fog = new SelectBox(skin);
+        //fog.setItems("Off", "On");
+        checkFog = new CheckBox("On" , skin);
+        checkFog.setChecked(true);
         income = new Slider(0,1000,50,false,skin);
-        income.setValue(0);
+        income.setValue(500);
         biome = new SelectBox(skin);
-        biome.setItems("Ice","Forest","Desert","Jungle");
-        commanders = new SelectBox(skin);
-        commanders.setItems("Normal");
-        team = new SelectBox(skin);
-        team.setItems("Default");
+        biome.setItems(Biome.GRASS,Biome.ICE,Biome.DESERT,Biome.VOLCANO);
+        //commanders = new SelectBox(skin);
+        //commanders.setItems("Normal");
+        //team = new SelectBox(skin);
+        //team.setItems("Default");
 
         initListener();
         setStage(viewport);
@@ -175,30 +190,32 @@ public class MatchSettings extends View {
         table.setFillParent(true);
 
         table.add(weatherLabel).padLeft(20f);
-        table.add(weather);
+        table.add(weather).padBottom(20f);
         table.row();
-        table.add(turnTimeLabel).padLeft(20f);
+        /*table.add(turnTimeLabel).padLeft(20f);
         table.add(turnTime);
-        table.row();
+        table.row();*/
         table.add(fogLabel).padLeft(20f);
-        table.add(fog);
+        table.add(checkFog).padBottom(20f);
+        table.add(checkText);
         table.row();
         table.add(incomeLabel).padLeft(20f);
-        table.add(income);
+        table.add(income).padBottom(20f);
         table.add(printIncome);
         table.row();
         table.add(biomeLabel).padLeft(20f);
         table.add(biome);
         table.row();
-        table.add(commandersLabel);
+        /*table.add(commandersLabel);
         table.add(commanders);
         table.row();
         table.add(teamLabel);
         table.add(team);
 
-        table.row();
+        table.row();*/
         table.add(back);
         table.add(reset);
+        table.add(chooseConfig);
 
         return table;
     }
@@ -224,6 +241,59 @@ public class MatchSettings extends View {
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
                         printIncome.setText(income.getValue() +"");
+                        properties.setIncome((int)income.getValue());
+                    }
+                }
+        );
+        reset.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                        weather.setSelected("Random");
+                        biome.setSelected("Grass");
+                        checkFog.setChecked(true);
+                        properties.setFog(true);
+                        checkText.setText("On");
+                        income.setValue(500);
+                        printIncome.setText("500.0");
+                        properties.setIncome(500);
+                    }
+                }
+        );
+        biome.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                        properties.setBiome((Biome) biome.getSelected());
+                    }
+                }
+        );
+        checkFog.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                        if(checkFog.isChecked()){
+                            checkText.setText("On");
+                            properties.setFog(true);
+                        }
+                        else{
+                            checkText.setText("Off");
+                            properties.setFog(false);
+                        }
+                    }
+                }
+        );
+
+        chooseConfig.addListener(
+                new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        makeSound(buttonSound);
+                        getModel().setProperties(properties);
+                        controller.back();
                     }
                 }
         );

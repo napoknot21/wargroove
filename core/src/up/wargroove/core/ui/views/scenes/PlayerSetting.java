@@ -140,10 +140,10 @@ public class PlayerSetting extends View {
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
                         if(sound.isChecked()){
                             stateLabel.setText("On");
                             controller.setSound(true);
+                            makeSound(buttonSound);
                         }
                         else{
                             stateLabel.setText("Off");
