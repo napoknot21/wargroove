@@ -17,6 +17,14 @@ import up.wargroove.core.ui.views.scenes.View;
  */
 public class WargrooveClient extends Game {
 
+    public WargrooveClient (boolean debug) {
+        this.debug = debug;
+    }
+
+    public WargrooveClient() {
+        this(false);
+    }
+
     /**
      * The drawing tool.
      */
@@ -41,7 +49,6 @@ public class WargrooveClient extends Game {
 
     @Override
     public void create() {
-        debug = true;
         batch = new SpriteBatch();
         assets = new Assets();
         assets.loadDefault();
