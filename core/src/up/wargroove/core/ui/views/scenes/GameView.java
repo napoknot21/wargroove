@@ -4,6 +4,7 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -103,7 +105,7 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        viewport = new StretchViewport(x, y, camera);
+        viewport = new ExtendViewport(x, y, camera);
         viewport.apply();
         //camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;
@@ -119,6 +121,7 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(getController(), Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(), getController());
+        Camera camera = new OrthographicCamera();
         Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
 
@@ -219,9 +222,9 @@ public class GameView extends View {
         cursor.draw(getBatch());
         movementSelector.drawValid(getBatch());
         getBatch().end();
+        getStage().draw();
         gameViewUi.draw();
         movementSelector.draw(getBatch());
-        getStage().draw();
     }
 
     @Override
@@ -253,7 +256,6 @@ public class GameView extends View {
     @Override
     public void setDebug(boolean debug) {
         this.gameViewUi.setDebugAll(debug);
-        //structureMenu.setDebug(debug);
         super.setDebug(debug);
     }
 
@@ -278,9 +280,7 @@ public class GameView extends View {
     }
 
     public void showsStructureMenu(LinkedList<Character> characters) {
-        structureMenu = null;
-        StructureMenu menu = new StructureMenu(getAssets(), getController());
-        StructureMenu.shows(characters, getAssets(), getController(), getStage());
+        StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
     }
 
     private void scopeEntity(Vector3 worldCoordinate) {
