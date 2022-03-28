@@ -6,13 +6,10 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.*;
-import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
@@ -21,7 +18,6 @@ import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -267,8 +263,12 @@ public class Controller {
         return getModel().getWorld();
     }
 
-    public @Null
-    Entity getScopedEntity() {
+    /**
+     * the world's scoped entity.
+     *
+     * @return the world's scoped entity.
+     */
+    public @Null Entity getScopedEntity() {
         return getWorld().getScopedEntity();
     }
 
@@ -277,6 +277,14 @@ public class Controller {
         return (entity == null) ? -1 : entity.getRange();
     }
 
+    /**
+     * Manage the unit movements on the screen.
+     *
+     * @param movement indicate if a movement is already in progress.
+     * @param movementSelector The screen movement manager.
+     * @param worldPosition The position in world coordinates.
+     * @return true if the movements must be drawn false otherwise.
+     */
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
         if (movement) {
             if (!movementSelector.isValidPosition()) {
@@ -302,10 +310,9 @@ public class Controller {
         return wargroove;
     }
 
-    public void startMoving() {
-        ((GameView) getScreen()).setMovement(true);
-    }
-
+    /**
+     * End the units movements selection and move the units to the chosen emplacement.
+     */
     public void endMoving() {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
@@ -324,26 +331,30 @@ public class Controller {
             ((CharacterUI) entity).setMove(path);
         }
     }
+
     public void endAttack() {
-        GameView gameView = (GameView)getScreen();
+        GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
         //gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
-        Pair<Integer,Integer> position = selector.getPositionAttack();
+        Pair<Integer, Integer> position = selector.getPositionAttack();
         if (path.isBlank()) {
             selector.reset();
             return;
         }
         selector.reset();
         Actor entity = gameView.getScopedEntity();
-        if (path.length()>1)getWorld().moveEntity(World.coordinatesToInt(position,getWorld().getDimension()));
+        if (path.length() > 1) getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
         if (entity instanceof CharacterUI) {
-            ((CharacterUI) entity).setMove(path.substring(0,path.length()-1));
-            ((CharacterUI) entity).setAttackDirection( path.charAt(path.length()-1));
+            ((CharacterUI) entity).setMove(path.substring(0, path.length() - 1));
+            ((CharacterUI) entity).setAttackDirection(path.charAt(path.length() - 1));
         }
     }
 
+    /**
+     * Make the unit inactive for the turn.
+     */
     public void entityWait() {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
@@ -352,15 +363,29 @@ public class Controller {
         gameView.getCursor().setLock(false);
     }
 
+    /**
+     * Open the structures' menu where the player can buy characters.
+     */
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         LinkedList<Character> characters = new LinkedList<>();
-        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER, 10, 5, false, new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))));
-        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.AMPHIBIAN, 10, 5, false, new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))));
+        characters.add(new Character(
+                "c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER, 10, 5, false,
+                new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))
+        ));
+        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.AMPHIBIAN, 10, 5, false,
+                new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))
+        ));
         gameView.showsStructureMenu(characters);
     }
 
     public void closeStructureMenu() {
         Gdx.input.setInputProcessor(getScreen().getInputs());
+    }
+
+    public void buy(Character c) {
+        //Coordonnee structure grace au curseur
+        //Appel du movementSelector(ou un derive) pour placer la piece aux cases adjacentes disponibles ?
+        //bfs dans le world
     }
 }

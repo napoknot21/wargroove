@@ -2,37 +2,48 @@ package up.wargroove.core.ui.views.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
-
 import java.util.LinkedList;
 import java.util.Locale;
 
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.sequence;
-
+/**
+ * Structures' menu where the player can buy characters.
+ */
 public class StructureMenu extends Dialog {
     private static StructureMenu instance;
     private final Description description;
+    private final TextButton buy;
+    private final Controller controller;
+    private Character current;
 
-    Controller controller;
-
-    public StructureMenu(Assets assets, Controller controller) {
+    private StructureMenu(Assets assets, Controller controller) {
         super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
         this.description = new Description(assets);
         this.controller = controller;
+        buy = new TextButton("buy", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
         button("close", Buttons.CLOSE);
+        button(buy, Buttons.BUY);
+        buy.setVisible(false);
         setKeepWithinStage(false);
         setMovable(false);
+        setModal(true);
     }
 
+    /**
+     * Shows the menu on the screen above all. All the inputs are catch by this.
+     *
+     * @param characters list of purchasable characters.
+     * @param assets     The app assets manager.
+     * @param controller The app controller.
+     * @param stage      The view stage.
+     */
     public static void shows(LinkedList<Character> characters, Assets assets, Controller controller, Stage stage) {
         instance = new StructureMenu(assets, controller);
         instance.setup(characters, assets);
@@ -42,30 +53,28 @@ public class StructureMenu extends Dialog {
         instance.show(stage);
     }
 
-    @Override
-    public Dialog show(Stage stage) {
-        show(stage, sequence(Actions.alpha(0), Actions.fadeIn(0.4f, Interpolation.fade)));
-        int x = Math.round((stage.getWidth() - getWidth()) / 2);
-        int y = Math.round((stage.getHeight() - getHeight()) / 2);
-        setPosition(x, y);
-        return this;
-    }
-
+    /**
+     * Build the menu.
+     *
+     * @param characters list of purchasable characters.
+     * @param assets     The app assets manager.
+     */
     private void setup(LinkedList<Character> characters, Assets assets) {
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
-        instance.getContentTable().add(buttons);
+        ScrollPane pane = new ScrollPane(buttons);
+        instance.getContentTable().add(pane);
         instance.getContentTable().add(instance.description).expand().fill();
     }
 
     @Override
     public float getPrefHeight() {
-        return 300;
+        return 200;
     }
 
     @Override
     public float getPrefWidth() {
-        return 300;
+        return 350;
     }
 
     @Override
@@ -81,6 +90,9 @@ public class StructureMenu extends Dialog {
             return;
         }
         switch ((Buttons) object) {
+            case BUY:
+                buy();
+                break;
             case CLOSE:
                 close();
                 break;
@@ -89,11 +101,26 @@ public class StructureMenu extends Dialog {
         }
     }
 
+    /**
+     * Buy the selected character.
+     */
+    private void buy() {
+        if (current == null) {
+            cancel();
+            return;
+        }
+        controller.buy(current);
+        close();
+    }
+
     @Override
     public void keepWithinStage() {
         super.keepWithinStage();
     }
 
+    /**
+     * Close the menu.
+     */
     private void close() {
         clear();
         controller.closeStructureMenu();
@@ -109,12 +136,15 @@ public class StructureMenu extends Dialog {
         CLOSE, BUY
     }
 
+    /**
+     * A character button is a button with the character name and its cost.
+     */
     private class CharacterButton extends TextButton {
         Character character;
 
         public CharacterButton(Character c, Assets assets) {
             super(
-                    c.getType().name().toLowerCase(Locale.ROOT),
+                    c.getType().name().toLowerCase(Locale.ROOT) + " (" + c.getCost() + ")",
                     assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class)
             );
             character = c;
@@ -122,24 +152,34 @@ public class StructureMenu extends Dialog {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     description.setDescription(c, assets);
+                    current = c;
+                    buy.setVisible(true);
                 }
             });
         }
     }
 
+    /**
+     * The description regroups the character' description text and its stats.
+     */
     private class Description extends Table {
         private final Label text;
-        private final Label cost;
+        private final Label movementCost;
+        //private final Label attack;
+        private final Label range;
 
         private Description(Assets assets) {
             Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
             text = new Label("", skin);
-            cost = new Label("", skin);
+            movementCost = new Label("", skin);
+            range = new Label("", skin);
             //text.setWrap(true);
             left();
-            add(cost).left();
+            add(movementCost).left();
             row();
-            add(text).left();
+            add(range).left();
+            row();
+            add(new ScrollPane(text)).left();
             row();
             SpriteDrawable drawable = new SpriteDrawable(new Sprite(assets.getTest()));
             drawable.setMinSize(40, 20);
@@ -148,11 +188,18 @@ public class StructureMenu extends Dialog {
             setVisible(false);
         }
 
+        /**
+         * Sets the description according to the given character.
+         *
+         * @param c      The scoped character.
+         * @param assets The app assets manager.
+         */
         private void setDescription(Character c, Assets assets) {
             setVisible(true);
-            cost.setText(Integer.toString(c.getCost()));
+            movementCost.setText("Movement : " + c.getStats().getMovement().getMoveType().id);
+            range.setText("Range : " + c.getRange());
             try {
-                text.setText(assets.get(c.getType(), 20));
+                text.setText(assets.get(c.getType(), 25));
             } catch (Exception e) {
                 text.setText("Description unavailable");
             } finally {
@@ -163,7 +210,7 @@ public class StructureMenu extends Dialog {
         @Override
         public void clear() {
             text.clear();
-            cost.clear();
+            movementCost.clear();
         }
     }
 }

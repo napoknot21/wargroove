@@ -30,7 +30,6 @@ import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
-
 import java.util.LinkedList;
 
 
@@ -118,7 +117,7 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(getController(), Biome.ICE);
+        tileIndicator = new TileIndicator(Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(), getController());
         Camera camera = new OrthographicCamera();
@@ -223,7 +222,10 @@ public class GameView extends View {
         movementSelector.drawValid(getBatch());
         getBatch().end();
         getStage().draw();
+        getStage().act(delta);
+        gameViewUi.act(delta);
         gameViewUi.draw();
+
         movementSelector.draw(getBatch());
     }
 
@@ -279,12 +281,17 @@ public class GameView extends View {
         }
     }
 
-    public void showsStructureMenu(LinkedList<Character> characters) {
-        StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
-    }
-
     private void scopeEntity(Vector3 worldCoordinate) {
         scopeEntity(new Pair<>((int) worldCoordinate.x, (int) worldCoordinate.y));
+    }
+
+    /**
+     * Shows the structures' menu where the player can buy characters.
+     *
+     * @param characters list of purchasable characters.
+     */
+    public void showsStructureMenu(LinkedList<Character> characters) {
+        StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
     }
 
     public Actor getScopedEntity() {
