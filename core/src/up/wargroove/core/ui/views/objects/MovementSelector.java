@@ -23,7 +23,7 @@ public class MovementSelector {
     /**
      * List of valid positions.
      */
-    private final Valid valid;
+    protected final Valid valid;
     /**
      * List of movements.
      */
@@ -250,7 +250,7 @@ public class MovementSelector {
     /**
      * List of valid positions.
      */
-    private class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
+    protected class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         /**
          * Tile useful information. The order of intel is the same as this.
          * The first is the parentIndex, the second is the tile's movement cost.
@@ -272,7 +272,7 @@ public class MovementSelector {
          * @param texture The sprite texture.
          * @param coord   The sprites coordinates.
          */
-        private void add(Texture texture, Pair<Integer, Integer> coord) {
+        protected void add(Texture texture, Pair<Integer, Integer> coord) {
             int x = (int) (coord.first * worldScale);
             int y = (int) (coord.second * worldScale);
             Sprite sprite = new Sprite(texture);
@@ -285,7 +285,7 @@ public class MovementSelector {
          *
          * @param vector the list of intel.
          */
-        private void addIntel(Vector<Pair<Integer, Integer>> vector) {
+        protected void addIntel(Vector<Pair<Integer, Integer>> vector) {
             intel.addAll(vector);
         }
 
@@ -357,7 +357,7 @@ public class MovementSelector {
     /**
      * Path maker. It manages the path and the drawing of the arrows.
      */
-    private class Movements extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
+    protected class Movements extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         /**
          * Movements' path.
          */

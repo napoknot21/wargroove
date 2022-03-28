@@ -12,6 +12,7 @@ import up.wargroove.core.character.Character;
 import up.wargroove.core.character.*;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Tile;
@@ -246,6 +247,26 @@ public class Controller {
     }
 
     /**
+     * Gets the scoped character possibles movements.
+     *
+     * @return A vector of all the possible targets in world terrain coordinate.
+     */
+
+    //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
+
+    public Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> getTargetPossibilities() {
+        var valids = getWorld().validMovements();
+        Vector<Pair<Integer, Integer>> vectors = new Vector<>();
+        Vector<Pair<Integer, Integer>> intel = new Vector<>();
+        valids.forEach(v -> {
+            Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
+            vectors.add(new Pair<>(coord.first, coord.second));
+            intel.add(v.second);
+        });
+        return new Pair<>(vectors, intel);
+    }
+
+    /**
      * Scope the entity at the vector position into the world.
      *
      * @param vector The entity coordinate in world terrain coordinate.
@@ -285,7 +306,7 @@ public class Controller {
      * @param worldPosition The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
-    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
+    public boolean showMovements(boolean movement, MovementSelector movementSelector,Vector3 worldPosition) {
         if (movement) {
             if (!movementSelector.isValidPosition()) {
                 movementSelector.reset();
@@ -300,11 +321,35 @@ public class Controller {
             ((GameView) getScreen()).getMoveDialog().clear();
             return false;
         }
-        var pair = getMovementPossibilities();
-        movementSelector.showValids(getScreen().getAssets(), pair);
+
+        var pair1 = getMovementPossibilities();
+        movementSelector.showValids(getScreen().getAssets(), pair1);
         movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
         return true;
     }
+
+    public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition){
+        if (attack) {
+            if (!attackSelector.isValidPosition()) {
+                attackSelector.reset();
+                ((GameView) getScreen()).getMoveDialog().clear();
+                return false;
+            }
+            ((GameView) getScreen()).getCursor().setLock(true);
+            return false;
+        }
+        if (!setScopeEntity(worldPosition)) {
+            attackSelector.reset();
+            ((GameView) getScreen()).getMoveDialog().clear();
+            return false;
+        }
+        var pair = getTargetPossibilities();
+        attackSelector.showValids(getScreen().getAssets(),pair);
+        attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        return true;
+    }
+
+
 
     public WargrooveClient getWargroove() {
         return wargroove;
@@ -316,6 +361,7 @@ public class Controller {
     public void endMoving() {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
+        AttackSelector attackSelector = gameView.getAttackSelector();
         gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
@@ -324,6 +370,7 @@ public class Controller {
             selector.reset();
             return;
         }
+        attackSelector.reset();
         selector.reset();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -334,8 +381,9 @@ public class Controller {
 
     public void endAttack() {
         GameView gameView = (GameView) getScreen();
-        MovementSelector selector = gameView.getMovementSelector();
-        //gameView.setMovement(false);
+        AttackSelector selector = gameView.getAttackSelector();
+        MovementSelector movementSelector = gameView.getMovementSelector();
+        gameView.setAttack(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer, Integer> position = selector.getPositionAttack();
@@ -343,6 +391,7 @@ public class Controller {
             selector.reset();
             return;
         }
+        movementSelector.reset();
         selector.reset();
         Actor entity = gameView.getScopedEntity();
         if (path.length() > 1) getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
@@ -360,6 +409,7 @@ public class Controller {
         MovementSelector selector = gameView.getMovementSelector();
         selector.reset();
         gameView.setMovement(false);
+        gameView.setAttack(false);
         gameView.getCursor().setLock(false);
     }
 

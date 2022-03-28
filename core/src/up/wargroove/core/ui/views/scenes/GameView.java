@@ -14,12 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.Stats;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -53,12 +53,14 @@ public class GameView extends View {
     private SnapshotArray<InputProcessor> lastInputs;
 
     private boolean movement;
+    private boolean attack;
     private MoveDialog moveDialog;
     private Actor scopedEntity;
     /**
      * The current character possible movement.
      */
     private MovementSelector movementSelector;
+    private AttackSelector attackSelector;
 
 
     /**
@@ -78,13 +80,15 @@ public class GameView extends View {
         initMap();
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
+        attackSelector= new AttackSelector(gameMap.getScale());
+        Stats stats = new Stats(50,50,50,50, null);
         Character character = new Character(
                 "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.SOLDIER,
-                0, 0, false, null
+                0, 0, false, stats
         );
         Character c = new Character(
                 "Superman", Faction.HEAVENSONG_EMPIRE, Entity.Type.GIANT,
-                0, 0, false, null
+                0, 0, false, stats
         );
 
         CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
@@ -162,6 +166,9 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
+                if (attack){
+                    attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
+                }
                 return true;
             }
 
@@ -177,15 +184,17 @@ public class GameView extends View {
                 }
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                movement = getController().showMovements(movement, movementSelector,worldPosition);
+                attack= getController().showTargets(attack, attackSelector, worldPosition);
+
                 if (movement) {
                     scopeEntity(worldPosition);
                     moveDialog.addWait();
                 }
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
-                    moveDialog.addAttack();
                 }
+                if(attack) moveDialog.addAttack();
                 return true;
             }
 
@@ -220,13 +229,15 @@ public class GameView extends View {
         getBatch().begin();
         cursor.draw(getBatch());
         movementSelector.drawValid(getBatch());
+        attackSelector.drawValid(getBatch());
         getBatch().end();
         getStage().draw();
         getStage().act(delta);
         gameViewUi.act(delta);
         gameViewUi.draw();
-
+        getStage().draw();
         movementSelector.draw(getBatch());
+        attackSelector.draw(getBatch());
     }
 
     @Override
@@ -253,6 +264,10 @@ public class GameView extends View {
 
     public void setMovement(boolean movement) {
         this.movement = movement;
+    }
+
+    public void setAttack(boolean attack) {
+        this.attack = attack;
     }
 
     @Override
@@ -300,6 +315,10 @@ public class GameView extends View {
 
     public MovementSelector getMovementSelector() {
         return movementSelector;
+    }
+
+    public AttackSelector getAttackSelector() {
+        return attackSelector;
     }
 
     public MoveDialog getMoveDialog() {

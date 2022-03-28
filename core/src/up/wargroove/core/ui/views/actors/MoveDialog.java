@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.actors;
 
+import com.badlogic.gdx.backends.lwjgl.audio.Wav;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
