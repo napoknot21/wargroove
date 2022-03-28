@@ -13,15 +13,26 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 
+/**
+ * Actions' buttons manager.
+ */
 public class MoveDialog extends Table {
     private final TextButton wait;
     private final TextButton attack;
     private final TextButton move;
     private final TextButton buy;
 
+    /**
+     * Create an empty MoveDialog.
+     *
+     * @param assets The app Assets manager.
+     * @param controller The app controller.
+     */
     public MoveDialog(Assets assets, Controller controller) {
         super();
-        background(new SpriteDrawable(new Sprite(assets.get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class))));
+        background(new SpriteDrawable(new Sprite(
+                assets.get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class)
+        )));
         Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
         wait = new TextButton("wait", skin);
         attack = new TextButton("attack", skin);
@@ -67,7 +78,7 @@ public class MoveDialog extends Table {
                 clear();
             }
         });
-        }
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -76,7 +87,6 @@ public class MoveDialog extends Table {
         }
         super.draw(batch, parentAlpha);
     }
-
 
 
     private void checkStatus() {
@@ -100,7 +110,7 @@ public class MoveDialog extends Table {
     }
 
     private void addButton(Button b) {
-        if(!getChildren().contains(b,true)) {
+        if (!getChildren().contains(b, true)) {
             add(b).pad(5);
             row();
         }

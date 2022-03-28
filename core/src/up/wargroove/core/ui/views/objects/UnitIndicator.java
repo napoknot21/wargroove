@@ -19,7 +19,7 @@ public class UnitIndicator extends Indicator {
      * Create a unit indicator.
      *
      * @param controller the app controller.
-     * @param biome  the world biome.
+     * @param biome      the world biome.
      */
     public UnitIndicator(Controller controller, Biome biome) {
         super(biome);
@@ -37,9 +37,11 @@ public class UnitIndicator extends Indicator {
         setBackground(assets.get(path, Texture.class));
         var character = (Character) tile.entity.get();
         var texture = assets.get(
-                "data/sprites/character/"+character.getFaction()+ "/"+character.getType()+"_DIE.png", Texture.class
+                "data/sprites/character/" + character.getFaction() + "/"
+                        + character.getType() + "_DIE.png",
+                Texture.class
         );
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
         setForeground((tmp[0][0]));
     }
 

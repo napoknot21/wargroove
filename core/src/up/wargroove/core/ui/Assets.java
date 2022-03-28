@@ -13,7 +13,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -30,13 +29,13 @@ public class Assets {
      * Asset manifest extension.
      */
     private static final String asmext = ".asman";
-    private static Assets instance;
+    private static Assets instance = new Assets();
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
     private final Map<Entity.Type, FileHandle> entitiesDescriptions;
     private final Map<Tile.Type, FileHandle> tilesDescriptions;
 
-    public Assets() {
+    private Assets() {
         manager = new AssetManager();
         defaults = new HashMap<>();
         entitiesDescriptions = new HashMap<>();
@@ -67,6 +66,23 @@ public class Assets {
     }
 
     /**
+     * Loads a single file.
+     *
+     * @param path    The file path
+     * @param type    The assets type (Texture.class, etc.)
+     * @param isAlone if true, the asset manager will load file,
+     *                else the manager will put the file in queue waiting to be updated. <br>
+     *                <b>You must call printLoading() to load all queued files. </b>
+     */
+    public void load(String path, Class<?> type, boolean isAlone) {
+        manager.load(path, type);
+        if (isAlone) {
+            printLoading();
+        }
+    }
+
+
+    /**
      * Loads all the assets in the manifest.
      *
      * @param manifestPath The manifest listing the assets to load
@@ -84,6 +100,9 @@ public class Assets {
         }
     }
 
+    /**
+     * Loads the entity descriptions in the description directory.
+     */
     public void loadEntitiesDescription() {
         FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
         Scanner scanner = new Scanner(fileLoader.read());
@@ -97,6 +116,9 @@ public class Assets {
         scanner.close();
     }
 
+    /**
+     * Loads the tile description on the description directory.
+     */
     public void loadTilesDescription() {
         FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[1]);
         Scanner scanner = new Scanner(fileLoader.read());
@@ -110,21 +132,6 @@ public class Assets {
         scanner.close();
     }
 
-    /**
-     * Loads a single file.
-     *
-     * @param path    The file path
-     * @param type    The assets type (Texture.class, etc.)
-     * @param isAlone if true, the asset manager will load file,
-     *                else the manager will put the file in queue waiting to be updated. <br>
-     *                <b>You must call printLoading() to load all queued files. </b>
-     */
-    public void load(String path, Class<?> type, boolean isAlone) {
-        manager.load(path, type);
-        if (isAlone) {
-            printLoading();
-        }
-    }
 
     @SuppressWarnings("all")
     public <T> T getDefault(Class<T> defaultClass) {
@@ -281,19 +288,42 @@ public class Assets {
         return manager.get(fileName, type, required);
     }
 
+    /**
+     * Gets the description of the given type.
+     *
+     * @param type The tile type.
+     * @param lineLength The length of the lines.
+     * @return the description as a String. Each line is of length lineLength.
+     * @throws FileNotFoundException if the description wasn't loaded
+     */
     public String get(Tile.Type type, int lineLength) throws FileNotFoundException {
         FileHandle f = tilesDescriptions.get(type);
-        if (f == null) throw new RuntimeException("The asset was not loaded for the Tile type : " + type.name());
+        if (f == null) {
+            throw new RuntimeException("The asset was not loaded for the Tile type : " + type.name());
+        }
         return readFile(f, lineLength);
     }
 
+    /**
+     * Gets the description of the given type.
+     *
+     * @param type The entity type.
+     * @param lineLength The length of the lines.
+     * @return the description as a String. Each line is of length lineLength.
+     * @throws FileNotFoundException if the description wasn't loaded
+     */
     public String get(Entity.Type type, int lineLength) throws FileNotFoundException {
+        if (lineLength < 1) {
+            return "";
+        }
         FileHandle f = entitiesDescriptions.get(type);
-        if (f == null) throw new RuntimeException("The asset was not loaded for the Entity type : " + type.name());
+        if (f == null) {
+            throw new RuntimeException("The asset was not loaded for the Entity type : " + type.name());
+        }
         return readFile(f, lineLength);
     }
 
-    private String readFile(FileHandle file, int lineLength) throws FileNotFoundException {
+    private String readFile(FileHandle file, int lineLength) {
         Scanner scanner = new Scanner(file.read());
         StringBuilder builder = new StringBuilder();
         int len = 0;

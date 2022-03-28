@@ -76,7 +76,9 @@ public class Cursor extends Sprite {
 
     @Override
     public void draw(Batch batch) {
-        if (locked) return;
+        if (locked) {
+            return;
+        }
         super.draw(batch);
     }
 

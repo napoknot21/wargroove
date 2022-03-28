@@ -17,7 +17,7 @@ import up.wargroove.core.ui.views.scenes.View;
  */
 public class WargrooveClient extends Game {
 
-    public WargrooveClient (boolean debug) {
+    public WargrooveClient(boolean debug) {
         this.debug = debug;
     }
 
@@ -43,14 +43,14 @@ public class WargrooveClient extends Game {
     private View scene;
 
     /**
-     * Indicate if the client is in debug mode
+     * Indicate if the client is in debug mode.
      */
     private boolean debug;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        assets = new Assets();
+        assets = Assets.getInstance();
         assets.loadDefault();
         assets.loadEntitiesDescription();
         Model model = new Model();
@@ -92,7 +92,7 @@ public class WargrooveClient extends Game {
     }
 
     /**
-     * Puts the app in debug mode
+     * Puts the app in debug mode.
      *
      * @param debug if true, the app is in debug mod
      */

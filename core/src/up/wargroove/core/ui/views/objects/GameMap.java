@@ -41,7 +41,7 @@ public class GameMap extends TiledMap {
                 tileLayer.setCell(i, j, cell);
             }
         }
-        world.at(0,0).setStructure(new Structure(Structure.Type.BARRACK));
+        world.at(0, 0).setStructure(new Structure(Structure.Type.BARRACK));
         this.getLayers().add(tileLayer);
     }
 

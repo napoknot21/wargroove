@@ -4,17 +4,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
 import java.util.Stack;
 import java.util.Vector;
+
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
 
 /**
- * GameView movement selector.
+ * The screen movement manager.
  */
 public class MovementSelector {
-    static int counter = 0;
     /**
      * The tile scale between the view and the world.
      */
@@ -142,6 +143,11 @@ public class MovementSelector {
         batch.end();
     }
 
+    /**
+     * Draws the valid emplacements.
+     *
+     * @param batch The drawer.
+     */
     public void drawValid(Batch batch) {
         //batch.begin();
         valid.draw(batch);
@@ -157,11 +163,11 @@ public class MovementSelector {
         return movements.getPath();
     }
 
-    public Pair<Integer,Integer> getDestination() {
+    public Pair<Integer, Integer> getDestination() {
         return movements.getLastMovement();
     }
 
-    public Pair<Integer,Integer> getPositionAttack() {
+    public Pair<Integer, Integer> getPositionAttack() {
         return movements.getNextToLastMovement();
     }
 
@@ -179,8 +185,8 @@ public class MovementSelector {
      * Add a new sprite to the list if all the sprites are already used
      * else it will take a free sprite.
      *
-     *  @param assets The app assets.
-     * @param pair The sprites coordinates.
+     * @param assets The app assets.
+     * @param pair   The sprites coordinates.
      */
     public void showValids(Assets assets, Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> pair) {
         reset();
@@ -250,6 +256,7 @@ public class MovementSelector {
          * The first is the parentIndex, the second is the tile's movement cost.
          */
         private final ArrayList<Pair<Integer, Integer>> intel;
+
         /**
          * Index that point to the last used sprite.
          */
@@ -397,7 +404,7 @@ public class MovementSelector {
         private synchronized Pair<Integer, Integer> getNextToLastMovement() {
             int x;
             int y;
-            if ((movements.index != 0)&&(movements.index != 1)) {
+            if ((movements.index != 0) && (movements.index != 1)) {
                 var last = movements.get(index - 2).second;
                 x = last.first;
                 y = last.second;
@@ -453,7 +460,7 @@ public class MovementSelector {
                 addDefaultMovement(assets, tileIndex);
                 return;
             }
-            add(assets,coord,tileIndex,d.charAt(0));
+            add(assets, coord, tileIndex, d.charAt(0));
         }
 
         private void add(Assets assets, Pair<Integer, Integer> coord, int tileIndex, char d) {
@@ -536,7 +543,7 @@ public class MovementSelector {
                 try {
                     String last = String.valueOf(path.charAt(index - 1)) + d;
                     get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
