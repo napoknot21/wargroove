@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
+
 import java.util.LinkedList;
 import java.util.Locale;
 
@@ -49,6 +50,17 @@ public class StructureMenu extends Dialog {
         instance.setup(characters, assets);
         stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         instance.show(stage);
+    }
+
+    /**
+     * Transform the unit name into a displayable name.
+     *
+     * @param c the unit.
+     * @return The displayable unit name.
+     */
+    private static String transformName(Character c) {
+        String s = c.getType().name().toLowerCase(Locale.ROOT) + " (" + c.getCost() + ")";
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
     /**
@@ -141,10 +153,7 @@ public class StructureMenu extends Dialog {
         Character character;
 
         public CharacterButton(Character c, Assets assets) {
-            super(
-                    c.getType().name().toLowerCase(Locale.ROOT) + " (" + c.getCost() + ")",
-                    assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class)
-            );
+            super(transformName(c), assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
             character = c;
             addListener(new ChangeListener() {
                 @Override
@@ -167,7 +176,7 @@ public class StructureMenu extends Dialog {
         private final Label range;
 
         private Description(Assets assets) {
-            setDebug(true,true);
+            setDebug(true, true);
             Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
             text = new Label("", skin);
             movementCost = new Label("", skin);
