@@ -47,8 +47,6 @@ public class StructureMenu extends Dialog {
     public static void shows(LinkedList<Character> characters, Assets assets, Controller controller, Stage stage) {
         instance = new StructureMenu(assets, controller);
         instance.setup(characters, assets);
-        //instance.setDebug(true);
-        instance.getContentTable().setDebug(true);
         stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         instance.show(stage);
     }
@@ -169,22 +167,18 @@ public class StructureMenu extends Dialog {
         private final Label range;
 
         private Description(Assets assets) {
+            setDebug(true,true);
             Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);
-            //text.setWrap(true);
-            left();
+            left().top();
             add(movementCost).left();
             row();
             add(range).left();
             row();
             add(new ScrollPane(text)).left();
             row();
-            SpriteDrawable drawable = new SpriteDrawable(new Sprite(assets.getTest()));
-            drawable.setMinSize(40, 20);
-
-            pad(10);
             setVisible(false);
         }
 
@@ -202,8 +196,6 @@ public class StructureMenu extends Dialog {
                 text.setText(assets.get(c.getType(), 25));
             } catch (Exception e) {
                 text.setText("Description unavailable");
-            } finally {
-                this.setSize(text.getWidth(), text.getHeight());
             }
         }
 

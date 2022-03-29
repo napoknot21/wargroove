@@ -231,11 +231,10 @@ public class GameView extends View {
         movementSelector.drawValid(getBatch());
         attackSelector.drawValid(getBatch());
         getBatch().end();
-        getStage().draw();
         getStage().act(delta);
+        getStage().draw();
         gameViewUi.act(delta);
         gameViewUi.draw();
-        getStage().draw();
         movementSelector.draw(getBatch());
         attackSelector.draw(getBatch());
     }
