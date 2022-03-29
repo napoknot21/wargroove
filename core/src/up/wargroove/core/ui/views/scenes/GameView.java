@@ -48,9 +48,8 @@ public class GameView extends View {
     private OrthogonalTiledMapRenderer renderer;
     private TileIndicator tileIndicator;
     private UnitIndicator unitIndicator;
-    private StructureMenu structureMenu;
+    private PlayerBox playerBox;
     private Stage gameViewUi;
-    private SnapshotArray<InputProcessor> lastInputs;
 
     private boolean movement;
     private boolean attack;
@@ -124,8 +123,8 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(), getController());
-        Camera camera = new OrthographicCamera();
-        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        playerBox = new PlayerBox(getController());
+        Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
 
         Table table = new Table();
@@ -138,7 +137,9 @@ public class GameView extends View {
         indicators.add(unitIndicator).pad(10);
         indicators.add(tileIndicator).pad(10);
 
-
+        table.add();
+        table.add(playerBox).right().top().pad(10);
+        table.row();
         table.add(buttons).expand().left().bottom().pad(10);
         table.add(indicators).expand().right().bottom();
         gameViewUi.addActor(table);
@@ -248,7 +249,7 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        gameViewUi.getViewport().update(width, height);
+        gameViewUi.getViewport().update(width, height,true);
         camera.position.set(gameMap.getCenter());
         super.resize(width, height);
     }

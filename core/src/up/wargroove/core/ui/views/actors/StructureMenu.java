@@ -172,7 +172,7 @@ public class StructureMenu extends Dialog {
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);
-            left().top();
+            left();
             add(movementCost).left();
             row();
             add(range).left();
