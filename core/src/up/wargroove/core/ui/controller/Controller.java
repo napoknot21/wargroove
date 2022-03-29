@@ -407,7 +407,9 @@ public class Controller {
     public void entityWait() {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
+        AttackSelector selector1 = gameView.getAttackSelector();
         selector.reset();
+        selector1.reset();
         gameView.setMovement(false);
         gameView.setAttack(false);
         gameView.getCursor().setLock(false);

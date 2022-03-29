@@ -83,11 +83,11 @@ public class GameView extends View {
         attackSelector = new AttackSelector(gameMap.getScale());
         Stats stats = new Stats(50, 50, 50, 50, null);
         Character character = new Character(
-                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.SOLDIER,
+                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.MAGE,
                 0, 0, false, stats
         );
         Character c = new Character(
-                "Superman", Faction.HEAVENSONG_EMPIRE, Entity.Type.GIANT,
+                "Superman", Faction.HEAVENSONG_EMPIRE, Entity.Type.SPEARMAN,
                 0, 0, false, stats
         );
 
@@ -168,7 +168,7 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
-                if (attack) {
+                if (attack){
                     attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
@@ -186,8 +186,8 @@ public class GameView extends View {
                 }
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
-                attack = getController().showTargets(attack, attackSelector, worldPosition);
+                movement = getController().showMovements(movement, movementSelector,worldPosition);
+                attack= getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
                     scopeEntity(worldPosition);
@@ -196,7 +196,7 @@ public class GameView extends View {
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
                 }
-                if (attack) moveDialog.addAttack();
+                if(attackSelector.getPath().length()>0) moveDialog.addAttack();
                 return true;
             }
 
