@@ -22,6 +22,8 @@ public class MoveDialog extends Table {
     private final TextButton attack;
     private final TextButton move;
     private final TextButton buy;
+    private final TextButton endTurn;
+    private final TextButton nextUnit;
 
     /**
      * Create an empty MoveDialog.
@@ -35,11 +37,18 @@ public class MoveDialog extends Table {
                 assets.get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class)
         )));
         Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
-        wait = new TextButton("wait", skin);
-        attack = new TextButton("attack", skin);
-        move = new TextButton("move", skin);
-        buy = new TextButton("buy", skin);
+        wait = new TextButton("Wait", skin);
+        attack = new TextButton("Attack", skin);
+        move = new TextButton("Move", skin);
+        buy = new TextButton("Buy", skin);
+        nextUnit = new TextButton("Next unit", skin);
+        endTurn = new TextButton("End turn",skin);
         initInput(controller);
+
+        add(endTurn).pad(5);
+        row();
+        add(nextUnit).pad(5);
+        row();
     }
 
     private void initInput(Controller controller) {
@@ -89,19 +98,6 @@ public class MoveDialog extends Table {
         super.draw(batch, parentAlpha);
     }
 
-
-    private void checkStatus() {
-
-
-    }
-
-    public void startMoving(boolean visible) {
-    }
-
-    public void update(boolean m) {
-
-    }
-
     public void addWait() {
         addButton(wait);
     }
@@ -126,4 +122,12 @@ public class MoveDialog extends Table {
         addButton(attack);
     }
 
+    @Override
+    public void clear() {
+        super.clear();
+        add(endTurn).pad(5);
+        row();
+        add(nextUnit).pad(5);
+        row();
+    }
 }
