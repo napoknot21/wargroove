@@ -30,6 +30,7 @@ import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
+
 import java.util.LinkedList;
 
 
@@ -79,8 +80,8 @@ public class GameView extends View {
         initMap();
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
-        attackSelector= new AttackSelector(gameMap.getScale());
-        Stats stats = new Stats(50,50,50,50, null);
+        attackSelector = new AttackSelector(gameMap.getScale());
+        Stats stats = new Stats(50, 50, 50, 50, null);
         Character character = new Character(
                 "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.SOLDIER,
                 0, 0, false, stats
@@ -167,7 +168,7 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
-                if (attack){
+                if (attack) {
                     attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
@@ -185,8 +186,8 @@ public class GameView extends View {
                 }
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector,worldPosition);
-                attack= getController().showTargets(attack, attackSelector, worldPosition);
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                attack = getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
                     scopeEntity(worldPosition);
@@ -195,7 +196,7 @@ public class GameView extends View {
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
                 }
-                if(attack) moveDialog.addAttack();
+                if (attack) moveDialog.addAttack();
                 return true;
             }
 
@@ -249,7 +250,7 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        gameViewUi.getViewport().update(width, height,true);
+        gameViewUi.getViewport().update(width, height, true);
         camera.position.set(gameMap.getCenter());
         super.resize(width, height);
     }

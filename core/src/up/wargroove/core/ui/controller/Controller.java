@@ -306,7 +306,7 @@ public class Controller {
      * @param worldPosition The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
-    public boolean showMovements(boolean movement, MovementSelector movementSelector,Vector3 worldPosition) {
+    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
         if (movement) {
             if (!movementSelector.isValidPosition()) {
                 movementSelector.reset();
@@ -328,7 +328,7 @@ public class Controller {
         return true;
     }
 
-    public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition){
+    public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
         if (attack) {
             if (!attackSelector.isValidPosition()) {
                 attackSelector.reset();
@@ -344,7 +344,7 @@ public class Controller {
             return false;
         }
         var pair = getTargetPossibilities();
-        attackSelector.showValids(getScreen().getAssets(),pair);
+        attackSelector.showValids(getScreen().getAssets(), pair);
         attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
         return true;
     }
@@ -382,7 +382,6 @@ public class Controller {
     public void endAttack() {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
-        MovementSelector movementSelector = gameView.getMovementSelector();
         gameView.setAttack(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
@@ -391,6 +390,7 @@ public class Controller {
             selector.reset();
             return;
         }
+        MovementSelector movementSelector = gameView.getMovementSelector();
         movementSelector.reset();
         selector.reset();
         Actor entity = gameView.getScopedEntity();

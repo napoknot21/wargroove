@@ -42,7 +42,7 @@ public class MoveDialog extends Table {
         move = new TextButton("Move", skin);
         buy = new TextButton("Buy", skin);
         nextUnit = new TextButton("Next unit", skin);
-        endTurn = new TextButton("End turn",skin);
+        endTurn = new TextButton("End turn", skin);
         initInput(controller);
 
         add(endTurn).pad(5);

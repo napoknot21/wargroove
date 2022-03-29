@@ -12,7 +12,7 @@ import up.wargroove.core.ui.controller.Controller;
  */
 public class PlayerBox extends Table {
     /**
-     * Indicate if this box is for a unique player
+     * Indicate if this box is for a unique player.
      */
     private final boolean isStatic = false;
 
