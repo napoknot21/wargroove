@@ -28,7 +28,7 @@ public class CharacterUI extends Actor {
     private TextureRegion[] animationDie;
     private TextureRegion[] animationAttack;
     private float temps;
-    private ArrayList<java.lang.Character> move= new ArrayList<>();
+    private String move="";
     private java.lang.Character attackDirection;
     private static float TIME_LAPSE=0.5f;
     private static final int TILE_SIZE= 20;
@@ -36,7 +36,6 @@ public class CharacterUI extends Actor {
     private int ATTACK_FRAMES;
     private boolean alive= true;
     private boolean injured= false;
-    private Color spriteColor;
     private Pair<Integer,Integer> size;
     private Pair<Integer,Integer> decalage;
 
@@ -50,12 +49,12 @@ public class CharacterUI extends Actor {
         return alive;
     }
 
-    public void injured() {
+    public void isInjured() {
         this.injured = true;
     }
 
     public boolean isWaiting(){
-        return  (move.isEmpty()&&attackDirection==null);
+        return  (!canMove()&&attackDirection==null);
         }
 
     private Texture getPath(String nameFile) {
@@ -104,7 +103,7 @@ public class CharacterUI extends Actor {
         setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
         positionChanged();
         spriteWaiting=sprite;
-        spriteColor=sprite.getColor();
+
 
     }
     private void initialiseAnimation() {
@@ -143,12 +142,10 @@ public class CharacterUI extends Actor {
         super.act(delta);
     }
 
-    //TODO Ajout condition si la vie n'est pas a 100% (quand merge sera fait)
-
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (!move.isEmpty()) moveTo();
-        if (move.isEmpty()&&attackDirection!=null) attackTo();
+        if (canMove()) moveTo();
+        if (!canMove()&&attackDirection!=null) attackTo();
         if (isWaiting()) {
             actualiseStats();
             stats.draw(batch);
@@ -167,31 +164,32 @@ public class CharacterUI extends Actor {
      */
 
     public void moveNorth() {
-        move.add('U');
+        move+='U';
     }
 
     public void moveEast() {
-        move.add('R');
+        move+='R';
     }
 
     public void moveSouth() {
-        move.add('D');
+        move+='D';
     }
 
     public void moveWest() {
-        move.add('L');
+        move+='L';
     }
 
 
 
     /**
-     * Decides the mouvement
+     * Decides movement's direction
      */
     public void moveTo() {
         if (temps<TILE_SIZE){
+            System.out.println(move);
             temps+=TIME_LAPSE;
         }
-        switch (move.get(0)){
+        switch (move.charAt(0)){
             case 'U': move(0,1, getPath("MOVE_U.png")); return;
             case 'R': move(1,0, getPath("MOVE_R.png")); return;
             case 'D': move(0,-1, getPath("MOVE_D.png")); return;
@@ -206,6 +204,7 @@ public class CharacterUI extends Actor {
         if(temps==TIME_LAPSE){
             AnimationWalk(texture);
         }
+        System.out.println(temps);
         sprite= new Sprite(animationMove[(int) (temps/3)%animationMove.length]);
         sprite.setSize(size.first,size.second);
         setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
@@ -215,8 +214,8 @@ public class CharacterUI extends Actor {
             coordinate.second+= y;
             setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
             spriteWaiting.setPosition(getX(),getY());
-            move.remove(0);
-            if (move.isEmpty()){
+            removeFirstMove();
+            if (!canMove()){
                 actualiseSprite();
             }
         }
@@ -236,7 +235,9 @@ public class CharacterUI extends Actor {
         }
     }
 
-
+    /**
+     * Decides attack's direction
+     */
     public void attackTo() {
         if (temps<ATTACK_FRAMES*10){
             temps+=TIME_LAPSE;
@@ -248,6 +249,11 @@ public class CharacterUI extends Actor {
             case 'L': attack(getPath("ATTACK_L.png"));
         }
     }
+
+    /**
+     * According with the direction, does the attack animation
+     * @param texture is the direction selected
+     */
 
     public void attack(Texture texture){
         if(temps==TIME_LAPSE){
@@ -262,7 +268,7 @@ public class CharacterUI extends Actor {
     }
 
     /**
-     * Create the animation showing the character doing his attack
+     * Create the animation showing the character doing the attack
      */
     public void AnimationAttack(Texture texture){
         TextureRegion [][] tmp = TextureRegion.split(texture, texture.getWidth()/13,texture.getHeight());
@@ -271,15 +277,23 @@ public class CharacterUI extends Actor {
         }
     }
 
+    /**
+     * Create a sequence of colors showing the character injured
+     * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
+     */
     private void injure(){
-        temps+=TIME_LAPSE/4;
-        if (temps>10) temps=0; injured=false;
-        if ((temps/10)%2==1){
-            sprite.setColor(Color.RED);
-        } else {
-            sprite.setColor(new Sprite(animationDie[0]).getColor());
+        sprite.setColor(Color.RED);
+        temps+=TIME_LAPSE;
+        if (temps>3){
+            temps=0;
+            sprite.setColor(1,1,1,1);
+            injured=false;
         }
     }
+
+    /**
+     *
+     */
 
     private void die(){
         temps+=TIME_LAPSE;
@@ -305,11 +319,15 @@ public class CharacterUI extends Actor {
         }
     }
 
-    // TODO: 27/02/2022 : Amelioration du move
     public void setMove(String path) {
-        for (int i = 0; i < path.length(); i++) {
-            move.add(path.charAt(i));
-        }
+        move=move+path;
+    }
+
+    private boolean canMove(){
+        return (move.length()>0);
+    }
+    private void removeFirstMove(){
+        move=move.substring(1);
     }
 
     public void setAttackDirection(java.lang.Character attackDirection) {
@@ -322,6 +340,10 @@ public class CharacterUI extends Actor {
 
     public Pair<Integer, Integer> getCoordinate() {
         return coordinate;
+    }
+
+    private boolean isInTime(float x, float y){
+        return (temps>=x) && (temps<=y);
     }
 
     private void defineFeatures(){
@@ -337,4 +359,5 @@ public class CharacterUI extends Actor {
         }
     }
     //TODO Bug de etre en train de mourir et pouvoir faire des actions (=zombie)
+
 }
