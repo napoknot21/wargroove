@@ -168,7 +168,7 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
-                if (attack){
+                if (attack) {
                     attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
@@ -182,21 +182,28 @@ public class GameView extends View {
                 Tile tile = getController().setIndicator(worldPosition);
                 if (tile.getStructure().isPresent()) {
                     moveDialog.addBuy();
+                    movementSelector.reset();
+                    attackSelector.reset();
+                    movement = attack = false;
+                    cursor.setLock(false);
                     return true;
                 }
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector,worldPosition);
-                attack= getController().showTargets(attack, attackSelector, worldPosition);
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                attack = getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
+                    moveDialog.clear();
                     scopeEntity(worldPosition);
                     moveDialog.addWait();
                 }
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
                 }
-                if(attackSelector.getPath().length()>0) moveDialog.addAttack();
+                if (attackSelector.getPath().length() > 0) {
+                    moveDialog.addAttack();
+                }
                 return true;
             }
 

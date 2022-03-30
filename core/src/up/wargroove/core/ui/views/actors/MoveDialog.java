@@ -114,7 +114,7 @@ public class MoveDialog extends Table {
     }
 
     public void addBuy() {
-
+        clear();
         addButton(buy);
     }
 

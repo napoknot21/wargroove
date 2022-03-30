@@ -319,6 +319,7 @@ public class Controller {
         if (!setScopeEntity(worldPosition)) {
             movementSelector.reset();
             ((GameView) getScreen()).getMoveDialog().clear();
+            ((GameView) getScreen()).getCursor().setLock(false);
             return false;
         }
 
