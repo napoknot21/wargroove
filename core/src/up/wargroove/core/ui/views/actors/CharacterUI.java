@@ -146,13 +146,14 @@ public class CharacterUI extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         if (canMove()) moveTo();
         if (!canMove()&&attackDirection!=null) attackTo();
+
+        //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
+        if (injured) injure();
+        sprite.draw(batch);
         if (isWaiting()) {
             actualiseStats();
             stats.draw(batch);
         }
-        //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
-        if (injured) injure();
-        sprite.draw(batch);
         super.draw(batch, parentAlpha);
 
     }

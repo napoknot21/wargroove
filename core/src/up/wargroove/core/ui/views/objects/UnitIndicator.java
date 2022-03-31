@@ -1,7 +1,9 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
@@ -15,6 +17,8 @@ import up.wargroove.core.world.Tile;
  */
 public class UnitIndicator extends Indicator {
 
+    private Sprite Stats;
+
     /**
      * Create a unit indicator.
      *
@@ -23,7 +27,12 @@ public class UnitIndicator extends Indicator {
      */
     public UnitIndicator(Controller controller, Biome biome) {
         super(biome);
+        this.Stats = new Sprite();
+        Stats.setSize(12, 12);;
+
     }
+
+
 
 
     @Override
@@ -31,6 +40,7 @@ public class UnitIndicator extends Indicator {
         if (tile.entity.isEmpty()) {
             setForeground((Texture) null);
             setBackground((Texture) null);
+            setStats((Texture) null);
             return;
         }
         String path = TileType.getTexturePath(tile, getBiome());
@@ -43,12 +53,33 @@ public class UnitIndicator extends Indicator {
         );
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
         setForeground((tmp[0][0]));
+        int numero=0;
+        if (character.getStats().getHealth()<90){
+            numero= (int) ((character.getStats().getHealth()/10)+1);
+        }
+        if ((character.getStats().getHealth()<=0)||(character.getStats().getHealth()==90)){
+            numero= (int) ((character.getStats().getHealth()/10));
+        }
+        Texture stats = assets.get("data/sprites/character/STATS/Stats"+numero+".png");
+        setStats(stats);
     }
 
+    public void setStats(Texture texture) {
+        if (texture != null) {
+            Stats.setRegion(new TextureRegion(texture));
+        } else {
+            Stats.setTexture(null);
+        }
+    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
+        Stats.setPosition(getX()+36, getY()+1);
+        if (Stats.getTexture() != null) {
+            Stats.draw(batch);
+        }
+
 
     }
 }
