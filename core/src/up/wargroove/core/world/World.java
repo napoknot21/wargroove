@@ -2,6 +2,7 @@ package up.wargroove.core.world;
 
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
@@ -33,6 +34,17 @@ public class World {
 
         return val == 0 ? -1 : k[2] - val;
 
+    };
+
+    private final WPredicate<Integer> canAttack = (k) -> {
+        Tile tile = terrain[k[0]];
+        if (tile.entity.isEmpty()) {
+            return 0;
+        }
+        if (tile.entity.get().getFaction() == Faction.values()[k[1]]) {
+            return 0;
+        }
+        return 1;
     };
 
     private Stack<State> states;
@@ -194,8 +206,8 @@ public class World {
 
             int lco = linCoordinate + delta;
 
-	    int lncMod = linCoordinate % properties.dimension.first;
-	    int lcoMod = lco % properties.dimension.first;
+	        int lncMod = linCoordinate % properties.dimension.first;
+	        int lcoMod = lco % properties.dimension.first;
 
             boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, properties.dimension);
 
@@ -216,8 +228,8 @@ public class World {
      *
      * @return le vecteur des coordonnées valides
      */
-     /*
-    private Vector<Integer> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
+
+    private Vector<Integer> coreBreadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
 	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
@@ -262,15 +274,15 @@ public class World {
         return res;
 
     }
-    */
+
     private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
-	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+	    Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
-	if(predicate == null) return res;
+	    if(predicate == null) return res;
 
 	Entity entity    = terrain[root].entity.get();	
 

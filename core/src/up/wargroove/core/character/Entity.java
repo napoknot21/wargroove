@@ -6,17 +6,18 @@ public abstract class Entity {
 
     protected Movement movement;
     protected int movRange;
+    protected Faction faction;
 
     /**
      * constructeur pour Entity
-     * @param name Nom de l'entité
      * @param type Type d'unité de l'entité
      */
-    protected Entity(Type type) {
+    protected Entity(Type type, Faction faction) {
 
         this.type = type;
         //this.movRange = movRange;
         //this.movement = movement;
+        this.faction = faction;
 
     }
 
@@ -31,6 +32,12 @@ public abstract class Entity {
     public Movement getMovement() {
 
         return this.movement;
+
+    }
+
+    public Faction getFaction () {
+
+        return this.faction;
 
     }
 

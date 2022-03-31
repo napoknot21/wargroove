@@ -1,10 +1,16 @@
 package up.wargroove.core.character;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Vector;
+import up.wargroove.utils.Pair;
+
 public abstract class Character extends Entity {
 
     protected String name;
 
-    private Faction faction;
+
     protected Stats stats; 
 
     /**
@@ -15,10 +21,9 @@ public abstract class Character extends Entity {
      */
     public Character(String name, Entity.Type type, Faction faction) {
 
-        super(type);
+        super(type,faction);
 
-	this.name = name;
-        this.faction = faction;
+        this.name = name;
 
         stats = new Stats();
 
