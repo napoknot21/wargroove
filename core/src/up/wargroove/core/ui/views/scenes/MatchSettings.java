@@ -156,6 +156,7 @@ public class MatchSettings extends View {
 
     @Override
     public void draw(float delta) {
+        getStage().act(delta);
         getStage().draw();
     }
 
@@ -261,7 +262,7 @@ public class MatchSettings extends View {
                     }
                 }
         );
-        biome.addListener(
+        /*biome.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -269,7 +270,7 @@ public class MatchSettings extends View {
                         properties.setBiome((Biome) biome.getSelected());
                     }
                 }
-        );
+        );*/
         checkFog.addListener(
                 new ClickListener() {
                     @Override
@@ -292,6 +293,7 @@ public class MatchSettings extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
+                        properties.setBiome((Biome) biome.getSelected());
                         getModel().setProperties(properties);
                         controller.back();
                     }

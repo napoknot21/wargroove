@@ -29,6 +29,7 @@ import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
 
+
 /**
  * Represent the game screen.
  */
@@ -68,13 +69,24 @@ public class GameView extends View {
         getController().setScreen(this);
     }
 
+    private Music chooseMusic(){
+        switch (getModel().getBiome()){
+            case ICE : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/ICE.mp3"));
+            case VOLCANO : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/VOLCANO.mp3"));
+            case GRASS : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
+            case DESERT : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/DESERT.mp3"));
+        }
+        return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/theme.mp3"));
+
+    }
+
     @Override
     public void init() {
         initMap();
         initGameViewUI();
 
-        theme = getAssets().getDefault(Music.class);
-        makeMusic(theme);
+        theme = chooseMusic();
+        theme.play();
 
         moveDialog = new MoveDialog(getAssets(),getController());
         movementSelector = new MovementSelector(gameMap.getScale());

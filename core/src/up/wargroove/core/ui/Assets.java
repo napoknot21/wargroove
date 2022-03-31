@@ -14,6 +14,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+
+import up.wargroove.core.world.Biome;
 import up.wargroove.utils.Log;
 
 /**
@@ -27,10 +29,12 @@ public class Assets {
     private static final String asmext = ".asman";
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
+    //private final Map<Biome, Music> musics;
 
     public Assets() {
         manager = new AssetManager();
         defaults = new HashMap<>();
+        //musics = new HashMap<>();
     }
 
     /**
@@ -124,6 +128,21 @@ public class Assets {
         Music defaultMusic = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/theme.mp3"));
         defaults.put(Music.class, defaultMusic);
     }
+
+    /*public void loadBiomeMusic(){
+        Music grass = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
+        musics.put(Biome.GRASS, grass);
+        Music volcano = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/VOLCANO.mp3"));
+        musics.put(Biome.VOLCANO, volcano);
+        Music ice = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/ICE.mp3"));
+        musics.put(Biome.ICE, ice);
+        Music desert = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/DESERT.mp3"));
+        musics.put(Biome.DESERT, desert);
+    }
+
+    public Music getMusic(Biome b){
+        return musics.get(b);
+    }*/
 
     /**
      * Print the loading.

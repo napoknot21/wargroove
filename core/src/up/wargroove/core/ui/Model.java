@@ -1,10 +1,7 @@
 package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
-import up.wargroove.core.world.GeneratorProperties;
-import up.wargroove.core.world.Tile;
-import up.wargroove.core.world.World;
-import up.wargroove.core.world.WorldProperties;
+import up.wargroove.core.world.*;
 import up.wargroove.utils.Pair;
 
 /**
@@ -55,6 +52,10 @@ public class Model {
 
     public void setProperties(WorldProperties properties) {
         this.properties = properties;
+    }
+
+    public Biome getBiome(){
+        return properties.getBiome();
     }
 
     public boolean isActive() {
