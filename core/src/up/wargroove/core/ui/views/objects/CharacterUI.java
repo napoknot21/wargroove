@@ -1,4 +1,4 @@
-package up.wargroove.core.ui.views.actors;
+package up.wargroove.core.ui.views.objects;
 
 
 import com.badlogic.gdx.Gdx;

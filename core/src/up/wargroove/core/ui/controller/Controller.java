@@ -12,7 +12,7 @@ import up.wargroove.core.character.Character;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
