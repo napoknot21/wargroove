@@ -197,7 +197,7 @@ public class GameView extends View {
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
                 }
-                if (attackSelector.getPath().length() > 0) {
+                if (canAttack()){
                     moveDialog.addAttack();
                 }
                 return true;
@@ -333,5 +333,11 @@ public class GameView extends View {
 
     public Cursor getCursor() {
         return cursor;
+    }
+
+    public boolean canAttack(){
+        return ((attackSelector.getPath().length() > 0)
+                &&(scopedEntity instanceof CharacterUI)
+                &&(!(((CharacterUI) scopedEntity).getCharacter() instanceof Villager)));
     }
 }

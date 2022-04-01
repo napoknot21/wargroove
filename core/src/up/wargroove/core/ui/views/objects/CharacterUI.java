@@ -39,9 +39,6 @@ public class CharacterUI extends Actor {
     private Pair<Integer,Integer> size;
     private Pair<Integer,Integer> decalage;
 
-
-
-
     private static final String TEXTURE_PATH = "data/sprites/character/";
     private Assets assets;
 
@@ -51,6 +48,10 @@ public class CharacterUI extends Actor {
 
     public void isInjured() {
         this.injured = true;
+    }
+
+    public Character getCharacter() {
+        return character;
     }
 
     public boolean isWaiting(){
