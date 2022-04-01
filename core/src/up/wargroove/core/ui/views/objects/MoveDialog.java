@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.backends.lwjgl.audio.Wav;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -56,6 +57,9 @@ public class MoveDialog extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        if (controller.isSoundOn()) {
+                            Assets.getInstance().getDefault(Sound.class).play();
+                        }
                         controller.entityWait();
                         clear();
                     }
@@ -63,6 +67,9 @@ public class MoveDialog extends Table {
         move.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
                 controller.endMoving();
                 clear();
             }
@@ -77,6 +84,9 @@ public class MoveDialog extends Table {
         buy.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
                 controller.openStructureMenu();
                 clear();
             }
@@ -84,8 +94,29 @@ public class MoveDialog extends Table {
         attack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
                 controller.endAttack();
                 clear();
+            }
+        });
+
+        endTurn.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
+            }
+        });
+
+        nextUnit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
             }
         });
     }

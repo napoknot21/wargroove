@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -93,6 +94,9 @@ public class StructureMenu extends Dialog {
 
     @Override
     protected void result(Object object) {
+        if (controller.isSoundOn()) {
+            Assets.getInstance().getDefault(Sound.class).play();
+        }
         if (object == null) {
             hide();
             return;
@@ -156,6 +160,9 @@ public class StructureMenu extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    if (controller.isSoundOn()) {
+                        Assets.getInstance().getDefault(Sound.class).play();
+                    }
                     description.setDescription(c, assets);
                     current = c;
                     buy.setVisible(true);
@@ -174,7 +181,6 @@ public class StructureMenu extends Dialog {
         private final Label range;
 
         private Description(Assets assets) {
-            setDebug(true, true);
             Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
             text = new Label("", skin);
             movementCost = new Label("", skin);
