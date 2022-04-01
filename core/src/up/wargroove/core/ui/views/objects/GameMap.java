@@ -6,6 +6,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.World;
 
@@ -41,7 +42,7 @@ public class GameMap extends TiledMap {
                 tileLayer.setCell(i, j, cell);
             }
         }
-        world.at(0, 0).setStructure(new Structure(Structure.Type.BARRACK));
+        world.at(0, 0).setStructure(new Recruitment(Recruitment.Type.BARRACKS));
         this.getLayers().add(tileLayer);
     }
 

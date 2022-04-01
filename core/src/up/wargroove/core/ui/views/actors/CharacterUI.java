@@ -115,11 +115,11 @@ public class CharacterUI extends Actor {
 
 
         public void actualiseStats(){
-        if (character.getStats().getHealth()<90){
-            this.stats= new Sprite(getPathSTATS((int) ((character.getStats().getHealth()/10)+1)));
+        if (character.getHealth()<90){
+            this.stats= new Sprite(getPathSTATS((int) ((character.getHealth()/10)+1)));
         }
-        if ((character.getStats().getHealth()<=0)||(character.getStats().getHealth()==90)){
-            this.stats= new Sprite(getPathSTATS((int) ((character.getStats().getHealth()/10))));
+        if ((character.getHealth()<=0)||(character.getHealth()==90)){
+            this.stats= new Sprite(getPathSTATS((int) ((character.getHealth()/10))));
         }
         stats.setSize(TILE_SIZE/4,TILE_SIZE/4);
         stats.setPosition(coordinate.first * TILE_SIZE+TILE_SIZE-6,coordinate.second * TILE_SIZE+1);

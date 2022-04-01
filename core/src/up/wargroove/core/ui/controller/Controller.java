@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.*;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.actors.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
@@ -422,13 +423,7 @@ public class Controller {
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         LinkedList<Character> characters = new LinkedList<>();
-        characters.add(new Character(
-                "c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.ARCHER, 10, 5, false,
-                new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))
-        ));
-        characters.add(new Character("c1", Faction.CHERRYSTONE_KINGDOM, Entity.Type.AMPHIBIAN, 10, 5, false,
-                new Stats(20.0, 75.0, 20.0, 5, new Movement(Movement.Type.WALKING))
-        ));
+        characters.add(new Villager("c1", Faction.CHERRYSTONE_KINGDOM));
         gameView.showsStructureMenu(characters);
     }
 

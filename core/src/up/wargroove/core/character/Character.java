@@ -35,10 +35,10 @@ public abstract class Character extends Entity {
     public int getCost() {
         return this.stats.cost;
     }
-
-    public int getRange() {
+    // FIXME: 01/04/2022 Cet override cause le bug
+    /*public int getRange() {
         return this.stats.range;
-    }
+    }*/
 
     public Stats getStats() {
         return stats;

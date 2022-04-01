@@ -199,7 +199,7 @@ public class StructureMenu extends Dialog {
          */
         private void setDescription(Character c, Assets assets) {
             setVisible(true);
-            movementCost.setText("Movement : " + c.getStats().getMovement().getMoveType().id);
+            movementCost.setText("Movement : " + c.getMovement().id);
             range.setText("Range : " + c.getRange());
             try {
                 text.setText(assets.get(c.getType(), 25));

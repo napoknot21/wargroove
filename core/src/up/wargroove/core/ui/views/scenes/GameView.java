@@ -4,6 +4,7 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,7 +20,7 @@ import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.Stats;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -62,6 +63,8 @@ public class GameView extends View {
     private MovementSelector movementSelector;
     private AttackSelector attackSelector;
 
+    private Music theme;
+
 
     /**
      * Create the game screen.
@@ -78,18 +81,14 @@ public class GameView extends View {
     public void init() {
         initGameViewUI();
         initMap();
+        theme = getAssets().getDefault(Music.class);
+        makeMusic(theme);
+
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
         attackSelector = new AttackSelector(gameMap.getScale());
-        Stats stats = new Stats(50, 50, 50, 50, null);
-        Character character = new Character(
-                "Superman", Faction.CHERRYSTONE_KINGDOM, Entity.Type.MAGE,
-                0, 0, false, stats
-        );
-        Character c = new Character(
-                "Superman", Faction.HEAVENSONG_EMPIRE, Entity.Type.SPEARMAN,
-                0, 0, false, stats
-        );
+        Character character = new Villager("Superman", Faction.CHERRYSTONE_KINGDOM);
+        Character c = new Villager("Superman", Faction.HEAVENSONG_EMPIRE);
 
         CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
         CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);
@@ -251,6 +250,7 @@ public class GameView extends View {
     @Override
     public void dispose() {
         gameMap = null;
+        theme.dispose();
         super.dispose();
     }
 

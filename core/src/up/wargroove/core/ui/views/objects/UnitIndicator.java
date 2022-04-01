@@ -28,7 +28,7 @@ public class UnitIndicator extends Indicator {
     public UnitIndicator(Controller controller, Biome biome) {
         super(biome);
         this.Stats = new Sprite();
-        Stats.setSize(12, 12);;
+        Stats.setSize(12, 12);
 
     }
 
@@ -40,7 +40,7 @@ public class UnitIndicator extends Indicator {
         if (tile.entity.isEmpty()) {
             setForeground((Texture) null);
             setBackground((Texture) null);
-            setStats((Texture) null);
+            setStats(null);
             return;
         }
         String path = TileType.getTexturePath(tile, getBiome());
@@ -54,11 +54,11 @@ public class UnitIndicator extends Indicator {
         TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
         setForeground((tmp[0][0]));
         int numero=0;
-        if (character.getStats().getHealth()<90){
-            numero= (int) ((character.getStats().getHealth()/10)+1);
+        if (character.getHealth()<90){
+            numero= (int) ((character.getHealth()/10)+1);
         }
-        if ((character.getStats().getHealth()<=0)||(character.getStats().getHealth()==90)){
-            numero= (int) ((character.getStats().getHealth()/10));
+        if ((character.getHealth()<=0)||(character.getHealth()==90)){
+            numero= (int) ((character.getHealth()/10));
         }
         Texture stats = assets.get("data/sprites/character/STATS/Stats"+numero+".png");
         setStats(stats);
