@@ -25,11 +25,16 @@ A tactical RPG game based on the Wargroove game
 
 ### Running the software
 
-Currently, it can be run through gradle too. In order to pass program arguments, you need to pass them behind `--args`:
+Currently, it can be run through gradle too.
 
 
 ```
 ./gradlew run 
+```
+To run the game in debug mode, you need to use the following command:
+
+```
+./gradlew run --args=--debug=on
 ```
 
 # Core Wargroove
