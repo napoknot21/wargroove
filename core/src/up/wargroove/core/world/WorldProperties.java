@@ -18,9 +18,10 @@ public class WorldProperties implements Savable {
     public GeneratorProperties genProperties;
 
     private boolean fog;
-	private int income;
+    private int income;
     public AudioInputStream music;
 
+    public int amt = 4;
 
 	public WorldProperties(Biome biome, boolean fog, int income){
 		this.biome = biome;
@@ -28,9 +29,7 @@ public class WorldProperties implements Savable {
 		this.income = income;
 	}
 
-	public WorldProperties() {
-
-	}
+	public WorldProperties() {}
 
 	public Biome getBiome() {
 		return biome;

@@ -1,6 +1,16 @@
 package up.wargroove.core.world;
 
+import java.util.Vector;
 
-public abstract class State {
+public class State {
+
+	private Vector<Long> blocks;
+
+	public State() {
+	
+		blocks = new Vector<>();
+
+	}
+
 }
 

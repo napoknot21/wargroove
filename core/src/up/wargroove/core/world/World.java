@@ -2,6 +2,7 @@ package up.wargroove.core.world;
 
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
@@ -17,9 +18,14 @@ public class World {
 
     private final int [] permutations;
     private final WorldProperties properties; 
-    private final int turn;
+ 
     private Optional<Integer> currentEntityLinPosition;
     private Tile[] terrain;
+
+    private Vector<Player> players;
+    private int playerPtr = 0;
+
+    private State currentState;
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
@@ -49,7 +55,21 @@ public class World {
 		-1
 	};
 
-        turn = 1; 
+	players = new Vector<>();
+	int amt = Math.min(properties.amt, Faction.values().length);
+
+	if(amt < Constants.WG_TWO) {
+
+		amt = Constants.WG_TWO;
+
+	}
+
+	for(int k = 0; k < amt; k++) {
+
+		Player p = new Player(Faction.values()[k]);
+		players.add(p);	
+
+	}	
 
     }
 
@@ -80,21 +100,31 @@ public class World {
         Log.print("Initialisation terminée ...");
     }
 
-    public void push(State state) {
+    private void nextTurn() {
 
-        states.push(state);
-
-    }
-
-    public void pop() {
-
-        states.pop();
+	    states.push(currentState);
+	    currentState = new State(); 
 
     }
 
-    public State last() {
+    public boolean nextPlayer() {
 
-        return states.peek();
+	    if(players.get(playerPtr).hasNext()) return false;
+	    playerPtr = (playerPtr + 1) % players.size();
+
+	    if(playerPtr == 0) {
+
+		    nextTurn();
+
+	    }
+
+	    return true;
+
+    }
+
+    public int turns() {
+
+	    return states.size();
 
     }
 
@@ -124,6 +154,7 @@ public class World {
         if (spawnTile.entity.isPresent()) return false;
 
         terrain[linCoordinate].entity = Optional.of(entity);
+	players.get(playerPtr).addEntity(entity);
 
         return true;
 

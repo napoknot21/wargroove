@@ -5,7 +5,9 @@ public abstract class Entity {
     protected Type type;
 
     protected Movement movement;
+    
     protected int movRange;
+    protected int remainingMovs;
 
     /**
      * constructeur pour Entity
@@ -21,6 +23,18 @@ public abstract class Entity {
     }
 
     public abstract void initialize();
+
+    public boolean exhausted() {
+
+	    return remainingMovs == 0;
+
+    }
+
+    public void nextTurn() {
+
+	    remainingMovs = movRange + 1;
+
+    }
 
     public Type getType() {
 
