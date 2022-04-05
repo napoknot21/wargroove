@@ -29,10 +29,8 @@ public abstract class Character extends Entity {
 
     }
 
-    /**
-     * getter et setters pour la faction
-     * @return faction du personnage
-     */
+    public void attack (Entity e) {}
+
     public Faction getFaction() {
         return faction;
     }
