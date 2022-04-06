@@ -6,7 +6,7 @@ import up.wargroove.utils.Pair;
 import java.util.List;
 import java.util.Vector;
 
-public class AttackSelector extends MovementSelector{
+public class AttackSelector extends MovementSelector {
     /**
      * Constructs a Movement selector.
      *
@@ -18,7 +18,7 @@ public class AttackSelector extends MovementSelector{
 
     public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
         reset();
-        pair.first.forEach(v -> valid.add(assets.get( "data/sprites/world/attack.png"), v));
+        pair.first.forEach(v -> valid.add(assets.get("data/sprites/world/attack.png"), v));
         valid.addIntel(pair.second);
 
     }

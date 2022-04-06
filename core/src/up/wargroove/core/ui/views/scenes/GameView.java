@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
@@ -55,6 +56,7 @@ public class GameView extends View {
     private boolean movement;
     private boolean attack;
     private MoveDialog moveDialog;
+    private Codex codex;
     private Actor scopedEntity;
     /**
      * The current character possible movement.
@@ -138,6 +140,8 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(), getController());
+        codex = new Codex(getAssets(), getController());
+
         playerBox = new PlayerBox(getController());
         Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
@@ -147,16 +151,24 @@ public class GameView extends View {
         Table buttons = new Table();
         buttons.bottom().add(moveDialog);
 
+        Table guide= new Table();
+        guide.top().left();
+        guide.add(codex);
+
         Table indicators = new Table();
         indicators.bottom().right();
         indicators.add(unitIndicator).pad(10);
         indicators.add(tileIndicator).pad(10);
 
+        table.add(guide).left().top().pad(10);
         table.add();
         table.add(playerBox).right().top().pad(10);
         table.row();
         table.add(buttons).expand().left().bottom().pad(10);
+        table.add();
         table.add(indicators).expand().right().bottom();
+        table.debugAll();
+
         gameViewUi.addActor(table);
         addInput(gameViewUi);
     }
