@@ -7,6 +7,7 @@ import up.wargroove.core.character.Movement;
 
 public class Commander extends Character {
 
+
 	public Commander() {
 
 		this("", Faction.OUTLAWS);

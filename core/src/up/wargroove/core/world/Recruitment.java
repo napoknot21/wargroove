@@ -2,12 +2,15 @@ package up.wargroove.core.world;
 
 import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.entities.Villager;
+
 import java.util.Vector;
 import java.util.Optional;
 
 public class Recruitment extends Structure {
 
-	public static Vector<Class<Entity>> 	landEntityClasses  = new Vector<>(),
+	public static Vector<Class<? extends Entity>> 	landEntityClasses  = new Vector<>(),
 						navalEntityClasses = new Vector<>(),
 						airEntityClasses   = new Vector<>();
 
@@ -19,7 +22,7 @@ public class Recruitment extends Structure {
 
 	}
 
-	private Vector<Class<Entity>> current;
+	private Vector<Class<? extends Entity>> current;
 
 	public Recruitment(Type type) {
 
@@ -29,6 +32,7 @@ public class Recruitment extends Structure {
 
 			case BARRACKS:
 				current = landEntityClasses;
+				current.add(Villager.class);
 				break;
 
 			case TOWER:
@@ -46,17 +50,17 @@ public class Recruitment extends Structure {
 
 	}
 
-	public Vector<Class<Entity>> trainableEntityClasses() {
+	public Vector<Class<? extends Entity>> trainableEntityClasses() {
 
 		return current;
 
 	}
 
-	public Optional<Entity> buy(Class<Entity> what, double m) {
+	public Optional<Entity> buy(Class<? extends Entity> what, double m, String name, Faction faction) {
 
 		if(current == null) return Optional.empty();
 	
-		Entity entity = EntityManager.instantiate(what);
+		Entity entity = EntityManager.instantiate(what,name,faction);
 		return Optional.of(entity);
 
 	}

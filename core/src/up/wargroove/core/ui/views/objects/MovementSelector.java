@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -17,13 +18,13 @@ import up.wargroove.utils.Pair;
  */
 public class MovementSelector {
     /**
-     * The tile scale between the view and the world.
-     */
-    private final float worldScale;
-    /**
      * List of valid positions.
      */
     protected final Valid valid;
+    /**
+     * The tile scale between the view and the world.
+     */
+    private final float worldScale;
     /**
      * List of movements.
      */
@@ -91,6 +92,14 @@ public class MovementSelector {
 
     public boolean isValidPosition() {
         return validPosition;
+    }
+
+    public boolean isValidPosition(Pair<Integer, Integer> c) {
+        return this.valid.isValid(c) != -1;
+    }
+
+    public boolean isValidPosition(Vector3 v) {
+        return isValidPosition(new Pair<>((int) v.x, (int) v.y));
     }
 
     /**
@@ -188,10 +197,15 @@ public class MovementSelector {
      * @param assets The app assets.
      * @param pair   The sprites coordinates.
      */
-    public void showValids(Assets assets, Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> pair) {
+    public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
         reset();
         pair.first.forEach(v -> valid.add(assets.getTest(), v));
         valid.addIntel(pair.second);
+    }
+
+    public void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates) {
+        reset();
+        coordinates.forEach(v -> valid.add(assets.getTest(), v));
     }
 
     /**
@@ -285,7 +299,7 @@ public class MovementSelector {
          *
          * @param vector the list of intel.
          */
-        protected void addIntel(Vector<Pair<Integer, Integer>> vector) {
+        protected void addIntel(List<Pair<Integer, Integer>> vector) {
             intel.addAll(vector);
         }
 

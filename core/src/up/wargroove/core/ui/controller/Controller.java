@@ -8,19 +8,21 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.Character;
 import up.wargroove.core.character.*;
-import up.wargroove.core.character.entities.Villager;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
+import up.wargroove.core.world.Recruitment;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 
@@ -225,7 +227,7 @@ public class Controller {
      * @param vector The cursor position.
      * @return the tile that will be displayed by the tile indicator.
      */
-    public Tile setIndicator(Vector3 vector) {
+    public Tile getTile(Vector3 vector) {
         return getModel().getTile(vector);
 
     }
@@ -235,7 +237,7 @@ public class Controller {
      *
      * @return A vector of all the possible movements in world terrain coordinate.
      */
-    public Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> getMovementPossibilities() {
+    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getMovementPossibilities() {
         var valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         Vector<Pair<Integer, Integer>> intel = new Vector<>();
@@ -254,8 +256,7 @@ public class Controller {
      */
 
     //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
-
-    public Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> getTargetPossibilities() {
+    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
         var valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         Vector<Pair<Integer, Integer>> intel = new Vector<>();
@@ -302,9 +303,9 @@ public class Controller {
     /**
      * Manage the unit movements on the screen.
      *
-     * @param movement indicate if a movement is already in progress.
+     * @param movement         indicate if a movement is already in progress.
      * @param movementSelector The screen movement manager.
-     * @param worldPosition The position in world coordinates.
+     * @param worldPosition    The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
@@ -324,7 +325,7 @@ public class Controller {
             return false;
         }
 
-        var pair1 = getMovementPossibilities();
+        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
         movementSelector.showValids(getScreen().getAssets(), pair1);
         movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
         return true;
@@ -345,12 +346,11 @@ public class Controller {
             ((GameView) getScreen()).getMoveDialog().clear();
             return false;
         }
-        var pair = getTargetPossibilities();
+        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
         attackSelector.showValids(getScreen().getAssets(), pair);
         attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
         return true;
     }
-
 
 
     public WargrooveClient getWargroove() {
@@ -367,12 +367,12 @@ public class Controller {
         gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
-        Pair<Integer, Integer> destination = selector.getDestination();
         if (path.isBlank()) {
             selector.reset();
             return;
         }
         attackSelector.reset();
+        Pair<Integer, Integer> destination = selector.getDestination();
         selector.reset();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -396,7 +396,9 @@ public class Controller {
         movementSelector.reset();
         selector.reset();
         Actor entity = gameView.getScopedEntity();
-        if (path.length() > 1) getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+        if (path.length() > 1) {
+            getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+        }
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path.substring(0, path.length() - 1));
             ((CharacterUI) entity).setAttackDirection(path.charAt(path.length() - 1));
@@ -422,18 +424,61 @@ public class Controller {
      */
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
-        LinkedList<Character> characters = new LinkedList<>();
-        characters.add(new Villager("c1", Faction.CHERRYSTONE_KINGDOM));
+        Optional<Structure> s = getTile(gameView.getCursor().getWorldPosition()).getStructure();
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
+            return;
+        }
+        Recruitment r = (Recruitment) s.get();
+        List<Class<? extends Entity>> characters = r.trainableEntityClasses();
         gameView.showsStructureMenu(characters);
     }
 
+    /**
+     * Close the structure's menu.
+     */
     public void closeStructureMenu() {
         Gdx.input.setInputProcessor(getScreen().getInputs());
     }
 
-    public void buy(Character c) {
-        //Coordonnee structure grace au curseur
-        //Appel du movementSelector(ou un derive) pour placer la piece aux cases adjacentes disponibles ?
-        //bfs dans le world
+    /**
+     * Buy the entity given in argument.
+     *
+     * @param c The entity's class.
+     */
+    public void buy(Class<? extends Entity> c) {
+        GameView gameView = (GameView) getScreen();
+        Vector3 v = gameView.getCursor().getWorldPosition();
+        Tile t = getTile(v);
+        Optional<Structure> s = t.getStructure();
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
+            return;
+        }
+        Recruitment r = (Recruitment) s.get();
+        Optional<Entity> bought = r.buy(c, 0, "test", Faction.CHERRYSTONE_KINGDOM);
+        if (bought.isEmpty()) {
+            return;
+        }
+        getModel().setBoughtEntity(bought.get());
+        int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
+        List<Integer> list = getWorld().adjacentOf(pos);
+        list.removeIf(i -> getWorld().at(i).entity.isPresent());
+        gameView.showsPlaceable(list);
+
+    }
+
+    /**
+     * Place the bought entity stored in the model
+     */
+    public void placeBoughtEntity() {
+        GameView gameView = (GameView) getScreen();
+        gameView.getMovementSelector().reset();
+        Vector3 v = gameView.getCursor().getWorldPosition();
+        int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
+        //getWorld().addEntity(pos, getModel().getBoughtEntity());
+        CharacterUI c = new CharacterUI(
+                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
+        );
+        gameView.getStage().addActor(c);
+        gameView.getCursor().setLock(false);
     }
 }

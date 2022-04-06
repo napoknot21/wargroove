@@ -1,7 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.backends.lwjgl.audio.Wav;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -23,13 +22,14 @@ public class MoveDialog extends Table {
     private final TextButton attack;
     private final TextButton move;
     private final TextButton buy;
+    private final TextButton placeBought;
     private final TextButton endTurn;
     private final TextButton nextUnit;
 
     /**
      * Create an empty MoveDialog.
      *
-     * @param assets The app Assets manager.
+     * @param assets     The app Assets manager.
      * @param controller The app controller.
      */
     public MoveDialog(Assets assets, Controller controller) {
@@ -44,12 +44,11 @@ public class MoveDialog extends Table {
         buy = new TextButton("Buy", skin);
         nextUnit = new TextButton("Next unit", skin);
         endTurn = new TextButton("End turn", skin);
+        placeBought = new TextButton("buy", skin);
         initInput(controller);
 
-        add(endTurn).pad(5);
-        row();
-        add(nextUnit).pad(5);
-        row();
+        addButton(endTurn);
+        addButton(nextUnit);
     }
 
     private void initInput(Controller controller) {
@@ -119,6 +118,17 @@ public class MoveDialog extends Table {
                 }
             }
         });
+
+        placeBought.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (controller.isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
+                controller.placeBoughtEntity();
+                clear();
+            }
+        });
     }
 
     @Override
@@ -147,6 +157,11 @@ public class MoveDialog extends Table {
     public void addBuy() {
         clear();
         addButton(buy);
+    }
+
+    public void addBought() {
+        clear();
+        addButton(placeBought);
     }
 
     public void addAttack() {

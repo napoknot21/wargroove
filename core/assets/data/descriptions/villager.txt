@@ -1,0 +1,1 @@
+Villagers are a simple ground unit type incapable of attacking, and incapable of capturing any building.

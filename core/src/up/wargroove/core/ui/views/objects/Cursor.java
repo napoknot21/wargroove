@@ -71,15 +71,16 @@ public class Cursor extends Sprite {
      * @param vector the cursor's screen position.
      */
     public void setPosition(Vector3 vector) {
-        setPosition(vector.x, vector.y);
+        if (!locked) {
+            setPosition(vector.x, vector.y);
+        }
     }
 
     @Override
     public void draw(Batch batch) {
-        if (locked) {
-            return;
+        if (!locked) {
+            super.draw(batch);
         }
-        super.draw(batch);
     }
 
     /**

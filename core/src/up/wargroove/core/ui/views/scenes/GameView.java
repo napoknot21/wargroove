@@ -4,7 +4,6 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -16,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
@@ -30,6 +30,7 @@ import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
 import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -61,6 +62,7 @@ public class GameView extends View {
     private AttackSelector attackSelector;
 
     private Music theme;
+    private boolean buy;
 
 
     /**
@@ -158,7 +160,7 @@ public class GameView extends View {
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                Tile tile = getController().setIndicator(cursor.getWorldPosition());
+                Tile tile = getController().getTile(cursor.getWorldPosition());
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 if (movement) {
@@ -175,7 +177,7 @@ public class GameView extends View {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
-                Tile tile = getController().setIndicator(worldPosition);
+                Tile tile = getController().getTile(worldPosition);
                 if (tile.getStructure().isPresent()) {
                     moveDialog.addBuy();
                     movementSelector.reset();
@@ -184,6 +186,13 @@ public class GameView extends View {
                     cursor.setLock(false);
                     return true;
                 }
+                if (buy && movementSelector.isValidPosition(worldPosition)) {
+                    cursor.setLock(true);
+                    moveDialog.addBought();
+                    buy = false;
+                    return true;
+                }
+                buy = false;
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
@@ -197,7 +206,7 @@ public class GameView extends View {
                 if (movementSelector.getPath().length() > 0) {
                     moveDialog.addMove();
                 }
-                if (canAttack()){
+                if (canAttack()) {
                     moveDialog.addAttack();
                 }
                 return true;
@@ -311,7 +320,7 @@ public class GameView extends View {
      *
      * @param characters list of purchasable characters.
      */
-    public void showsStructureMenu(LinkedList<Character> characters) {
+    public void showsStructureMenu(List<Class<? extends Entity>> characters) {
         StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
     }
 
@@ -335,9 +344,20 @@ public class GameView extends View {
         return cursor;
     }
 
-    public boolean canAttack(){
+    public boolean canAttack() {
         return ((attackSelector.getPath().length() > 0)
-                &&(scopedEntity instanceof CharacterUI)
-                &&(!(((CharacterUI) scopedEntity).getCharacter() instanceof Villager)));
+                && (scopedEntity instanceof CharacterUI)
+                && (!(((CharacterUI) scopedEntity).getCharacter() instanceof Villager)));
+    }
+
+    /**
+     * Show the emplacement where we can put an entity.
+     * @param list The list of available emplacement.
+     */
+    public void showsPlaceable(List<Integer> list) {
+        buy = true;
+        List<Pair<Integer, Integer>> coordinates = new LinkedList<>();
+        list.forEach(i -> coordinates.add(World.intToCoordinates(i, getModel().getWorld().getDimension())));
+        movementSelector.showValid(getAssets(), coordinates);
     }
 }

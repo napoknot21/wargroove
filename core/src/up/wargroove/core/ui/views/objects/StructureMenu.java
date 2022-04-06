@@ -7,10 +7,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -21,7 +22,7 @@ public class StructureMenu extends Dialog {
     private final Description description;
     private final TextButton buy;
     private final Controller controller;
-    private Character current;
+    private Class<? extends Entity> current;
 
     private StructureMenu(Assets assets, Controller controller) {
         super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
@@ -39,14 +40,14 @@ public class StructureMenu extends Dialog {
     /**
      * Shows the menu on the screen above all. All the inputs are catch by this.
      *
-     * @param characters list of purchasable characters.
+     * @param list list of purchasable characters.
      * @param assets     The app assets manager.
      * @param controller The app controller.
      * @param stage      The view stage.
      */
-    public static void shows(LinkedList<Character> characters, Assets assets, Controller controller, Stage stage) {
+    public static void shows(List<Class<? extends Entity>> list, Assets assets, Controller controller, Stage stage) {
         instance = new StructureMenu(assets, controller);
-        instance.setup(characters, assets);
+        instance.setup(list, assets);
         stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         instance.show(stage);
     }
@@ -57,8 +58,8 @@ public class StructureMenu extends Dialog {
      * @param c the unit.
      * @return The displayable unit name.
      */
-    private static String transformName(Character c) {
-        String s = c.getType().name().toLowerCase(Locale.ROOT) + " (" + c.getCost() + ")";
+    private static String transformName(Class<? extends Entity> c) {
+        String s = c.getSimpleName().toLowerCase(Locale.ROOT) + " (" + ")";
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
@@ -68,7 +69,7 @@ public class StructureMenu extends Dialog {
      * @param characters list of purchasable characters.
      * @param assets     The app assets manager.
      */
-    private void setup(LinkedList<Character> characters, Assets assets) {
+    private void setup(List<Class<? extends Entity>> characters, Assets assets) {
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
         ScrollPane pane = new ScrollPane(buttons);
@@ -152,9 +153,9 @@ public class StructureMenu extends Dialog {
      * A character button is a button with the character name and its cost.
      */
     private class CharacterButton extends TextButton {
-        Character character;
+        Class<? extends Entity> character;
 
-        public CharacterButton(Character c, Assets assets) {
+        public CharacterButton(Class<? extends Entity> c, Assets assets) {
             super(transformName(c), assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
             character = c;
             addListener(new ChangeListener() {
@@ -201,12 +202,12 @@ public class StructureMenu extends Dialog {
          * @param c      The scoped character.
          * @param assets The app assets manager.
          */
-        private void setDescription(Character c, Assets assets) {
+        private void setDescription(Class<? extends Entity> c, Assets assets) {
             setVisible(true);
-            movementCost.setText("Movement : " + c.getMovement().id);
-            range.setText("Range : " + c.getRange());
+            movementCost.setText("Movement : ");
+            range.setText("Range : ");
             try {
-                text.setText(assets.get(c.getType(), 25));
+                text.setText(assets.get(Entity.Type.valueOf(c.getSimpleName().toUpperCase()), 25));
             } catch (Exception e) {
                 text.setText("Description unavailable");
             }

@@ -98,12 +98,12 @@ public class EntityManager {
 	 * @param ce classe cherché par reflexion
 	 * @return un objet entity
 	 */
-	public static Entity instantiate(Class<Entity> ce) {
+	public static Entity instantiate(Class<? extends Entity> ce, String name, Faction faction) {
 
 		try {
 
-			Constructor<Entity> constructor = ce.getDeclaredConstructor();
-			return constructor.newInstance();	
+			Constructor<? extends Entity> constructor = ce.getDeclaredConstructor(String.class, Faction.class);
+			return constructor.newInstance(name,faction);
 		
 		} catch(Exception e) {
 
@@ -113,6 +113,15 @@ public class EntityManager {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Transforme la classe Entity passé en paramètre en un objet Entity
+	 * @param ce classe cherché par reflexion
+	 * @return un objet entity
+	 */
+	public static Entity instantiate(Class<? extends Entity> ce) {
+		return instantiate(ce,"",Faction.OUTLAWS);
 	}
 
 	/**
