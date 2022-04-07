@@ -5,30 +5,25 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
-
-
-import java.util.Vector;
-
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
-import org.lwjgl.Sys;
-
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.*;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.views.actors.CharacterUI;
+import up.wargroove.core.ui.views.objects.CharacterUI;
+import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.MovementSelector;
-import up.wargroove.core.ui.views.scenes.GameView;
-
-import up.wargroove.core.ui.views.scenes.View;
+import up.wargroove.core.ui.views.scenes.*;
+import up.wargroove.core.world.Recruitment;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-
-import up.wargroove.core.ui.views.scenes.MatchSettings;
-import up.wargroove.core.ui.views.scenes.PlayerSetting;
-import up.wargroove.core.ui.views.scenes.SelectMap;
+import java.util.List;
+import java.util.Optional;
+import java.util.Vector;
 
 
 /**
@@ -125,17 +120,18 @@ public class Controller {
         this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
     }
 
-    public void openMatchSettings(){
+    public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
         this.getClient().setScreen(new MatchSettings(this, model, getClient()));
     }
 
-    public void setPrevious(){
+    public void setPrevious() {
         previous = getClient().getScreen();
     }
-    public void back(){
+
+    public void back() {
         Screen tmp = this.getClient().getScreen();
         this.getClient().setScreen(previous);
         tmp.dispose();
@@ -231,7 +227,7 @@ public class Controller {
      * @param vector The cursor position.
      * @return the tile that will be displayed by the tile indicator.
      */
-    public Tile setIndicator(Vector3 vector) {
+    public Tile getTile(Vector3 vector) {
         return getModel().getTile(vector);
 
     }
@@ -241,16 +237,35 @@ public class Controller {
      *
      * @return A vector of all the possible movements in world terrain coordinate.
      */
-    public Pair<Vector<Pair<Integer, Integer>>,Vector<Pair<Integer, Integer>>> getMovementPossibilities() {
+    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getMovementPossibilities() {
         var valids = getWorld().validMovements();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
-        Vector<Pair<Integer,Integer>> intel = new Vector<>();
+        Vector<Pair<Integer, Integer>> intel = new Vector<>();
         valids.forEach(v -> {
             Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
             vectors.add(new Pair<>(coord.first, coord.second));
             intel.add(v.second);
         });
-        return new Pair<>(vectors,intel);
+        return new Pair<>(vectors, intel);
+    }
+
+    /**
+     * Gets the scoped character possibles movements.
+     *
+     * @return A vector of all the possible targets in world terrain coordinate.
+     */
+
+    //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
+    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
+        var valids = getWorld().validMovements();
+        Vector<Pair<Integer, Integer>> vectors = new Vector<>();
+        Vector<Pair<Integer, Integer>> intel = new Vector<>();
+        valids.forEach(v -> {
+            Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
+            vectors.add(new Pair<>(coord.first, coord.second));
+            intel.add(v.second);
+        });
+        return new Pair<>(vectors, intel);
     }
 
     /**
@@ -271,6 +286,11 @@ public class Controller {
         return getModel().getWorld();
     }
 
+    /**
+     * the world's scoped entity.
+     *
+     * @return the world's scoped entity.
+     */
     public @Null Entity getScopedEntity() {
         return getWorld().getScopedEntity();
     }
@@ -280,38 +300,185 @@ public class Controller {
         return (entity == null) ? -1 : entity.getRange();
     }
 
+    /**
+     * Manage the unit movements on the screen.
+     *
+     * @param movement         indicate if a movement is already in progress.
+     * @param movementSelector The screen movement manager.
+     * @param worldPosition    The position in world coordinates.
+     * @return true if the movements must be drawn false otherwise.
+     */
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
-        if (!movement) {
-            if (!setScopeEntity(worldPosition)) {
+        if (movement) {
+            if (!movementSelector.isValidPosition()) {
+                movementSelector.reset();
+                ((GameView) getScreen()).getMoveDialog().clear();
                 return false;
             }
-            var pair = getMovementPossibilities();
-            movementSelector.showValids(getScreen().getAssets(), pair);
-            movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
-            return true;
+            ((GameView) getScreen()).getCursor().setLock(true);
+            return false;
         }
-        return false;
+        if (!setScopeEntity(worldPosition)) {
+            movementSelector.reset();
+            ((GameView) getScreen()).getMoveDialog().clear();
+            ((GameView) getScreen()).getCursor().setLock(false);
+            return false;
+        }
+
+        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
+        movementSelector.showValids(getScreen().getAssets(), pair1);
+        movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        return true;
     }
+
+    public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
+        if (attack) {
+            if (!attackSelector.isValidPosition()) {
+                attackSelector.reset();
+                ((GameView) getScreen()).getMoveDialog().clear();
+                return false;
+            }
+            ((GameView) getScreen()).getCursor().setLock(true);
+            return false;
+        }
+        if (!setScopeEntity(worldPosition)) {
+            attackSelector.reset();
+            ((GameView) getScreen()).getMoveDialog().clear();
+            return false;
+        }
+        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
+        attackSelector.showValids(getScreen().getAssets(), pair);
+        attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        return true;
+    }
+
 
     public WargrooveClient getWargroove() {
         return wargroove;
     }
-    public void startMoving() {
-        ((GameView)getScreen()).setMovement(true);
-    }
 
+    /**
+     * End the units movements selection and move the units to the chosen emplacement.
+     */
     public void endMoving() {
-        GameView gameView = (GameView)getScreen();
+        GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
+        AttackSelector attackSelector = gameView.getAttackSelector();
         gameView.setMovement(false);
+        gameView.getCursor().setLock(false);
         String path = selector.getPath();
-        //Pair<Integer,Integer> destination = selector.getDestination();
+        if (path.isBlank()) {
+            selector.reset();
+            return;
+        }
+        attackSelector.reset();
+        Pair<Integer, Integer> destination = selector.getDestination();
         selector.reset();
-        //getWorld().moveEntity(World.coordinatesToInt(destination,getWorld().getDimension()));
+        getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path);
-            ((CharacterUI) entity).move();
         }
+    }
+
+    public void endAttack() {
+        GameView gameView = (GameView) getScreen();
+        AttackSelector selector = gameView.getAttackSelector();
+        gameView.setAttack(false);
+        gameView.getCursor().setLock(false);
+        String path = selector.getPath();
+        Pair<Integer, Integer> position = selector.getPositionAttack();
+        if (path.isBlank()) {
+            selector.reset();
+            return;
+        }
+        MovementSelector movementSelector = gameView.getMovementSelector();
+        movementSelector.reset();
+        selector.reset();
+        Actor entity = gameView.getScopedEntity();
+        if (path.length() > 1) {
+            getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+        }
+        if (entity instanceof CharacterUI) {
+            ((CharacterUI) entity).setMove(path.substring(0, path.length() - 1));
+            ((CharacterUI) entity).setAttackDirection(path.charAt(path.length() - 1));
+        }
+    }
+
+    /**
+     * Make the unit inactive for the turn.
+     */
+    public void entityWait() {
+        GameView gameView = (GameView) getScreen();
+        MovementSelector selector = gameView.getMovementSelector();
+        AttackSelector selector1 = gameView.getAttackSelector();
+        selector.reset();
+        selector1.reset();
+        gameView.setMovement(false);
+        gameView.setAttack(false);
+        gameView.getCursor().setLock(false);
+    }
+
+    /**
+     * Open the structures' menu where the player can buy characters.
+     */
+    public void openStructureMenu() {
+        GameView gameView = (GameView) getScreen();
+        Optional<Structure> s = getTile(gameView.getCursor().getWorldPosition()).getStructure();
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
+            return;
+        }
+        Recruitment r = (Recruitment) s.get();
+        List<Class<? extends Entity>> characters = r.trainableEntityClasses();
+        gameView.showsStructureMenu(characters);
+    }
+
+    /**
+     * Close the structure's menu.
+     */
+    public void closeStructureMenu() {
+        Gdx.input.setInputProcessor(getScreen().getInputs());
+    }
+
+    /**
+     * Buy the entity given in argument.
+     *
+     * @param c The entity's class.
+     */
+    public void buy(Class<? extends Entity> c) {
+        GameView gameView = (GameView) getScreen();
+        Vector3 v = gameView.getCursor().getWorldPosition();
+        Tile t = getTile(v);
+        Optional<Structure> s = t.getStructure();
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
+            return;
+        }
+        Recruitment r = (Recruitment) s.get();
+        Optional<Entity> bought = r.buy(c, 0, "test", Faction.CHERRYSTONE_KINGDOM);
+        if (bought.isEmpty()) {
+            return;
+        }
+        getModel().setBoughtEntity(bought.get());
+        int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
+        List<Integer> list = getWorld().adjacentOf(pos);
+        list.removeIf(i -> getWorld().at(i).entity.isPresent());
+        gameView.showsPlaceable(list);
+
+    }
+
+    /**
+     * Place the bought entity stored in the model
+     */
+    public void placeBoughtEntity() {
+        GameView gameView = (GameView) getScreen();
+        gameView.getMovementSelector().reset();
+        Vector3 v = gameView.getCursor().getWorldPosition();
+        int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
+        //getWorld().addEntity(pos, getModel().getBoughtEntity());
+        CharacterUI c = new CharacterUI(
+                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
+        );
+        gameView.getStage().addActor(c);
+        gameView.getCursor().setLock(false);
     }
 }

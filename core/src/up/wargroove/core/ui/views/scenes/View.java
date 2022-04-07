@@ -41,14 +41,11 @@ public abstract class View extends ScreenAdapter {
      * The main stage of the screen.
      */
     private Stage ui;
-    /**
-     * The main skin
-     */
-    //final Skin SKIN;
+
     //final Sound BUTTON_SOUND;
 
     /**
-     * The Screen input manager
+     * The Screen input manager.
      */
     private final InputMultiplexer inputs;
 
@@ -149,6 +146,12 @@ public abstract class View extends ScreenAdapter {
         return ui;
     }
 
+    /**
+     * Sets the main stage of the view.
+     *
+     * @param viewport The stage's viewport.
+     * @return the created stage.
+     */
     public Stage setStage(Viewport viewport) {
         this.ui = new Stage(viewport, getBatch());
         inputs.addProcessor(ui);
@@ -160,8 +163,8 @@ public abstract class View extends ScreenAdapter {
     }
 
 
-    public void makeSound(Sound s){
-        if(controller.isSoundOn()){
+    public void makeSound(Sound s) {
+        if (controller.isSoundOn()) {
             s.play();
         }
     }

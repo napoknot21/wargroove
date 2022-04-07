@@ -14,11 +14,10 @@ public class TileIndicator extends Indicator {
     /**
      * Create a tile indicator.
      *
-     * @param assets the app assets.
      * @param biome  the world biome.
      */
-    public TileIndicator(Assets assets, Biome biome) {
-        super(assets, biome);
+    public TileIndicator(Biome biome) {
+        super(biome);
     }
 
 

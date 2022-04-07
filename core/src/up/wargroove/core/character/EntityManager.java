@@ -19,18 +19,20 @@ public class EntityManager {
 
 	private static String packageURI = "up.wargroove.core.character.entities";
 
+	/**
+	 * constructeur
+	 */
 	private EntityManager() {
 	
 		entitySubClasses = new Vector<>();
 
 	}
 
+	/**
+	 * Chargement des structures primitives et additives d'entity par réflexions
+	 * @return true si tout a été bien chargé, false (si il y a une exception) et null sinon
+	 */
 	public boolean load() {
-
-		/*
-		 * Chargement des classes primitives
-		 * d'entité
-		 */
 
 		var types = Entity.Type.values();
 		boolean status = true;
@@ -87,21 +89,21 @@ public class EntityManager {
 
 		}
 
-		/*
-		 * Chargement des classes additives
-		 * d'entité
-		 */	
-
 		return status;
 
 	}
 
-	public static Entity instantiate(Class<Entity> ce) {
+	/**
+	 * Transforme la classe Entity passé en paramètre en un objet Entity
+	 * @param ce classe cherché par reflexion
+	 * @return un objet entity
+	 */
+	public static Entity instantiate(Class<? extends Entity> ce, String name, Faction faction) {
 
 		try {
 
-			Constructor<Entity> constructor = ce.getDeclaredConstructor();
-			return constructor.newInstance();	
+			Constructor<? extends Entity> constructor = ce.getDeclaredConstructor(String.class, Faction.class);
+			return constructor.newInstance(name,faction);
 		
 		} catch(Exception e) {
 
@@ -113,6 +115,19 @@ public class EntityManager {
 		return null;
 	}
 
+	/**
+	 * Transforme la classe Entity passé en paramètre en un objet Entity
+	 * @param ce classe cherché par reflexion
+	 * @return un objet entity
+	 */
+	public static Entity instantiate(Class<? extends Entity> ce) {
+		return instantiate(ce,"",Faction.OUTLAWS);
+	}
+
+	/**
+	 * getter pour l'instance de Entity Manager
+	 * @return
+	 */
 	public static EntityManager getInstance() {
 	
 		return instance;

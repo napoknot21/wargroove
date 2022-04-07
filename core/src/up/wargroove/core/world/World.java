@@ -104,6 +104,14 @@ public class World {
 
     }
 
+    @Null
+    public Tile at(int linCoordinate) {
+        if (!validCoordinates(linCoordinate,getDimension())) {
+            return null;
+        }
+        return terrain[linCoordinate];
+    }
+
     public Tile at(Pair<Integer, Integer> coordinates) {
 
         return at(coordinates.first, coordinates.second);

@@ -4,25 +4,27 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
+
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
 
 /**
- * GameView movement selector.
+ * The screen movement manager.
  */
 public class MovementSelector {
-    static int counter = 0;
+    /**
+     * List of valid positions.
+     */
+    protected final Valid valid;
     /**
      * The tile scale between the view and the world.
      */
     private final float worldScale;
-    /**
-     * List of valid positions.
-     */
-    private final Valid valid;
     /**
      * List of movements.
      */
@@ -92,6 +94,14 @@ public class MovementSelector {
         return validPosition;
     }
 
+    public boolean isValidPosition(Pair<Integer, Integer> c) {
+        return this.valid.isValid(c) != -1;
+    }
+
+    public boolean isValidPosition(Vector3 v) {
+        return isValidPosition(new Pair<>((int) v.x, (int) v.y));
+    }
+
     /**
      * Sets the unit original position.
      *
@@ -142,6 +152,11 @@ public class MovementSelector {
         batch.end();
     }
 
+    /**
+     * Draws the valid emplacements.
+     *
+     * @param batch The drawer.
+     */
     public void drawValid(Batch batch) {
         //batch.begin();
         valid.draw(batch);
@@ -157,8 +172,12 @@ public class MovementSelector {
         return movements.getPath();
     }
 
-    public Pair<Integer,Integer> getDestination() {
+    public Pair<Integer, Integer> getDestination() {
         return movements.getLastMovement();
+    }
+
+    public Pair<Integer, Integer> getPositionAttack() {
+        return movements.getNextToLastMovement();
     }
 
     /**
@@ -175,12 +194,18 @@ public class MovementSelector {
      * Add a new sprite to the list if all the sprites are already used
      * else it will take a free sprite.
      *
-     *  @param assets The app assets.
-     * @param pair The sprites coordinates.
+     * @param assets The app assets.
+     * @param pair   The sprites coordinates.
      */
-    public void showValids(Assets assets, Pair<Vector<Pair<Integer, Integer>>, Vector<Pair<Integer, Integer>>> pair) {
+    public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
+        reset();
         pair.first.forEach(v -> valid.add(assets.getTest(), v));
         valid.addIntel(pair.second);
+    }
+
+    public void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates) {
+        reset();
+        coordinates.forEach(v -> valid.add(assets.getTest(), v));
     }
 
     /**
@@ -239,12 +264,13 @@ public class MovementSelector {
     /**
      * List of valid positions.
      */
-    private class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
+    protected class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         /**
          * Tile useful information. The order of intel is the same as this.
          * The first is the parentIndex, the second is the tile's movement cost.
          */
         private final ArrayList<Pair<Integer, Integer>> intel;
+
         /**
          * Index that point to the last used sprite.
          */
@@ -260,7 +286,7 @@ public class MovementSelector {
          * @param texture The sprite texture.
          * @param coord   The sprites coordinates.
          */
-        private void add(Texture texture, Pair<Integer, Integer> coord) {
+        protected void add(Texture texture, Pair<Integer, Integer> coord) {
             int x = (int) (coord.first * worldScale);
             int y = (int) (coord.second * worldScale);
             Sprite sprite = new Sprite(texture);
@@ -273,7 +299,7 @@ public class MovementSelector {
          *
          * @param vector the list of intel.
          */
-        private void addIntel(Vector<Pair<Integer, Integer>> vector) {
+        protected void addIntel(List<Pair<Integer, Integer>> vector) {
             intel.addAll(vector);
         }
 
@@ -345,7 +371,7 @@ public class MovementSelector {
     /**
      * Path maker. It manages the path and the drawing of the arrows.
      */
-    private class Movements extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
+    protected class Movements extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         /**
          * Movements' path.
          */
@@ -375,6 +401,25 @@ public class MovementSelector {
             int y;
             if (movements.index != 0) {
                 var last = movements.get(index - 1).second;
+                x = last.first;
+                y = last.second;
+            } else {
+                x = initX;
+                y = initY;
+            }
+            return new Pair<>(x, y);
+        }
+
+        /**
+         * Retrieves the next to last movements stored in movements. If movements is empty, gets the initial position.
+         *
+         * @return The last movement coordinates
+         */
+        private synchronized Pair<Integer, Integer> getNextToLastMovement() {
+            int x;
+            int y;
+            if ((movements.index != 0) && (movements.index != 1)) {
+                var last = movements.get(index - 2).second;
                 x = last.first;
                 y = last.second;
             } else {
@@ -429,7 +474,7 @@ public class MovementSelector {
                 addDefaultMovement(assets, tileIndex);
                 return;
             }
-            add(assets,coord,tileIndex,d.charAt(0));
+            add(assets, coord, tileIndex, d.charAt(0));
         }
 
         private void add(Assets assets, Pair<Integer, Integer> coord, int tileIndex, char d) {
@@ -509,8 +554,12 @@ public class MovementSelector {
          */
         private synchronized Texture getArrow(Assets assets, char d) {
             if (index > 0) {
-                String last = String.valueOf(path.charAt(index - 1)) + d;
-                get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
+                try {
+                    String last = String.valueOf(path.charAt(index - 1)) + d;
+                    get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             return assets.get(Assets.AssetDir.ARROWS.getPath() + d + ".png");
         }

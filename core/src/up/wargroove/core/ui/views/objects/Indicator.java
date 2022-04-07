@@ -1,15 +1,13 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Tile;
-import up.wargroove.utils.Log;
 
 /**
  * A game UI indicator.
@@ -35,10 +33,9 @@ public abstract class Indicator extends Actor {
     /**
      * Create an indicator.
      *
-     * @param assets the app assets.
      * @param biome  the world biome.
      */
-    public Indicator(Assets assets, Biome biome) {
+    public Indicator(Biome biome) {
         super();
         this.foreground = new Sprite();
         foreground.setSize(50, 50);
@@ -72,6 +69,19 @@ public abstract class Indicator extends Actor {
         }
     }
 
+    /**
+     * Set the foreground texture.
+     *
+     * @param texture The foreground texture.
+     */
+    public void setForeground(TextureRegion texture) {
+        if (texture != null) {
+            foreground.setRegion(texture);
+        } else {
+            foreground.setTexture(null);
+        }
+    }
+
     public Sprite getBackground() {
         return background;
     }
@@ -82,6 +92,19 @@ public abstract class Indicator extends Actor {
      * @param texture The background texture.
      */
     public void setBackground(Texture texture) {
+        if (texture != null) {
+            background.setRegion(new TextureRegion(texture));
+        } else {
+            background.setTexture(null);
+        }
+    }
+
+    /**
+     * Set the background texture.
+     *
+     * @param texture The background texture.
+     */
+    public void setBackground(TextureRegion texture) {
         if (texture != null) {
             background.setRegion(new TextureRegion(texture));
         } else {

@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
@@ -15,6 +16,7 @@ public class Cursor extends Sprite {
      * Scale pixels for one Tile
      */
     private int worldScale;
+    private boolean locked;
 
     /**
      * Creates a cursor with a Texture a start position and the world scale.
@@ -25,7 +27,6 @@ public class Cursor extends Sprite {
     public Cursor(Texture texture, int worldScale) {
         super(texture);
         this.worldScale = worldScale;
-
     }
 
     /**
@@ -70,7 +71,16 @@ public class Cursor extends Sprite {
      * @param vector the cursor's screen position.
      */
     public void setPosition(Vector3 vector) {
-        setPosition(vector.x, vector.y);
+        if (!locked) {
+            setPosition(vector.x, vector.y);
+        }
+    }
+
+    @Override
+    public void draw(Batch batch) {
+        if (!locked) {
+            super.draw(batch);
+        }
     }
 
     /**
@@ -84,5 +94,9 @@ public class Cursor extends Sprite {
 
     public void setWorldScale(int worldScale) {
         this.worldScale = worldScale;
+    }
+
+    public void setLock(boolean locked) {
+        this.locked = locked;
     }
 }

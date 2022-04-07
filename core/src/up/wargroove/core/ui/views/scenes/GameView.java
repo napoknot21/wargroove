@@ -11,22 +11,26 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.character.entities.*;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.core.ui.views.actors.CharacterUI;
-import up.wargroove.core.ui.views.actors.MoveDialog;
+import up.wargroove.core.ui.views.objects.CharacterUI;
+import up.wargroove.core.ui.views.objects.MoveDialog;
+import up.wargroove.core.ui.views.objects.StructureMenu;
 import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 
@@ -40,22 +44,26 @@ public class GameView extends View {
      * Visual of the world.
      */
     private GameMap gameMap;
-    private StretchViewport viewport;
+    private Viewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
     private TileIndicator tileIndicator;
     private UnitIndicator unitIndicator;
+    private PlayerBox playerBox;
     private Stage gameViewUi;
 
     private boolean movement;
+    private boolean attack;
     private MoveDialog moveDialog;
     private Actor scopedEntity;
     /**
      * The current character possible movement.
      */
     private MovementSelector movementSelector;
+    private AttackSelector attackSelector;
 
     private Music theme;
+    private boolean buy;
 
 
     /**
@@ -82,33 +90,25 @@ public class GameView extends View {
 
     @Override
     public void init() {
-        initMap();
         initGameViewUI();
+
 
         theme = chooseMusic();
         theme.play();
 
-        moveDialog = new MoveDialog(getAssets(),getController());
+        initMap();
+
+
+        //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
-        Character character = new Villager(
-                "Superman", Faction.CHERRYSTONE_KINGDOM
-        );
+        attackSelector = new AttackSelector(gameMap.getScale());
+        Character character = new Villager("Superman", Faction.CHERRYSTONE_KINGDOM);
+        Character c = new Villager("Superman", Faction.HEAVENSONG_EMPIRE);
 
-        CharacterUI pepito = new CharacterUI(getController(),  new Pair<>(10, 10), character);
-        CharacterUI menganito= new CharacterUI(getController(),  new Pair<>(10, 11), character);
-        pepito.moveNorth();
-        pepito.moveNorth();
-        menganito.moveEast();
-        menganito.moveSouth();
-        pepito.moveWest();
-
-
-
-
-
+        CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
+        CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
-        addActor(moveDialog);
         initInput();
     }
 
@@ -122,7 +122,7 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        viewport = new StretchViewport(x, y, camera);
+        viewport = new ExtendViewport(x, y, camera);
         viewport.apply();
         //camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;
@@ -135,16 +135,30 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(getAssets(), Biome.ICE);
-        unitIndicator = new UnitIndicator(getAssets(), Biome.ICE);
-        Viewport viewport = new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        tileIndicator = new TileIndicator(Biome.ICE);
+        unitIndicator = new UnitIndicator(getController(), Biome.ICE);
+        moveDialog = new MoveDialog(getAssets(), getController());
+        playerBox = new PlayerBox(getController());
+        Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
+
         Table table = new Table();
         table.setFillParent(true);
+        Table buttons = new Table();
+        buttons.bottom().add(moveDialog);
+
+        Table indicators = new Table();
+        indicators.bottom().right();
+        indicators.add(unitIndicator).pad(10);
+        indicators.add(tileIndicator).pad(10);
+
+        table.add();
+        table.add(playerBox).right().top().pad(10);
+        table.row();
+        table.add(buttons).expand().left().bottom().pad(10);
+        table.add(indicators).expand().right().bottom();
         gameViewUi.addActor(table);
-        table.add(unitIndicator).pad(10).width(unitIndicator.getWidth());
-        table.add(tileIndicator).pad(10).width(tileIndicator.getWidth());
-        table.bottom().right();
+        addInput(gameViewUi);
     }
 
     /**
@@ -162,11 +176,14 @@ public class GameView extends View {
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
-                Tile tile = getController().setIndicator(cursor.getWorldPosition());
+                Tile tile = getController().getTile(cursor.getWorldPosition());
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
+                }
+                if (attack) {
+                    attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 return true;
             }
@@ -176,15 +193,38 @@ public class GameView extends View {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
-                Tile tile = getController().setIndicator(worldPosition);
+                Tile tile = getController().getTile(worldPosition);
+                if (tile.getStructure().isPresent()) {
+                    moveDialog.addBuy();
+                    movementSelector.reset();
+                    attackSelector.reset();
+                    movement = attack = false;
+                    cursor.setLock(false);
+                    return true;
+                }
+                if (buy && movementSelector.isValidPosition(worldPosition)) {
+                    cursor.setLock(true);
+                    moveDialog.addBought();
+                    buy = false;
+                    return true;
+                }
+                buy = false;
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                moveDialog.setPosition(vector.x,vector.y);
-                if (!movement) {
-                    scopeEntity(worldPosition);
-                }
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
-                moveDialog.setVisible(movement || movementSelector.isValidPosition());
+                attack = getController().showTargets(attack, attackSelector, worldPosition);
+
+                if (movement) {
+                    moveDialog.clear();
+                    scopeEntity(worldPosition);
+                    moveDialog.addWait();
+                }
+                if (movementSelector.getPath().length() > 0) {
+                    moveDialog.addMove();
+                }
+                if (canAttack()) {
+                    moveDialog.addAttack();
+                }
                 return true;
             }
 
@@ -219,12 +259,15 @@ public class GameView extends View {
         getBatch().begin();
         cursor.draw(getBatch());
         movementSelector.drawValid(getBatch());
+        attackSelector.drawValid(getBatch());
         getBatch().end();
-        gameViewUi.draw();
-        if (movement) {
-            movementSelector.draw(getBatch());
-        }
+        movementSelector.draw(getBatch());
+        attackSelector.draw(getBatch());
+        getStage().act(delta);
         getStage().draw();
+        gameViewUi.act(delta);
+        gameViewUi.draw();
+
     }
 
     @Override
@@ -237,16 +280,13 @@ public class GameView extends View {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        gameViewUi.getViewport().update(width, height, true);
         camera.position.set(gameMap.getCenter());
         super.resize(width, height);
     }
 
     public OrthographicCamera getCamera() {
         return camera;
-    }
-
-    public StretchViewport getViewport() {
-        return viewport;
     }
 
     public GameMap getGameMap() {
@@ -257,10 +297,13 @@ public class GameView extends View {
         this.movement = movement;
     }
 
+    public void setAttack(boolean attack) {
+        this.attack = attack;
+    }
+
     @Override
     public void setDebug(boolean debug) {
         this.gameViewUi.setDebugAll(debug);
-        System.out.println(debug);
         super.setDebug(debug);
     }
 
@@ -268,24 +311,33 @@ public class GameView extends View {
         return movementSelector.getPath();
     }
 
-    public Pair<Integer,Integer> getDestination() {
+    public Pair<Integer, Integer> getDestination() {
         return movementSelector.getDestination();
     }
 
-    private void scopeEntity(Pair<Integer,Integer> worldCoordinate) {
+    private void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
-             Actor tmp = array.get(i);
-             if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
-                 scopedEntity = tmp;
-                 return;
-             }
-             scopedEntity = null;
+            Actor tmp = array.get(i);
+            if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
+                scopedEntity = tmp;
+                return;
+            }
+            scopedEntity = null;
         }
     }
 
     private void scopeEntity(Vector3 worldCoordinate) {
-        scopeEntity(new Pair<>((int)worldCoordinate.x,(int)worldCoordinate.y));
+        scopeEntity(new Pair<>((int) worldCoordinate.x, (int) worldCoordinate.y));
+    }
+
+    /**
+     * Shows the structures' menu where the player can buy characters.
+     *
+     * @param characters list of purchasable characters.
+     */
+    public void showsStructureMenu(List<Class<? extends Entity>> characters) {
+        StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
     }
 
     public Actor getScopedEntity() {
@@ -294,5 +346,34 @@ public class GameView extends View {
 
     public MovementSelector getMovementSelector() {
         return movementSelector;
+    }
+
+    public AttackSelector getAttackSelector() {
+        return attackSelector;
+    }
+
+    public MoveDialog getMoveDialog() {
+        return moveDialog;
+    }
+
+    public Cursor getCursor() {
+        return cursor;
+    }
+
+    public boolean canAttack() {
+        return ((attackSelector.getPath().length() > 0)
+                && (scopedEntity instanceof CharacterUI)
+                && (!(((CharacterUI) scopedEntity).getCharacter() instanceof Villager)));
+    }
+
+    /**
+     * Show the emplacement where we can put an entity.
+     * @param list The list of available emplacement.
+     */
+    public void showsPlaceable(List<Integer> list) {
+        buy = true;
+        List<Pair<Integer, Integer>> coordinates = new LinkedList<>();
+        list.forEach(i -> coordinates.add(World.intToCoordinates(i, getModel().getWorld().getDimension())));
+        movementSelector.showValid(getAssets(), coordinates);
     }
 }

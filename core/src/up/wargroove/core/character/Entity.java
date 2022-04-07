@@ -1,7 +1,7 @@
 package up.wargroove.core.character;
 
 public abstract class Entity {
- 
+
     protected Type type;
 
     protected Movement movement;
@@ -9,7 +9,7 @@ public abstract class Entity {
 
     /**
      * constructeur pour Entity
-     * @param name Nom de l'entité
+     *
      * @param type Type d'unité de l'entité
      */
     protected Entity(Type type) {

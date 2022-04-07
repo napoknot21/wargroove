@@ -74,7 +74,7 @@ public class MainMenu extends View {
         startGame = new TextButton("Start Game", skin);
         matchSettings = new TextButton("Match Settings", skin);
         playerSettings = new TextButton("Settings", skin);
-        mapSelection = new TextButton("Choose Map",skin);
+        mapSelection = new TextButton("Choose Map", skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());

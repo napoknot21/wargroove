@@ -1,7 +1,15 @@
 package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
+
 import up.wargroove.core.world.*;
+
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.world.GeneratorProperties;
+import up.wargroove.core.world.Tile;
+import up.wargroove.core.world.World;
+import up.wargroove.core.world.WorldProperties;
+
 import up.wargroove.utils.Pair;
 
 /**
@@ -23,13 +31,18 @@ public class Model {
     private boolean isActive = false;
 
     /**
+     * Bought entity temporary storage.
+     */
+    private Entity boughtEntity = null;
+
+    /**
      * Start a new game.
      */
     public void startGame() {
         if (world != null) {
             return;
         }
-        if(properties == null){
+        if (properties == null) {
             properties = new WorldProperties();
         }
         properties.dimension = new Pair<>(20, 20);
@@ -81,5 +94,13 @@ public class Model {
         int x = (vector.x < 0) ? 0 : (int) Math.min(world.getDimension().first - 1, vector.x);
         int y = (vector.y < 0) ? 0 : (int) Math.min(world.getDimension().second - 1, vector.y);
         return world.at(x, y);
+    }
+
+    public Entity getBoughtEntity() {
+        return boughtEntity;
+    }
+
+    public void setBoughtEntity(Entity boughtEntity) {
+        this.boughtEntity = boughtEntity;
     }
 }

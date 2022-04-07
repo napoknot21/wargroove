@@ -18,10 +18,16 @@ public class WargrooveLauncher {
      * The main entry of the software.
      */
     public static void main(String[] args) {
+        boolean debug;
+        if (args.length != 0 && args[0].startsWith("--debug=")) {
+            debug = args[0].split("=")[1].equalsIgnoreCase("on");
+        } else {
+            debug = false;
+        }
         try {
             Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
             config.setTitle("Wargroove");
-            EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(), config));
+            EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(debug), config));
         } catch (Exception e) {
             e.printStackTrace();
         }
