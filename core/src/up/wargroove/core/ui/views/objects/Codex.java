@@ -1,7 +1,9 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
@@ -16,14 +18,16 @@ import up.wargroove.core.ui.Assets;
 public class Codex extends Table {
     private Dialog dialog;
     private final TextButton openCodex;
+    private final TextButton exitCodex;
 
     public Codex(Assets assets, Controller controller) {
         super();
         Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
         openCodex = new TextButton("Codex", skin);
+        exitCodex = new TextButton("X", skin);
         dialog= new Dialog("Codex",skin);
-        dialog.hide();
         add(openCodex);
+        dialog.center().top().add(exitCodex);
         initInput(controller);
     }
     private void initInput(Controller controller) {
@@ -31,11 +35,14 @@ public class Codex extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        if (controller.isSoundOn()) {
-                            Assets.getInstance().getDefault(Sound.class).play();
-                        }
-                        dialog.show(controller.getScreen().getStage());
-                        clear();
+                        dialog.show(getStage());
+                    }
+                });
+        exitCodex.addListener(
+                new ChangeListener() {
+                    @Override
+                    public void changed(ChangeEvent event, Actor actor) {
+                        dialog.hide();
                     }
                 });
     }
