@@ -23,7 +23,7 @@ public class Recruitment extends Structure {
 	}
 
 	private Type type;
-	private Vector<Class<Entity>> current;
+	private Vector<Class<? extends Entity>> current;
 
 	public Recruitment(Type type) {
 

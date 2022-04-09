@@ -424,7 +424,7 @@ public class Controller {
      */
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
-        Optional<Structure> s = getTile(gameView.getCursor().getWorldPosition()).getStructure();
+        Optional<Entity> s = getTile(gameView.getCursor().getWorldPosition()).entity;
         if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
             return;
         }
@@ -449,7 +449,7 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         Vector3 v = gameView.getCursor().getWorldPosition();
         Tile t = getTile(v);
-        Optional<Structure> s = t.getStructure();
+        Optional<Entity> s = t.entity;
         if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
             return;
         }
