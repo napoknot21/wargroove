@@ -29,8 +29,7 @@ public class Tile implements Savable {
     private static final int FLAGSTONE_D_COST = 0x21100102;
     private static final int CARPET_D_COST = 0x21100102;
     public Optional<Entity> entity;
-    private Type type;
-    private Optional<Structure> structure;
+    private Type type; 
 
     public Tile() {
 
@@ -44,8 +43,7 @@ public class Tile implements Savable {
 
     public Tile(Type type) {
 
-        setType(type);
-        structure = Optional.empty();
+        setType(type); 
         entity = Optional.empty();
 
     }
@@ -62,17 +60,19 @@ public class Tile implements Savable {
 
     }
 
-    public void setStructure(Structure structure) {
+    /*
+    public void setEntity(Entity e) {
 
-        this.structure = Optional.of(structure);
-
-    }
-
-    public void delStructure() {
-
-        this.structure = Optional.empty();
+	    this.entity = Optional.of(e);
 
     }
+
+    public Entity getEntity() {
+
+	    return entity.get();
+
+    }
+    */
 
     public String toString() {
 
@@ -131,9 +131,5 @@ public class Tile implements Savable {
 
         }
 
-    }
-
-    public Optional<Structure> getStructure() {
-        return structure;
     }
 }

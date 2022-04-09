@@ -105,6 +105,8 @@ public class World {
 	    states.push(currentState);
 	    currentState = new State(); 
 
+	    players.removeIf(p -> !p.nextTurn());
+
     }
 
     public boolean nextPlayer() {
@@ -119,6 +121,12 @@ public class World {
 	    }
 
 	    return true;
+
+    }
+
+    public Player getCurrentPlayer() {
+
+	    return players.get(playerPtr);
 
     }
 

@@ -193,8 +193,9 @@ public class GameView extends View {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
+
                 Tile tile = getController().getTile(worldPosition);
-                if (tile.getStructure().isPresent()) {
+                if (tile.entity.isPresent()) {
                     moveDialog.addBuy();
                     movementSelector.reset();
                     attackSelector.reset();

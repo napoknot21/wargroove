@@ -1,21 +1,22 @@
 package up.wargroove.core.world;
 
-public abstract class Structure {
+import up.wargroove.core.character.Entity;
 
-    protected Type type;
+public abstract class Structure extends Entity { 
+   
+    static enum Type {
+
+	    RECRUITMENT,
+
+    }
+
+    private Type type;
 
     protected Structure(Type type) {
 
+	super(Entity.Type.STRUCTURE);
         this.type = type;
-
-    }
-
-    public Type getType() {
-
-        return type;
-
-    }
-
-    public interface Type {}
+    
+    } 
 
 }

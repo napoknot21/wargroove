@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import java.util.Optional;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -42,7 +43,7 @@ public class GameMap extends TiledMap {
                 tileLayer.setCell(i, j, cell);
             }
         }
-        world.at(0, 0).setStructure(new Recruitment(Recruitment.Type.BARRACKS));
+        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS));
         this.getLayers().add(tileLayer);
     }
 

@@ -96,5 +96,7 @@ public abstract class Entity {
         SPARROW_BOMB,
         SHADOW_SISTER;
         */
+
+	STRUCTURE
     }
 }

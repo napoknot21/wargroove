@@ -14,7 +14,7 @@ public class Recruitment extends Structure {
 						navalEntityClasses = new Vector<>(),
 						airEntityClasses   = new Vector<>();
 
-	public enum Type implements Structure.Type {
+	public enum Type {
 
 		BARRACKS,
 		TOWER,
@@ -22,11 +22,17 @@ public class Recruitment extends Structure {
 
 	}
 
-	private Vector<Class<? extends Entity>> current;
+	private Type type;
+	private Vector<Class<Entity>> current;
 
 	public Recruitment(Type type) {
 
-		super(type);	
+		super(Structure.Type.RECRUITMENT);
+		this.type = type;	
+
+	}
+
+	public void initialize() {
 
 		switch((Type) type) {
 

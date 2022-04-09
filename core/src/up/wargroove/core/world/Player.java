@@ -56,10 +56,23 @@ public class Player {
 
 	}
 
-	public void nextTurn() {
+	/**
+	 * Passe le tour du joueur
+	 *
+	 * @return faux si le commandant n'existe plus et vrai sinon
+	 */
+	public boolean nextTurn() {
 
-		for(Entity c : entities)
+		boolean isCommanderAlive = false;
+
+		for(Entity c : entities) {
+		
 			c.nextTurn();
+			isCommanderAlive |= c.getType() == Entity.Type.COMMANDER;
+		
+		}
+
+		return isCommanderAlive;
 
 	}
 
