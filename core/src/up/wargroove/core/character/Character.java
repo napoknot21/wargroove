@@ -22,10 +22,8 @@ public abstract class Character extends Entity {
      */
     public Character(String name, Entity.Type type, Faction faction) {
 
-        super(type,faction);
-
+        super(type, faction);
         this.name = name;
-
         stats = new Stats();
 
     }
@@ -75,6 +73,9 @@ public abstract class Character extends Entity {
         return super.getFaction();
     }
 
+    /**
+     * getter et setters pour character
+     */
     public int getCost() {
         return this.stats.cost;
     }
@@ -83,6 +84,7 @@ public abstract class Character extends Entity {
         return stats;
     }
 
+    @Override
     public double getHealth() {
         return this.stats.health;
     }
@@ -95,8 +97,10 @@ public abstract class Character extends Entity {
         return this.stats.defense;
     }
 
+    @Override
     public void setHealth(double health) {
         this.stats.health = health;
+        super.setHealth(health);
     }
 
     public void setAttack(double attack) {

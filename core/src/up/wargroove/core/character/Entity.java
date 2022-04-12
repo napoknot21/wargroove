@@ -5,10 +5,11 @@ public abstract class Entity {
     protected Type type;
 
     protected Movement movement;
+    private Faction faction;
+    private double health;
 
     protected int movRange;
-    protected int remainingMovs;
-    protected Faction faction;
+    protected boolean isExhausted;
 
     /**
      * constructeur pour Entity
@@ -18,23 +19,34 @@ public abstract class Entity {
     protected Entity(Type type, Faction faction) {
 
         this.type = type;
+        this.faction = faction;
         //this.movRange = movRange;
         //this.movement = movement;
-        this.faction = faction;
 
     }
 
-    public abstract void initialize();
+    public void setHealth(double health) {
+        this.health = health;
+    }
 
-    public boolean exhausted() {
+    public void initialize() {
+        this.health = getHealth();
+        isExhausted = false;
+    };
 
-	    return remainingMovs == 0;
+    public boolean isExhausted() {
 
+	    return isExhausted;
+
+    }
+
+    public void exhaust() {
+        isExhausted = true;
     }
 
     public void nextTurn() {
 
-	    remainingMovs = movRange + 1;
+        isExhausted = false;
 
     }
 
@@ -50,16 +62,18 @@ public abstract class Entity {
 
     }
 
-    public Faction getFaction () {
-
-        return this.faction;
-
-    }
-
     public int getRange() {
 
         return this.movRange;
 
+    }
+
+    public Faction getFaction() {
+        return faction;
+    }
+
+    public double getHealth() {
+        return health;
     }
 
     public enum Component {

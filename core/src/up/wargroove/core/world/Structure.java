@@ -14,8 +14,7 @@ public abstract class Structure extends Entity {
     private Type type;
 
     protected Structure(Type type, Faction faction) {
-
-	super(Entity.Type.STRUCTURE,faction);
+	super(Entity.Type.STRUCTURE, faction);
         this.type = type;
     
     } 

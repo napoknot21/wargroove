@@ -44,7 +44,7 @@ public class GameMap extends TiledMap {
                 tileLayer.setCell(i, j, cell);
             }
         }
-        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.OUTLAWS));
+        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.CHERRYSTONE_KINGDOM));
         this.getLayers().add(tileLayer);
     }
 

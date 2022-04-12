@@ -26,6 +26,7 @@ import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MoveDialog;
 import up.wargroove.core.ui.views.objects.StructureMenu;
 import up.wargroove.core.ui.views.objects.*;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -96,13 +97,8 @@ public class GameView extends View {
         initGameViewUI();
 
 
-        theme = chooseMusic();
-        if(getController().isSoundOn()){
-
-            theme.play();
-            theme.setLooping(true);
-        }
-
+        /*theme = chooseMusic();
+        theme.play();*/
 
         initMap();
 
@@ -211,7 +207,13 @@ public class GameView extends View {
                 Vector3 worldPosition = cursor.getWorldPosition();
 
                 Tile tile = getController().getTile(worldPosition);
-                if (tile.entity.isPresent()) {
+                if (tile.entity.isPresent() && tile.entity.get().isExhausted()) {
+                    movementSelector.reset();
+                    attackSelector.reset();
+                    movement = attack = false;
+                    return true;
+                }
+                if (tile.entity.isPresent() && tile.entity.get() instanceof Structure) {
                     moveDialog.addBuy();
                     movementSelector.reset();
                     attackSelector.reset();

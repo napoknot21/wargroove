@@ -32,6 +32,8 @@ public class Villager extends Character {
 	    stats.sight = 2;
 	    stats.range = 0;
 	    stats.cost = 50;
+
+		super.initialize();
     }
 
 }

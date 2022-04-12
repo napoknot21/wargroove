@@ -28,8 +28,8 @@ public class Recruitment extends Structure {
 
 	public Recruitment(Type type, Faction faction) {
 
-		super(Structure.Type.RECRUITMENT,faction);
-		this.type = type;	
+		super(Structure.Type.RECRUITMENT, faction);
+		this.type = type;
 
 	}
 

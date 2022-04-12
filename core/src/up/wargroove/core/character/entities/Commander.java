@@ -31,6 +31,8 @@ public class Commander extends Character {
 	    stats.range = 1;
 	    stats.cost = 500;
 
+		setHealth(stats.health);
+
     }
 
 

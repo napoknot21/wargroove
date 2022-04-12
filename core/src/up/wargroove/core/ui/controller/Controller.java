@@ -374,10 +374,12 @@ public class Controller {
         attackSelector.reset();
         Pair<Integer, Integer> destination = selector.getDestination();
         selector.reset();
+        getWorld().getScopedEntity().exhaust();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
         if (entity instanceof CharacterUI) {
             ((CharacterUI) entity).setMove(path);
+
         }
     }
 
@@ -414,6 +416,7 @@ public class Controller {
         AttackSelector selector1 = gameView.getAttackSelector();
         selector.reset();
         selector1.reset();
+        getWorld().getScopedEntity().exhaust();
         gameView.setMovement(false);
         gameView.setAttack(false);
         gameView.getCursor().setLock(false);

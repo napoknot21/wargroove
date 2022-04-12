@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 
 /**
@@ -45,7 +46,8 @@ public class UnitIndicator extends Indicator {
         }
         String path = TileType.getTexturePath(tile, getBiome());
         setBackground(assets.get(path, Texture.class));
-        var character = (Character) tile.entity.get();
+        var character = tile.entity.get();
+        if (character instanceof Structure) return; //Todo: structure case
         var texture = assets.get(
                 "data/sprites/character/" + character.getFaction() + "/"
                         + character.getType() + "_DIE.png",

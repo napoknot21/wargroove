@@ -2,6 +2,7 @@ package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
 
+import up.wargroove.core.character.Faction;
 import up.wargroove.core.world.*;
 
 import up.wargroove.core.character.Entity;
@@ -34,6 +35,9 @@ public class Model {
      * Bought entity temporary storage.
      */
     private Entity boughtEntity = null;
+
+    private Player[] players = {new Player(Faction.CHERRYSTONE_KINGDOM),new Player(Faction.FELHEIM_LEGION)};
+    private int playerIndex;
 
     /**
      * Start a new game.
@@ -102,5 +106,12 @@ public class Model {
 
     public void setBoughtEntity(Entity boughtEntity) {
         this.boughtEntity = boughtEntity;
+    }
+
+    public void nextTurn() {
+        playerIndex = (playerIndex + 1) % players.length;
+    }
+    public Player getCurrentPlayer() {
+        return players[playerIndex];
     }
 }

@@ -35,13 +35,13 @@ public class Player {
 
 	public boolean hasNext() {
 
-		return !entities.element().exhausted();
+		return !entities.element().isExhausted();
 
 	}
 
 	public boolean next() {
 
-		if(entities.peek().exhausted()) return false;
+		if(entities.peek().isExhausted()) return false;
 
 		Entity entity = entities.poll();
 		entities.add(entity);
