@@ -1,11 +1,9 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Structure;

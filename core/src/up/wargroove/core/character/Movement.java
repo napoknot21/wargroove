@@ -1,6 +1,8 @@
 package up.wargroove.core.character;
 
-public enum Movement { 
+import up.wargroove.core.character.entities.Character;
+
+public enum Movement {
 
     NULL		(-1, Character.Component.GROUND),
     WALKING		(6, Character.Component.GROUND),

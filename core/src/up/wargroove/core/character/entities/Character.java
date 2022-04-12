@@ -1,4 +1,7 @@
-package up.wargroove.core.character;
+package up.wargroove.core.character.entities;
+
+import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 
 import java.io.File;
 import java.io.FileInputStream;

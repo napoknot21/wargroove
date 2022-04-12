@@ -1,6 +1,6 @@
-package up.wargroove.core.character.entities;
+package up.wargroove.core.character.entities.land;
 
-import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Character;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.Movement;
 

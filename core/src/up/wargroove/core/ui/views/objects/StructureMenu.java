@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
@@ -46,6 +45,9 @@ public class StructureMenu extends Dialog {
      * @param stage      The view stage.
      */
     public static void shows(List<Class<? extends Entity>> list, Assets assets, Controller controller, Stage stage) {
+        if (list == null) {
+            return;
+        }
         instance = new StructureMenu(assets, controller);
         instance.setup(list, assets);
         stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -70,6 +72,9 @@ public class StructureMenu extends Dialog {
      * @param assets     The app assets manager.
      */
     private void setup(List<Class<? extends Entity>> characters, Assets assets) {
+        if (characters == null) {
+            return;
+        }
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
         ScrollPane pane = new ScrollPane(buttons);

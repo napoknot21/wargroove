@@ -15,10 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.entities.Villager;
+import up.wargroove.core.character.entities.land.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -208,15 +208,13 @@ public class GameView extends View {
 
                 Tile tile = getController().getTile(worldPosition);
                 if (tile.entity.isPresent() && tile.entity.get().isExhausted()) {
-                    movementSelector.reset();
-                    attackSelector.reset();
+                    clearSelectors();
                     movement = attack = false;
                     return true;
                 }
                 if (tile.entity.isPresent() && tile.entity.get() instanceof Structure) {
                     moveDialog.addBuy();
-                    movementSelector.reset();
-                    attackSelector.reset();
+                    clearSelectors();
                     movement = attack = false;
                     cursor.setLock(false);
                     return true;
@@ -394,5 +392,19 @@ public class GameView extends View {
         List<Pair<Integer, Integer>> coordinates = new LinkedList<>();
         list.forEach(i -> coordinates.add(World.intToCoordinates(i, getModel().getWorld().getDimension())));
         movementSelector.showValid(getAssets(), coordinates);
+    }
+
+    public void clearSelectors() {
+        attackSelector.reset();
+        movementSelector.reset();
+    }
+
+    public void clearMoveDialog() {
+        moveDialog.clear();
+    }
+
+    public void clearAll() {
+        clearMoveDialog();
+        clearSelectors();
     }
 }

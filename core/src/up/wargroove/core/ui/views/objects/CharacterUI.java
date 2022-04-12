@@ -1,20 +1,16 @@
 package up.wargroove.core.ui.views.objects;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import org.lwjgl.Sys;
-import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.utils.Pair;
-import java.util.ArrayList;
 
 
 public class CharacterUI extends Actor {

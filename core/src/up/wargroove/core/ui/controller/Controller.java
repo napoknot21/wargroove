@@ -9,14 +9,13 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
-import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Character;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Recruitment;
-import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
@@ -312,7 +311,7 @@ public class Controller {
         if (movement) {
             if (!movementSelector.isValidPosition()) {
                 movementSelector.reset();
-                ((GameView) getScreen()).getMoveDialog().clear();
+                ((GameView) getScreen()).clearMoveDialog();
                 return false;
             }
             ((GameView) getScreen()).getCursor().setLock(true);
@@ -320,7 +319,7 @@ public class Controller {
         }
         if (!setScopeEntity(worldPosition)) {
             movementSelector.reset();
-            ((GameView) getScreen()).getMoveDialog().clear();
+            ((GameView) getScreen()).clearMoveDialog();
             ((GameView) getScreen()).getCursor().setLock(false);
             return false;
         }
@@ -335,7 +334,7 @@ public class Controller {
         if (attack) {
             if (!attackSelector.isValidPosition()) {
                 attackSelector.reset();
-                ((GameView) getScreen()).getMoveDialog().clear();
+                ((GameView) getScreen()).clearMoveDialog();
                 return false;
             }
             ((GameView) getScreen()).getCursor().setLock(true);
@@ -343,7 +342,7 @@ public class Controller {
         }
         if (!setScopeEntity(worldPosition)) {
             attackSelector.reset();
-            ((GameView) getScreen()).getMoveDialog().clear();
+            ((GameView) getScreen()).clearMoveDialog();
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
@@ -363,7 +362,6 @@ public class Controller {
     public void endMoving() {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
-        AttackSelector attackSelector = gameView.getAttackSelector();
         gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
@@ -371,9 +369,8 @@ public class Controller {
             selector.reset();
             return;
         }
-        attackSelector.reset();
         Pair<Integer, Integer> destination = selector.getDestination();
-        selector.reset();
+        gameView.clearSelectors();
         getWorld().getScopedEntity().exhaust();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -394,9 +391,7 @@ public class Controller {
             selector.reset();
             return;
         }
-        MovementSelector movementSelector = gameView.getMovementSelector();
-        movementSelector.reset();
-        selector.reset();
+        gameView.clearSelectors();
         Actor entity = gameView.getScopedEntity();
         if (path.length() > 1) {
             getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
@@ -412,10 +407,7 @@ public class Controller {
      */
     public void entityWait() {
         GameView gameView = (GameView) getScreen();
-        MovementSelector selector = gameView.getMovementSelector();
-        AttackSelector selector1 = gameView.getAttackSelector();
-        selector.reset();
-        selector1.reset();
+        gameView.clearSelectors();
         getWorld().getScopedEntity().exhaust();
         gameView.setMovement(false);
         gameView.setAttack(false);
@@ -457,7 +449,7 @@ public class Controller {
             return;
         }
         Recruitment r = (Recruitment) s.get();
-        Optional<Entity> bought = r.buy(c, 0, "test", Faction.CHERRYSTONE_KINGDOM);
+        Optional<Entity> bought = r.buy(c, 0, "test", getModel().getCurrentPlayer().getFaction());
         if (bought.isEmpty()) {
             return;
         }
@@ -476,12 +468,17 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         gameView.getMovementSelector().reset();
         Vector3 v = gameView.getCursor().getWorldPosition();
-        int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
-        //getWorld().addEntity(pos, getModel().getBoughtEntity());
         CharacterUI c = new CharacterUI(
                 this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
         );
+        getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         gameView.getStage().addActor(c);
         gameView.getCursor().setLock(false);
+    }
+
+    public void endTurn() {
+        ((GameView) getScreen()).clearAll();
+        getModel().getCurrentPlayer().nextTurn();
+        getModel().nextTurn();
     }
 }
