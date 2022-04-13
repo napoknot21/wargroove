@@ -84,7 +84,7 @@ public class CharacterUI extends Actor {
         this.character = character;
         this.coordinate = coord;
         controller.getWorld().addEntity(coord, character);
-        assets= controller.getWargroove().getAssets();
+        assets = controller.getWargroove().getAssets();
         initialiseAnimation();
         initialiseSprites();
         controller.getScreen().getStage().addActor(this);

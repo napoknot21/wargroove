@@ -116,18 +116,22 @@ public class GameView extends View {
      * Initializes the map.
      */
     private void initMap() {
-        gameMap = new GameMap(getModel().getWorld(), getAssets());
-        camera = new OrthographicCamera();
+        getModel().startGame();
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
+        camera = new OrthographicCamera();
         viewport = new ExtendViewport(x, y, camera);
         viewport.apply();
-        //camera.position.set(gameMap.getCenter());
         camera.zoom = DEFAULT_ZOOM;
+        setStage(viewport);
+        gameMap = new GameMap(getModel().getWorld(), getAssets(), getStage(), getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
-        setStage(viewport);
+
+
+        //camera.position.set(gameMap.getCenter());
+
     }
 
     /**

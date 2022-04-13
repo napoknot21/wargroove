@@ -1,16 +1,22 @@
 package up.wargroove.core.ui.views.objects;
 
 import java.util.Optional;
-import com.badlogic.gdx.graphics.Texture;
+
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Structure;
+import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
+import up.wargroove.utils.Pair;
 
 /**
  * Represent the visual of the world.
@@ -30,9 +36,11 @@ public class GameMap extends TiledMap {
      * Init the tiledMap according to the given model.
      *
      * @param world The world that will be on the gui
+     * @param stage
      */
-    public GameMap(World world, Assets assets) {
+    public GameMap(World world, Assets assets, Stage stage, Controller controller) {
         super();
+        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.CHERRYSTONE_KINGDOM));
         width = world.getDimension().first;
         height = world.getDimension().second;
         initDimension();
@@ -41,11 +49,21 @@ public class GameMap extends TiledMap {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new MapTile(world.at(i, j), assets));
+                addEntityImage(stage,controller,world,i,j);
                 tileLayer.setCell(i, j, cell);
             }
         }
-        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.CHERRYSTONE_KINGDOM));
         this.getLayers().add(tileLayer);
+    }
+
+    private void addEntityImage(Stage stage,Controller controller,World world ,int i, int j) {
+        Tile tile = world.at(i,j);
+        if (tile.entity.isEmpty()) return;
+        if (tile.entity.get() instanceof Character) {
+            new CharacterUI(controller,new Pair<>(i,j), (Character) tile.entity.get());
+        } else if (tile.entity.get() instanceof Structure) {
+            new StructureUI(stage,(Structure) tile.entity.get() ,scale,new Pair<>(i,j));
+        }
     }
 
     /**
