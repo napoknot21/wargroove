@@ -323,7 +323,9 @@ public class Controller {
             ((GameView) getScreen()).getCursor().setLock(false);
             return false;
         }
-
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
+            return false;
+        }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
         movementSelector.showValids(getScreen().getAssets(), pair1);
         movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
@@ -343,6 +345,9 @@ public class Controller {
         if (!setScopeEntity(worldPosition)) {
             attackSelector.reset();
             ((GameView) getScreen()).clearMoveDialog();
+            return false;
+        }
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
@@ -480,5 +485,21 @@ public class Controller {
         ((GameView) getScreen()).clearAll();
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
+        ((GameView)getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+    }
+
+    public void nextUnit() {
+        GameView gameView = (GameView) getScreen();
+        gameView.clearAll();
+        Entity e = getModel().getCurrentPlayer().next();
+        if (e == null) return;
+        CharacterUI ui = gameView.getCharacterUI(e);
+        if (ui == null) return;
+        //System.out.println(ui.getCoordinate().first, ui.getCoordinate().second);
+        Camera camera = gameView.getCamera();
+        Vector3 v = camera.project(new Vector3(ui.getCoordinate().first, ui.getCoordinate().second,0));
+        v = moveCursor((int)v.x,(int)v.y,camera);
+        camera.position.set(camera.project(v));
+        gameView.getCursor().setPosition(v);
     }
 }

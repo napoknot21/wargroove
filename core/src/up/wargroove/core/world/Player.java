@@ -2,6 +2,8 @@ package up.wargroove.core.world;
 
 import java.util.Queue;
 import java.util.LinkedList;
+
+import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.Entity;
 
@@ -9,11 +11,16 @@ public class Player {
 
 	private Queue<Entity> entities;
 	private Faction faction;
+	private String name;
+	private int money;
+	private int income;
+
 
 	public Player(Faction faction) {
 	
 		entities = new LinkedList<>();
 		this.faction = faction;
+		this.money = 0;
 
 	}
 
@@ -39,14 +46,14 @@ public class Player {
 
 	}
 
-	public boolean next() {
-
-		if(entities.peek().isExhausted()) return false;
+	@Null
+	public Entity next() {
+		if(entities.isEmpty() || entities.peek().isExhausted()) return null;
 
 		Entity entity = entities.poll();
 		entities.add(entity);
 
-		return true;
+		return entity;
 
 	}
 
@@ -71,12 +78,44 @@ public class Player {
 			isCommanderAlive |= c.getType() == Entity.Type.COMMANDER;
 		
 		}
-
+		money = Math.max(money + income, 0);
 		return isCommanderAlive;
 
 	}
 
 	public Faction getFaction() {
 		return faction;
+	}
+
+	@Null
+	public Entity nextPlayableEntity() {
+		int size = entities.size();
+		for (int i = 0; i<size; i++) {
+			Entity e = next();
+			if (e != null) {
+				return e;
+			}
+		}
+		return null;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public int getMoney() {
+		return money;
+	}
+
+	public void addIncome(int income){
+		this.income += income;
+	}
+
+	public int getIncome() {
+		return income;
 	}
 }

@@ -107,6 +107,8 @@ public class MoveDialog extends Table {
                 if (controller.isSoundOn()) {
                     Assets.getInstance().getDefault(Sound.class).play();
                 }
+                controller.endTurn();
+                clear();
             }
         });
 
@@ -116,6 +118,8 @@ public class MoveDialog extends Table {
                 if (controller.isSoundOn()) {
                     Assets.getInstance().getDefault(Sound.class).play();
                 }
+                controller.nextUnit();
+                clear();
             }
         });
 

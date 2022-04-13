@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Player;
 
 /**
  * The current player information box on screen.
@@ -14,7 +15,7 @@ public class PlayerBox extends Table {
     /**
      * Indicate if this box is for a unique player.
      */
-    private final boolean isStatic = false;
+    private boolean isStatic;
 
     /**
      * The current player's name.
@@ -44,15 +45,15 @@ public class PlayerBox extends Table {
     /**
      * Inits an empty player box.
      *
-     * @param controller not used for now.
      */
-    public PlayerBox(Controller controller) {
+    public PlayerBox() {
         Skin skin = Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
         name = new Label("Friendly", skin);
         money = new Label("300", skin);
         income = new Label("+500", skin);
         round = new Label("Round 1", skin);
         avatar = new Image(Assets.getInstance().getTest());
+        isStatic = false;
         setup();
     }
 
@@ -76,11 +77,23 @@ public class PlayerBox extends Table {
     /**
      * Sets the playerBox displayed information.
      *
-     * @param o The current player
+     * @param player The current player
      */
-    public void setInformations(Object o) {
-        if (isStatic) {
+    public void setInformations(Player player, int round) {
+        setInformations(false,player,round);
+    }
+
+    public void setInformations(boolean isStatic, Player player, int round) {
+        if (this.isStatic) {
             return;
         }
+        name.setText(player.getName());
+        money.setText(player.getMoney());
+        char sign = (player.getIncome() >= 0) ? '+' : '-';
+        income.setText(sign + player.getIncome());
+        this.round.setText(round);
+        this.isStatic = isStatic;
     }
+
+
 }

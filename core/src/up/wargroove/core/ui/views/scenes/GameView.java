@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
@@ -26,6 +27,7 @@ import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MoveDialog;
 import up.wargroove.core.ui.views.objects.StructureMenu;
 import up.wargroove.core.ui.views.objects.*;
+import up.wargroove.core.world.Player;
 import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
@@ -95,22 +97,18 @@ public class GameView extends View {
     public void init() {
         getModel().startGame();
         initGameViewUI();
-
-
         /*theme = chooseMusic();
         theme.play();*/
-
         initMap();
-
-
+        setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
         attackSelector = new AttackSelector(gameMap.getScale());
-        Character character = new Villager("Superman", Faction.CHERRYSTONE_KINGDOM);
+        /*Character character = new Villager("Superman", Faction.CHERRYSTONE_KINGDOM);
         Character c = new Villager("Superman", Faction.HEAVENSONG_EMPIRE);
 
         CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
-        CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);
+        CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);*/
         Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
         cursor = new Cursor(texture, gameMap.getScale());
         initInput();
@@ -141,6 +139,7 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(Biome.ICE);
         unitIndicator = new UnitIndicator(getController(), Biome.ICE);
         moveDialog = new MoveDialog(getAssets(), getController());
+        playerBox = new PlayerBox();
         codex = new Codex(getAssets(), getController());
 
         playerBox = new PlayerBox(getController());
@@ -344,6 +343,18 @@ public class GameView extends View {
         }
     }
 
+    @Null
+    public CharacterUI getCharacterUI(Entity entity) {
+        var array = getStage().getActors();
+        for (int i = 0; i < array.size; i++) {
+            Actor tmp = array.get(i);
+            if (tmp instanceof CharacterUI && ((CharacterUI)tmp).getCharacter().equals(entity)) {
+                return (CharacterUI) tmp;
+            }
+        }
+        return null;
+    }
+
     private void scopeEntity(Vector3 worldCoordinate) {
         scopeEntity(new Pair<>((int) worldCoordinate.x, (int) worldCoordinate.y));
     }
@@ -406,5 +417,9 @@ public class GameView extends View {
     public void clearAll() {
         clearMoveDialog();
         clearSelectors();
+    }
+
+    public void setPlayerBoxInformations(Player currentPlayer, int round) {
+        playerBox.setInformations(currentPlayer,round);
     }
 }

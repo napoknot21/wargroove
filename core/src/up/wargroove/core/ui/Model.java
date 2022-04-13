@@ -13,6 +13,9 @@ import up.wargroove.core.world.WorldProperties;
 
 import up.wargroove.utils.Pair;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The gui model.
  */
@@ -36,7 +39,9 @@ public class Model {
      */
     private Entity boughtEntity = null;
 
-    private Player[] players = {new Player(Faction.CHERRYSTONE_KINGDOM),new Player(Faction.FELHEIM_LEGION)};
+    private int round;
+
+    private ArrayList<Player> players;
     private int playerIndex;
 
     /**
@@ -60,7 +65,11 @@ public class Model {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        players = new ArrayList<>(4);
         isActive = true;
+        round = 1;
+        addPlayer(Faction.CHERRYSTONE_KINGDOM);
+        addPlayer(Faction.FELHEIM_LEGION);
     }
 
     public World getWorld() {
@@ -109,9 +118,33 @@ public class Model {
     }
 
     public void nextTurn() {
-        playerIndex = (playerIndex + 1) % players.length;
+        playerIndex = (playerIndex + 1) % players.size();
+        round += (playerIndex == 0)? 1 : 0;
     }
     public Player getCurrentPlayer() {
-        return players[playerIndex];
+        return players.get(playerIndex);
     }
+
+    public int getRound() {
+        return round;
+    }
+
+    public void addPlayer(Faction faction) {
+        for (Player p : players) {
+            if (p.getFaction().equals(faction)) {
+                return;
+            }
+        }
+        Player p = new Player(faction);
+        players.add(p);
+        p.setName("Player " + players.size());
+    }
+
+    public void removeLastPlayer() {
+        if (players.isEmpty()) {
+            return;
+        }
+        players.remove(players.size() - 1);
+    }
+
 }
