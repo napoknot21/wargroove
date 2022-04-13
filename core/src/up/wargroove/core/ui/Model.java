@@ -2,6 +2,7 @@ package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
 
+import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.world.*;
 
@@ -65,6 +66,8 @@ public class Model {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        Recruitment.clearAll();
+        EntityManager.getInstance().load();
         players = new ArrayList<>(4);
         isActive = true;
         round = 1;

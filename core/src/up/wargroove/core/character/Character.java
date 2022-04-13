@@ -1,4 +1,4 @@
-package up.wargroove.core.character.entities;
+package up.wargroove.core.character;
 
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
@@ -79,6 +79,7 @@ public abstract class Character extends Entity {
     /**
      * getter et setters pour character
      */
+    @Override
     public int getCost() {
         return this.stats.cost;
     }

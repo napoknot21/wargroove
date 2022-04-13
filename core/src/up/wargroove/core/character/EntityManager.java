@@ -39,6 +39,9 @@ public class EntityManager {
 
 		for(Entity.Type t : types) {
 
+			if (t.equals(Entity.Type.COMMANDER) || t.equals(Entity.Type.STRUCTURE)) {
+				continue;
+			}
 			try {
 
 				String typeStr = t.toString();
@@ -65,15 +68,15 @@ public class EntityManager {
 				switch(mov.component) {
 
 					case GROUND: 
-						Recruitment.landEntityClasses.add(subClass);
+						Recruitment.landEntityClasses.add(e);
 				   		break;
 
 					case AIR:
-						Recruitment.airEntityClasses.add(subClass);
+						Recruitment.airEntityClasses.add(e);
 						break;
 
 					case SEA:
-						Recruitment.navalEntityClasses.add(subClass);
+						Recruitment.navalEntityClasses.add(e);
 						break;		
 
 				}

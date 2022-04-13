@@ -10,9 +10,15 @@ import java.util.Optional;
 
 public class Recruitment extends Structure {
 
-	public static Vector<Class<? extends Entity>> 	landEntityClasses  = new Vector<>(),
-						navalEntityClasses = new Vector<>(),
-						airEntityClasses   = new Vector<>();
+	public static List<Entity> landEntityClasses = new Vector<>(),
+			navalEntityClasses = new Vector<>() ,
+			airEntityClasses = new Vector<>();
+
+	public static void clearAll() {
+		landEntityClasses.clear();
+		navalEntityClasses.clear();
+		airEntityClasses.clear();
+	}
 
 	public enum Type {
 
@@ -22,24 +28,22 @@ public class Recruitment extends Structure {
 
 	}
 
-	private Faction faction;
 	private Type type;
-	private Vector<Class<? extends Entity>> current;
+	private List<Class<? extends Entity>> current;
 
 	public Recruitment(Type type, Faction faction) {
 
 		super(Structure.Type.RECRUITMENT, faction);
 		this.type = type;
-
+		initialize();
 	}
 
 	public void initialize() {
 
-		switch((Type) type) {
+		switch ((Type) type) {
 
 			case BARRACKS:
 				current = landEntityClasses;
-				current.add(Villager.class);
 				break;
 
 			case TOWER:
@@ -57,7 +61,7 @@ public class Recruitment extends Structure {
 
 	}
 
-	public Vector<Class<? extends Entity>> trainableEntityClasses() {
+	public List<Entity> trainableEntityClasses() {
 
 		return current;
 
@@ -65,9 +69,9 @@ public class Recruitment extends Structure {
 
 	public Optional<Entity> buy(Class<? extends Entity> what, double m, String name, Faction faction) {
 
-		if(current == null) return Optional.empty();
-	
-		Entity entity = EntityManager.instantiate(what,name,faction);
+		if (current == null) return Optional.empty();
+
+		Entity entity = EntityManager.instantiate(what, name, faction);
 		return Optional.of(entity);
 
 	}

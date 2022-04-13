@@ -16,10 +16,8 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.entities.Character;
 import up.wargroove.core.character.Entity;
-import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.entities.land.Villager;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -364,7 +362,7 @@ public class GameView extends View {
      *
      * @param characters list of purchasable characters.
      */
-    public void showsStructureMenu(List<Class<? extends Entity>> characters) {
+    public void showsStructureMenu(List<Entity> characters) {
         StructureMenu.shows(characters, getAssets(), getController(), gameViewUi);
     }
 

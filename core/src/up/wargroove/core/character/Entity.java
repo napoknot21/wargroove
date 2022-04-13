@@ -68,6 +68,10 @@ public abstract class Entity {
 
     }
 
+    public int getCost() {
+        return 0;
+    }
+
     public Faction getFaction() {
         return faction;
     }

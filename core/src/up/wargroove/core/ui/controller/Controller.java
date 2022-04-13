@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
-import up.wargroove.core.character.entities.Character;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
@@ -429,7 +429,7 @@ public class Controller {
             return;
         }
         Recruitment r = (Recruitment) s.get();
-        List<Class<? extends Entity>> characters = r.trainableEntityClasses();
+        List<Entity> characters = r.trainableEntityClasses();
         gameView.showsStructureMenu(characters);
     }
 
@@ -477,6 +477,7 @@ public class Controller {
                 this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
         );
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
+        getModel().getBoughtEntity().exhaust();
         gameView.getStage().addActor(c);
         gameView.getCursor().setLock(false);
     }
