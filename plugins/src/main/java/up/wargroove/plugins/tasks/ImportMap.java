@@ -8,6 +8,7 @@ import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.Database;
+import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
 
 import java.io.File;
@@ -17,6 +18,9 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Scanner;
 
+/**
+ * This is a plugin. Its primary tasks is to import a given map in CLI to the local database.
+ */
 public class ImportMap {
     private final StringBuilder log = new StringBuilder();
     private final Tile.Type[] tileType = Tile.Type.values();
@@ -24,6 +28,11 @@ public class ImportMap {
     private String[] paths;
     private String biome;
 
+    /**
+     * Construct the plugin and set the given arguments.
+     *
+     * @param args The CLI arguments.
+     */
     public ImportMap(String... args) {
         for (String arg : args) {
             if (arg.startsWith("--")) {
@@ -33,34 +42,11 @@ public class ImportMap {
         }
     }
 
-    private void initParameter(String... parameter) {
-        if (parameter.length != 2) return;
-        switch (parameter[0]) {
-            case "paths":
-                setPaths(parameter[1]);
-                break;
-            case "biome":
-                setBiome(parameter[1]);
-                break;
-        }
-    }
-
-    @InputFile
-    public File getRoot() {
-        return new File("db/wargroove.db");
-    }
-
-    @Option(option = "paths", description = "List of file paths that point to a map that needed to be loaded")
-    public void setPaths(String args) {
-        this.paths = args.split(";");
-    }
-
-    @Option(option = "biome", description = "Biome of the world")
-    public void setBiome(String biome) {
-        this.biome = biome;
-    }
-
-
+    /**
+     * Run the primary task.
+     *
+     * @throws Exception if an error occurred.
+     */
     @TaskAction
     public void run() throws Exception {
         System.out.println(Paths.get(".").toAbsolutePath());
@@ -76,7 +62,8 @@ public class ImportMap {
                 }
                 load(file);
             } catch (Exception e) {
-                log.append("An error occurred during the load of ").append(path).append("(").append(e.getMessage()).append(")");
+                log.append("An error occurred during the load of ").append(path)
+                        .append("(").append(e.getMessage()).append(")");
             }
         }
 
@@ -84,6 +71,40 @@ public class ImportMap {
             throw new Exception(log.toString());
         }
     }
+
+    private void initParameter(String... parameter) {
+        if (parameter.length != 2) {
+            return;
+        }
+        switch (parameter[0]) {
+            case "paths":
+                setPaths(parameter[1]);
+                break;
+            case "biome":
+                setBiome(parameter[1]);
+                break;
+            default:
+                Log.print(Log.Status.ERROR, parameter[0] + "is ignored");
+        }
+    }
+
+    @InputFile
+    private File getRoot() {
+        return new File("db/wargroove.db");
+    }
+
+    @Option(option = "paths", description = "List of file paths that point to a map that needed to be loaded")
+    private void setPaths(String args) {
+        this.paths = args.split(";");
+    }
+
+    @Option(option = "biome", description = "Biome of the world")
+    private void setBiome(String biome) {
+        this.biome = biome;
+    }
+
+
+
 
     private void load(File file) throws Exception {
         if (!file.getName().split("\\.")[1].equals("csv")) {

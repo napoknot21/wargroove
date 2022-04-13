@@ -15,17 +15,49 @@ import up.wargroove.utils.Pair;
 import java.io.File;
 import java.io.FileWriter;
 
+/**
+ * This is a plugin. Its primary task is to export a map from the local database to the given path.
+ */
 public class ExportMap {
+    /**
+     * Name of the map stored in the database.
+     */
     private String name;
+    /**
+     * The path where the map will be exported.
+     */
     private String path;
-    private Project project;
+    /**
+     * Select if the map will be generated before being exported.
+     */
     private boolean gen = false;
+    /**
+     * Indicate if a file with the same name as the one given in the path or the default one will be overwritten.
+     */
     private boolean overwrite = false;
+    /**
+     * Generations parameters repartition.
+     */
     private int repartition = 3;
+    /**
+     * Generations parameters normalization.
+     */
     private double normalization = -3.2;
+    /**
+     * Generations parameters smooth.
+     */
     private double smooth = -12D;
+    /**
+     * World dimension. The syntaxe <b>MUST</b> be the following : <i>dimension.first, dimension.second</i>
+     */
     private Pair<Integer, Integer> dimension;
 
+    /**
+     * Constructs the plugin with the given arguments.
+     *
+     * @param args The CLI arguments.
+     * @throws Exception if an error occurred.
+     */
     public ExportMap(String... args) throws Exception {
         for (String arg : args) {
             if (arg.startsWith("--")) {
@@ -35,8 +67,26 @@ public class ExportMap {
         }
     }
 
+    /**
+     * Run the primary task.
+     *
+     * @throws Exception if an error occurred.
+     */
+    @TaskAction
+    public void run() throws Exception {
+        if (name == null || name.isBlank() || path == null || path.isBlank()) {
+            throw new Exception("The args cannot be empty");
+        }
+        WorldProperties properties = (gen) ? generate() : getWorld();
+        dimension = properties.dimension;
+        File file = createDestination(getDestination(name));
+        write(file, properties);
+    }
+
     private void initParameter(String... parameter) throws Exception {
-        if (parameter.length != 2) return;
+        if (parameter.length != 2) {
+            return;
+        }
         switch (parameter[0]) {
             case "name":
                 setName(parameter[1]);
@@ -68,28 +118,40 @@ public class ExportMap {
 
 
     @Option(option = "name", description = "name of the map stored in the database")
-    public void setName(String name) {
+    private void setName(String name) {
         this.name = name;
     }
 
     @Option(option = "path", description = "The path where the map will be exported")
-    public void setPath(String path) {
+    private void setPath(String path) {
         this.path = path;
     }
 
     @Option(option = "gen", description = "Select if the map will be generated before being exported (Y/N)")
-    public void setGeneration(String generation) {
+    private void setGeneration(String generation) {
         gen = generation.equalsIgnoreCase("Y");
     }
 
+    /**
+     * Gets the default map dimension.
+     *
+     * @return the default dimension.
+     */
     @Input
-    public Pair<Integer, Integer> getDimension() {
+    private Pair<Integer, Integer> getDimension() {
         return new Pair<>(20, 20);
     }
 
-    @Option(option = "dim", description = "World dimension. The syntaxe MUST be the following : " +
-            "dimension.first, dimension.second")
-    public void setDimension(String ds) throws Exception {
+    /**
+     * Set the dimension with the given argument. <br>
+     * The syntaxe <b>MUST</b> be the following : <i>dimension.first, dimension.second</i>
+     *
+     * @param ds The CLI argument.
+     * @throws Exception the argument doesn't respect the format
+     */
+    @Option(option = "dim", description = "World dimension. The syntaxe MUST be the following : "
+            + "dimension.first, dimension.second")
+    private void setDimension(String ds) throws Exception {
         String[] dim = ds.split(",");
         if (dim.length != 2) {
             throw new Exception("The dimension syntaxe is wrong");
@@ -100,45 +162,34 @@ public class ExportMap {
     }
 
     @Option(option = "r", description = "Generations parameters repartition")
-    public void setRepartition(String repartition) {
+    private void setRepartition(String repartition) {
         this.repartition = Integer.parseInt(repartition);
     }
 
-    @Option(option = "overwrite", description = "indicate if a file a the same name a the one given " +
-            "in the path or the default one will be be overwritten (Y/N)")
-    public void setOverwrite(String overwrite) {
+    @Option(option = "overwrite", description = "indicate if a file with the same name as the one given "
+            + "in the path or the default one will be be overwritten (Y/N)")
+    private void setOverwrite(String overwrite) {
         this.overwrite = overwrite.equalsIgnoreCase("Y");
     }
 
     @Option(option = "n", description = "Generations parameters normalization")
-    public void setNormalization(String normalization) {
+    private void setNormalization(String normalization) {
         this.normalization = Double.parseDouble(normalization);
     }
 
     @Option(option = "s", description = "Generations parameters smooth")
-    public void setSmooth(String smooth) {
+    private void setSmooth(String smooth) {
         this.smooth = Double.parseDouble(smooth);
     }
 
     @InputFile
-    public File getRoot() {
+    private File getRoot() {
         return new File("db/wargroove.db");
     }
 
     @Input
-    public String getExtension() {
+    private String getExtension() {
         return ".csv";
-    }
-
-    @TaskAction
-    public void run() throws Exception {
-        if (name == null || name.isBlank() || path == null || path.isBlank()) {
-            throw new Exception("The args cannot be empty");
-        }
-        WorldProperties properties = (gen) ? generate() : getWorld();
-        dimension = properties.dimension;
-        File file = createDestination(getDestination(name));
-        write(file, properties);
     }
 
     // TODO: 10/03/2022 : Improvement of enum gestion

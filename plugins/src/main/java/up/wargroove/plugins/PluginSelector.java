@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * CLI interpreter for the app plugins.
+ */
 public class PluginSelector {
     private static Map<String, Class<?>> plugins;
 
@@ -25,7 +28,9 @@ public class PluginSelector {
         String packageName = PluginSelector.class.getPackageName() + ".tasks";
         String path = "plugins/src/main/java/up/wargroove/plugins/tasks";
         File dir = new File(path);
-        if (!dir.isDirectory() || dir.listFiles() == null) return null;
+        if (!dir.isDirectory() || dir.listFiles() == null) {
+            return null;
+        }
         plugins = new HashMap<>();
         for (File f : Objects.requireNonNull(dir.listFiles())) {
             String name = f.getName();
@@ -35,6 +40,11 @@ public class PluginSelector {
         return plugins;
     }
 
+    /**
+     * Run the primary task.
+     *
+     * @throws Exception if an error occurred.
+     */
     public static void run() throws Exception {
         Log.print("Please enter the command : ");
         Scanner scanner = new Scanner(System.in);
@@ -44,7 +54,9 @@ public class PluginSelector {
     }
 
     private static void checkCommand(String arg, String[] args) throws Exception {
-        if (plugins == null) throw new Exception("There is no plugins");
+        if (plugins == null) {
+            throw new Exception("There is no plugins");
+        }
         for (String name : plugins.keySet()) {
             if (name.equalsIgnoreCase(arg)) {
                 Object obj = plugins.get(name).getConstructor(String[].class).newInstance((Object) args);
