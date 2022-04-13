@@ -394,7 +394,8 @@ public class Assets {
      */
     public enum AssetDir {
         DATA("data" + fs), GUI(DATA.path + "gui" + fs),
-        SKIN(GUI.path + "skin" + fs, "skin"), SOUND(GUI.path + "sound" + fs, "sound"),
+        SKIN(GUI.path + "skin" + fs, "skin"),
+        SOUND(GUI.path + "sound" + fs, "sound","music"),
         SPRITES(DATA.path + "sprites" + fs),
         ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
         CHARACTER(SPRITES.path + "character" + fs),
@@ -443,7 +444,8 @@ public class Assets {
      * List the Assets Types.
      */
     public enum AssetType {
-        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), TEXTURE_ATLAS(TextureAtlas.class);
+        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), TEXTURE_ATLAS(TextureAtlas.class),
+        MUSIC(Music.class);
         //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;

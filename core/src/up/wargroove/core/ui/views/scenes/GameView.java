@@ -79,13 +79,10 @@ public class GameView extends View {
     }
 
     private Music chooseMusic(){
-        switch (getModel().getBiome()){
-            case ICE : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/ICE.mp3"));
-            case VOLCANO : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/VOLCANO.mp3"));
-            case GRASS : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
-            case DESERT : return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/DESERT.mp3"));
+        if (getModel().getBiome() != null) {
+            return getAssets().get(Assets.AssetDir.SOUND.getPath() + getModel().getBiome().name() + ".mp3");
         }
-        return Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/theme.mp3"));
+        return getAssets().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3");
 
     }
 
@@ -93,8 +90,8 @@ public class GameView extends View {
     public void init() {
         getModel().startGame();
         initGameViewUI();
-        /*theme = chooseMusic();
-        theme.play();*/
+        theme = chooseMusic();
+        theme.play();
         initMap();
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
