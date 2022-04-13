@@ -496,11 +496,8 @@ public class Controller {
         if (e == null) return;
         CharacterUI ui = gameView.getCharacterUI(e);
         if (ui == null) return;
-        //System.out.println(ui.getCoordinate().first, ui.getCoordinate().second);
         Camera camera = gameView.getCamera();
-        Vector3 v = camera.project(new Vector3(ui.getCoordinate().first, ui.getCoordinate().second,0));
-        v = moveCursor((int)v.x,(int)v.y,camera);
-        camera.position.set(camera.project(v));
-        gameView.getCursor().setPosition(v);
+        camera.position.set(ui.getX(),ui.getY(),camera.position.z);
+        gameView.getCursor().setPosition(ui.getX(),ui.getY());
     }
 }
