@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import up.wargroove.core.ui.Assets;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 
@@ -21,10 +21,9 @@ public class UnitIndicator extends Indicator {
     /**
      * Create a unit indicator.
      *
-     * @param controller the app controller.
      * @param biome      the world biome.
      */
-    public UnitIndicator(Controller controller, Biome biome) {
+    public UnitIndicator(Biome biome) {
         super(biome);
         this.Stats = new Sprite();
         Stats.setSize(12, 12);
@@ -42,8 +41,7 @@ public class UnitIndicator extends Indicator {
             setStats(null);
             return;
         }
-        String path = TileType.getTexturePath(tile, getBiome());
-        setBackground(assets.get(path, Texture.class));
+        setBackground(getAtlas().findRegion(tile.getType().name().toLowerCase()));
         var character = tile.entity.get();
         if (character instanceof Structure) return; //Todo: structure case
         var texture = assets.get(

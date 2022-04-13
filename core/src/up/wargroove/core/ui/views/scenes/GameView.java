@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -25,10 +26,7 @@ import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MoveDialog;
 import up.wargroove.core.ui.views.objects.StructureMenu;
 import up.wargroove.core.ui.views.objects.*;
-import up.wargroove.core.world.Player;
-import up.wargroove.core.world.Structure;
-import up.wargroove.core.world.Tile;
-import up.wargroove.core.world.World;
+import up.wargroove.core.world.*;
 import up.wargroove.utils.Pair;
 
 import java.util.LinkedList;
@@ -107,7 +105,7 @@ public class GameView extends View {
 
         CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
         CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);*/
-        Texture texture = getAssets().get(Assets.AssetDir.WORLD.getPath() + "test.png", Texture.class);
+        TextureRegion texture = getAssets().getTest();
         cursor = new Cursor(texture, gameMap.getScale());
         initInput();
     }
@@ -116,7 +114,6 @@ public class GameView extends View {
      * Initializes the map.
      */
     private void initMap() {
-        getModel().startGame();
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
@@ -125,7 +122,7 @@ public class GameView extends View {
         viewport.apply();
         camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
-        gameMap = new GameMap(getModel().getWorld(), getAssets(), getStage(), getController());
+        gameMap = new GameMap(getModel().getWorld(),getStage() ,getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
 
@@ -138,8 +135,8 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(Biome.ICE);
-        unitIndicator = new UnitIndicator(getController(), Biome.ICE);
+        tileIndicator = new TileIndicator(getModel().getBiome());
+        unitIndicator = new UnitIndicator(getModel().getBiome());
         moveDialog = new MoveDialog(getAssets(), getController());
         playerBox = new PlayerBox();
         codex = new Codex(getAssets(), getController());

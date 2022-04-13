@@ -3,6 +3,7 @@ package up.wargroove.core.ui.views.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
 import java.util.ArrayList;
@@ -286,12 +287,23 @@ public class MovementSelector {
          * @param texture The sprite texture.
          * @param coord   The sprites coordinates.
          */
-        protected void add(Texture texture, Pair<Integer, Integer> coord) {
+        protected void add(TextureRegion texture, Pair<Integer, Integer> coord) {
             int x = (int) (coord.first * worldScale);
             int y = (int) (coord.second * worldScale);
             Sprite sprite = new Sprite(texture);
             sprite.setPosition(x, y);
             this.add(new Pair<>(sprite, (coord)));
+        }
+
+        /**
+         * Add a new sprite to the list if all the sprites are already used
+         * otherwise it will use a free sprite.
+         *
+         * @param texture The sprite texture.
+         * @param coord   The sprites coordinates.
+         */
+        protected void add(Texture texture, Pair<Integer, Integer> coord) {
+            this.add(new TextureRegion(texture),coord);
         }
 
         /**

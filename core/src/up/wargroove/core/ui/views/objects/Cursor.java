@@ -3,6 +3,7 @@ package up.wargroove.core.ui.views.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
 
@@ -24,7 +25,7 @@ public class Cursor extends Sprite {
      * @param texture    The cursor's texture.
      * @param worldScale The world scale.
      */
-    public Cursor(Texture texture, int worldScale) {
+    public Cursor(TextureRegion texture, int worldScale) {
         super(texture);
         this.worldScale = worldScale;
     }
@@ -35,25 +36,8 @@ public class Cursor extends Sprite {
      * @param worldScale The world scale.
      */
     public Cursor(Assets assets, int worldScale) {
-        this(assets.get(Assets.AssetDir.GUI + "game_cursor.png", Texture.class), worldScale);
-    }
-
-    /**
-     * Creates a cursor with a null Texture and the world scale.
-     *
-     * @param worldScale The world scale.
-     */
-    public Cursor(int worldScale) {
-        this((Texture) null, worldScale);
-    }
-
-    /**
-     * Creates a cursor with a Texture.
-     *
-     * @param texture The cursor's texture.
-     */
-    public Cursor(Texture texture) {
-        this(texture, 0);
+        super(assets.get(Assets.AssetDir.GUI + "game_cursor.png", Texture.class));
+        this.worldScale = worldScale;
     }
 
     /**

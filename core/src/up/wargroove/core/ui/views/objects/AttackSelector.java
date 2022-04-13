@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Texture;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
 
@@ -18,7 +19,7 @@ public class AttackSelector extends MovementSelector {
 
     public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
         reset();
-        pair.first.forEach(v -> valid.add(assets.get("data/sprites/world/attack.png"), v));
+        pair.first.forEach(v -> valid.add(assets.get( "data/sprites/world/attack.png", Texture.class), v));
         valid.addIntel(pair.second);
 
     }

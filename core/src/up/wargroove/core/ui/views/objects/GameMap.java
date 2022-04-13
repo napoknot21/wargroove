@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import java.util.Optional;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector3;
@@ -31,6 +32,7 @@ public class GameMap extends TiledMap {
      */
     int scale;
     TiledMapTileLayer tileLayer;
+    TextureAtlas atlas;
 
     /**
      * Init the tiledMap according to the given model.
@@ -38,8 +40,9 @@ public class GameMap extends TiledMap {
      * @param world The world that will be on the gui
      * @param stage
      */
-    public GameMap(World world, Assets assets, Stage stage, Controller controller) {
+    public GameMap(World world, Stage stage, Controller controller) {
         super();
+        atlas = Assets.getInstance().get(controller.getModel().getBiome());
         world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.CHERRYSTONE_KINGDOM));
         width = world.getDimension().first;
         height = world.getDimension().second;
@@ -48,7 +51,7 @@ public class GameMap extends TiledMap {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new MapTile(world.at(i, j), assets));
+                cell.setTile(new MapTile(world.at(i, j), atlas));
                 addEntityImage(stage,controller,world,i,j);
                 tileLayer.setCell(i, j, cell);
             }

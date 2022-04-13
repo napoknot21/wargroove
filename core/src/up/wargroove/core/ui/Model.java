@@ -58,6 +58,7 @@ public class Model {
         properties.dimension = new Pair<>(20, 20);
         properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
         world = new World(properties);
+        properties.setBiome(Biome.GRASS);
 
         Thread gen = new Thread(() -> world.initialize(true));
         gen.start();

@@ -3,10 +3,11 @@ package up.wargroove.core.ui.views.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.ui.Assets;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 
 /**
@@ -29,6 +30,8 @@ public abstract class Indicator extends Actor {
      */
     private final Biome biome;
 
+    private TextureAtlas atlas;
+
 
     /**
      * Create an indicator.
@@ -42,6 +45,7 @@ public abstract class Indicator extends Actor {
         this.background = new Sprite();
         background.setSize(50, 50);
         this.biome = biome;
+        atlas = Assets.getInstance().get(biome);
     }
 
     /**
@@ -137,5 +141,9 @@ public abstract class Indicator extends Actor {
     @Override
     public float getHeight() {
         return foreground.getHeight();
+    }
+
+    public TextureAtlas getAtlas() {
+        return atlas;
     }
 }

@@ -7,10 +7,14 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureArray;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 import java.io.File;
@@ -257,8 +261,8 @@ public class Assets {
         }
     }
 
-    public Texture getTest() {
-        return get(AssetDir.WORLD.getPath() + "test.png");
+    public TextureRegion getTest() {
+        return get(Biome.GRASS).findRegion("test");
     }
 
     /**
@@ -271,6 +275,11 @@ public class Assets {
     public <T> T get(String fileName) {
         fileName = fileName.replace('\\', '/');
         return manager.get(fileName);
+    }
+
+    public TextureAtlas get(Biome biome) {
+        String fileName = AssetDir.WORLD.getPath() + biome.name().toLowerCase() + ".txt";
+        return manager.get(fileName.replace('\\','/'));
     }
 
     /**
@@ -394,7 +403,7 @@ public class Assets {
         FLORAN_TRIBES(CHARACTER.path + "FLORAN_TRIBES" + fs, "FLORAN_TRIBES"),
         HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "HEAVENSONG_EMPIRE"),
         STATS(CHARACTER.path + "STATS" + fs, "STATS"),
-        WORLD(SPRITES.path + "world" + fs, "test"),
+        WORLD(SPRITES.path + "world" + fs,"world","attack"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice"),
         DESCRIPTION(DATA.path + "descriptions" + fs, "entities");
@@ -434,7 +443,7 @@ public class Assets {
      * List the Assets Types.
      */
     public enum AssetType {
-        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class);
+        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), TEXTURE_ATLAS(TextureAtlas.class);
         //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;
