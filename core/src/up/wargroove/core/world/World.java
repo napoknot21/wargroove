@@ -25,7 +25,10 @@ public class World {
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-        if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
+       // if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
+
+	if(toTile.entity.isPresent()) return -2;
+	if(k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -37,14 +40,17 @@ public class World {
     };
 
     private final WPredicate<Integer> canAttack = (k) -> {
-        Tile tile = terrain[k[0]];
-        if (tile.entity.isEmpty()) {
-            return 0;
-        }
-        if (tile.entity.get().getFaction() == Faction.values()[k[1]]) {
-            return 0;
-        }
-        return 1;
+	
+	Optional<Entity> rootEntity  = terrain[k[3]].entity,
+			targetEntity = terrain[k[0]].entity;
+
+	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;
+
+	boolean status = canMoveOn.test(k) == -2;
+        status &= targetEntity.get().getFaction() != rootEntity.get().getFaction();
+
+        return status ? 1 : -1;
+
     };
 
     private Stack<State> states;
@@ -257,7 +263,7 @@ public class World {
 
                 if (checked.containsKey(lin)) continue; 
 
-                if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
+                if ((movementCost = predicate.test(lin, movementId, element.second, root)) >= 0) {
 
 		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     res.add(lin);
