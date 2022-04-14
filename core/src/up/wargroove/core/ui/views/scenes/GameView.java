@@ -207,11 +207,14 @@ public class GameView extends View {
                     movement = attack = false;
                     return true;
                 }
-                if (tile.entity.isPresent() && tile.entity.get() instanceof Structure) {
+                if (
+                        tile.entity.isPresent() && (tile.entity.get() instanceof Structure)
+                        && tile.entity.get().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+                ) {
                     moveDialog.addBuy();
                     clearSelectors();
                     movement = attack = false;
-                    cursor.setLock(false);
+                    cursor.setLock(true);
                     return true;
                 }
                 if (buy && movementSelector.isValidPosition(worldPosition)) {
@@ -340,12 +343,14 @@ public class GameView extends View {
     }
 
     @Null
-    public CharacterUI getCharacterUI(Entity entity) {
+    public Actor getCharacterUI(Entity entity) {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
             if (tmp instanceof CharacterUI && ((CharacterUI)tmp).getCharacter().equals(entity)) {
-                return (CharacterUI) tmp;
+                return tmp;
+            } else if (tmp instanceof StructureUI && ((StructureUI)tmp).getStructure().equals(entity)) {
+                return tmp;
             }
         }
         return null;
@@ -418,4 +423,5 @@ public class GameView extends View {
     public void setPlayerBoxInformations(Player currentPlayer, int round) {
         playerBox.setInformations(currentPlayer,round);
     }
+
 }

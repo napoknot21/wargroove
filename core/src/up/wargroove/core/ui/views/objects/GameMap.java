@@ -43,7 +43,6 @@ public class GameMap extends TiledMap {
     public GameMap(World world, Stage stage, Controller controller) {
         super();
         atlas = Assets.getInstance().get(controller.getModel().getBiome());
-        world.at(0, 0).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, Faction.CHERRYSTONE_KINGDOM));
         width = world.getDimension().first;
         height = world.getDimension().second;
         initDimension();

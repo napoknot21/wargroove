@@ -31,6 +31,9 @@ public class Player {
 
 	public void addEntity(Entity character)
 	{
+		if (character instanceof Structure) {
+			addIncome(((Structure)character).getBonus());
+		}
 		entities.add(character);
 	}
 
@@ -117,5 +120,9 @@ public class Player {
 
 	public int getIncome() {
 		return income;
+	}
+
+	public void buy(int amount) {
+		this.money -= amount;
 	}
 }

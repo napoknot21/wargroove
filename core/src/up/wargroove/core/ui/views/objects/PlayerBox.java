@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -89,7 +90,14 @@ public class PlayerBox extends Table {
         }
         name.setText(player.getName());
         money.setText(player.getMoney());
-        char sign = (player.getIncome() >= 0) ? '+' : '-';
+        String sign;
+        if (player.getIncome() >= 0){
+            sign = "+";
+            this.income.setColor(Color.GREEN);
+        } else {
+            sign = "-";
+            this.income.setColor(Color.RED);
+        }
         income.setText(sign + player.getIncome());
         this.round.setText(round);
         this.isStatic = isStatic;

@@ -17,13 +17,27 @@ import up.wargroove.utils.Pair;
 
 public class StructureUI extends Actor {
     Sprite texture;
+    Structure structure;
     public StructureUI(Stage stage, Structure structure, float ratio, Pair<Integer,Integer> position) {
         super();
         setPosition(position.first * ratio, position.second * ratio);
         stage.addActor(this);
         texture = new Sprite(Assets.getInstance().getTest());
-        texture.setColor(Color.SKY);
+        Color color;
+        switch (structure.getFaction()) {
+            case FLORAN_TRIBES: color = Color.GREEN; break;
+            case FELHEIM_LEGION: color = Color.ROYAL; break;
+            case CHERRYSTONE_KINGDOM: color = Color.FIREBRICK; break;
+            case HEAVENSONG_EMPIRE: color = Color.WHITE; break;
+            default: color = Color.CLEAR;
+        }
+        texture.setColor(color);
         texture.setPosition(getX(),getY());
+        this.structure = structure;
+    }
+
+    public Structure getStructure() {
+        return structure;
     }
 
     @Override

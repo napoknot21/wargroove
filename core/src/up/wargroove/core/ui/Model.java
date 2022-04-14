@@ -2,6 +2,7 @@ package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
 
+import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.world.*;
@@ -16,6 +17,8 @@ import up.wargroove.utils.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 /**
  * The gui model.
@@ -74,6 +77,35 @@ public class Model {
         round = 1;
         addPlayer(Faction.CHERRYSTONE_KINGDOM);
         addPlayer(Faction.FELHEIM_LEGION);
+        addRandomStructure();
+        setStartData();
+    }
+
+    private void addRandomStructure() {
+        Random random = new Random();
+        for (int i = 0; i < properties.getDimension().first; i++) {
+            for (int j = 0; j<properties.getDimension().second; j++) {
+                int rand = random.nextInt(100);
+                if (rand < 10) {
+                    Faction faction = (rand %2 == 0)? Faction.FELHEIM_LEGION : Faction.CHERRYSTONE_KINGDOM;
+                    world.at(i,j).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, faction));
+                }
+            }
+        }
+    }
+
+    private void setStartData() {
+        for (int i = 0; i < properties.getDimension().first; i++) {
+            for (int j = 0; j<properties.getDimension().second; j++) {
+                if (world.at(i,j).entity.isPresent()) {
+                    Entity entity = world.at(i,j).entity.get();
+                    Player player = getPlayer(entity.getFaction());
+                    if (player != null) {
+                        player.addEntity(entity);
+                    }
+                }
+            }
+        }
     }
 
     public World getWorld() {
@@ -149,6 +181,16 @@ public class Model {
             return;
         }
         players.remove(players.size() - 1);
+    }
+
+    @Null
+    private Player  getPlayer(Faction faction) {
+        for (Player player : players) {
+            if (player.getFaction().equals(faction)) {
+                return player;
+            }
+        }
+        return null;
     }
 
 }

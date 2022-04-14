@@ -425,7 +425,8 @@ public class Controller {
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         Optional<Entity> s = getTile(gameView.getCursor().getWorldPosition()).entity;
-        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)
+                || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
             return;
         }
         Recruitment r = (Recruitment) s.get();
@@ -463,7 +464,7 @@ public class Controller {
         List<Integer> list = getWorld().adjacentOf(pos);
         list.removeIf(i -> getWorld().at(i).entity.isPresent());
         gameView.showsPlaceable(list);
-
+        gameView.getCursor().setLock(false);
     }
 
     /**
@@ -477,12 +478,15 @@ public class Controller {
                 this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
         );
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
+        getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();
+        gameView.setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         gameView.getStage().addActor(c);
         gameView.getCursor().setLock(false);
     }
 
     public void endTurn() {
+        ((GameView)getScreen()).getCursor().setLock(false);
         ((GameView) getScreen()).clearAll();
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
@@ -494,7 +498,7 @@ public class Controller {
         gameView.clearAll();
         Entity e = getModel().getCurrentPlayer().next();
         if (e == null) return;
-        CharacterUI ui = gameView.getCharacterUI(e);
+        Actor ui = gameView.getCharacterUI(e);
         if (ui == null) return;
         Camera camera = gameView.getCamera();
         camera.position.set(ui.getX(),ui.getY(),camera.position.z);

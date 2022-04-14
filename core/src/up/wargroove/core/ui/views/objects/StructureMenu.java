@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.world.Player;
 
 import java.util.List;
 import java.util.Locale;
@@ -22,12 +24,14 @@ public class StructureMenu extends Dialog {
     private final TextButton buy;
     private final Controller controller;
     private Entity current;
+    private final Player player;
 
     private StructureMenu(Assets assets, Controller controller) {
         super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
         this.description = new Description(assets);
         this.controller = controller;
         buy = new TextButton("buy", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
+        player = controller.getModel().getCurrentPlayer();
         button("close", Buttons.CLOSE);
         button(buy, Buttons.BUY);
         buy.setVisible(false);
@@ -163,6 +167,12 @@ public class StructureMenu extends Dialog {
         public CharacterButton(Entity e, Assets assets) {
             super(transformName(e), assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
             entity = e;
+            if (player.getMoney() < e.getCost()) {
+                TextButtonStyle style = new TextButtonStyle(this.getStyle());
+                style.fontColor = Color.RED;
+                this.setStyle(style);
+
+            }
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -171,7 +181,9 @@ public class StructureMenu extends Dialog {
                     }
                     description.setDescription(e, assets);
                     current = e;
-                    buy.setVisible(true);
+                    if (player.getMoney() >= e.getCost()) {
+                        buy.setVisible(true);
+                    }
                 }
             });
         }
