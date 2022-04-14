@@ -1,0 +1,56 @@
+---
+SOLDIER :
+  attacks : #first = base, second = critical
+    - 90
+    - 135
+  defends :
+    - 60
+    - 90
+
+VILLAGER :
+  attacks:
+    - 105
+    - 158
+  defends:
+    - 0
+    - 0
+
+COMMANDER :
+  attacks:
+    - 25
+    - 38
+  defends:
+    - 80
+    - 0
+
+SPEARMAN :
+  attacks:
+    - 80
+    - 120
+  defends:
+    - 70
+    - 105
+
+MAGE :
+  attacks :
+    - 40
+    - 60
+  defends :
+    - 40
+    - 60
+
+ARCHER :
+  attacks :
+    - 90
+    - 135
+  defends :
+    - 80
+    - 108
+
+GIANT :
+  attacks :
+    - 25
+    - 38
+  defends :
+    - 115
+    - 288
