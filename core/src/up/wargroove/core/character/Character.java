@@ -1,15 +1,17 @@
 package up.wargroove.core.character;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Vector;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
+
+import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.utils.Pair;
 
 public abstract class Character extends Entity {
 
     protected String name;
-
+    private final static String pathDamageMatrix = "./core/src/up/wargroove/core/character/damageMatrix/";
 
     protected Stats stats; 
 
@@ -29,7 +31,46 @@ public abstract class Character extends Entity {
 
     }
 
-    public void attack (Entity e) {}
+    public void attack (Character ch) {
+        if (ch == null) return;
+        Pair<Integer,Integer> attacks = this.getAttacksValues(ch);
+        Pair<Integer,Integer> defends = ch.getDefendsValues(this);
+        ch.setHealth(ch.getHealth() - attacks.first + defends.first);
+    }
+
+    protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
+        try {
+            String name = this.getType().name().toLowerCase();
+            File f = new File(pathDamageMatrix + name + ".yml");
+            return new Yaml().load(new FileInputStream(f));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public Map<String, List <Integer> > getAttacksAndDefendsValues (Character ch) {
+        var data = this.readDamageMatrixValues();
+        if (data == null || ch == null) return null;
+        return data.get(ch.getType().name().toUpperCase());
+    }
+
+    public Pair<Integer, Integer> getAttacksValues (Character ch) {
+        var data = this.getAttacksAndDefendsValues(ch);
+        if (data == null || ch == null) return null;
+        List <Integer> attacks = data.get("attacks");
+        if (attacks.size() != 2) return null;
+        return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
+    }
+
+    public Pair<Integer,Integer> getDefendsValues (Character ch) {
+        var data = this.getAttacksAndDefendsValues(ch);
+        if (data == null || ch == null) return null;
+        List <Integer> defends = data.get("defends");
+        if (defends.size() != 2) return null;
+        return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
+    }
+
 
     public Faction getFaction() {
         return faction;

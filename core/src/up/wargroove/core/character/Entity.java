@@ -59,14 +59,16 @@ public abstract class Entity {
 
         VILLAGER,
         COMMANDER,
-        /*
-        SPAREMAN,
-        DOG,
-        ARCHER,
+        SPEARMAN,
         SOLDIER,
+        MAGE,
+        ARCHER,
+
         GIANT,
+        /*
         RIFLEMAN,
         THIEF,
+        DOG,
 
         CAVALRY,
         BALLISTA,
