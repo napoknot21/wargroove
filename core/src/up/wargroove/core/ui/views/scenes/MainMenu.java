@@ -12,12 +12,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
-import up.wargroove.utils.Log;
 
 /**
  * The Main Menu.
@@ -27,18 +25,11 @@ public class MainMenu extends View {
      * Start game button.
      */
     private Button startGame;
-    /**
-     * Match settings button.
-     */
-    private Button matchSettings;
+
     /**
      * Player settings button.
      */
-    private Button playerSettings;
-    /**
-     * Player settings button.
-     */
-    private Button mapSelection;
+    private Button settings;
 
     private Button quit;
     /**
@@ -74,11 +65,8 @@ public class MainMenu extends View {
         viewport.apply();
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
-
         startGame = new TextButton("Start Game", skin);
-        matchSettings = new TextButton("Match Settings", skin);
-        playerSettings = new TextButton("Settings", skin);
-        mapSelection = new TextButton("Choose Map", skin);
+        settings = new TextButton("Settings", skin);
         quit = new TextButton("Quit", skin);
         initListener();
         setStage(viewport);
@@ -122,11 +110,7 @@ public class MainMenu extends View {
         //table.top();
         table.add(startGame);
         table.row();
-        table.add(matchSettings);
-        table.row();
-        table.add(mapSelection);
-        table.row();
-        table.add(playerSettings);
+        table.add(settings);
         table.row();
         table.add(quit);
 
@@ -143,37 +127,19 @@ public class MainMenu extends View {
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
                         if(controller.isSoundOn()) buttonSound.play();
-                        controller.startGame();
-                    }
-                }
-        );
-
-        mapSelection.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        if(controller.isSoundOn()) buttonSound.play();
                         controller.openMapSelection();
                     }
                 }
         );
-        playerSettings.addListener(
+
+
+        settings.addListener(
                 new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         //makeSound(buttonSound);
                         if(controller.isSoundOn()) buttonSound.play();
                         controller.openSettings();
-                    }
-                }
-        );
-        matchSettings.addListener(
-                new ClickListener() {
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        if(controller.isSoundOn()) buttonSound.play();
-                        controller.openMatchSettings();
                     }
                 }
         );

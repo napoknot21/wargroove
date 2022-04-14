@@ -174,6 +174,7 @@ public class SelectMap extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
+                        controller.openMatchSettings();
                     }
                 }
         );
@@ -183,6 +184,7 @@ public class SelectMap extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
+                        controller.openMatchSettings();
                     }
                 }
         );
@@ -191,6 +193,7 @@ public class SelectMap extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
+                        controller.openMatchSettings();
                     }
                 }
         );

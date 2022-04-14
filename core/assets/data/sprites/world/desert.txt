@@ -1,0 +1,103 @@
+grass.png
+size: 60, 100
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+beach
+  rotate: false
+  xy: 0, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+bridge
+  rotate: false
+  xy: 20, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+carpet
+  rotate: false
+  xy: 40, 0
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+deep_sea
+  rotate: false
+  xy: 0, 20
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+flagstone
+  rotate: false
+  xy: 20, 20
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+forest
+  rotate: false
+  xy: 40, 20
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+mountain
+  rotate: false
+  xy: 0, 40
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+plain
+  rotate: false
+  xy: 20, 40
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+reef
+  rotate: false
+  xy: 40, 40
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+river
+  rotate: false
+  xy: 0, 60
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+road
+  rotate: false
+  xy: 20, 60
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+sea
+  rotate: false
+  xy: 40, 60
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+test
+  rotate: false
+  xy: 0, 80
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+wall
+  rotate: false
+  xy: 20, 80
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1

@@ -148,9 +148,7 @@ public abstract class Indicator extends Actor {
     }
 
     public void dispose() {
-        foreground.getTexture().dispose();
         foreground = null;
-        background.getTexture().dispose();
         background = null;
     }
 }

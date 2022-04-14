@@ -295,7 +295,7 @@ public class MatchSettings extends View {
                         makeSound(buttonSound);
                         properties.setBiome((Biome) biome.getSelected());
                         getModel().setProperties(properties);
-                        controller.back();
+                        controller.startGame();
                     }
                 }
         );
