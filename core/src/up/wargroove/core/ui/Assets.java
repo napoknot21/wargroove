@@ -108,6 +108,8 @@ public class Assets {
     /**
      * Loads the entity descriptions in the description directory.
      */
+
+
     public void loadEntitiesDescription() {
         FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
         Scanner scanner = new Scanner(fileLoader.read());
@@ -120,6 +122,7 @@ public class Assets {
         }
         scanner.close();
     }
+
 
     /**
      * Loads the tile description on the description directory.
@@ -394,7 +397,7 @@ public class Assets {
         WORLD(SPRITES.path + "world" + fs, "test"),
         GRASS(WORLD.path + "grass" + fs),
         ICE(WORLD.path + "ice" + fs, "ice"),
-        DESCRIPTION(DATA.path + "descriptions" + fs, "entities", "tiles");
+        DESCRIPTION(DATA.path + "descriptions" + fs, "entities");
 
         // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 

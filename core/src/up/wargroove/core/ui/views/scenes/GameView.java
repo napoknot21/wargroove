@@ -167,7 +167,6 @@ public class GameView extends View {
         table.add(buttons).expand().left().bottom().pad(10);
         table.add();
         table.add(indicators).expand().right().bottom();
-        table.debugAll();
 
         gameViewUi.addActor(table);
         addInput(gameViewUi);
