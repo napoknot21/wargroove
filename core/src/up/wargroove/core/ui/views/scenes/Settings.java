@@ -15,7 +15,7 @@ import up.wargroove.core.ui.controller.Controller;
 /**
  * The World Settings Menu.
  */
-public class PlayerSetting extends View {
+public class Settings extends View {
     /**
      * Full Screen button.
      */
@@ -43,7 +43,7 @@ public class PlayerSetting extends View {
 
     Sound buttonSound;
 
-    public PlayerSetting(Controller controller, Model model, WargrooveClient wargroove) {
+    public Settings(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
         this.controller = controller;
         Skin skin = getAssets().getDefault(Skin.class);
@@ -56,12 +56,12 @@ public class PlayerSetting extends View {
 
     }
 
-    /*public PlayerSetting(Controller controller, WargrooveClient wargroove) {
+    /*public Settings(Controller controller, WargrooveClient wargroove) {
         this(controller, null, wargroove);
         this.controller = controller;
     }
 
-    public PlayerSetting(Model model, WargrooveClient wargroove) {
+    public Settings(Model model, WargrooveClient wargroove) {
         super(model, wargroove);
         this.controller = new Controller(model, wargroove, this);
     }*/

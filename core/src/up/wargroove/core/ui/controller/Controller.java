@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
@@ -45,7 +44,7 @@ public class Controller {
      */
     private Model model;
 
-    private Screen previous;
+    private View previous;
     /**
      * World scale.
      */
@@ -99,7 +98,7 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         GameView view = new GameView(model, this, getClient());
-        this.getClient().setScreen(view);
+        setScreen(view);
         worldScale = view.getGameMap().getScale();
     }
 
@@ -110,30 +109,34 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        this.getClient().setScreen(new SelectMap(this, model, getClient()));
+        setScreen(new SelectMap(getScreen(),this, model, getClient()));
     }
 
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        this.getClient().setScreen(new PlayerSetting(this, model, getClient()));
+        setScreen(new Settings(this, model, getClient()));
     }
 
     public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        this.getClient().setScreen(new MatchSettings(this, model, getClient()));
+        setScreen(new MatchSettings(getScreen(),this, model, getClient()));
     }
 
     public void setPrevious() {
-        previous = getClient().getScreen();
+        previous = getScreen();
     }
 
     public void back() {
+        back(this.previous);
+    }
+
+    public void back(View previous) {
         Screen tmp = this.getClient().getScreen();
-        this.getClient().setScreen(previous);
+        setScreen(previous);
         tmp.dispose();
     }
 
@@ -189,6 +192,7 @@ public class Controller {
 
     public void setScreen(View screen) {
         this.screen = screen;
+        getClient().setScreen(screen);
     }
 
 
@@ -511,7 +515,7 @@ public class Controller {
     }
 
     public void openMainMenu() {
-        getClient().setScreen(new MainMenu(this,getModel(),getClient()));
+        setScreen(new MainMenu(this,getModel(),getClient()));
     }
 
     public void closeClient() {
@@ -521,7 +525,6 @@ public class Controller {
     public void openInGameMenu() {
         setPrevious();
         View screen = new InGameMenu(getScreen(),this,getModel(),getClient());
-        getClient().setScreen(screen);
         setScreen(screen);
     }
 }

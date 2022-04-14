@@ -80,7 +80,6 @@ public class GameView extends View {
      */
     public GameView(Model model, Controller controller, WargrooveClient wargroove) {
         super(controller, model, wargroove);
-        getController().setScreen(this);
     }
 
     private Music chooseMusic(){

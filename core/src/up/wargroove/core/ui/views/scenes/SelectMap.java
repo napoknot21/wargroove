@@ -1,6 +1,7 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -18,7 +19,7 @@ import up.wargroove.core.ui.controller.Controller;
 /**
  * The World Settings Menu.
  */
-public class SelectMap extends View {
+public class SelectMap extends ViewWithPrevious {
     /**
      * Dimension button.
      */
@@ -62,19 +63,9 @@ public class SelectMap extends View {
     private int HEIGHT = Gdx.graphics.getHeight();
     private int WIDTH = Gdx.graphics.getWidth();
 
-    public SelectMap(Controller controller, Model model, WargrooveClient wargroove) {
-        super(controller, model, wargroove);
+    public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
+        super(previous, controller, model, wargroove);
         this.controller = controller;
-    }
-
-    public SelectMap(Controller controller, WargrooveClient wargroove) {
-        this(controller, null, wargroove);
-        this.controller = controller;
-    }
-
-    public SelectMap(Model model, WargrooveClient wargroove) {
-        super(model, wargroove);
-        this.controller = new Controller(model, wargroove, this);
     }
 
 
@@ -203,7 +194,7 @@ public class SelectMap extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
-                        controller.back();
+                        controller.back(getPrevious());
                     }
                 }
         );

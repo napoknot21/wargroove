@@ -1,11 +1,9 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -17,12 +15,10 @@ import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.WorldProperties;
 
-import java.util.ArrayList;
-
 /**
  * The World Settings Menu.
  */
-public class MatchSettings extends View {
+public class MatchSettings extends ViewWithPrevious {
     /**
      * Previous screen button.
      */
@@ -92,21 +88,11 @@ public class MatchSettings extends View {
     private int HEIGHT = Gdx.graphics.getHeight();
     private int WIDTH = Gdx.graphics.getWidth();
 
-    public MatchSettings(Controller controller, Model model, WargrooveClient wargroove) {
-        super(controller, model, wargroove);
+    public MatchSettings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
+        super(previous,controller, model, wargroove);
         this.controller = controller;
         this.skin = getAssets().getDefault(Skin.class);
 
-    }
-
-    public MatchSettings(Controller controller, WargrooveClient wargroove) {
-        this(controller, null, wargroove);
-        this.controller = controller;
-    }
-
-    public MatchSettings(Model model, WargrooveClient wargroove) {
-        super(model, wargroove);
-        this.controller = new Controller(model, wargroove, this);
     }
 
 
@@ -232,7 +218,7 @@ public class MatchSettings extends View {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         makeSound(buttonSound);
-                        controller.back();
+                        controller.back(getPrevious());
                     }
                 }
         );
