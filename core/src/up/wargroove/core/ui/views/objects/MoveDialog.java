@@ -19,12 +19,12 @@ import up.wargroove.core.ui.controller.Controller;
  */
 public class MoveDialog extends Table {
     private final TextButton wait;
-    private final TextButton attack;
+    private TextButton attack;
     private final TextButton move;
     private final TextButton buy;
-    private final TextButton placeBought;
-    private final TextButton endTurn;
-    private final TextButton nextUnit;
+    private TextButton placeBought;
+    private TextButton endTurn;
+    private TextButton nextUnit;
 
     /**
      * Create an empty MoveDialog.
@@ -177,5 +177,9 @@ public class MoveDialog extends Table {
         row();
         add(nextUnit).pad(5);
         row();
+    }
+
+    public void dispose() {
+        clear(true);
     }
 }

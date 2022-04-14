@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
@@ -503,5 +504,24 @@ public class Controller {
         Camera camera = gameView.getCamera();
         camera.position.set(ui.getX(),ui.getY(),camera.position.z);
         gameView.getCursor().setPosition(ui.getX(),ui.getY());
+    }
+
+    public void stopGame() {
+        getModel().dispose();
+    }
+
+    public void openMainMenu() {
+        getClient().setScreen(new MainMenu(this,getModel(),getClient()));
+    }
+
+    public void closeClient() {
+        Gdx.app.exit();
+    }
+
+    public void openInGameMenu() {
+        setPrevious();
+        View screen = new InGameMenu(getScreen(),this,getModel(),getClient());
+        getClient().setScreen(screen);
+        setScreen(screen);
     }
 }

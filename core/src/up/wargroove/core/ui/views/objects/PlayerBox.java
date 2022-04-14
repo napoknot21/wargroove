@@ -1,10 +1,16 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.DragAndDrop;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Player;
@@ -21,27 +27,27 @@ public class PlayerBox extends Table {
     /**
      * The current player's name.
      */
-    private final Label name;
+    private Label name;
 
     /**
      * The current player's amount of money.
      */
-    private final Label money;
+    private Label money;
 
     /**
      * The current player's.
      */
-    private final Label income;
+    private Label income;
 
     /**
      * The game's round.
      */
-    Label round;
+    private Label round;
 
     /**
      * The current player's avatar.
      */
-    Image avatar;
+    private Image avatar;
 
     /**
      * Inits an empty player box.
@@ -100,8 +106,27 @@ public class PlayerBox extends Table {
         }
         income.setText(sign + player.getIncome());
         this.round.setText(round);
+        Color color;
+        switch (player.getFaction()) {
+            case FLORAN_TRIBES: color = Color.GREEN; break;
+            case FELHEIM_LEGION: color = Color.ROYAL; break;
+            case CHERRYSTONE_KINGDOM: color = Color.FIREBRICK; break;
+            case HEAVENSONG_EMPIRE: color = Color.WHITE; break;
+            default: color = Color.CLEAR;
+        }
+        Sprite sprite = new Sprite(Assets.getInstance().getTest());
+        sprite.setColor(color);
+        this.avatar.setDrawable(new SpriteDrawable(sprite));
         this.isStatic = isStatic;
     }
 
 
+    public void dispose() {
+        name = null;
+        money = null;
+        avatar = null;
+        round = null;
+        income = null;
+
+    }
 }

@@ -262,6 +262,10 @@ public class MovementSelector {
         return s.toString();
     }
 
+    public void dispose() {
+        this.reset();
+    }
+
     /**
      * List of valid positions.
      */

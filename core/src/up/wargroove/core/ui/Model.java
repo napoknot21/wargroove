@@ -129,7 +129,12 @@ public class Model {
      */
     public void dispose() {
         world = null;
+        properties = null;
+        playerIndex = 0;
         isActive = false;
+        players.clear();
+        boughtEntity = null;
+        round = 1;
     }
 
     /**
@@ -193,4 +198,6 @@ public class Model {
         return null;
     }
 
+    public void endGame() {
+    }
 }

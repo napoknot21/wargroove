@@ -3,11 +3,13 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
@@ -37,6 +39,8 @@ public class MainMenu extends View {
      * Player settings button.
      */
     private Button mapSelection;
+
+    private Button quit;
     /**
      * Screen controller.
      */
@@ -75,6 +79,7 @@ public class MainMenu extends View {
         matchSettings = new TextButton("Match Settings", skin);
         playerSettings = new TextButton("Settings", skin);
         mapSelection = new TextButton("Choose Map", skin);
+        quit = new TextButton("Quit", skin);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -122,6 +127,8 @@ public class MainMenu extends View {
         table.add(mapSelection);
         table.row();
         table.add(playerSettings);
+        table.row();
+        table.add(quit);
 
         return table;
     }
@@ -170,6 +177,15 @@ public class MainMenu extends View {
                     }
                 }
         );
+        quit.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if(controller.isSoundOn()){
+                    buttonSound.play();
+                }
+                controller.closeClient();
+            }
+        });
 
     }
 }

@@ -83,4 +83,8 @@ public class Cursor extends Sprite {
     public void setLock(boolean locked) {
         this.locked = locked;
     }
+
+    public void dispose() {
+        this.getTexture().dispose();
+    }
 }

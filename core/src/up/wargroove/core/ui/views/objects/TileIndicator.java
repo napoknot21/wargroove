@@ -26,5 +26,4 @@ public class TileIndicator extends Indicator {
     public void setTexture(Assets assets, Tile tile) {
         setForeground(getAtlas().findRegion(tile.getType().name().toLowerCase()));
     }
-
 }

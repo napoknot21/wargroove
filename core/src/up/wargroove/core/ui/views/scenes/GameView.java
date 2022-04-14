@@ -4,6 +4,7 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -11,8 +12,11 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
@@ -51,6 +55,7 @@ public class GameView extends View {
     private UnitIndicator unitIndicator;
     private PlayerBox playerBox;
     private Stage gameViewUi;
+    private TextButton menu;
 
     private boolean movement;
     private boolean attack;
@@ -135,10 +140,10 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(getModel().getBiome());
         unitIndicator = new UnitIndicator(getModel().getBiome());
         moveDialog = new MoveDialog(getAssets(), getController());
+        menu = new TextButton("Menu", getAssets().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
         playerBox = new PlayerBox();
         codex = new Codex(getAssets(), getController());
 
-        playerBox = new PlayerBox(getController());
         Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         gameViewUi = new Stage(viewport);
 
@@ -156,8 +161,9 @@ public class GameView extends View {
         indicators.add(unitIndicator).pad(10);
         indicators.add(tileIndicator).pad(10);
 
+        table.add(menu).left().top().pad(10);
         table.add(guide).left().top().pad(10);
-        table.add();
+
         table.add(playerBox).right().top().pad(10);
         table.row();
         table.add(buttons).expand().left().bottom().pad(10);
@@ -250,6 +256,16 @@ public class GameView extends View {
             }
         };
         addInput(input);
+
+        menu.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (getController().isSoundOn()) {
+                    Assets.getInstance().getDefault(Sound.class).play();
+                }
+                getController().openInGameMenu();
+            }
+        });
     }
 
     @Override
@@ -287,7 +303,31 @@ public class GameView extends View {
 
     @Override
     public void dispose() {
+        gameMap.dispose();
         gameMap = null;
+        theme.dispose();
+        cursor.dispose();
+        cursor = null;
+        viewport = null;
+        camera = null;
+        renderer.dispose();
+        renderer = null;
+        tileIndicator.dispose();
+        tileIndicator = null;
+        unitIndicator.dispose();
+        unitIndicator = null;
+        playerBox.dispose();
+        playerBox = null;
+        gameViewUi.dispose();
+        menu.clear();
+        menu = null;
+        moveDialog.dispose();
+        moveDialog = null;
+        scopedEntity = null;
+        movementSelector.dispose();
+        movementSelector = null;
+        attackSelector.dispose();
+        attackSelector = null;
         theme.dispose();
         super.dispose();
     }

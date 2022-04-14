@@ -68,6 +68,8 @@ public class WargrooveClient extends Game {
     @Override
     public void dispose() {
         batch.dispose();
+        assets.dispose();
+        scene.dispose();
     }
 
     @Override

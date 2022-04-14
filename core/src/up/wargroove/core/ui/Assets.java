@@ -235,8 +235,7 @@ public class Assets {
                 }
             }
             scanner.close();
-        } catch (GdxRuntimeException e) {
-            System.out.println(e.getMessage());
+        } catch (Exception ignored) {
         }
     }
 
@@ -387,6 +386,11 @@ public class Assets {
 
     public void dispose() {
         manager.dispose();
+        instance = null;
+        defaults.clear();
+
+        entitiesDescriptions.clear();
+        tilesDescriptions.clear();
     }
 
     /**

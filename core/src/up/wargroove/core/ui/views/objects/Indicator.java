@@ -18,12 +18,12 @@ public abstract class Indicator extends Actor {
     /**
      * The Tile indicator background. This shows the texture of the tile.
      */
-    private final Sprite foreground;
+    private Sprite foreground;
 
     /**
      * The tile indicator foreground. This shows the stats of the tile.
      */
-    private final Sprite background;
+    private Sprite background;
 
     /**
      * The tile biome.
@@ -145,5 +145,12 @@ public abstract class Indicator extends Actor {
 
     public TextureAtlas getAtlas() {
         return atlas;
+    }
+
+    public void dispose() {
+        foreground.getTexture().dispose();
+        foreground = null;
+        background.getTexture().dispose();
+        background = null;
     }
 }
