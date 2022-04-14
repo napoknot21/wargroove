@@ -29,7 +29,9 @@ public class WorldProperties implements Savable {
 		this.income = income;
 	}
 
-	public WorldProperties() {}
+	public WorldProperties() {
+		this.biome = Biome.GRASS;
+	}
 
 	public Biome getBiome() {
 		return biome;

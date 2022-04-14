@@ -92,6 +92,7 @@ public class GameView extends View {
 
     @Override
     public void init() {
+        getModel().startGame();
         initGameViewUI();
 
 
@@ -118,7 +119,6 @@ public class GameView extends View {
      * Initializes the map.
      */
     private void initMap() {
-        getModel().startGame();
         gameMap = new GameMap(getModel().getWorld(), getAssets());
         camera = new OrthographicCamera();
         World world = getModel().getWorld();
