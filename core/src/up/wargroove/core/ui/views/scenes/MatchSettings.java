@@ -5,8 +5,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -17,6 +19,8 @@ import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.WorldProperties;
+
+import java.nio.channels.AcceptPendingException;
 
 /**
  * The World Settings Menu.
@@ -30,10 +34,7 @@ public class MatchSettings extends ViewWithPrevious {
      * Button to reset the settings to the defaults values
      */
     private Button reset;
-    /**
-     * Screen controller.
-     */
-    private Controller controller;
+
     /**
      * Button to send the configuration into the model
      */
@@ -90,7 +91,6 @@ public class MatchSettings extends ViewWithPrevious {
 
     public MatchSettings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous,controller, model, wargroove);
-        this.controller = controller;
         this.skin = getAssets().getDefault(Skin.class);
 
     }
@@ -213,29 +213,29 @@ public class MatchSettings extends ViewWithPrevious {
 
 
         back.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.back(getPrevious());
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().back(getPrevious());
                     }
                 }
         );
         income.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
                         printIncome.setText(income.getValue() +"");
                         properties.setIncome((int)income.getValue());
                     }
                 }
         );
         reset.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
                         weather.setSelected("Random");
                         biome.setSelected("Grass");
                         checkFog.setChecked(true);
@@ -257,10 +257,10 @@ public class MatchSettings extends ViewWithPrevious {
                 }
         );*/
         checkFog.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
                         if(checkFog.isChecked()){
                             checkText.setText("On");
                             properties.setFog(true);
@@ -274,13 +274,13 @@ public class MatchSettings extends ViewWithPrevious {
         );
 
         chooseConfig.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
                         properties.setBiome((Biome) biome.getSelected());
                         getModel().setProperties(properties);
-                        controller.startGame();
+                        getController().startGame();
                     }
                 }
         );

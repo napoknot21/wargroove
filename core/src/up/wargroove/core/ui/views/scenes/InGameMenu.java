@@ -43,7 +43,6 @@ public class InGameMenu extends View{
         TextButton mainMenu = new TextButton("Main Menu", skin);
         TextButton quit = new TextButton("Quit", skin);
         TextButton settings = new TextButton("Settings", skin);
-        close.setColor(Color.RED);
         Table table = new Table();
         table.setFillParent(true);
         table.add(close);
@@ -58,18 +57,14 @@ public class InGameMenu extends View{
         close.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (getController().isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                getController().playSound(Assets.getInstance().getDefault(Sound.class));
                 getController().back(previous);
             }
         });
         settings.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (getController().isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                getController().playSound(Assets.getInstance().getDefault(Sound.class));
                 getController().openSettings();
             }
         });
@@ -77,9 +72,7 @@ public class InGameMenu extends View{
         mainMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (getController().isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                getController().playSound(Assets.getInstance().getDefault(Sound.class));
                 previous.dispose();
                 getController().stopGame();
                 getController().openMainMenu();
@@ -89,9 +82,7 @@ public class InGameMenu extends View{
         quit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (getController().isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                getController().playSound(Assets.getInstance().getDefault(Sound.class));
                 getController().closeClient();
             }
         });

@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -61,12 +63,8 @@ public class SelectMap extends ViewWithPrevious {
 
     private Texture mapText1;
 
-    private int HEIGHT = Gdx.graphics.getHeight();
-    private int WIDTH = Gdx.graphics.getWidth();
-
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
-        this.controller = controller;
     }
 
 
@@ -151,40 +149,40 @@ public class SelectMap extends ViewWithPrevious {
      */
     private void initListener() {
         map1.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.openMatchSettings();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().openMatchSettings();
                     }
                 }
         );
 
         map2.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.openMatchSettings();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().openMatchSettings();
                     }
                 }
         );
         map3.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.openMatchSettings();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().openMatchSettings();
                     }
                 }
         );
 
         back.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.back(getPrevious());
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().back(getPrevious());
                     }
                 }
         );

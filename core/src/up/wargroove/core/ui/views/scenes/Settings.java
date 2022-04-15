@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -35,10 +37,6 @@ public class Settings extends View {
      * To put the sound on
      */
     private CheckBox sound;
-    /**
-     * Screen controller.
-     */
-    private Controller controller;
 
     private Viewport viewport;
 
@@ -46,7 +44,6 @@ public class Settings extends View {
 
     public Settings(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
-        this.controller = controller;
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
         soundLabel = new Label("Sound", skin);
@@ -128,26 +125,26 @@ public class Settings extends View {
      */
     private void initListener() {
         back.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        makeSound(buttonSound);
-                        controller.back();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().back();
                     }
                 }
         );
         sound.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
+                    public void changed(ChangeEvent event, Actor actor) {
                         if(sound.isChecked()){
                             stateLabel.setText("On");
-                            controller.setSound(true);
-                            makeSound(buttonSound);
+                            getController().setSound(true);
+                            getController().playSound(buttonSound);
                         }
                         else{
                             stateLabel.setText("Off");
-                            controller.setSound(false);
+                            getController().setSound(false);
                         }
                     }
                 }

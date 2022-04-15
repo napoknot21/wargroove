@@ -69,7 +69,6 @@ public class GameView extends View {
     private MovementSelector movementSelector;
     private AttackSelector attackSelector;
 
-    private Music theme;
     private boolean buy;
 
 
@@ -83,20 +82,9 @@ public class GameView extends View {
         super(controller, model, wargroove);
     }
 
-    private Music chooseMusic(){
-        if (getModel().getBiome() != null) {
-            return getAssets().get(Assets.AssetDir.SOUND.getPath() + getModel().getBiome().name() + ".mp3");
-        }
-        return getAssets().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3");
-
-    }
-
     @Override
     public void init() {
-        getModel().startGame();
         initGameViewUI();
-        theme = chooseMusic();
-        theme.play();
         initMap();
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
@@ -261,9 +249,7 @@ public class GameView extends View {
         menu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (getController().isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                getController().playSound(Assets.getInstance().getDefault(Sound.class));
                 getController().openInGameMenu();
             }
         });
@@ -306,8 +292,6 @@ public class GameView extends View {
     public void dispose() {
         gameMap.dispose();
         gameMap = null;
-        theme.dispose();
-        cursor.dispose();
         cursor = null;
         viewport = null;
         camera = null;
@@ -329,7 +313,6 @@ public class GameView extends View {
         movementSelector = null;
         attackSelector.dispose();
         attackSelector = null;
-        theme.dispose();
         super.dispose();
     }
 

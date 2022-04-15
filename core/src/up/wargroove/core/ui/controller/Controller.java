@@ -2,6 +2,8 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
@@ -10,6 +12,7 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
@@ -50,15 +53,6 @@ public class Controller {
      */
     private float worldScale;
 
-
-    private boolean sound;
-
-    /**
-     * Camera velocity.
-     */
-    private float settingVelocity = 0.40f;
-    private float settingZoom = 0.40f;
-
     /**
      * Create a controller.
      *
@@ -71,7 +65,6 @@ public class Controller {
         this.model = model;
         this.screen = screen;
         this.previous = screen;
-        this.sound = true;
     }
 
     /**
@@ -96,7 +89,10 @@ public class Controller {
      */
     public void startGame() {
         Model model = getModel();
+        getModel().startGame();
         getClient().getAssets().load();
+        chooseMusic();
+        getClient().playMusic();
         GameView view = new GameView(model, this, getClient());
         setScreen(view);
         worldScale = view.getGameMap().getScale();
@@ -144,6 +140,11 @@ public class Controller {
         return model;
     }
 
+    public void playSound(Sound sound) {
+        if (! getClient().getSettings().isSound()) return;
+        sound.play(getClient().getSettings().getVolume());
+    }
+
     /**
      * Do a camera zoom according to the mouse wheel.
      * <b>Mouse only</b>
@@ -153,7 +154,8 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
-        camera.zoom += amountY * settingZoom * 50 * Gdx.graphics.getDeltaTime();
+        WargrooveClient.Settings settings = getClient().getSettings();
+        camera.zoom += amountY * settings.getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
         float max = (camera.viewportHeight + camera.viewportWidth) / 2 + 5;
         camera.zoom = (camera.zoom < 1) ? 1 : Math.min(camera.zoom, max);
         camera.update();
@@ -166,19 +168,12 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
-        float velocity = settingVelocity * 50 * Gdx.graphics.getDeltaTime();
+        WargrooveClient.Settings settings = getClient().getSettings();
+        float velocity = settings.getCameraVelocity() * 50 * Gdx.graphics.getDeltaTime();
         camera.translate(
                 -Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity
         );
         camera.update();
-    }
-
-    /**
-     * Set the visual setting of the controller.
-     */
-    private void setSetting() {
-        settingZoom = 0;
-        settingVelocity = 0;
     }
 
 
@@ -195,13 +190,21 @@ public class Controller {
         getClient().setScreen(screen);
     }
 
+    private void chooseMusic(){
+        if (getModel().getBiome() != null) {
+            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath()
+                    + getModel().getBiome().name() + ".mp3"), true);
+        }
+        getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
+    }
+
 
     public boolean isSoundOn() {
-        return sound;
+        return getClient().getSettings().isSound();
     }
 
     public void setSound(boolean sound) {
-        this.sound = sound;
+        getClient().getSettings().setSound(sound);
     }
 
     /**
@@ -515,6 +518,7 @@ public class Controller {
     }
 
     public void openMainMenu() {
+        getClient().stopMusic(true);
         setScreen(new MainMenu(this,getModel(),getClient()));
     }
 

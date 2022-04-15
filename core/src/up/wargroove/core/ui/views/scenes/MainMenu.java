@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 
@@ -35,28 +36,20 @@ public class MainMenu extends View {
     private Button settings;
 
     private Button quit;
-    /**
-     * Screen controller.
-     */
-    private Controller controller;
 
     private Viewport viewport;
 
     private Sound buttonSound;
 
+    /**
+     * Initialize the screen.
+     *
+     * @param controller The screen controller.
+     * @param model      The gui model.
+     * @param wargroove  The client.
+     */
     public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
-        this.controller = controller;
-    }
-
-    public MainMenu(Controller controller, WargrooveClient wargroove) {
-        this(controller, null, wargroove);
-        this.controller = controller;
-    }
-
-    public MainMenu(Model model, WargrooveClient wargroove) {
-        super(model, wargroove);
-        this.controller = new Controller(model, wargroove, this);
     }
 
     @Override
@@ -121,34 +114,30 @@ public class MainMenu extends View {
      */
     private void initListener() {
         startGame.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        if(controller.isSoundOn()) buttonSound.play();
-                        controller.openMapSelection();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().openMapSelection();
                     }
                 }
         );
 
 
         settings.addListener(
-                new ClickListener() {
+                new ChangeListener() {
                     @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        //makeSound(buttonSound);
-                        if(controller.isSoundOn()) buttonSound.play();
-                        controller.openSettings();
+                    public void changed(ChangeEvent event, Actor actor) {
+                        getController().playSound(buttonSound);
+                        getController().openSettings();
                     }
                 }
         );
         quit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if(controller.isSoundOn()){
-                    buttonSound.play();
-                }
-                controller.closeClient();
+                getController().playSound(buttonSound);
+                getController().closeClient();
             }
         });
 

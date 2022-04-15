@@ -1,18 +1,15 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
-import up.wargroove.utils.Pair;
 
 /**
  * The wargroove client.
@@ -49,10 +46,13 @@ public class WargrooveClient extends Game {
      */
     private boolean debug;
 
+    Settings settings;
+
     Music music;
 
     @Override
     public void create() {
+        settings = new Settings();
         batch = new SpriteBatch();
         assets = Assets.getInstance();
         assets.loadDefault();
@@ -60,7 +60,7 @@ public class WargrooveClient extends Game {
         Model model = new Model();
         controller = new Controller(model, this);
         controller.create();
-        scene = new MainMenu(controller.getModel(), this);
+        scene = new MainMenu(controller,controller.getModel(), this);
         setScreen(scene);
     }
 
@@ -129,5 +129,77 @@ public class WargrooveClient extends Game {
 
     public int getVirtualHeight() {
         return 1080;
+    }
+
+    public void setMusic(Music music, boolean looping) {
+        this.music = music;
+        this.music.setLooping(looping);
+    }
+
+    public void stopMusic() {
+        stopMusic(false);
+    }
+
+    public void stopMusic(boolean delete) {
+        if (music == null) return;
+        this.music.stop();
+        if (delete) {
+            music.dispose();
+            music = null;
+        }
+    }
+
+    public void setVolume(float volume) {
+        settings.volume = volume;
+        music.setVolume(volume);
+    }
+
+    public Settings getSettings() {
+        return settings;
+    }
+
+    public void playMusic() {
+        music.play();
+    }
+
+    public class Settings {
+        private boolean sound = true;
+        private float volume = 1f;
+        private float cameraVelocity = 0.40f;
+        private float cameraZoomVelocity = 0.40f;
+        private boolean fullScreen = false;
+
+        public boolean isSound() {
+            return sound;
+        }
+
+        public void setSound(boolean sound) {
+            this.sound = sound;
+            if (!sound) {
+                stopMusic();
+            } else {
+                playMusic();
+            }
+        }
+
+        public float getCameraVelocity() {
+            return cameraVelocity;
+        }
+
+        public void setCameraVelocity(float cameraVelocity) {
+            this.cameraVelocity = cameraVelocity;
+        }
+
+        public float getCameraZoomVelocity() {
+            return cameraZoomVelocity;
+        }
+
+        public void setCameraZoomVelocity(float cameraZoomVelocity) {
+            this.cameraZoomVelocity = cameraZoomVelocity;
+        }
+
+        public float getVolume() {
+            return volume;
+        }
     }
 }

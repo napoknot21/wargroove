@@ -163,21 +163,6 @@ public abstract class View extends ScreenAdapter {
     }
 
 
-    public void makeSound(Sound s) {
-        if (controller.isSoundOn()) {
-            s.play();
-        }
-    }
-
-    public void makeMusic(Music m){
-        if(controller.isSoundOn()){
-            m.setVolume(0.5f);
-            //m.setLooping(true);
-            m.play();
-        }
-    }
-
-
     /**
      * Puts the view in debug mode.
      *
