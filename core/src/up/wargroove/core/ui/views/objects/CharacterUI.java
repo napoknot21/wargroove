@@ -1,12 +1,14 @@
 package up.wargroove.core.ui.views.objects;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import org.lwjgl.Sys;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
@@ -26,7 +28,7 @@ public class CharacterUI extends Actor {
     private float temps;
     private String move="";
     private java.lang.Character attackDirection;
-    private static float TIME_LAPSE=0.5f;
+    private static float TIME_LAPSE= Gdx.graphics.getDeltaTime()*17;
     private static final int TILE_SIZE= 20;
     private static final int DEFAULT_FRAMES= 13;
     private int ATTACK_FRAMES;
@@ -183,7 +185,6 @@ public class CharacterUI extends Actor {
      */
     public void moveTo() {
         if (temps<TILE_SIZE){
-            System.out.println(move);
             temps+=TIME_LAPSE;
         }
         switch (move.charAt(0)){
@@ -201,8 +202,7 @@ public class CharacterUI extends Actor {
         if(temps==TIME_LAPSE){
             AnimationWalk(texture);
         }
-        System.out.println(temps);
-        sprite= new Sprite(animationMove[(int) (temps/3)%animationMove.length]);
+        sprite= new Sprite(animationMove[(int) temps%animationMove.length]);
         sprite.setSize(size.first,size.second);
         setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
         if (temps>=TILE_SIZE){
