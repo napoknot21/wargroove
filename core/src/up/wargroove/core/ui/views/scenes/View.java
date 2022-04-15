@@ -106,7 +106,7 @@ public abstract class View extends ScreenAdapter {
 
     @Override
     public void resize(int width, int height) {
-        ui.getViewport().update(width, height);
+        ui.getViewport().update(width, height, true);
     }
 
     @Override

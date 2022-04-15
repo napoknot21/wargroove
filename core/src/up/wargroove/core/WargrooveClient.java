@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import up.wargroove.core.ui.Assets;
@@ -11,6 +12,7 @@ import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
+import up.wargroove.utils.Pair;
 
 /**
  * The wargroove client.
@@ -46,6 +48,8 @@ public class WargrooveClient extends Game {
      * Indicate if the client is in debug mode.
      */
     private boolean debug;
+
+    Music music;
 
     @Override
     public void create() {
@@ -117,5 +121,13 @@ public class WargrooveClient extends Game {
         super.setScreen(screen);
         this.scene = (View) screen;
         setDebug();
+    }
+
+    public int getVirtualWidth() {
+        return 1920;
+    }
+
+    public int getVirtualHeight() {
+        return 1080;
     }
 }

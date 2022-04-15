@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -118,8 +119,8 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        camera = new OrthographicCamera();
-        viewport = new ExtendViewport(x, y, camera);
+        camera = new OrthographicCamera(x,y);
+        viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
         viewport.apply();
         camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
@@ -144,6 +145,7 @@ public class GameView extends View {
         codex = new Codex(getAssets(), getController());
 
         Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        Viewport viewport = new ScreenViewport();
         gameViewUi = new Stage(viewport);
 
         Table table = new Table();
@@ -336,7 +338,6 @@ public class GameView extends View {
         viewport.update(width, height);
         gameViewUi.getViewport().update(width, height, true);
         camera.position.set(gameMap.getCenter());
-        super.resize(width, height);
     }
 
     public OrthographicCamera getCamera() {

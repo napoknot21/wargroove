@@ -3,6 +3,7 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,7 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
@@ -52,8 +55,6 @@ public class SelectMap extends ViewWithPrevious {
 
     private Viewport viewport;
 
-    private OrthographicCamera camera;
-
     private Sound buttonSound;
 
     private SpriteBatch sb;
@@ -71,8 +72,7 @@ public class SelectMap extends ViewWithPrevious {
 
     @Override
     public void init() {
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new ScreenViewport();
         viewport.apply();
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
@@ -100,16 +100,6 @@ public class SelectMap extends ViewWithPrevious {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         draw(delta);
-        sb.begin();
-        float x = 0;
-        float y = 100;
-        int srcWidth = 175;
-        int srcHeight = 100;
-        sb.draw(mapText1, map1.getX() + x, map1.getY() + y, srcWidth, srcHeight);
-        sb.draw(mapText1, map2.getX() + x,map2.getY() + y,srcWidth, srcHeight);
-        sb.draw(mapText1, map3.getX() + x,map3.getY() + y, srcWidth, srcHeight);
-        sb.end();
-
     }
 
     @Override

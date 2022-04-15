@@ -2,6 +2,7 @@ package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
@@ -39,8 +42,6 @@ public class MainMenu extends View {
 
     private Viewport viewport;
 
-    private OrthographicCamera camera;
-
     private Sound buttonSound;
 
     public MainMenu(Controller controller, Model model, WargrooveClient wargroove) {
@@ -60,9 +61,7 @@ public class MainMenu extends View {
 
     @Override
     public void init() {
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
-        viewport.apply();
+        viewport = new ScreenViewport();
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
         startGame = new TextButton("Start Game", skin);

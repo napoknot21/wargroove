@@ -3,11 +3,14 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
@@ -39,10 +42,7 @@ public class MatchSettings extends ViewWithPrevious {
      * the viewport
      */
     private Viewport viewport;
-    /**
-     * the camera
-     */
-    private OrthographicCamera camera;
+
     /**
      * The sound of the buttons
      */
@@ -98,8 +98,7 @@ public class MatchSettings extends ViewWithPrevious {
 
     @Override
     public void init() {
-        camera = new OrthographicCamera();
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new ScreenViewport();
         viewport.apply();
         buttonSound = getAssets().getDefault(Sound.class);
 
