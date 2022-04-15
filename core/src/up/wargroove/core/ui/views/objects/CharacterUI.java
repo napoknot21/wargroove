@@ -28,7 +28,7 @@ public class CharacterUI extends Actor {
     private float temps;
     private String move="";
     private java.lang.Character attackDirection;
-    private static float TIME_LAPSE= Gdx.graphics.getDeltaTime()*17;
+    private static float TIME_LAPSE= Gdx.graphics.getDeltaTime()*19;
     private static final int TILE_SIZE= 20;
     private static final int DEFAULT_FRAMES= 13;
     private int ATTACK_FRAMES;
