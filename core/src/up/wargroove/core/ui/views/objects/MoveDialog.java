@@ -54,9 +54,7 @@ public class MoveDialog extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        if (controller.isSoundOn()) {
-                            Assets.getInstance().getDefault(Sound.class).play();
-                        }
+                        controller.playSound(Assets.getInstance().getDefault(Sound.class));
                         controller.entityWait();
                         clear();
                     }
@@ -64,9 +62,7 @@ public class MoveDialog extends Table {
         move.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.endMoving();
                 clear();
             }
@@ -81,9 +77,7 @@ public class MoveDialog extends Table {
         buy.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.openStructureMenu();
                 clear();
             }
@@ -91,9 +85,7 @@ public class MoveDialog extends Table {
         attack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.endAttack();
                 clear();
             }
@@ -102,9 +94,7 @@ public class MoveDialog extends Table {
         endTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.endTurn();
                 clear();
             }
@@ -113,9 +103,7 @@ public class MoveDialog extends Table {
         nextUnit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.nextUnit();
                 clear();
             }
@@ -124,9 +112,7 @@ public class MoveDialog extends Table {
         placeBought.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                if (controller.isSoundOn()) {
-                    Assets.getInstance().getDefault(Sound.class).play();
-                }
+                controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.placeBoughtEntity();
                 clear();
             }

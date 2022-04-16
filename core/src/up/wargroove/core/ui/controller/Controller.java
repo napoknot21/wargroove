@@ -141,8 +141,9 @@ public class Controller {
     }
 
     public void playSound(Sound sound) {
-        if (! getClient().getSettings().isSound()) return;
-        sound.play(getClient().getSettings().getVolume());
+        if (sound != null) {
+            sound.play(getClient().getSettings().getVolume());
+        }
     }
 
     /**
@@ -194,17 +195,14 @@ public class Controller {
         if (getModel().getBiome() != null) {
             getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath()
                     + getModel().getBiome().name() + ".mp3"), true);
+        } else {
+            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
         }
-        getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
     }
 
 
     public boolean isSoundOn() {
         return getClient().getSettings().isSound();
-    }
-
-    public void setSound(boolean sound) {
-        getClient().getSettings().setSound(sound);
     }
 
     /**

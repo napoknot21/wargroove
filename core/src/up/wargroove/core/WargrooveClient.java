@@ -61,7 +61,7 @@ public class WargrooveClient extends Game {
         controller = new Controller(model, this);
         controller.create();
         scene = new MainMenu(controller,controller.getModel(), this);
-        setScreen(scene);
+        controller.setScreen(scene);
     }
 
     @Override
@@ -73,7 +73,7 @@ public class WargrooveClient extends Game {
     public void dispose() {
         batch.dispose();
         assets.dispose();
-        scene.dispose();
+        if (scene!= null) scene.dispose();
     }
 
     @Override
@@ -149,17 +149,15 @@ public class WargrooveClient extends Game {
         }
     }
 
-    public void setVolume(float volume) {
-        settings.volume = volume;
-        music.setVolume(volume);
-    }
-
     public Settings getSettings() {
         return settings;
     }
 
     public void playMusic() {
-        music.play();
+        if (music != null) {
+            music.setVolume(settings.volume);
+            music.play();
+        }
     }
 
     public class Settings {
@@ -200,6 +198,21 @@ public class WargrooveClient extends Game {
 
         public float getVolume() {
             return volume;
+        }
+
+        public void setVolume(float volume) {
+            this.volume = volume;
+            if (music != null) {
+                music.setVolume(volume);
+            }
+        }
+
+        public boolean isFullScreen() {
+            return fullScreen;
+        }
+
+        public void setFullScreen(boolean fullScreen) {
+            this.fullScreen = fullScreen;
         }
     }
 }

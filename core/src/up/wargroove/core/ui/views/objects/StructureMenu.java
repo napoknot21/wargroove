@@ -104,9 +104,7 @@ public class StructureMenu extends Dialog {
 
     @Override
     protected void result(Object object) {
-        if (controller.isSoundOn()) {
-            Assets.getInstance().getDefault(Sound.class).play();
-        }
+        controller.playSound(Assets.getInstance().getDefault(Sound.class));
         if (object == null) {
             hide();
             return;
@@ -176,9 +174,7 @@ public class StructureMenu extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    if (controller.isSoundOn()) {
-                        Assets.getInstance().getDefault(Sound.class).play();
-                    }
+                    controller.playSound(Assets.getInstance().getDefault(Sound.class));
                     description.setDescription(e, assets);
                     current = e;
                     if (player.getMoney() >= e.getCost()) {
