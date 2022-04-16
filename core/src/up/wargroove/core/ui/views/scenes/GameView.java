@@ -97,8 +97,12 @@ public class GameView extends View {
 
 
         theme = chooseMusic();
-        if(getController().isSoundOn())
-        theme.play();
+        if(getController().isSoundOn()){
+
+            theme.play();
+            theme.setLooping(true);
+        }
+
 
         initMap();
 
