@@ -124,8 +124,8 @@ public class MatchSettings extends ViewWithPrevious {
         //fog.setItems("Off", "On");
         checkFog = new CheckBox("On" , skin);
         checkFog.setChecked(true);
-        income = new Slider(0,1000,50,false,skin);
-        income.setValue(500);
+        income = new Slider(20,500,10,false,skin);
+        income.setValue(100);
         biome = new SelectBox(skin);
         biome.setItems(Biome.GRASS,Biome.ICE,Biome.DESERT,Biome.VOLCANO);
         //commanders = new SelectBox(skin);
@@ -226,7 +226,7 @@ public class MatchSettings extends ViewWithPrevious {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
-                        printIncome.setText(income.getValue() +"");
+                        printIncome.setText(income.getValue() +"%");
                         properties.setIncome((int)income.getValue());
                     }
                 }

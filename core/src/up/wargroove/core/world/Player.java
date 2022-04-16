@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.entities.Commander;
 
 public class Player {
 
@@ -20,7 +21,8 @@ public class Player {
 	
 		entities = new LinkedList<>();
 		this.faction = faction;
-		this.money = 0;
+		this.money = 1000;
+		addEntity(new Commander());
 
 	}
 

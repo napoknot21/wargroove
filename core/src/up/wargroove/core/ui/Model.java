@@ -43,11 +43,6 @@ public class Model {
      */
     private Entity boughtEntity = null;
 
-    private int round;
-
-    private ArrayList<Player> players;
-    private int playerIndex;
-
     /**
      * Start a new game.
      */
@@ -71,11 +66,7 @@ public class Model {
         }
         Recruitment.clearAll();
         EntityManager.getInstance().load();
-        players = new ArrayList<>(4);
         isActive = true;
-        round = 1;
-        addPlayer(Faction.CHERRYSTONE_KINGDOM);
-        addPlayer(Faction.FELHEIM_LEGION);
         addRandomStructure();
         setStartData();
     }
@@ -129,11 +120,8 @@ public class Model {
     public void dispose() {
         world = null;
         properties = null;
-        playerIndex = 0;
         isActive = false;
-        players.clear();
         boughtEntity = null;
-        round = 1;
     }
 
     /**
@@ -158,43 +146,27 @@ public class Model {
     }
 
     public void nextTurn() {
-        playerIndex = (playerIndex + 1) % players.size();
-        round += (playerIndex == 0)? 1 : 0;
+        world.nextPlayer();
     }
     public Player getCurrentPlayer() {
-        return players.get(playerIndex);
+        return world.getCurrentPlayer();
     }
 
     public int getRound() {
-        return round;
+        return world.turns();
     }
 
     public void addPlayer(Faction faction) {
-        for (Player p : players) {
-            if (p.getFaction().equals(faction)) {
-                return;
-            }
-        }
-        Player p = new Player(faction);
-        players.add(p);
-        p.setName("Player " + players.size());
+        world.addPlayer(faction);
     }
 
     public void removeLastPlayer() {
-        if (players.isEmpty()) {
-            return;
-        }
-        players.remove(players.size() - 1);
+        world.removeLastPlayer();
     }
 
     @Null
     private Player  getPlayer(Faction faction) {
-        for (Player player : players) {
-            if (player.getFaction().equals(faction)) {
-                return player;
-            }
-        }
-        return null;
+        return world.getPlayer(faction);
     }
 
     public void endGame() {

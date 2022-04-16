@@ -45,7 +45,7 @@ public class World {
     };
 
     private final WPredicate<Integer> canAttack = (k) -> {
-	
+
 	    Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
 
 	    if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;
@@ -64,26 +64,49 @@ public class World {
         this.properties = properties;
         currentEntityLinPosition = Optional.empty();
 
-	    permutations = new int[] {
-		    -properties.dimension.first, 1, properties.dimension.first, -1
-	    };
+	permutations = new int[] {
+		-properties.dimension.first, 
+		1, 
+		properties.dimension.first, 
+		-1
+	};
+    states = new Stack<>();
+	players = new Vector<>();
+	int amt = Math.min(properties.amt, Faction.values().length - 1);
 
-	    players = new Vector<>();
-	    int amt = Math.min(properties.amt, Faction.values().length);
+	if(amt < Constants.WG_TWO) {
 
-	    if(amt < Constants.WG_TWO) {
+		amt = Constants.WG_TWO;
 
-		    amt = Constants.WG_TWO;
+	}
 
-	    }
+	for(int k = 0; k < amt; k++) {
 
-	    for(int k = 0; k < amt; k++) {
+		Player p = new Player(Faction.values()[k]);
+        p.setName("Player "+ (k+1));
+		players.add(p);
 
-		    Player p = new Player(Faction.values()[k]);
-		    players.add(p);
+	}	
 
-	    }
+    public void addPlayer(Faction faction) {
+        players.add(new Player(faction));
+    }
 
+    public void removeLastPlayer(){
+        if (players.isEmpty()) {
+            return;
+        }
+        players.remove(players.size() - 1);
+    }
+
+    @Null
+    public Player getPlayer(Faction faction) {
+        for (Player player : players) {
+            if (player.getFaction().equals(faction)) {
+                return player;
+            }
+        }
+        return null;
     }
 
     /**
@@ -124,7 +147,6 @@ public class World {
 
     public boolean nextPlayer() {
 
-	    if(players.get(playerPtr).hasNext()) return false;
 	    playerPtr = (playerPtr + 1) % players.size();
 
 	    if(playerPtr == 0) {
