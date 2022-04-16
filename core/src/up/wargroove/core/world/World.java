@@ -82,14 +82,14 @@ public class World {
 
 	for(int k = 0; k < amt; k++) {
 
-		Player p = new Player(Faction.values()[k]);
+		Player p = new Player(Faction.values()[k], properties.getIncome());
         p.setName("Player "+ (k+1));
 		players.add(p);
 
 	}	
 
     public void addPlayer(Faction faction) {
-        players.add(new Player(faction));
+        players.add(new Player(faction,properties.getIncome()));
     }
 
     public void removeLastPlayer(){

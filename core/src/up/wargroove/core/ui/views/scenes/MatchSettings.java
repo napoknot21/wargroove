@@ -111,7 +111,9 @@ public class MatchSettings extends ViewWithPrevious {
         fogLabel = new Label("Fog of War :", skin);
         checkText = new Label("On", skin);
         incomeLabel = new Label("Income :", skin);
-        printIncome = new Label("500.0",skin);
+        income = new Slider(20,500,10,false,skin);
+        income.setValue(100);
+        printIncome = new Label(income.getValue() + "%",skin);
         biomeLabel = new Label("Biome :", skin);
         //commandersLabel = new Label("Commanders :", skin);
         //teamLabel = new Label("Teams :", skin);
@@ -124,8 +126,6 @@ public class MatchSettings extends ViewWithPrevious {
         //fog.setItems("Off", "On");
         checkFog = new CheckBox("On" , skin);
         checkFog.setChecked(true);
-        income = new Slider(20,500,10,false,skin);
-        income.setValue(100);
         biome = new SelectBox(skin);
         biome.setItems(Biome.GRASS,Biome.ICE,Biome.DESERT,Biome.VOLCANO);
         //commanders = new SelectBox(skin);
@@ -228,6 +228,7 @@ public class MatchSettings extends ViewWithPrevious {
                         getController().playSound(buttonSound);
                         printIncome.setText(income.getValue() +"%");
                         properties.setIncome((int)income.getValue());
+                        properties.setIncome(income.getValue() / 100f);
                     }
                 }
         );
@@ -241,9 +242,9 @@ public class MatchSettings extends ViewWithPrevious {
                         checkFog.setChecked(true);
                         properties.setFog(true);
                         checkText.setText("On");
-                        income.setValue(500);
-                        printIncome.setText("500.0");
-                        properties.setIncome(500);
+                        income.setValue(100);
+                        printIncome.setText(income.getValue() + "%");
+                        properties.setIncome(income.getValue() / 100f);
                     }
                 }
         );

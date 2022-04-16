@@ -18,7 +18,7 @@ public class WorldProperties implements Savable {
     public GeneratorProperties genProperties;
 
     private boolean fog;
-    private int income;
+    private float income;
     public AudioInputStream music;
 
     public int amt = 4;
@@ -57,11 +57,11 @@ public class WorldProperties implements Savable {
 		this.description = description;
 	}
 
-	public int getIncome() {
+	public float getIncome() {
 		return income;
 	}
 
-	public void setIncome(int income) {
+	public void setIncome(float income) {
 		this.income = income;
 	}
 

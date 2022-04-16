@@ -15,14 +15,16 @@ public class Player {
 	private String name;
 	private int money;
 	private int income;
+	private float ratio;
 
 
-	public Player(Faction faction) {
+	public Player(Faction faction, float ratio) {
 	
 		entities = new LinkedList<>();
 		this.faction = faction;
-		this.money = 1000;
+		this.money = (int)(1000 * ratio);
 		addEntity(new Commander());
+		this.ratio = ratio;
 
 	}
 
@@ -117,7 +119,7 @@ public class Player {
 	}
 
 	public void addIncome(int income){
-		this.income += income;
+		this.income += (income*ratio);
 	}
 
 	public int getIncome() {
