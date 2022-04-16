@@ -207,7 +207,7 @@ public class MatchSettings extends ViewWithPrevious {
     }
 
     /**
-     * Init the buttons listener.
+     * Init the buttons' listener.
      */
     private void initListener() {
 

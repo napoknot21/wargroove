@@ -71,7 +71,7 @@ public class MapTile extends StaticTiledMapTile {
     }
 
     /**
-     * Get the assets path.
+     * Get the assets' path.
      *
      * @param fileName The name of the file that will be loaded.
      * @return The path of the given file.

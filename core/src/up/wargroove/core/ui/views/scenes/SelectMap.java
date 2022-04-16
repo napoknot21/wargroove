@@ -145,7 +145,7 @@ public class SelectMap extends ViewWithPrevious {
     }
 
     /**
-     * Init the buttons listener.
+     * Init the buttons' listener.
      */
     private void initListener() {
         map1.addListener(

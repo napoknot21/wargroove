@@ -188,7 +188,7 @@ public class StructureMenu extends Dialog {
     /**
      * The description regroups the character' description text and its stats.
      */
-    private class Description extends Table {
+    private static class Description extends Table {
         private final Label text;
         private final Label movementCost;
         //private final Label attack;

@@ -7,7 +7,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -17,6 +16,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -457,5 +457,9 @@ public class Assets {
         AssetType(Class<?> type) {
             this.type = type;
         }
+    }
+
+    public void writeSettings() {
+
     }
 }

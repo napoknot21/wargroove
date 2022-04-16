@@ -110,7 +110,7 @@ public class MainMenu extends View {
     }
 
     /**
-     * Init the buttons listener.
+     * Init the buttons' listener.
      */
     private void initListener() {
         startGame.addListener(

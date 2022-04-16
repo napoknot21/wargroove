@@ -1,5 +1,3 @@
-import java.util.concurrent.ExecutionException
-
 plugins {
 	java
 	checkstyle

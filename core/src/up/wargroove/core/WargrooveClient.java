@@ -1,10 +1,11 @@
 package up.wargroove.core;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -16,18 +17,12 @@ import up.wargroove.core.ui.views.scenes.View;
  */
 public class WargrooveClient extends Game {
 
-    public WargrooveClient(boolean debug) {
-        this.debug = debug;
-    }
-
-    public WargrooveClient() {
-        this(false);
-    }
-
     /**
      * The drawing tool.
      */
-    SpriteBatch batch;
+    private SpriteBatch batch;
+
+    private Music music;
     /**
      * The app assets.
      */
@@ -40,19 +35,24 @@ public class WargrooveClient extends Game {
      * The shown scene.
      */
     private View scene;
-
     /**
      * Indicate if the client is in debug mode.
      */
-    private boolean debug;
+    private final boolean debug;
+    private Preferences settings;
 
-    Settings settings;
+    public WargrooveClient(boolean debug) {
+        this.debug = debug;
+    }
 
-    Music music;
+    public WargrooveClient() {
+        this(false);
+    }
 
     @Override
     public void create() {
-        settings = new Settings();
+        settings = loadSettings();
+        setFullScreen(settings.getBoolean("fullScreen"));
         batch = new SpriteBatch();
         assets = Assets.getInstance();
         assets.loadDefault();
@@ -60,8 +60,19 @@ public class WargrooveClient extends Game {
         Model model = new Model();
         controller = new Controller(model, this);
         controller.create();
-        scene = new MainMenu(controller,controller.getModel(), this);
+        scene = new MainMenu(controller, controller.getModel(), this);
         controller.setScreen(scene);
+    }
+
+    private Preferences loadSettings() {
+        Preferences preferences = Gdx.app.getPreferences("settings");
+        if (!preferences.contains(Settings.VOLUME.name())) {
+            preferences.putFloat(Settings.VOLUME.name(), 1f);
+            preferences.putFloat(Settings.CAMERA_VELOCITY.name(), 0.50f);
+            preferences.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), 0.50f);
+            preferences.putBoolean(Settings.FULLSCREEN.name(), false);
+        }
+        return preferences;
     }
 
     @Override
@@ -73,7 +84,7 @@ public class WargrooveClient extends Game {
     public void dispose() {
         batch.dispose();
         assets.dispose();
-        if (scene!= null) scene.dispose();
+        if (scene != null) scene.dispose();
     }
 
     @Override
@@ -82,6 +93,7 @@ public class WargrooveClient extends Game {
 
     @Override
     public void pause() {
+        settings.flush();
     }
 
     @Override
@@ -97,30 +109,13 @@ public class WargrooveClient extends Game {
         return assets;
     }
 
-    /**
-     * Puts the app in debug mode.
-     *
-     * @param debug if true, the app is in debug mod
-     */
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-        if (scene != null) {
-            scene.setDebug(debug);
-        }
-    }
-
-    /**
-     * Keeps the debug mode if it was already activated.
-     */
-    public void setDebug() {
-        setDebug(debug);
-    }
-
     @Override
     public void setScreen(Screen screen) {
         super.setScreen(screen);
         this.scene = (View) screen;
-        setDebug();
+        if (screen != null) {
+            this.scene.setDebug(debug);
+        }
     }
 
     public int getVirtualWidth() {
@@ -149,70 +144,55 @@ public class WargrooveClient extends Game {
         }
     }
 
-    public Settings getSettings() {
-        return settings;
-    }
-
     public void playMusic() {
         if (music != null) {
-            music.setVolume(settings.volume);
+            music.setVolume(settings.getFloat(Settings.VOLUME.name()));
             music.play();
         }
     }
 
-    public class Settings {
-        private boolean sound = true;
-        private float volume = 1f;
-        private float cameraVelocity = 0.40f;
-        private float cameraZoomVelocity = 0.40f;
-        private boolean fullScreen = false;
+    public float getCameraVelocity() {
+        return settings.getFloat(Settings.CAMERA_VELOCITY.name());
+    }
 
-        public boolean isSound() {
-            return sound;
-        }
+    public void setCameraVelocity(float cameraVelocity) {
+        this.settings.putFloat(Settings.CAMERA_VELOCITY.name(), cameraVelocity);
+    }
 
-        public void setSound(boolean sound) {
-            this.sound = sound;
-            if (!sound) {
-                stopMusic();
-            } else {
-                playMusic();
-            }
-        }
+    public float getCameraZoomVelocity() {
+        return settings.getFloat(Settings.CAMERA_ZOOM_VELOCITY.name());
+    }
 
-        public float getCameraVelocity() {
-            return cameraVelocity;
-        }
+    public void setCameraZoomVelocity(float cameraZoomVelocity) {
+        settings.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), cameraZoomVelocity);
+    }
 
-        public void setCameraVelocity(float cameraVelocity) {
-            this.cameraVelocity = cameraVelocity;
-        }
+    public float getVolume() {
+        return settings.getFloat(Settings.VOLUME.name());
+    }
 
-        public float getCameraZoomVelocity() {
-            return cameraZoomVelocity;
-        }
-
-        public void setCameraZoomVelocity(float cameraZoomVelocity) {
-            this.cameraZoomVelocity = cameraZoomVelocity;
-        }
-
-        public float getVolume() {
-            return volume;
-        }
-
-        public void setVolume(float volume) {
-            this.volume = volume;
-            if (music != null) {
-                music.setVolume(volume);
-            }
-        }
-
-        public boolean isFullScreen() {
-            return fullScreen;
-        }
-
-        public void setFullScreen(boolean fullScreen) {
-            this.fullScreen = fullScreen;
+    public void setVolume(float volume) {
+        settings.putFloat(Settings.VOLUME.name(), volume);
+        if (music != null) {
+            music.setVolume(volume);
         }
     }
+
+    public boolean isFullScreen() {
+        return settings.getBoolean(Settings.FULLSCREEN.name());
+    }
+
+    public void setFullScreen(boolean fullScreen) {
+        settings.putBoolean(Settings.FULLSCREEN.name(), fullScreen);
+        if (fullScreen) {
+            Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+        } else {
+            Gdx.graphics.setWindowedMode(640, 480);
+        }
+    }
+
+    private enum Settings {
+        FULLSCREEN, CAMERA_VELOCITY, CAMERA_ZOOM_VELOCITY, VOLUME
+    }
 }
+

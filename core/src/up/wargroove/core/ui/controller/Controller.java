@@ -142,7 +142,7 @@ public class Controller {
 
     public void playSound(Sound sound) {
         if (sound != null) {
-            sound.play(getClient().getSettings().getVolume());
+            sound.play(getClient().getVolume());
         }
     }
 
@@ -155,8 +155,7 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
-        WargrooveClient.Settings settings = getClient().getSettings();
-        camera.zoom += amountY * settings.getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
+        camera.zoom += amountY * getClient().getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
         float max = (camera.viewportHeight + camera.viewportWidth) / 2 + 5;
         camera.zoom = (camera.zoom < 1) ? 1 : Math.min(camera.zoom, max);
         camera.update();
@@ -169,8 +168,7 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
-        WargrooveClient.Settings settings = getClient().getSettings();
-        float velocity = settings.getCameraVelocity() * 50 * Gdx.graphics.getDeltaTime();
+        float velocity = getClient().getCameraVelocity() * 50 * Gdx.graphics.getDeltaTime();
         camera.translate(
                 -Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity
         );
@@ -198,11 +196,6 @@ public class Controller {
         } else {
             getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
         }
-    }
-
-
-    public boolean isSoundOn() {
-        return getClient().getSettings().isSound();
     }
 
     /**

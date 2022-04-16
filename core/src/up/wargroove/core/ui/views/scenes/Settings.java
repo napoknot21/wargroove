@@ -67,13 +67,13 @@ public class Settings extends View {
     }
 
     private void setSettings() {
-        cameraVelocity.setValue(getClient().getSettings().getCameraVelocity() * 100);
+        cameraVelocity.setValue(getClient().getCameraVelocity() * 100);
         printCameraVelocity.setText(cameraVelocity.getValue() + " %");
-        cameraZoomVelocity.setValue(getClient().getSettings().getCameraZoomVelocity() * 100);
+        cameraZoomVelocity.setValue(getClient().getCameraZoomVelocity() * 100);
         printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() + " %");
-        volume.setValue(getClient().getSettings().getVolume() * 100);
+        volume.setValue(getClient().getVolume() * 100);
         printVolume.setText(volume.getValue() + " %");
-        fullScreen.setChecked(getClient().getSettings().isFullScreen());
+        fullScreen.setChecked(getClient().isFullScreen());
     }
 
     @Override
@@ -160,7 +160,7 @@ public class Settings extends View {
     }
 
     /**
-     * Init the buttons listener.
+     * Init the buttons' listener.
      */
     private void initListener() {
         back.addListener(
@@ -178,7 +178,7 @@ public class Settings extends View {
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
                 printVolume.setText(volume.getValue() +"%");
-                getClient().getSettings().setVolume(volume.getValue() / 100);
+                getClient().setVolume(volume.getValue() / 100);
             }
         });
         cameraVelocity.addListener(new ChangeListener() {
@@ -186,7 +186,7 @@ public class Settings extends View {
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
                 printCameraVelocity.setText(cameraVelocity.getValue() +"%");
-                getClient().getSettings().setCameraVelocity(cameraVelocity.getValue() / 100);
+                getClient().setCameraVelocity(cameraVelocity.getValue() / 100);
             }
         });
         cameraZoomVelocity.addListener(new ChangeListener() {
@@ -194,7 +194,7 @@ public class Settings extends View {
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
                 printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() +"%");
-                getClient().getSettings().setCameraZoomVelocity(cameraZoomVelocity.getValue() / 100);
+                getClient().setCameraZoomVelocity(cameraZoomVelocity.getValue() / 100);
             }
         });
 
@@ -202,12 +202,7 @@ public class Settings extends View {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
-                if (fullScreen.isChecked()) {
-                    Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-                } else {
-                    Gdx.graphics.setWindowedMode(640,480);
-                }
-                getClient().getSettings().setFullScreen(fullScreen.isChecked());
+                getClient().setFullScreen(fullScreen.isChecked());
             }
         });
     }
