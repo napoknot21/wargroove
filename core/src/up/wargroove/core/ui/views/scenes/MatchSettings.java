@@ -69,15 +69,11 @@ public class MatchSettings extends ViewWithPrevious {
      * Weather SelectBox
      */
     private SelectBox weather;
-    //private SelectBox turnTime;
     private SelectBox fog;
     private Slider income;
     private SelectBox biome;
-    //private SelectBox commanders;
-    //private SelectBox team;
 
     private CheckBox checkFog;
-    private Label checkText;
 
     private Skin skin;
 
@@ -101,38 +97,22 @@ public class MatchSettings extends ViewWithPrevious {
         viewport = new ScreenViewport();
         viewport.apply();
         buttonSound = getAssets().getDefault(Sound.class);
-
         back = new TextButton("Back", skin);
         reset = new TextButton("Reset", skin);
         chooseConfig = new TextButton("Choose this configuration", skin);
-
         weatherLabel = new Label("Weather :", skin);
-        //turnTimeLabel = new Label("Turn Timer :", skin);
         fogLabel = new Label("Fog of War :", skin);
-        checkText = new Label("On", skin);
         incomeLabel = new Label("Income :", skin);
         income = new Slider(20,500,10,false,skin);
         income.setValue(100);
         printIncome = new Label(income.getValue() + "%",skin);
         biomeLabel = new Label("Biome :", skin);
-        //commandersLabel = new Label("Commanders :", skin);
-        //teamLabel = new Label("Teams :", skin);
-
         weather = new SelectBox<String>(skin);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
-        //turnTime = new SelectBox<String>(skin);
-        //turnTime.setItems("Off","On");
-        //fog = new SelectBox(skin);
-        //fog.setItems("Off", "On");
         checkFog = new CheckBox("On" , skin);
         checkFog.setChecked(true);
         biome = new SelectBox(skin);
         biome.setItems(Biome.GRASS,Biome.ICE,Biome.DESERT,Biome.VOLCANO);
-        //commanders = new SelectBox(skin);
-        //commanders.setItems("Normal");
-        //team = new SelectBox(skin);
-        //team.setItems("Default");
-
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -183,7 +163,6 @@ public class MatchSettings extends ViewWithPrevious {
         table.row();*/
         table.add(fogLabel).padLeft(20f);
         table.add(checkFog).padBottom(20f);
-        table.add(checkText);
         table.row();
         table.add(incomeLabel).padLeft(20f);
         table.add(income).padBottom(20f);
@@ -227,8 +206,6 @@ public class MatchSettings extends ViewWithPrevious {
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
                         printIncome.setText(income.getValue() +"%");
-                        properties.setIncome((int)income.getValue());
-                        properties.setIncome(income.getValue() / 100f);
                     }
                 }
         );
@@ -240,11 +217,9 @@ public class MatchSettings extends ViewWithPrevious {
                         weather.setSelected("Random");
                         biome.setSelected("Grass");
                         checkFog.setChecked(true);
-                        properties.setFog(true);
-                        checkText.setText("On");
                         income.setValue(100);
                         printIncome.setText(income.getValue() + "%");
-                        properties.setIncome(income.getValue() / 100f);
+
                     }
                 }
         );
@@ -262,14 +237,6 @@ public class MatchSettings extends ViewWithPrevious {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
-                        if(checkFog.isChecked()){
-                            checkText.setText("On");
-                            properties.setFog(true);
-                        }
-                        else{
-                            checkText.setText("Off");
-                            properties.setFog(false);
-                        }
                     }
                 }
         );
@@ -280,6 +247,9 @@ public class MatchSettings extends ViewWithPrevious {
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
                         properties.setBiome((Biome) biome.getSelected());
+                        properties.setIncome(income.getValue() / 100f);
+                        properties.setIncome(income.getValue() / 100f);
+                        properties.setFog(checkFog.isChecked());
                         getModel().setProperties(properties);
                         getController().startGame();
                     }

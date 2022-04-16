@@ -272,6 +272,7 @@ public class GameView extends View {
 
     @Override
     public void draw(float delta) {
+        gameViewUi.getViewport().apply();
         renderer.setView(camera);
         renderer.render();
         getBatch().begin();

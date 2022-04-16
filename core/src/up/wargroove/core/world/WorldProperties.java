@@ -23,7 +23,7 @@ public class WorldProperties implements Savable {
 
     public int amt = 4;
 
-	public WorldProperties(Biome biome, boolean fog, int income){
+	public WorldProperties(Biome biome, boolean fog, float income){
 		this.biome = biome;
 		this.fog = fog;
 		this.income = income;

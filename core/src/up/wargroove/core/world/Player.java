@@ -15,7 +15,7 @@ public class Player {
 	private String name;
 	private int money;
 	private int income;
-	private float ratio;
+	private final float ratio;
 
 
 	public Player(Faction faction, float ratio) {
