@@ -43,6 +43,8 @@ public class Model {
      */
     private Entity boughtEntity = null;
 
+    private Entity activeStructure = null;
+
     /**
      * Start a new game.
      */
@@ -170,5 +172,13 @@ public class Model {
     }
 
     public void endGame() {
+    }
+
+    public Entity getActiveStructure() {
+        return activeStructure;
+    }
+
+    public void setActiveStructure(Entity activeStructure) {
+        this.activeStructure = activeStructure;
     }
 }

@@ -1,77 +1,32 @@
 package up.wargroove.core.ui.views.objects;
 
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import org.lwjgl.Sys;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.utils.Pair;
 
 
-public class CharacterUI extends Actor {
+public class CharacterUI extends EntityUI {
     private Controller controller;
-    private Sprite sprite;
     private Sprite spriteWaiting;
-    private Sprite stats;
-    private Pair<Integer, Integer> coordinate;
-    private Character character;
     private TextureRegion[] animationMove;
     private TextureRegion[] animationDie;
     private TextureRegion[] animationAttack;
-    private float temps;
     private String move="";
     private java.lang.Character attackDirection;
-    private static float TIME_LAPSE= Gdx.graphics.getDeltaTime()*19;
-    private static final int TILE_SIZE= 20;
     private static final int DEFAULT_FRAMES= 13;
     private int ATTACK_FRAMES;
-    private boolean alive= true;
-    private boolean injured= false;
-    private Pair<Integer,Integer> size;
     private Pair<Integer,Integer> decalage;
 
-    private static final String TEXTURE_PATH = "data/sprites/character/";
-    private Assets assets;
-
-    public boolean isAlive() {
-        return alive;
-    }
-
-    public void isInjured() {
-        this.injured = true;
-    }
-
-    public Character getCharacter() {
-        return character;
-    }
-
-    public boolean isWaiting(){
-        return  (!canMove()&&attackDirection==null);
-        }
-
-    private Texture getPath(String nameFile) {
-        return assets.get(TEXTURE_PATH+character.getFaction()+ "/"+character.getType()+"_"+nameFile, Texture.class);
-    }
-
-    private Texture getPathSTATS(int file) {
-        return assets.get(TEXTURE_PATH+ "STATS/Stats"+file+".png", Texture.class);
-    }
-
-    private void actualiseSprite(TextureRegion textureRegion){
-        sprite= new Sprite(textureRegion);
-        sprite.setSize(size.first,size.second);
-        positionChanged();
-    }
 
     private void actualiseSprite(){
-        sprite=spriteWaiting;
+        setSprite(spriteWaiting);
         positionChanged();
     }
 
@@ -82,11 +37,9 @@ public class CharacterUI extends Actor {
 
 
     public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
+        super(coord,character);
         this.controller= controller;
-        this.character = character;
-        this.coordinate = coord;
         controller.getWorld().addEntity(coord, character);
-        assets = controller.getWargroove().getAssets();
         initialiseAnimation();
         initialiseSprites();
         controller.getScreen().getStage().addActor(this);
@@ -94,17 +47,14 @@ public class CharacterUI extends Actor {
 
     }
 
-    private void initialiseSprites(){
-        this.sprite = new Sprite(animationDie[0]);
-        sprite.setSize(size.first,size.second);
-        this.stats= new Sprite(getPathSTATS(0));
-        stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
-        setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
-        positionChanged();
-        spriteWaiting=sprite;
-
-
+    @Override
+    protected void initialiseSprites(){
+        super.initialiseSprites();
+        actualiseSprite(animationDie[0]);
+        spriteWaiting= new Sprite(getSprite());
     }
+
+
     private void initialiseAnimation() {
         defineFeatures();
         animationAttack = new TextureRegion[ATTACK_FRAMES];
@@ -113,24 +63,12 @@ public class CharacterUI extends Actor {
     }
 
 
-        public void actualiseStats(){
-        if (character.getHealth()<90){
-            this.stats= new Sprite(getPathSTATS((int) ((character.getHealth()/10)+1)));
-        }
-        if ((character.getHealth()<=0)||(character.getHealth()==90)){
-            this.stats= new Sprite(getPathSTATS((int) ((character.getHealth()/10))));
-        }
-        stats.setSize(TILE_SIZE/4,TILE_SIZE/4);
-        stats.setPosition(coordinate.first * TILE_SIZE+TILE_SIZE-6,coordinate.second * TILE_SIZE+1);
-    }
-
-
 
     @Override
     public void positionChanged() {
-        sprite.setPosition(getX()+decalage.first, getY()+decalage.second);
+        getSprite().setPosition(getX()+decalage.first, getY()+decalage.second);
         if(spriteWaiting!=null) spriteWaiting.setPosition(getX()+decalage.first, getY()+decalage.second);
-        stats.setPosition(getX()+sprite.getWidth()-stats.getWidth()-1,getY()+1);
+        getStats().setPosition(getX()+getSprite().getWidth()-getStats().getWidth()-1,getY()+1);
         super.positionChanged();
     }
 
@@ -138,22 +76,6 @@ public class CharacterUI extends Actor {
     @Override
     public void act(float delta) {
         super.act(delta);
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        if (canMove()) moveTo();
-        if (!canMove()&&attackDirection!=null) attackTo();
-        if (!canMove()) exhaust();
-        //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
-        if (injured) injure();
-        sprite.draw(batch);
-        if (isWaiting()) {
-            actualiseStats();
-            stats.draw(batch);
-        }
-        super.draw(batch, parentAlpha);
-
     }
 
 
@@ -184,8 +106,8 @@ public class CharacterUI extends Actor {
      * Decides movement's direction
      */
     public void moveTo() {
-        if (temps<TILE_SIZE){
-            temps+=TIME_LAPSE;
+        if (getTemps()<getTileSize()){
+            addTemps(getTimeLapse());
         }
         switch (move.charAt(0)){
             case 'U': move(0,1, getPath("MOVE_U.png")); return;
@@ -196,20 +118,18 @@ public class CharacterUI extends Actor {
     }
 
 /**
- * According with the direction, moves the animation to a tile next of the origin tile
+ * According to the direction, moves the animation to a tile next of the origin tile
  */
     private void move(int x, int y, Texture texture){
-        if(temps==TIME_LAPSE){
+        if(getTemps()==getTimeLapse()){
             AnimationWalk(texture);
         }
-        sprite= new Sprite(animationMove[(int) temps%animationMove.length]);
-        sprite.setSize(size.first,size.second);
-        setPosition(getX()+TIME_LAPSE*x,getY()+TIME_LAPSE*y);
-        if (temps>=TILE_SIZE){
-            temps=0;
-            coordinate.first+= x;
-            coordinate.second+= y;
-            setPosition(coordinate.first * TILE_SIZE,coordinate.second * TILE_SIZE);
+        getSprite().setRegion(animationMove[(int) (getTemps()/3) % animationMove.length]);
+        getSprite().setSize(getSize().first, getSize().second);
+        setPosition(getX() + getTimeLapse() * x, getY() + getTimeLapse() * y);
+        if (getTemps()>=getTileSize()){
+            setTemps(0);
+            moveBy(x,y);
             spriteWaiting.setPosition(getX(),getY());
             removeFirstMove();
             if (!canMove()){
@@ -236,8 +156,8 @@ public class CharacterUI extends Actor {
      * Decides attack's direction
      */
     public void attackTo() {
-        if (temps<ATTACK_FRAMES*10){
-            temps+=TIME_LAPSE;
+        if (getTemps()<ATTACK_FRAMES*10){
+           addTemps(getTimeLapse());
         }
         switch (attackDirection){
             case 'U': attack( getPath("ATTACK_U.png")); return;
@@ -253,12 +173,12 @@ public class CharacterUI extends Actor {
      */
 
     public void attack(Texture texture){
-        if(temps==TIME_LAPSE){
+        if(getTemps()==getTimeLapse()){
             AnimationAttack(texture);
         }
-        actualiseSprite(animationAttack[(int) (temps/10)%ATTACK_FRAMES]);
-        if (temps>=ATTACK_FRAMES*10-2*TIME_LAPSE) {
-            temps = 0;
+        actualiseSprite(animationAttack[(int) (getTemps()/10)%ATTACK_FRAMES]);
+        if (getTemps()>=ATTACK_FRAMES*10-2*getTimeLapse()) {
+            setTemps(0);
             attackDirection=null;
             actualiseSprite();
         }
@@ -275,41 +195,16 @@ public class CharacterUI extends Actor {
     }
 
     /**
-     * Create a sequence of colors showing the character injured
-     * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
-     */
-    private void injure(){
-        sprite.setColor(Color.RED);
-        temps+=TIME_LAPSE;
-        if (temps>3){
-            temps=0;
-            sprite.setColor(1,1,1,1);
-            injured=false;
-        }
-    }
-
-    /**
-     * Puts the character with a dark filter.
-     */
-    private void exhaust(){
-        if(character.isExhausted()) {
-            sprite.setColor(Color.GRAY);
-        } else {
-            sprite.setColor(1,1,1,1);
-        }
-    }
-
-    /**
      *
      */
 
     private void die(){
-        temps+=TIME_LAPSE;
-        actualiseSprite(animationDie[(int) temps/10]);
-        if (temps>=70-TIME_LAPSE){
-            temps=0;
-            alive=false;
-            controller.getWorld().delEntity(coordinate, character);
+        addTemps(getTimeLapse());
+        actualiseSprite(animationDie[(int) (getTemps()/10)]);
+        if (getTemps()>=70-getTimeLapse()){
+            setTemps(0);
+            setAlive(false);
+            controller.getWorld().delEntity(getCoordinates(), getEntity());
         }
     }
 
@@ -331,9 +226,15 @@ public class CharacterUI extends Actor {
         move=move+path;
     }
 
-    private boolean canMove(){
+    @Override
+    protected boolean canMove(){
         return (move.length()>0);
     }
+    @Override
+    public boolean isWaiting() {
+        return (!canMove() && attackDirection == null);
+    }
+
     private void removeFirstMove(){
         move=move.substring(1);
     }
@@ -346,26 +247,32 @@ public class CharacterUI extends Actor {
         return spriteWaiting.getTexture();
     }
 
-    public Pair<Integer, Integer> getCoordinate() {
-        return coordinate;
-    }
-
     private boolean isInTime(float x, float y){
-        return (temps>=x) && (temps<=y);
+        return (getTemps()>=x) && (getTemps()<=y);
     }
 
+    //todo: decomenter quand les types seront bon (pas besoin d'utiliser le type, le switch prend en charge les enum)
     private void defineFeatures(){
-        size = new Pair<>(20,30);
         decalage = new Pair<>(0,0);
-        switch (character.getType().name()){
-            case "ARCHER": ATTACK_FRAMES=13; break;
-            case "SOLDIER": ATTACK_FRAMES=6; break;
-            case "SPEARMAN": ATTACK_FRAMES=8; break;
-            case "AMPHIBIAN": ATTACK_FRAMES=8; break;
-            case "GIANT": ATTACK_FRAMES=6; size.first=30;size.second=50; decalage.first=-5; break;
-            case "MAGE": ATTACK_FRAMES= 7;
+        switch (getEntity().getType()){
+            case COMMANDER:
+            /*case ARCHER: ATTACK_FRAMES=13; break;
+            case SOLDIER: ATTACK_FRAMES=6; break;
+            case SPEARMAN: ATTACK_FRAMES=8; break;
+            case AMPHIBIAN: ATTACK_FRAMES=8; break;
+            case GIANT: ATTACK_FRAMES=6; size.first=30;size.second=50; decalage.first=-5; break;
+            case MAGE: ATTACK_FRAMES= 7;*/
+            default:
         }
     }
     //TODO Bug de etre en train de mourir et pouvoir faire des actions (=zombie)
 
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (canMove()) moveTo();
+        if (!canMove()&&attackDirection!=null) attackTo();
+        //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
+        super.draw(batch, parentAlpha);
+    }
 }

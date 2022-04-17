@@ -38,7 +38,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-
 /**
  * Represent the game screen.
  */
@@ -107,12 +106,12 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        camera = new OrthographicCamera(x,y);
+        camera = new OrthographicCamera(x, y);
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
         viewport.apply();
         camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
-        gameMap = new GameMap(getModel().getWorld(),getStage() ,getController());
+        gameMap = new GameMap(getModel().getWorld(), getStage(), getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
 
@@ -134,6 +133,7 @@ public class GameView extends View {
 
         Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Viewport viewport = new ScreenViewport();
+        viewport.apply();
         gameViewUi = new Stage(viewport);
 
         Table table = new Table();
@@ -203,8 +203,9 @@ public class GameView extends View {
                     return true;
                 }
                 if (
-                        tile.entity.isPresent() && (tile.entity.get() instanceof Structure)
-                        && tile.entity.get().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+                        tile.entity.isPresent() && !tile.entity.get().isExhausted()
+                                && (tile.entity.get() instanceof Structure)
+                                && tile.entity.get().getFaction().equals(getModel().getCurrentPlayer().getFaction())
                 ) {
                     moveDialog.addBuy();
                     clearSelectors();
@@ -214,7 +215,7 @@ public class GameView extends View {
                 }
                 if (buy && movementSelector.isValidPosition(worldPosition)) {
                     cursor.setLock(true);
-                    moveDialog.addBought();
+                    getController().placeBoughtEntity();
                     buy = false;
                     return true;
                 }
@@ -358,7 +359,7 @@ public class GameView extends View {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
-            if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinate().equals(worldCoordinate)) {
+            if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinates().equals(worldCoordinate)) {
                 scopedEntity = tmp;
                 return;
             }
@@ -371,9 +372,9 @@ public class GameView extends View {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
-            if (tmp instanceof CharacterUI && ((CharacterUI)tmp).getCharacter().equals(entity)) {
+            if (tmp instanceof CharacterUI && ((CharacterUI) tmp).getEntity().equals(entity)) {
                 return tmp;
-            } else if (tmp instanceof StructureUI && ((StructureUI)tmp).getStructure().equals(entity)) {
+            } else if (tmp instanceof StructureUI && ((StructureUI) tmp).getEntity().equals(entity)) {
                 return tmp;
             }
         }
@@ -416,11 +417,13 @@ public class GameView extends View {
     public boolean canAttack() {
         return ((attackSelector.getPath().length() > 0)
                 && (scopedEntity instanceof CharacterUI)
-                && (!(((CharacterUI) scopedEntity).getCharacter() instanceof Villager)));
+                && (!(((CharacterUI) scopedEntity).getEntity() instanceof Villager)));
     }
+
 
     /**
      * Show the emplacement where we can put an entity.
+     *
      * @param list The list of available emplacement.
      */
     public void showsPlaceable(List<Integer> list) {
@@ -445,7 +448,7 @@ public class GameView extends View {
     }
 
     public void setPlayerBoxInformations(Player currentPlayer, int round) {
-        playerBox.setInformations(currentPlayer,round);
+        playerBox.setInformations(currentPlayer, round);
     }
 
 }

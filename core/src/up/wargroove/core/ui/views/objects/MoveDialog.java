@@ -19,12 +19,11 @@ import up.wargroove.core.ui.controller.Controller;
  */
 public class MoveDialog extends Table {
     private final TextButton wait;
-    private TextButton attack;
+    private final TextButton attack;
     private final TextButton move;
     private final TextButton buy;
-    private TextButton placeBought;
-    private TextButton endTurn;
-    private TextButton nextUnit;
+    private final TextButton endTurn;
+    private final TextButton nextUnit;
 
     /**
      * Create an empty MoveDialog.
@@ -42,7 +41,6 @@ public class MoveDialog extends Table {
         buy = new TextButton("Buy", skin);
         nextUnit = new TextButton("Next unit", skin);
         endTurn = new TextButton("End turn", skin);
-        placeBought = new TextButton("buy", skin);
         initInput(controller);
 
         addButton(endTurn);
@@ -108,15 +106,6 @@ public class MoveDialog extends Table {
                 clear();
             }
         });
-
-        placeBought.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
-                controller.placeBoughtEntity();
-                clear();
-            }
-        });
     }
 
     @Override
@@ -145,11 +134,6 @@ public class MoveDialog extends Table {
     public void addBuy() {
         clear();
         addButton(buy);
-    }
-
-    public void addBought() {
-        clear();
-        addButton(placeBought);
     }
 
     public void addAttack() {

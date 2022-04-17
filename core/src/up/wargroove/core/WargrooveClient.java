@@ -51,8 +51,8 @@ public class WargrooveClient extends Game {
 
     @Override
     public void create() {
-        settings = loadSettings();
-        setFullScreen(settings.getBoolean("fullScreen"));
+        settings = Gdx.app.getPreferences("settings");
+        loadSettings();
         batch = new SpriteBatch();
         assets = Assets.getInstance();
         assets.loadDefault();
@@ -64,15 +64,22 @@ public class WargrooveClient extends Game {
         controller.setScreen(scene);
     }
 
-    private Preferences loadSettings() {
-        Preferences preferences = Gdx.app.getPreferences("settings");
-        if (!preferences.contains(Settings.VOLUME.name())) {
-            preferences.putFloat(Settings.VOLUME.name(), 1f);
-            preferences.putFloat(Settings.CAMERA_VELOCITY.name(), 0.50f);
-            preferences.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), 0.50f);
-            preferences.putBoolean(Settings.FULLSCREEN.name(), false);
+    private void loadSettings() {
+        if (!settings.contains(Settings.MUSIC_VOLUME.name())) {
+            setMusicVolume(1f);
         }
-        return preferences;
+        if (!settings.contains(Settings.SOUND_VOLUME.name())) {
+            setSoundVolume(1f);
+        }
+        if (!settings.contains(Settings.CAMERA_VELOCITY.name())) {
+            setCameraVelocity(0.50f);
+        }
+        if (!settings.contains(Settings.CAMERA_ZOOM_VELOCITY.name())) {
+            setCameraZoomVelocity(0.50f);
+        }
+        setFullScreen(
+                settings.contains(Settings.FULLSCREEN.name()) && settings.getBoolean(Settings.FULLSCREEN.name())
+        );
     }
 
     @Override
@@ -111,6 +118,9 @@ public class WargrooveClient extends Game {
 
     @Override
     public void setScreen(Screen screen) {
+        if (getScreen()!= null) {
+            getScreen().dispose();
+        }
         super.setScreen(screen);
         this.scene = (View) screen;
         if (screen != null) {
@@ -146,7 +156,7 @@ public class WargrooveClient extends Game {
 
     public void playMusic() {
         if (music != null) {
-            music.setVolume(settings.getFloat(Settings.VOLUME.name()));
+            music.setVolume(settings.getFloat(Settings.MUSIC_VOLUME.name()));
             music.play();
         }
     }
@@ -156,6 +166,7 @@ public class WargrooveClient extends Game {
     }
 
     public void setCameraVelocity(float cameraVelocity) {
+        cameraVelocity = Math.max(0,Math.min(1,cameraVelocity));
         this.settings.putFloat(Settings.CAMERA_VELOCITY.name(), cameraVelocity);
     }
 
@@ -164,18 +175,29 @@ public class WargrooveClient extends Game {
     }
 
     public void setCameraZoomVelocity(float cameraZoomVelocity) {
+        cameraZoomVelocity = Math.max(0,Math.min(1,cameraZoomVelocity));
         settings.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), cameraZoomVelocity);
     }
 
-    public float getVolume() {
-        return settings.getFloat(Settings.VOLUME.name());
+    public float getMusicVolume() {
+        return settings.getFloat(Settings.MUSIC_VOLUME.name());
     }
 
-    public void setVolume(float volume) {
-        settings.putFloat(Settings.VOLUME.name(), volume);
+    public void setMusicVolume(float volume) {
+        volume = Math.max(0,Math.min(1,volume));
+        settings.putFloat(Settings.MUSIC_VOLUME.name(), volume);
         if (music != null) {
             music.setVolume(volume);
         }
+    }
+
+    public void setSoundVolume(float volume) {
+        volume = Math.max(0,Math.min(1,volume));
+        settings.putFloat(Settings.SOUND_VOLUME.name(), volume);
+    }
+
+    public float getSoundVolume() {
+        return settings.getFloat(Settings.SOUND_VOLUME.name());
     }
 
     public boolean isFullScreen() {
@@ -192,7 +214,7 @@ public class WargrooveClient extends Game {
     }
 
     private enum Settings {
-        FULLSCREEN, CAMERA_VELOCITY, CAMERA_ZOOM_VELOCITY, VOLUME
+        FULLSCREEN, CAMERA_VELOCITY, CAMERA_ZOOM_VELOCITY, MUSIC_VOLUME, SOUND_VOLUME
     }
 }
 

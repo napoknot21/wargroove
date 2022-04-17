@@ -15,14 +15,13 @@ import up.wargroove.core.ui.views.scenes.GameView;
 import up.wargroove.core.world.Structure;
 import up.wargroove.utils.Pair;
 
-public class StructureUI extends Actor {
-    Sprite texture;
-    Structure structure;
-    public StructureUI(Stage stage, Structure structure, float ratio, Pair<Integer,Integer> position) {
-        super();
-        setPosition(position.first * ratio, position.second * ratio);
+public class StructureUI extends EntityUI {
+    public StructureUI(Stage stage, Structure structure, Pair<Integer,Integer> position) {
+        super(position,structure);
+        initialiseSprites();
         stage.addActor(this);
-        texture = new Sprite(Assets.getInstance().getTest());
+        actualiseSprite(Assets.getInstance().getTest());
+        getSprite().setPosition(position.first * getTileSize(), position.second * getTileSize());
         Color color;
         switch (structure.getFaction()) {
             case FLORAN_TRIBES: color = Color.GREEN; break;
@@ -31,18 +30,6 @@ public class StructureUI extends Actor {
             case HEAVENSONG_EMPIRE: color = Color.WHITE; break;
             default: color = Color.CLEAR;
         }
-        texture.setColor(color);
-        texture.setPosition(getX(),getY());
-        this.structure = structure;
-    }
-
-    public Structure getStructure() {
-        return structure;
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        texture.draw(batch);
-        super.draw(batch, parentAlpha);
+        getSprite().setColor(color);
     }
 }

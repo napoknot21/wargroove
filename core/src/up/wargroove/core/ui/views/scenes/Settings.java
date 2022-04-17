@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -30,19 +28,19 @@ public class Settings extends View {
     private final Label stateLabel;
 
     private final Slider cameraZoomVelocity;
-    private final Slider volume;
+    private final Slider musicVolume;
     private final CheckBox fullScreen;
     private final Label printCameraVelocity;
     private final Label printCameraZoomVelocity;
-    private final Label printVolume;
     private final Label fullScreenLabel;
     private final Label cameraVelocityLabel;
     private final Label cameraZoomVelocityLabel;
-    private final Label volumeLabel;
+    private final Label musicVolumeLabel;
+    private final Label soundVolumeLabel;
+    private final Slider soundVolume;
+    private final ScrollPane pane;
 
-    private Slider cameraVelocity;
-
-    private Viewport viewport;
+    private final Slider cameraVelocity;
 
     Sound buttonSound;
 
@@ -53,16 +51,18 @@ public class Settings extends View {
         fullScreenLabel = new Label("Full screen",skin);
         cameraVelocityLabel = new Label("Camera velocity", skin);
         cameraZoomVelocityLabel = new Label("Zoom velocity", skin);
-        volumeLabel = new Label("Volume",skin);
+        musicVolumeLabel = new Label("Music Volume",skin);
+        soundVolumeLabel = new Label("Sound Volume", skin);
         stateLabel = new Label("", skin);
         back = new TextButton("Back", skin);
         cameraVelocity = new Slider(1,100,1,false,skin);
         printCameraVelocity = new Label("",skin);
         printCameraZoomVelocity = new Label("",skin);
         cameraZoomVelocity = new Slider(1,100,1,false,skin);
-        printVolume = new Label("",skin);
-        volume = new Slider(0,100,10,false,skin);
+        musicVolume = new Slider(0,100,10,false,skin);
+        soundVolume = new Slider(0,100,10,false,skin);
         fullScreen = new CheckBox("", skin);
+        pane = new ScrollPane(null,skin);
         setSettings();
     }
 
@@ -71,25 +71,26 @@ public class Settings extends View {
         printCameraVelocity.setText(cameraVelocity.getValue() + " %");
         cameraZoomVelocity.setValue(getClient().getCameraZoomVelocity() * 100);
         printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() + " %");
-        volume.setValue(getClient().getVolume() * 100);
-        printVolume.setText(volume.getValue() + " %");
+        musicVolume.setValue(getClient().getMusicVolume() * 100);
+        soundVolume.setValue(getClient().getSoundVolume() * 100);
         fullScreen.setChecked(getClient().isFullScreen());
     }
 
     @Override
     public void init() {
-        viewport = new ScreenViewport();
+        Viewport viewport = new ScreenViewport();
         viewport.apply();
         initListener();
         setStage(viewport);
-        ScrollPane pane = new ScrollPane(
-                drawTable(),
-                Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class)
-        );
+        pane.setActor(drawTable());
         pane.setColor(Color.BLACK);
+        pane.setScrollingDisabled(true,false);
+        pane.setScrollbarsVisible(true);
+        pane.setCancelTouchFocus(false);
+        pane.setSmoothScrolling(true);
         Table table = new Table();
         table.setFillParent(true);
-        table.add(pane);
+        table.add(pane).expand().fill();
         addActor(table);
         Gdx.input.setInputProcessor(getStage());
     }
@@ -138,9 +139,11 @@ public class Settings extends View {
         table.add(fullScreenLabel).padRight(padR).left();
         table.add(fullScreen).center().pad(padC);
         table.row();
-        table.add(volumeLabel).padRight(padR).left();
-        table.add(volume).center().pad(padC);
-        table.add(printVolume).padLeft(padL).right();
+        table.add(musicVolumeLabel).padRight(padR).left();
+        table.add(musicVolume).center().pad(padC);
+        table.row();
+        table.add(soundVolumeLabel).padRight(padR).left();
+        table.add(soundVolume).center().pad(padC);
         table.row();
         table.add(cameraVelocityLabel).left().padRight(padR);
         table.add(cameraVelocity).center().pad(padC);
@@ -169,16 +172,25 @@ public class Settings extends View {
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
                         getController().back();
+                        pane.cancel();
                     }
                 }
         );
 
-        volume.addListener(new ChangeListener() {
+        musicVolume.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
-                printVolume.setText(volume.getValue() +"%");
-                getClient().setVolume(volume.getValue() / 100);
+                getClient().setMusicVolume(musicVolume.getValue() / 100);
+                pane.cancel();
+            }
+        });
+        soundVolume.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                getController().playSound(buttonSound);
+                getClient().setSoundVolume(soundVolume.getValue() / 100);
+                pane.cancel();
             }
         });
         cameraVelocity.addListener(new ChangeListener() {
@@ -187,6 +199,7 @@ public class Settings extends View {
                 getController().playSound(buttonSound);
                 printCameraVelocity.setText(cameraVelocity.getValue() +"%");
                 getClient().setCameraVelocity(cameraVelocity.getValue() / 100);
+                pane.cancel();
             }
         });
         cameraZoomVelocity.addListener(new ChangeListener() {
@@ -195,6 +208,7 @@ public class Settings extends View {
                 getController().playSound(buttonSound);
                 printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() +"%");
                 getClient().setCameraZoomVelocity(cameraZoomVelocity.getValue() / 100);
+                pane.cancel();
             }
         });
 
@@ -203,6 +217,7 @@ public class Settings extends View {
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
                 getClient().setFullScreen(fullScreen.isChecked());
+                pane.cancel();
             }
         });
     }

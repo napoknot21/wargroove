@@ -37,8 +37,6 @@ public class MainMenu extends View {
 
     private Button quit;
 
-    private Viewport viewport;
-
     private Sound buttonSound;
 
     /**
@@ -54,7 +52,7 @@ public class MainMenu extends View {
 
     @Override
     public void init() {
-        viewport = new ScreenViewport();
+        Viewport viewport = new ScreenViewport();
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
         startGame = new TextButton("Start Game", skin);

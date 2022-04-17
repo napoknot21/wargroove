@@ -2,7 +2,6 @@ package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -23,6 +22,7 @@ import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
 import java.util.Vector;
@@ -47,7 +47,7 @@ public class Controller {
      */
     private Model model;
 
-    private View previous;
+    private Class<? extends View> previous;
     /**
      * World scale.
      */
@@ -64,7 +64,6 @@ public class Controller {
         this.wargroove = wargroove;
         this.model = model;
         this.screen = screen;
-        this.previous = screen;
     }
 
     /**
@@ -123,17 +122,22 @@ public class Controller {
     }
 
     public void setPrevious() {
-        previous = getScreen();
+        previous = getScreen().getClass();
     }
 
     public void back() {
-        back(this.previous);
+        if (previous == null) return;
+        try {
+            Constructor<? extends View> constructor =
+                    previous.getDeclaredConstructor(Controller.class, Model.class, WargrooveClient.class);
+            View view = constructor.newInstance(this,getModel(),getClient());
+            back(view);
+        } catch (Exception ignored) {
+        }
     }
 
     public void back(View previous) {
-        Screen tmp = this.getClient().getScreen();
         setScreen(previous);
-        tmp.dispose();
     }
 
     public Model getModel() {
@@ -142,7 +146,7 @@ public class Controller {
 
     public void playSound(Sound sound) {
         if (sound != null) {
-            sound.play(getClient().getVolume());
+            sound.play(getClient().getSoundVolume());
         }
     }
 
@@ -438,6 +442,7 @@ public class Controller {
      */
     public void closeStructureMenu() {
         Gdx.input.setInputProcessor(getScreen().getInputs());
+        ((GameView)getScreen()).getCursor().setLock(false);
     }
 
     /**
@@ -454,6 +459,7 @@ public class Controller {
             return;
         }
         Recruitment r = (Recruitment) s.get();
+        getModel().setActiveStructure(r);
         Optional<Entity> bought = r.buy(c, 0, "test", getModel().getCurrentPlayer().getFaction());
         if (bought.isEmpty()) {
             return;
@@ -479,6 +485,7 @@ public class Controller {
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();
+        getModel().getActiveStructure().exhaust();
         gameView.setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         gameView.getStage().addActor(c);
         gameView.getCursor().setLock(false);

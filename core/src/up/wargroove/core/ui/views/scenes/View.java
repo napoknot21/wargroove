@@ -47,7 +47,7 @@ public abstract class View extends ScreenAdapter {
     /**
      * The Screen input manager.
      */
-    private final InputMultiplexer inputs;
+    private InputMultiplexer inputs;
 
 
     /**
@@ -60,11 +60,7 @@ public abstract class View extends ScreenAdapter {
     public View(Controller controller, Model model, WargrooveClient wargroove) {
         this.controller = controller;
         this.model = model;
-        this.ui = new Stage();
         this.wargroove = wargroove;
-
-        inputs = new InputMultiplexer();
-
     }
 
     /**
@@ -80,6 +76,8 @@ public abstract class View extends ScreenAdapter {
 
     @Override
     public void show() {
+        inputs = new InputMultiplexer();
+        this.ui = new Stage();
         inputs.addProcessor(ui);
         Gdx.input.setInputProcessor(inputs);
         init();
@@ -115,6 +113,7 @@ public abstract class View extends ScreenAdapter {
             ui.dispose();
         }
         ui = null;
+        inputs = null;
     }
 
     public Model getModel() {

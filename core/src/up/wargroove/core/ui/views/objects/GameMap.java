@@ -64,7 +64,7 @@ public class GameMap extends TiledMap {
         if (tile.entity.get() instanceof Character) {
             new CharacterUI(controller,new Pair<>(i,j), (Character) tile.entity.get());
         } else if (tile.entity.get() instanceof Structure) {
-            new StructureUI(stage,(Structure) tile.entity.get() ,scale,new Pair<>(i,j));
+            new StructureUI(stage,(Structure) tile.entity.get(),new Pair<>(i,j));
         }
     }
 
