@@ -5,20 +5,22 @@ public abstract class Entity {
     protected Type type;
 
     protected Movement movement;
-    
+
     protected int movRange;
     protected int remainingMovs;
+    protected Faction faction;
 
     /**
      * constructeur pour Entity
      *
      * @param type Type d'unité de l'entité
      */
-    protected Entity(Type type) {
+    protected Entity(Type type, Faction faction) {
 
         this.type = type;
         //this.movRange = movRange;
         //this.movement = movement;
+        this.faction = faction;
 
     }
 
@@ -48,6 +50,12 @@ public abstract class Entity {
 
     }
 
+    public Faction getFaction () {
+
+        return this.faction;
+
+    }
+
     public int getRange() {
 
         return this.movRange;
@@ -66,14 +74,16 @@ public abstract class Entity {
 
         VILLAGER,
         COMMANDER,
-        /*
-        SPAREMAN,
-        DOG,
-        ARCHER,
+        SPEARMAN,
         SOLDIER,
+        MAGE,
+        ARCHER,
+
         GIANT,
+        /*
         RIFLEMAN,
         THIEF,
+        DOG,
 
         CAVALRY,
         BALLISTA,
