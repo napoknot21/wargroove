@@ -32,8 +32,8 @@ public class World {
         Tile toTile = terrain[k[Constants.WG_ZERO]];
        // if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
-	if(toTile.entity.isPresent()) return -2;
-	if(k[Constants.WG_TWO] == 0) return -1;
+	    if(toTile.entity.isPresent()) return -2;
+	    if(k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -46,12 +46,11 @@ public class World {
 
     private final WPredicate<Integer> canAttack = (k) -> {
 	
-	Optional<Entity> rootEntity  = terrain[k[3]].entity,
-			targetEntity = terrain[k[0]].entity;
+	    Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
 
-	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;
+	    if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;
 
-	boolean status = canMoveOn.test(k) == -2;
+	    boolean status = canMoveOn.test(k) == -2;
         status &= targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
         return status ? 1 : -1;
@@ -65,28 +64,25 @@ public class World {
         this.properties = properties;
         currentEntityLinPosition = Optional.empty();
 
-	permutations = new int[] {
-		-properties.dimension.first, 
-		1, 
-		properties.dimension.first, 
-		-1
-	};
+	    permutations = new int[] {
+		    -properties.dimension.first, 1, properties.dimension.first, -1
+	    };
 
-	players = new Vector<>();
-	int amt = Math.min(properties.amt, Faction.values().length);
+	    players = new Vector<>();
+	    int amt = Math.min(properties.amt, Faction.values().length);
 
-	if(amt < Constants.WG_TWO) {
+	    if(amt < Constants.WG_TWO) {
 
-		amt = Constants.WG_TWO;
+		    amt = Constants.WG_TWO;
 
-	}
+	    }
 
-	for(int k = 0; k < amt; k++) {
+	    for(int k = 0; k < amt; k++) {
 
-		Player p = new Player(Faction.values()[k]);
-		players.add(p);	
+		    Player p = new Player(Faction.values()[k]);
+		    players.add(p);
 
-	}	
+	    }
 
     }
 
@@ -112,7 +108,7 @@ public class World {
 
         }
 
-	properties.terrain = terrain;
+	    properties.terrain = terrain;
 
         Log.print("Initialisation terminée ...");
     }
@@ -179,7 +175,7 @@ public class World {
         if (spawnTile.entity.isPresent()) return false;
 
         terrain[linCoordinate].entity = Optional.of(entity);
-	players.get(playerPtr).addEntity(entity);
+	    players.get(playerPtr).addEntity(entity);
 
         return true;
 
@@ -229,7 +225,7 @@ public class World {
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
 
-	return exists;
+	    return exists;
 
     }
 
@@ -284,21 +280,21 @@ public class World {
     private Vector<Integer> coreBreadthFirstSearch(int root, WPredicate<Integer> predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
-	Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+	    Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
 
         Vector<Integer> res = new Vector<>();
 
-	if(predicate == null) return res;
+	    if(predicate == null) return res;
 	
-	Entity entity    = terrain[root].entity.get();
-	Entity.Type type = entity.getType();
+	    Entity entity    = terrain[root].entity.get();
+	    Entity.Type type = entity.getType();
 
-	int movementId   = entity.getMovement().id;
-	int movementCost = entity.getRange();
+	    int movementId   = entity.getMovement().id;
+	    int movementCost = entity.getRange();
 
-	var rootElement = new Pair<>(root, movementCost);
+	    var rootElement = new Pair<>(root, movementCost);
 
-	emp.add(rootElement);	 
+	    emp.add(rootElement);
 
         while (emp.size() > 0) {
 
@@ -311,15 +307,15 @@ public class World {
 
                 if ((movementCost = predicate.test(lin, movementId, element.second, root)) >= 0) {
 
-		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+		            var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     res.add(lin);
                     emp.add(predicateArg);
 
                 }
 
-		checked.put(lin, movementCost >= 0);
+		        checked.put(lin, movementCost >= 0);
 
-            } 
+            }
 
         }
 
@@ -336,15 +332,15 @@ public class World {
 
 	    if(predicate == null) return res;
 
-	Entity entity    = terrain[root].entity.get();	
+	    Entity entity    = terrain[root].entity.get();
 
-	int movementId   = entity.getMovement().id;
-	int movementCost = entity.getRange();
+        int movementId   = entity.getMovement().id;
+        int movementCost = entity.getRange();
 
-	var rootElement = new Pair<>(root, movementCost);
+        var rootElement = new Pair<>(root, movementCost);
     	int parentIndex = -1;
 
-	emp.add(rootElement);
+	    emp.add(rootElement);
 
         while (emp.size() > 0) {
 
@@ -358,7 +354,7 @@ public class World {
 
                 if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
 
-		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+		            var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
                     BitSet sub = bitset.sub(4 * movementId, 4);
                     Pair<Integer,Integer> intel = new Pair<>(parentIndex,sub.toInt());
@@ -367,7 +363,7 @@ public class World {
 
                 }
 
-		checked.put(lin, movementCost >= 0);
+		        checked.put(lin, movementCost >= 0);
 
             }
             parentIndex++;

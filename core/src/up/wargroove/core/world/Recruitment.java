@@ -22,12 +22,13 @@ public class Recruitment extends Structure {
 
 	}
 
+	private Faction faction;
 	private Type type;
 	private Vector<Class<? extends Entity>> current;
 
-	public Recruitment(Type type) {
+	public Recruitment(Type type, Faction faction) {
 
-		super(Structure.Type.RECRUITMENT);
+		super(Structure.Type.RECRUITMENT,faction);
 		this.type = type;	
 
 	}

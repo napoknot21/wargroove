@@ -2,7 +2,6 @@ package up.wargroove.core.character;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.*;
 
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;

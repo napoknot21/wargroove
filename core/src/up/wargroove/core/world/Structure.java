@@ -1,6 +1,7 @@
 package up.wargroove.core.world;
 
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 
 public abstract class Structure extends Entity { 
    
@@ -12,9 +13,9 @@ public abstract class Structure extends Entity {
 
     private Type type;
 
-    protected Structure(Type type) {
+    protected Structure(Type type, Faction faction) {
 
-	super(Entity.Type.STRUCTURE);
+	super(Entity.Type.STRUCTURE,faction);
         this.type = type;
     
     } 
