@@ -80,10 +80,6 @@ public abstract class Character extends Entity {
         return this.stats.cost;
     }
 
-    public int getRange() {
-        return this.stats.range;
-    }
-
     public Stats getStats() {
         return stats;
     }
@@ -130,14 +126,17 @@ public abstract class Character extends Entity {
 
     protected static class Stats {
 
-        public double health; //up to 100
-        public double attack;
-        public double defense; //pourcentage 0 to 100
-        public boolean capture; // true = yes, false = no
-        public int sight;
-        public int range;
-        public int cost;
+        public double health; //Vie du personnage
+        public double attack; //Attaque du personnage
+        public double defense; //Pourcentage (entre 0 et 100) qui réduit l'attaque du personnage attaquant
+        public boolean capture; //Capacité à capture un village (true = oui, false = no)
+        public int sight; //Vue du personnage
+        public int range; //Rang d'attaque du personnage
+        public int cost; //Prix du personnage (monnaie du jeu)
 
+        /**
+         * Constructeur pour les stats d'un personnage
+         */
         public Stats() {
             this.health = 0;
             this.attack = 0;
@@ -148,29 +147,6 @@ public abstract class Character extends Entity {
             this.cost = 0;
         }
 
-        /**
-         * Constructeur pour les stats d'un personnage
-         * //@param health Total de vie
-         * //@param attack Attaque du personnage
-         * //@param cost Prix du personnage (monnaie du jeu)
-         * //@param range Rang d'attaque du personnage
-         * //@param defense Pourcentage qui réduit l'attaque du personnage attaquant
-         * //@param sight Vue du personnage
-         * //@param capture Capacité à capture un village
-         */
-
-
-        /*
-        public Stats (double health, double attack, double defense, int sight, int cost, Movement movement, int range) {
-            this.health = health;
-            this.attack = attack;
-            this.defense = defense;
-            this.sight = sight;
-            this.cost = cost;
-            this.range = range;
-            this.movement = movement;
-        }
-        */
 
     }
 
