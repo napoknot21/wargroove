@@ -9,10 +9,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Base64;
+import java.util.*;
+import javax.annotation.Nullable;
 import javax.json.Json;
 import javax.json.JsonReader;
 import javax.json.JsonObject;
@@ -176,6 +174,13 @@ public class Database {
 	
 		return update(req, data);
 
+	}
+
+	public List<String> getKeys() {
+		if(collection == null) {
+			return null;
+		}
+		return new LinkedList<>(collection.keySet());
 	}
 
 	/**

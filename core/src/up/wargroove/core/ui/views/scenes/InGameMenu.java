@@ -12,8 +12,9 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 
-public class InGameMenu extends View{
+public class InGameMenu extends View {
     View previous;
+
     /**
      * Initialize the screen.
      *
@@ -33,7 +34,7 @@ public class InGameMenu extends View{
     public void init() {
         Skin skin = Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json");
         setStage(new ScreenViewport());
-        TextButton close = new TextButton("Return",skin);
+        TextButton close = new TextButton("Return", skin);
         TextButton mainMenu = new TextButton("Main Menu", skin);
         TextButton quit = new TextButton("Quit", skin);
         TextButton settings = new TextButton("Settings", skin);
@@ -67,7 +68,6 @@ public class InGameMenu extends View{
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(Assets.getInstance().getDefault(Sound.class));
-                previous.dispose();
                 getController().stopGame();
                 getController().openMainMenu();
             }

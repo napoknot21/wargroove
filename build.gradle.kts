@@ -26,11 +26,6 @@ allprojects {
     	plugins.apply("checkstyle")
 	    plugins.apply("maven-publish")
 		plugins.apply("java-gradle-plugin")
-		try {
-			plugins.apply("up.wargroove.importMap")
-			plugins.apply("up.wargroove.exportTextures")
-			plugins.apply("up.wargroove.exportMap")
-		} catch(_: UnknownPluginException){}
 
     	java.sourceCompatibility = JavaVersion.VERSION_11
 }

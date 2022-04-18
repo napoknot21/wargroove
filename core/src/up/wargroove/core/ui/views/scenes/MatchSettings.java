@@ -1,17 +1,10 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -20,12 +13,11 @@ import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.WorldProperties;
 
-import java.nio.channels.AcceptPendingException;
-
 /**
  * The World Settings Menu.
  */
 public class MatchSettings extends ViewWithPrevious {
+    private final WorldProperties properties;
     /**
      * Previous screen button.
      */
@@ -34,7 +26,6 @@ public class MatchSettings extends ViewWithPrevious {
      * Button to reset the settings to the defaults values
      */
     private Button reset;
-
     /**
      * Button to send the configuration into the model
      */
@@ -43,51 +34,42 @@ public class MatchSettings extends ViewWithPrevious {
      * the viewport
      */
     private Viewport viewport;
-
     /**
      * The sound of the buttons
      */
     private Sound buttonSound;
     /**
-     * label of the weather SelectBox
-     */
-    private Label weatherLabel;
-    /**
      * label of the timer SelectBox
      */
     //private Label turnTimeLabel;
+    /**
+     * label of the weather SelectBox
+     */
+    private Label weatherLabel;
     /**
      * label of the fog SelectBox
      */
     private Label fogLabel;
     private Label incomeLabel;
     private Label printIncome;
-    private Label biomeLabel;
     //private Label commandersLabel;
     //private Label teamLabel;
+    private Label biomeLabel;
     /**
      * Weather SelectBox
      */
-    private SelectBox weather;
-    private SelectBox fog;
+    private SelectBox<String> weather;
     private Slider income;
-    private SelectBox biome;
-
+    private SelectBox<Biome> biome;
     private CheckBox checkFog;
-
-    private Skin skin;
-
-    WorldProperties properties = new WorldProperties();
-
-
-
-
-    private int HEIGHT = Gdx.graphics.getHeight();
-    private int WIDTH = Gdx.graphics.getWidth();
+    private final Skin skin;
+    private final int HEIGHT = Gdx.graphics.getHeight();
+    private final int WIDTH = Gdx.graphics.getWidth();
 
     public MatchSettings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
-        super(previous,controller, model, wargroove);
+        super(previous, controller, model, wargroove);
         this.skin = getAssets().getDefault(Skin.class);
+        properties = (getModel().getProperties() != null) ? getModel().getProperties() : new WorldProperties();
 
     }
 
@@ -103,16 +85,16 @@ public class MatchSettings extends ViewWithPrevious {
         weatherLabel = new Label("Weather :", skin);
         fogLabel = new Label("Fog of War :", skin);
         incomeLabel = new Label("Income :", skin);
-        income = new Slider(20,500,10,false,skin);
+        income = new Slider(20, 500, 10, false, skin);
         income.setValue(100);
-        printIncome = new Label(income.getValue() + "%",skin);
+        printIncome = new Label(income.getValue() + "%", skin);
         biomeLabel = new Label("Biome :", skin);
         weather = new SelectBox<String>(skin);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
-        checkFog = new CheckBox("On" , skin);
+        checkFog = new CheckBox("On", skin);
         checkFog.setChecked(true);
-        biome = new SelectBox(skin);
-        biome.setItems(Biome.GRASS,Biome.ICE,Biome.DESERT,Biome.VOLCANO);
+        biome = new SelectBox<Biome>(skin);
+        biome.setItems(Biome.GRASS, Biome.ICE, Biome.DESERT, Biome.VOLCANO);
         initListener();
         setStage(viewport);
         addActor(drawTable());
@@ -151,7 +133,7 @@ public class MatchSettings extends ViewWithPrevious {
      *
      * @return The table.
      */
-    private Table drawTable(){
+    private Table drawTable() {
         Table table = new Table(skin);
         table.setFillParent(true);
 
@@ -205,7 +187,7 @@ public class MatchSettings extends ViewWithPrevious {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
-                        printIncome.setText(income.getValue() +"%");
+                        printIncome.setText(income.getValue() + "%");
                     }
                 }
         );
@@ -215,7 +197,7 @@ public class MatchSettings extends ViewWithPrevious {
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
                         weather.setSelected("Random");
-                        biome.setSelected("Grass");
+                        biome.setSelected(Biome.GRASS);
                         checkFog.setChecked(true);
                         income.setValue(100);
                         printIncome.setText(income.getValue() + "%");
@@ -246,7 +228,7 @@ public class MatchSettings extends ViewWithPrevious {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
-                        properties.setBiome((Biome) biome.getSelected());
+                        properties.setBiome(biome.getSelected());
                         properties.setIncome(income.getValue() / 100f);
                         properties.setIncome(income.getValue() / 100f);
                         properties.setFog(checkFog.isChecked());

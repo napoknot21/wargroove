@@ -11,6 +11,8 @@ import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
+import up.wargroove.utils.DBEngine;
+import up.wargroove.utils.Database;
 
 /**
  * The wargroove client.
@@ -51,6 +53,8 @@ public class WargrooveClient extends Game {
 
     @Override
     public void create() {
+        System.out.println(Gdx.graphics.getWidth());
+        System.out.println(Gdx.graphics.getHeight());
         settings = Gdx.app.getPreferences("settings");
         loadSettings();
         batch = new SpriteBatch();

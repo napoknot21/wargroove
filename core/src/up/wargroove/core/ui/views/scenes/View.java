@@ -1,13 +1,10 @@
 package up.wargroove.core.ui.views.scenes;
 
 
-import com.badlogic.gdx.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
-
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -176,8 +173,10 @@ public abstract class View extends ScreenAdapter {
         return inputs;
     }
 
-    public void addInput(InputProcessor input) {
-        inputs.addProcessor(input);
+    public void addInput(InputProcessor... inputs) {
+        for (InputProcessor input : inputs) {
+            this.inputs.addProcessor(input);
+        }
     }
 
 }

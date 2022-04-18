@@ -62,6 +62,8 @@ public class World {
     public World(WorldProperties properties) {
 
         this.properties = properties;
+        this.terrain = properties.terrain;
+
         currentEntityLinPosition = Optional.empty();
 
 	permutations = new int[] {
@@ -72,7 +74,10 @@ public class World {
 	};
     states = new Stack<>();
 	players = new Vector<>();
-	int amt = Math.min(properties.amt, Faction.values().length - 1);
+    }
+
+    public void loadPlayers() {
+        int amt = Math.min(properties.amt, Faction.values().length - 1);
 
 	if(amt < Constants.WG_TWO) {
 
@@ -82,11 +87,11 @@ public class World {
 
 	for(int k = 0; k < amt; k++) {
 
-		Player p = new Player(Faction.values()[k], properties.getIncome());
-        p.setName("Player "+ (k+1));
-		players.add(p);
-
-	}	
+            Player p = new Player(Faction.values()[k], properties.getIncome());
+            p.setName("Player "+ (k+1));
+            players.add(p);
+        }
+    }
 
     public void addPlayer(Faction faction) {
         players.add(new Player(faction,properties.getIncome()));

@@ -1,103 +1,148 @@
 package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.world.World;
+import up.wargroove.core.world.WorldProperties;
+import up.wargroove.utils.DBEngine;
+import up.wargroove.utils.Database;
+import up.wargroove.utils.DbObject;
+import up.wargroove.utils.Pair;
+
+import java.util.List;
+import java.util.Locale;
 
 /**
  * The World Settings Menu.
  */
 public class SelectMap extends ViewWithPrevious {
-    /**
-     * Dimension button.
-     */
-    //private Label dimension;
+    Description description;
     /**
      * Previous screen button.
      */
     private Button back;
-    /**
-     * Slider
-     */
-    //private Slider dimSlider;
-    /**
-     * Screen controller.
-     */
-    private Controller controller;
-
-    /**
-     * Button map 1
-     */
-    private Button map1;
-    /**
-     * Button map 2
-     */
-    private Button map2;
-    /**
-     * Button map 3
-     */
-    private Button map3;
-
-    private Viewport viewport;
-
+    private OrthogonalTiledMapRenderer renderer;
+    private Pair<Float, Float> mapSize;
+    private Stage VRT;
+    private Stage VRB;
+    private Stage VL;
     private Sound buttonSound;
-
-    private SpriteBatch sb;
-
-    private Texture mapText1;
+    private Database database;
+    private String collectionName;
+    private Button choseMap;
 
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
     }
 
+    private static String transform(String mapName) {
+        String s = mapName.toLowerCase(Locale.ROOT);
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 
     @Override
     public void init() {
-        viewport = new ScreenViewport();
-        viewport.apply();
+        setStage(new ScreenViewport());
+        renderer = new OrthogonalTiledMapRenderer(new TiledMap());
+        mapSize = new Pair<>(0f, 0f);
+        VL = new Stage(new ScreenViewport());
+        VRT = new Stage(new ScreenViewport());
+        VRB = new Stage(new ScreenViewport());
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
-        //dimSlider = new Slider(0.5f, 20f, 0.1f, false,skin);
-        //dimension = new Label("Dimension", skin);
-        map1 = new TextButton("Choose Map 1",skin);
-        map2 = new TextButton("Choose Map 2",skin);
-        map3 = new TextButton("Choose Map 3",skin);
         back = new TextButton("Back", skin);
+        choseMap = new TextButton("Choose this Map", skin);
+        boolean b = getModel().getProperties() != null;
+        choseMap.setDisabled(!b);
+        choseMap.setVisible(b);
 
-        sb = new SpriteBatch();
-        mapText1 = new Texture(Gdx.files.internal("data/sprites/map1.PNG"));
+
+        collectionName = "worlds";
+        DBEngine.getInstance().connect();
+        database = DBEngine.getInstance().getDatabase("wargroove");
+        database.selectCollection(collectionName);
+
+        Table VLTable = new Table();
+        VLTable.setFillParent(true);
+        ScrollPane buttons = new ScrollPane(initButtonsTable(database.getKeys()), skin);
+        buttons.setCancelTouchFocus(false);
+        buttons.setSmoothScrolling(true);
+        VLTable.add(buttons).expand().fill();
+        VLTable.row();
+        VL.addActor(VLTable);
+
+        VRT.addActor(new MapActor());
+
+        Table VRBTable = new Table();
+        VRBTable.setFillParent(true);
+        description = new Description();
+        VRBTable.addActor(description);
+        VRBTable.add(back);
+        VRBTable.add(choseMap);
+        VRB.addActor(VRBTable);
+        addInput(VRB, VL);
+
         initListener();
-        setStage(viewport);
-        addActor(drawTable());
-        Gdx.input.setInputProcessor(getStage());
+
+    }
+
+    /**
+     * Init the table.
+     *
+     * @return The table.
+     */
+    private Table initButtonsTable(List<String> mapNames) {
+        Table table = new Table();
+        table.setFillParent(true);
+        mapNames.forEach(name -> {
+            table.add(new MapButton(name));
+            table.row();
+        });
+        return table;
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        int newWidth = width / 2;
+        int newHeight = height / 2;
+        VL.getViewport().update(newWidth, height, true);
+        VRT.getViewport().update(newWidth, newHeight, true);
+        VRB.getViewport().update(newWidth, newHeight, true);
+        VRT.getViewport().setScreenPosition(newWidth, newHeight);
+        VRB.getViewport().setScreenX(newWidth);
+        if (getModel().getWorld() != null) {
+            VRT.clear();
+            VRT.addActor(buildMap(getModel().getWorld()));
+        }
     }
 
     @Override
     public void draw(float delta) {
-        getStage().draw();
-    }
-
-    public void render(float delta){
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        draw(delta);
+        int width = Gdx.graphics.getWidth() / 2;
+        int height = Gdx.graphics.getHeight() / 2;
+        VL.getViewport().apply();
+        VL.draw();
+        VRT.getViewport().setScreenX((int) (3 * width - mapSize.first) / 2);
+        VRT.getViewport().setScreenY((int) (3 * height - mapSize.second) / 2);
+        VRT.getViewport().apply();
+        VRT.draw();
+        VRB.getViewport().setScreenX(width);
+        VRB.getViewport().apply();
+        VRB.draw();
     }
 
     @Override
@@ -118,73 +163,134 @@ public class SelectMap extends ViewWithPrevious {
     @Override
     public void dispose() {
         super.dispose();
-        sb.dispose();
-        mapText1.dispose();
         //buttonSound.dispose();
-    }
-
-    /**
-     * Init the table.
-     *
-     * @return The table.
-     */
-    private Table drawTable() {
-        Table table = new Table();
-        table.setFillParent(true);
-        //table.top();
-        //table.add(dimension);
-        table.add(map1).padRight(60f);
-        table.add(map2).padRight(60f);
-        table.add(map3);
-        table.row();
-        //table.add(dimSlider);
-        table.row();
-        table.add(back);
-
-        return table;
     }
 
     /**
      * Init the buttons' listener.
      */
     private void initListener() {
-        map1.addListener(
+        choseMap.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
                         getController().openMatchSettings();
+                        DBEngine.getInstance().disconnect();
                     }
                 }
         );
-
-        map2.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        getController().playSound(buttonSound);
-                        getController().openMatchSettings();
-                    }
-                }
-        );
-        map3.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        getController().playSound(buttonSound);
-                        getController().openMatchSettings();
-                    }
-                }
-        );
-
         back.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
+                        getModel().setWorld(null);
                         getController().back(getPrevious());
+                        DBEngine.getInstance().disconnect();
                     }
                 }
         );
     }
+
+    private void setDescription(String mapName) {
+        DbObject object = database.get(mapName + "/");
+        if (object == null) {
+
+            return;
+        }
+        WorldProperties properties = new WorldProperties();
+        properties.load(object);
+        getModel().setWorld(properties);
+        VRT.clear();
+        VRT.addActor(buildMap(getModel().getWorld()));
+        description.setInformation(properties);
+    }
+
+    private MapActor buildMap(World world) {
+        MapActor newMap = new MapActor(world);
+        TiledMap last = renderer.getMap();
+        renderer.dispose();
+        mapSize.first = (float) (newMap.map.getHeight() * newMap.map.getScale());
+        mapSize.second = (float) (newMap.map.getWidth() * newMap.map.getScale());
+        float heightRatio = (VRT.getHeight() / mapSize.first);
+        float widthRatio = (VRT.getWidth() / mapSize.second);
+
+        renderer = new OrthogonalTiledMapRenderer(newMap.map, Math.min(heightRatio, widthRatio));
+        mapSize.first *= renderer.getUnitScale();
+        mapSize.second *= renderer.getUnitScale();
+        renderer.setMap(newMap.map);
+        last.dispose();
+        return newMap;
+    }
+
+    @Override
+    public void setDebug(boolean debug) {
+        super.setDebug(debug);
+        VL.setDebugAll(debug);
+        VRT.setDebugAll(debug);
+        VRB.setDebugAll(debug);
+    }
+
+    private class MapButton extends TextButton {
+
+        private final String mapName;
+
+        public MapButton(String mapName) {
+            super(
+                    transform(mapName),
+                    Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "rusty-robot-ui.json", Skin.class)
+            );
+            this.mapName = mapName;
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    getController().playSound(buttonSound);
+                    setDescription(mapName);
+                    choseMap.setDisabled(false);
+                    choseMap.setVisible(true);
+                }
+            });
+        }
+    }
+
+    private class Description extends Table {
+        private MapActor map;
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            super.draw(batch, parentAlpha);
+        }
+
+        public void setInformation(WorldProperties properties) {
+        }
+    }
+
+    private class MapActor extends Actor {
+        private final GameMap map;
+
+        private MapActor(World world) {
+            map = new GameMap(world, getStage(), getController());
+            setSize(map.getWidth(), map.getHeight());
+        }
+
+        private MapActor() {
+            this.map = null;
+        }
+
+        public void dispose() {
+            if (map != null) {
+                map.dispose();
+            }
+        }
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            if (renderer != null) {
+                renderer.setView((OrthographicCamera) VRT.getCamera());
+                renderer.render();
+            }
+        }
+    }
+
 }

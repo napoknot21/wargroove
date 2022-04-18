@@ -1,22 +1,13 @@
 package up.wargroove.core.ui;
 
 import com.badlogic.gdx.math.Vector3;
-
 import com.badlogic.gdx.utils.Null;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.world.*;
-
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.world.GeneratorProperties;
-import up.wargroove.core.world.Tile;
-import up.wargroove.core.world.World;
-import up.wargroove.core.world.WorldProperties;
-
 import up.wargroove.utils.Pair;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -49,23 +40,26 @@ public class Model {
      * Start a new game.
      */
     public void startGame() {
-        if (world != null) {
+        if (isActive) {
             return;
         }
-        if (properties == null) {
-            properties = new WorldProperties();
-        }
-        properties.dimension = new Pair<>(20, 20);
-        properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
-        world = new World(properties);
+        if (world == null) {
+            if (properties == null) {
+                properties = new WorldProperties();
+                properties.dimension = new Pair<>(20, 20);
+                properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
+            }
+            world = new World(properties);
 
-        Thread gen = new Thread(() -> world.initialize(true));
-        gen.start();
-        try {
-            gen.join();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Thread gen = new Thread(() -> world.initialize(true));
+            gen.start();
+            try {
+                gen.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        world.loadPlayers();
         Recruitment.clearAll();
         EntityManager.getInstance().load();
         isActive = true;
@@ -76,11 +70,11 @@ public class Model {
     private void addRandomStructure() {
         Random random = new Random();
         for (int i = 0; i < properties.getDimension().first; i++) {
-            for (int j = 0; j<properties.getDimension().second; j++) {
+            for (int j = 0; j < properties.getDimension().second; j++) {
                 int rand = random.nextInt(100);
                 if (rand < 10) {
-                    Faction faction = (rand %2 == 0)? Faction.FELHEIM_LEGION : Faction.CHERRYSTONE_KINGDOM;
-                    world.at(i,j).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, faction));
+                    Faction faction = (rand % 2 == 0) ? Faction.FELHEIM_LEGION : Faction.CHERRYSTONE_KINGDOM;
+                    world.at(i, j).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, faction));
                 }
             }
         }
@@ -88,9 +82,9 @@ public class Model {
 
     private void setStartData() {
         for (int i = 0; i < properties.getDimension().first; i++) {
-            for (int j = 0; j<properties.getDimension().second; j++) {
-                if (world.at(i,j).entity.isPresent()) {
-                    Entity entity = world.at(i,j).entity.get();
+            for (int j = 0; j < properties.getDimension().second; j++) {
+                if (world.at(i, j).entity.isPresent()) {
+                    Entity entity = world.at(i, j).entity.get();
                     Player player = getPlayer(entity.getFaction());
                     if (player != null) {
                         player.addEntity(entity);
@@ -104,11 +98,12 @@ public class Model {
         return world;
     }
 
-    public void setProperties(WorldProperties properties) {
+    public void setWorld(WorldProperties properties) {
+        this.world = (properties != null) ? new World(properties) : null;
         this.properties = properties;
     }
 
-    public Biome getBiome(){
+    public Biome getBiome() {
         return properties.getBiome();
     }
 
@@ -150,6 +145,7 @@ public class Model {
     public void nextTurn() {
         world.nextPlayer();
     }
+
     public Player getCurrentPlayer() {
         return world.getCurrentPlayer();
     }
@@ -167,7 +163,7 @@ public class Model {
     }
 
     @Null
-    private Player  getPlayer(Faction faction) {
+    private Player getPlayer(Faction faction) {
         return world.getPlayer(faction);
     }
 
@@ -180,5 +176,13 @@ public class Model {
 
     public void setActiveStructure(Entity activeStructure) {
         this.activeStructure = activeStructure;
+    }
+
+    public WorldProperties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(WorldProperties properties) {
+        this.properties = properties;
     }
 }

@@ -82,6 +82,7 @@ public class WorldProperties implements Savable {
 	    if(from == null) return;
 
 	    description = from.get(Constants.WORLD_DESCRIPTION_DB_KEY).get();
+		biome = Biome.valueOf(from.get(Constants.WORLD_BIOME_DB_KEY).get());
 
 	    int width = Integer.valueOf(
 			    from.get(Constants.WORLD_WIDTH_DB_KEY).get()
@@ -118,6 +119,7 @@ public class WorldProperties implements Savable {
 	    res.put(Constants.WORLD_DESCRIPTION_DB_KEY, description);
 	    res.put(Constants.WORLD_WIDTH_DB_KEY, dimension.first);
 	    res.put(Constants.WORLD_HEIGHT_DB_KEY, dimension.second);
+		res.put(Constants.WORLD_BIOME_DB_KEY,biome);
 
 	    DbObject mapDBO = new DbObject();
 	    int tileIndex = 0;
