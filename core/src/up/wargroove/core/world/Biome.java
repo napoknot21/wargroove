@@ -1,5 +1,7 @@
 package up.wargroove.core.world;
 
+import javax.json.Json;
+
 /**
  * List all the existing biomes.
  */

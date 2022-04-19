@@ -6,6 +6,8 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Json;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
@@ -45,6 +47,8 @@ public class WargrooveClient extends Game {
 
     public WargrooveClient(boolean debug) {
         this.debug = debug;
+        Json json = new Json();
+        TextureAtlas atlas = new TextureAtlas();
     }
 
     public WargrooveClient() {
