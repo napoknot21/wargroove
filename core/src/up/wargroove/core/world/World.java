@@ -379,7 +379,7 @@ public class World {
 
                 if (checked.containsKey(lin)) continue;
 
-                if ((movementCost = predicate.test(lin, movementId, element.second)) >= 0) {
+                if ((movementCost = predicate.test(lin, movementId, element.second,root)) >= 0) {
 
 		            var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
@@ -415,6 +415,20 @@ public class World {
         if (currentEntityLinPosition.isPresent()) {
 
             positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn);
+
+        }
+
+        return positions;
+
+    }
+
+    public Vector<Pair<Integer,Pair<Integer,Integer>>> validTargets() {
+
+        Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
+
+        if (currentEntityLinPosition.isPresent()) {
+
+            positions = breadthFirstSearch(currentEntityLinPosition.get(), canAttack);
 
         }
 

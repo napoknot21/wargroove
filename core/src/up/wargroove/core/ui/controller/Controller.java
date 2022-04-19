@@ -246,7 +246,7 @@ public class Controller {
 
     //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
     public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
-        var valids = getWorld().validMovements();
+        var valids = getWorld().validTargets();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         Vector<Pair<Integer, Integer>> intel = new Vector<>();
         valids.forEach(v -> {
