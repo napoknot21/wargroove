@@ -3,6 +3,7 @@ package up.wargroove.core.world;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.Character;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
@@ -29,11 +30,8 @@ public class World {
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
-        Tile toTile = terrain[k[Constants.WG_ZERO]];
-       // if (toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
-
-	    if(toTile.entity.isPresent()) return -2;
-	    if(k[Constants.WG_TWO] == 0) return -1;
+        Tile toTile = terrain[k[Constants.WG_ZERO]]; 
+	if(toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -46,11 +44,14 @@ public class World {
 
     private final WPredicate<Integer> canAttack = (k) -> {
 
-	    Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
+	Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
+	
+	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;	
 
-	    if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;
+	int attackRange = ((Character) rootEntity.get()).getRange();
+	if(k[Constants.WG_TWO] + attackRange <= 0) return -2;
 
-	    boolean status = canMoveOn.test(k) == -2;
+	boolean status = true;
         status &= targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
         return status ? 1 : -1;
@@ -334,7 +335,7 @@ public class World {
 
                 if ((movementCost = predicate.test(lin, movementId, element.second, root)) >= 0) {
 
-		            var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     res.add(lin);
                     emp.add(predicateArg);
 

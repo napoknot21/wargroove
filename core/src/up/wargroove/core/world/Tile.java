@@ -28,7 +28,10 @@ public class Tile implements Savable {
     private static final int WALL_D_COST = 0x0;
     private static final int FLAGSTONE_D_COST = 0x21100102;
     private static final int CARPET_D_COST = 0x21100102;
+    
     public Optional<Entity> entity;
+    public Optional<Character> character;
+
     private Type type; 
 
     public Tile() {

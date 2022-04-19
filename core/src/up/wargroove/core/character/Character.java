@@ -93,6 +93,12 @@ public abstract class Character extends Entity {
         return this.stats.health;
     }
 
+    public int getRange() {
+
+	    return stats.range;
+
+    }
+
     public double getAttack() {
         return this.stats.health;
     }
