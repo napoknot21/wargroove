@@ -256,12 +256,12 @@ public class CharacterUI extends EntityUI {
         decalage = new Pair<>(0,0);
         switch (getEntity().getType()){
             case COMMANDER:
-            /*case ARCHER: ATTACK_FRAMES=13; break;
+            case ARCHER: ATTACK_FRAMES=13; break;
             case SOLDIER: ATTACK_FRAMES=6; break;
             case SPEARMAN: ATTACK_FRAMES=8; break;
-            case AMPHIBIAN: ATTACK_FRAMES=8; break;
-            case GIANT: ATTACK_FRAMES=6; size.first=30;size.second=50; decalage.first=-5; break;
-            case MAGE: ATTACK_FRAMES= 7;*/
+            //case AMPHIBIAN: ATTACK_FRAMES=8; break;
+            case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>(30,50)); decalage.first=-5; break;
+            case MAGE: ATTACK_FRAMES= 7;
             default:
         }
     }
@@ -271,7 +271,8 @@ public class CharacterUI extends EntityUI {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (canMove()) moveTo();
-        if (!canMove()&&attackDirection!=null) attackTo();
+        else if (attackDirection != null) attackTo();
+        else exhaust();
         //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
         super.draw(batch, parentAlpha);
     }

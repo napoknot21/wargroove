@@ -77,7 +77,7 @@ public class GameView extends View {
      * @param model     The wargroove's model.
      * @param wargroove The client.
      */
-    public GameView(Model model, Controller controller, WargrooveClient wargroove) {
+    public GameView(Controller controller, Model model, WargrooveClient wargroove) {
         super(controller, model, wargroove);
     }
 
@@ -86,14 +86,8 @@ public class GameView extends View {
         initGameViewUI();
         initMap();
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
-        //structureMenu = new StructureMenu(getAssets(), getController(), getStage());
         movementSelector = new MovementSelector(gameMap.getScale());
         attackSelector = new AttackSelector(gameMap.getScale());
-        /*Character character = new Villager("Superman", Faction.CHERRYSTONE_KINGDOM);
-        Character c = new Villager("Superman", Faction.HEAVENSONG_EMPIRE);
-
-        CharacterUI pepito = new CharacterUI(getController(), new Pair<>(10, 10), character);
-        CharacterUI menganito = new CharacterUI(getController(), new Pair<>(10, 11), c);*/
         TextureRegion texture = getAssets().getTest();
         cursor = new Cursor(texture, gameMap.getScale());
         initInput();
@@ -131,7 +125,6 @@ public class GameView extends View {
         playerBox = new PlayerBox();
         codex = new Codex(getAssets(), getController());
 
-        Viewport viewport = new ExtendViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         Viewport viewport = new ScreenViewport();
         viewport.apply();
         gameViewUi = new Stage(viewport);
@@ -323,6 +316,7 @@ public class GameView extends View {
         viewport.update(width, height);
         gameViewUi.getViewport().update(width, height, true);
         camera.position.set(gameMap.getCenter());
+        StructureMenu.resize(width, height);
     }
 
     public OrthographicCamera getCamera() {

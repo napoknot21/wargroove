@@ -25,6 +25,7 @@ public class StructureMenu extends Dialog {
     private final Controller controller;
     private Entity current;
     private final Player player;
+    private Stage stage;
 
     private StructureMenu(Assets assets, Controller controller) {
         super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
@@ -54,6 +55,7 @@ public class StructureMenu extends Dialog {
         }
         instance = new StructureMenu(assets, controller);
         instance.setup(list, assets);
+        instance.stage = stage;
         stage.getViewport().setScreenSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         instance.show(stage);
     }
@@ -69,6 +71,13 @@ public class StructureMenu extends Dialog {
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
+    public static void resize(int width, int height) {
+        if (instance != null) {
+            instance.stage.getViewport().update(width,height);
+            instance.show(instance.stage);
+        }
+    }
+
     /**
      * Build the menu.
      *
@@ -82,18 +91,18 @@ public class StructureMenu extends Dialog {
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
         ScrollPane pane = new ScrollPane(buttons);
-        instance.getContentTable().add(pane);
+        instance.getContentTable().add(pane).expand();
         instance.getContentTable().add(instance.description).expand().fill();
     }
 
     @Override
     public float getPrefHeight() {
-        return 200;
+        return Math.min(Gdx.graphics.getHeight() / 2f, 400);
     }
 
     @Override
     public float getPrefWidth() {
-        return 350;
+        return Math.min(Gdx.graphics.getWidth() / 2f, 600);
     }
 
     @Override
@@ -199,12 +208,18 @@ public class StructureMenu extends Dialog {
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);
-            left();
+            left().center();
+            add();
             add(movementCost).left();
+            add();
             row();
+            add();
             add(range).left();
+            add();
             row();
+            add();
             add(new ScrollPane(text)).left();
+            add();
             row();
             setVisible(false);
         }

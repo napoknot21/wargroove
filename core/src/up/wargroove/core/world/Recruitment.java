@@ -5,6 +5,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.entities.Villager;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.Optional;
 
@@ -29,7 +30,7 @@ public class Recruitment extends Structure {
 	}
 
 	private Type type;
-	private List<Class<? extends Entity>> current;
+	private List<Entity> current;
 
 	public Recruitment(Type type, Faction faction) {
 

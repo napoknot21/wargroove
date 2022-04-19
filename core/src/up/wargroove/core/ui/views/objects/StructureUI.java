@@ -32,4 +32,10 @@ public class StructureUI extends EntityUI {
         }
         getSprite().setColor(color);
     }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (!canMove()) exhaust();
+        super.draw(batch, parentAlpha);
+    }
 }

@@ -17,6 +17,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 
 import java.awt.*;

@@ -128,7 +128,7 @@ public abstract class EntityUI extends Actor {
     /**
      * Puts the character with a dark filter.
      */
-    private void exhaust(){
+    protected void exhaust(){
         if(entity.isExhausted()) {
             sprite.setColor(Color.GRAY);
         } else {
@@ -147,7 +147,6 @@ public abstract class EntityUI extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (!canMove()) exhaust();
         if (injured) injure();
         sprite.draw(batch);
         if (isWaiting()) {

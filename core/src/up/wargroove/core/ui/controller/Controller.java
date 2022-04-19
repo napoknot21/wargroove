@@ -47,7 +47,6 @@ public class Controller {
      */
     private Model model;
 
-    private Class<? extends View> previous;
     /**
      * World scale.
      */
@@ -89,10 +88,9 @@ public class Controller {
     public void startGame() {
         Model model = getModel();
         getModel().startGame();
-        getClient().getAssets().load();
         chooseMusic();
         getClient().playMusic();
-        GameView view = new GameView(model, this, getClient());
+        GameView view = new GameView(this, model, getClient());
         setScreen(view);
         worldScale = view.getGameMap().getScale();
     }
@@ -111,7 +109,7 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new Settings(this, model, getClient()));
+        setScreen(new Settings(getScreen(),this, model, getClient()));
     }
 
     public void openMatchSettings() {
@@ -122,19 +120,8 @@ public class Controller {
     }
 
     public void setPrevious() {
-        previous = getScreen().getClass();
     }
 
-    public void back() {
-        if (previous == null) return;
-        try {
-            Constructor<? extends View> constructor =
-                    previous.getDeclaredConstructor(Controller.class, Model.class, WargrooveClient.class);
-            View view = constructor.newInstance(this,getModel(),getClient());
-            back(view);
-        } catch (Exception ignored) {
-        }
-    }
 
     public void back(View previous) {
         setScreen(previous);
@@ -401,6 +388,7 @@ public class Controller {
         }
         gameView.clearSelectors();
         Actor entity = gameView.getScopedEntity();
+        getWorld().getScopedEntity().exhaust();
         if (path.length() > 1) {
             getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
         }

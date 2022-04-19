@@ -16,7 +16,7 @@ import up.wargroove.core.ui.controller.Controller;
 /**
  * The World Settings Menu.
  */
-public class Settings extends View {
+public class Settings extends ViewWithPrevious {
     /**
      * Full Screen button.
      */
@@ -44,8 +44,8 @@ public class Settings extends View {
 
     Sound buttonSound;
 
-    public Settings(Controller controller, Model model, WargrooveClient wargroove) {
-        super(controller, model, wargroove);
+    public Settings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
+        super(previous, controller, model, wargroove);
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = Assets.getInstance().getDefault(Sound.class);
         fullScreenLabel = new Label("Full screen",skin);
@@ -171,7 +171,7 @@ public class Settings extends View {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
-                        getController().back();
+                        getController().back(getPrevious());
                         pane.cancel();
                     }
                 }

@@ -20,10 +20,6 @@ public class GameMap extends TiledMap {
     private final int tileSize;
     int height;
     int width;
-    /**
-     * scale pixels for one tile.
-     */
-    int scale;
     TiledMapTileLayer tileLayer;
     TextureAtlas atlas;
 
