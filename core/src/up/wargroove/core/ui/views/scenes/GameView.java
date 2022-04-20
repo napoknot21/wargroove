@@ -349,7 +349,7 @@ public class GameView extends View {
         return movementSelector.getDestination();
     }
 
-    private void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
+    public void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
         var array = getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
@@ -360,6 +360,7 @@ public class GameView extends View {
             scopedEntity = null;
         }
     }
+
 
     @Null
     public Actor getCharacterUI(Entity entity) {

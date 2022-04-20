@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.util.*;
 
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
+import up.wargroove.core.character.entities.*;
 import up.wargroove.utils.Pair;
 
 public abstract class Character extends Entity {
@@ -57,17 +58,17 @@ public abstract class Character extends Entity {
 
     public Pair<Integer, Integer> getAttacksValues (Character ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(0,0);
+        if (data == null || ch == null) return new Pair<>(100,20);
         List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return new Pair<>(0,0);;
+        if (attacks.size() != 2) return new Pair<>(10,10);;
         return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
     }
 
     public Pair<Integer,Integer> getDefendsValues (Character ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(0,0);;
+        if (data == null || ch == null) return new Pair<>(0,10);;
         List <Integer> defends = data.get("defends");
-        if (defends.size() != 2) return new Pair<>(0,0);;
+        if (defends.size() != 2) return new Pair<>(10,10);;
         return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
     }
 

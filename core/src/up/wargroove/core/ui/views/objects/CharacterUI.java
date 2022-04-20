@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import org.lwjgl.Sys;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
@@ -200,10 +201,11 @@ public class CharacterUI extends EntityUI {
 
     private void die(){
         addTemps(getTimeLapse());
-        actualiseSprite(animationDie[(int) (getTemps()/10)]);
-        if (getTemps()>=70-getTimeLapse()){
+        actualiseSprite(animationDie[(int) (getTemps()/3% animationDie.length)]);
+        System.out.println(getTemps());
+        if (getTemps()>20){
             setTemps(0);
-            setAlive(false);
+            this.remove();
             controller.getWorld().delEntity(getCoordinates(), getEntity());
         }
     }
@@ -273,7 +275,9 @@ public class CharacterUI extends EntityUI {
         if (canMove()) moveTo();
         else if (attackDirection != null) attackTo();
         else exhaust();
-        //if (coordinate.first.equals(new Integer(9))&&(alive)) die();
+        if(!isAlive()) {
+            die();
+        }
         super.draw(batch, parentAlpha);
     }
 }

@@ -396,7 +396,8 @@ public class Controller {
         getWorld().unscopeEntity();
         getWorld().scopeEntity(positionTarget);
         Entity entityTarget= getWorld().getScopedEntity();
-        Actor actorTarget = gameView.getScopedEntity();
+        gameView.scopeEntity(positionTarget);
+        Actor actorTarget = gameView.getCharacterUI(entityTarget);
         if (path.length() > 1) {
             getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
         }
@@ -407,6 +408,7 @@ public class Controller {
             ((EntityUI) actorTarget).setInjured(true);
         }
     }
+
 
     /**
      * Make the unit inactive for the turn.

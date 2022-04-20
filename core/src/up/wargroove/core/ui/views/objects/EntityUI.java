@@ -116,12 +116,15 @@ public abstract class EntityUI extends Actor {
      * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
      */
     private void injure(){
-        sprite.setColor(Color.RED);
+        if (temps>100*getTimeLapse()) sprite.setColor(Color.RED);
         temps+=getTimeLapse();
-        if (temps>3){
+        if (temps>140*getTimeLapse()){
             temps=0;
             sprite.setColor(1,1,1,1);
             injured=false;
+            if(entity.getHealth()<=0) {
+                alive=false;
+            }
         }
     }
 
