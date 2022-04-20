@@ -107,8 +107,9 @@ public class Codex extends Table {
                         public void changed(ChangeEvent event, Actor actor) {
                             float x= dialog.getX();
                             float y= dialog.getY();
+                            float h= dialog.getHeight();
                             dialog.setBounds(x,y, dialog.getPrefWidth(), dialog.getPrefHeight());
-                            dialog.setPosition(x,y);
+                            dialog.setPosition(x,y-(dialog.getPrefHeight()-h));
                             object.removeAll(object);
                             tableObjects.clear();
                             createObject(a.getLabel().getText().toString(),openCodex.getSkin());
