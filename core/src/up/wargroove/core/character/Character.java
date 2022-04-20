@@ -40,7 +40,7 @@ public abstract class Character extends Entity {
 
     protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
         try {
-            String name = this.getType().name().toLowerCase();
+            String name = this.getType().toString().toLowerCase();
             File f = new File(pathDamageMatrix + name + ".yml");
             return new Yaml().load(new FileInputStream(f));
         } catch (Exception e) {
@@ -57,17 +57,17 @@ public abstract class Character extends Entity {
 
     public Pair<Integer, Integer> getAttacksValues (Character ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return null;
+        if (data == null || ch == null) return new Pair<>(0,0);
         List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return null;
+        if (attacks.size() != 2) return new Pair<>(0,0);;
         return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
     }
 
     public Pair<Integer,Integer> getDefendsValues (Character ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return null;
+        if (data == null || ch == null) return new Pair<>(0,0);;
         List <Integer> defends = data.get("defends");
-        if (defends.size() != 2) return null;
+        if (defends.size() != 2) return new Pair<>(0,0);;
         return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
     }
 

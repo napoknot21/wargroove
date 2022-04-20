@@ -15,6 +15,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
+import up.wargroove.core.ui.views.objects.EntityUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Recruitment;
@@ -375,6 +376,7 @@ public class Controller {
         }
     }
 
+    //TODO Pas pris en compte de si on veut attaquer une entity en general
     public void endAttack() {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
@@ -382,19 +384,27 @@ public class Controller {
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer, Integer> position = selector.getPositionAttack();
+        Pair<Integer, Integer> positionTarget = selector.getDestination();
         if (path.isBlank()) {
             selector.reset();
             return;
         }
         gameView.clearSelectors();
-        Actor entity = gameView.getScopedEntity();
-        getWorld().getScopedEntity().exhaust();
+        Actor actor = gameView.getScopedEntity();
+        Entity entity= getWorld().getScopedEntity();
+        entity.exhaust();
+        getWorld().unscopeEntity();
+        getWorld().scopeEntity(positionTarget);
+        Entity entityTarget= getWorld().getScopedEntity();
+        Actor actorTarget = gameView.getScopedEntity();
         if (path.length() > 1) {
             getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
         }
-        if (entity instanceof CharacterUI) {
-            ((CharacterUI) entity).setMove(path.substring(0, path.length() - 1));
-            ((CharacterUI) entity).setAttackDirection(path.charAt(path.length() - 1));
+        if ((actor instanceof CharacterUI) &&(entity instanceof Character)) {
+            ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
+            ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
+            ((Character) entity).attack((Character) entityTarget);
+            ((EntityUI) actorTarget).setInjured(true);
         }
     }
 
@@ -448,7 +458,7 @@ public class Controller {
         }
         Recruitment r = (Recruitment) s.get();
         getModel().setActiveStructure(r);
-        Optional<Entity> bought = r.buy(c, 0, "test", getModel().getCurrentPlayer().getFaction());
+        Optional<Entity> bought = r.buy(c, 0, "soldier", getModel().getCurrentPlayer().getFaction());
         if (bought.isEmpty()) {
             return;
         }
