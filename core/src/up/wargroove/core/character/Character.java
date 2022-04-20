@@ -10,11 +10,11 @@ import java.util.*;
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.core.character.entities.*;
 import up.wargroove.utils.Pair;
+import up.wargroove.utils.Constants;
 
 public abstract class Character extends Entity {
 
     protected String name;
-    private final static String pathDamageMatrix = "./core/src/up/wargroove/core/character/damageMatrix/";
     protected Stats stats;
 
     /**
@@ -42,7 +42,7 @@ public abstract class Character extends Entity {
     protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
         try {
             String name = this.getType().toString().toLowerCase();
-            File f = new File(pathDamageMatrix + name + ".yml");
+            File f = new File(Constants.DEFAULT_DM_ROOT + name + ".yml");
             return new Yaml().load(new FileInputStream(f));
         } catch (Exception e) {
             e.printStackTrace();
