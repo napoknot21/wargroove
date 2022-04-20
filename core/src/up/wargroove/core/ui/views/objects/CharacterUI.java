@@ -133,7 +133,7 @@ public class CharacterUI extends EntityUI {
             moveBy(x,y);
             spriteWaiting.setPosition(getX(),getY());
             removeFirstMove();
-            if (!canMove()){
+            if (!canMove() && attackDirection == null) {
                 actualiseSprite();
             }
         }
@@ -202,7 +202,6 @@ public class CharacterUI extends EntityUI {
     private void die(){
         addTemps(getTimeLapse());
         actualiseSprite(animationDie[(int) (getTemps()/3% animationDie.length)]);
-        System.out.println(getTemps());
         if (getTemps()>20){
             setTemps(0);
             this.remove();

@@ -58,7 +58,7 @@ public abstract class Character extends Entity {
 
     public Pair<Integer, Integer> getAttacksValues (Character ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(100,20);
+        if (data == null || ch == null) return new Pair<>(20,20);
         List <Integer> attacks = data.get("attacks");
         if (attacks.size() != 2) return new Pair<>(10,10);;
         return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
