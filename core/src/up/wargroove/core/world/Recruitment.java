@@ -1,13 +1,14 @@
 package up.wargroove.core.world;
 
-import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.entities.Villager;
+import up.wargroove.utils.Constants;
+import up.wargroove.utils.DbObject;
 
 import java.util.List;
-import java.util.Vector;
 import java.util.Optional;
+import java.util.Vector;
 
 public class Recruitment extends Structure {
 
@@ -19,6 +20,21 @@ public class Recruitment extends Structure {
 		landEntityClasses.clear();
 		navalEntityClasses.clear();
 		airEntityClasses.clear();
+	}
+
+	public static Structure loadRecruitment(DbObject from, Faction faction) {
+		if (from == null) {
+			return null;
+		}
+		Type type = Type.valueOf(from.get(Constants.RECRUITMENT_TYPE_DB_KEY).get());
+		return new Recruitment(type,faction);
+	}
+
+	@Override
+	public DbObject toDBO() {
+		DbObject res =  super.toDBO();
+		res.put(Constants.RECRUITMENT_TYPE_DB_KEY, type);
+		return res;
 	}
 
 	public enum Type {

@@ -82,18 +82,17 @@ public class Tile implements Savable {
 
     @Override
     public void load(DbObject dbo) {
-
 	String typeStr = dbo.get(Constants.WORLD_TILE_TYPE_DB_KEY).get();
 	type = Type.valueOf(typeStr);
-
+    entity = Optional.ofNullable(Entity.loadEntity(dbo.get(Constants.WORLD_TILE_ENTITY_DB_KEY)));
     }
 
     @Override
     public DbObject toDBO() {
 
 	DbObject dbo = new DbObject();
-
 	dbo.put(Constants.WORLD_TILE_TYPE_DB_KEY, type.toString());
+    dbo.put(Constants.WORLD_TILE_ENTITY_DB_KEY, entity.map(Entity::toDBO).orElse(new DbObject()));
 	return dbo;
 
     } 

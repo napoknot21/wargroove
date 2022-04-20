@@ -1,7 +1,6 @@
 package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,12 +8,12 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
-import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.AttackSelector;
+import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Recruitment;
@@ -22,7 +21,6 @@ import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
 import java.util.Vector;

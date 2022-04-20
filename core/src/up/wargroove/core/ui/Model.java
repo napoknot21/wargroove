@@ -63,7 +63,7 @@ public class Model {
         Recruitment.clearAll();
         EntityManager.getInstance().load();
         isActive = true;
-        addRandomStructure();
+        addRandomStructure(); //for generate random structure
         setStartData();
     }
 

@@ -270,7 +270,7 @@ public class SelectMap extends ViewWithPrevious {
         private final GameMap map;
 
         private MapActor(World world) {
-            map = new GameMap(world, getStage(), getController());
+            map = new GameMap(world, getStage(), getController(), false);
             setSize(map.getWidth(), map.getHeight());
         }
 

@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.utils.Pair;
 
@@ -26,7 +24,7 @@ public class CharacterUI extends EntityUI {
 
 
     private void actualiseSprite(){
-        setSprite(spriteWaiting);
+        setSprite(new Sprite(spriteWaiting));
         positionChanged();
     }
 
@@ -132,7 +130,7 @@ public class CharacterUI extends EntityUI {
             moveBy(x,y);
             spriteWaiting.setPosition(getX(),getY());
             removeFirstMove();
-            if (!canMove()){
+            if (!canMove() && attackDirection == null){
                 actualiseSprite();
             }
         }

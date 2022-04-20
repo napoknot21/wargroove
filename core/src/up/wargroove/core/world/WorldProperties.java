@@ -1,10 +1,11 @@
 package up.wargroove.core.world;
 
-import up.wargroove.utils.Log;
-import up.wargroove.utils.Pair;
-import up.wargroove.utils.DbObject; 
-import up.wargroove.utils.Savable;
+import up.wargroove.core.character.EntityManager;
 import up.wargroove.utils.Constants;
+import up.wargroove.utils.DbObject;
+import up.wargroove.utils.Pair;
+import up.wargroove.utils.Savable;
+
 import javax.sound.sampled.AudioInputStream;
 
 public class WorldProperties implements Savable {
@@ -83,6 +84,7 @@ public class WorldProperties implements Savable {
 
 	    description = from.get(Constants.WORLD_DESCRIPTION_DB_KEY).get();
 		biome = Biome.valueOf(from.get(Constants.WORLD_BIOME_DB_KEY).get());
+		name = from.get(Constants.WORLD_NAME_DB_KEY).get();
 
 	    int width = Integer.valueOf(
 			    from.get(Constants.WORLD_WIDTH_DB_KEY).get()
@@ -100,6 +102,7 @@ public class WorldProperties implements Savable {
 	     */
 
 	    DbObject mapDBO = from.get(Constants.WORLD_MAP_DB_KEY);
+		EntityManager.getInstance().load();
 
 	    for(int k = 0; k < terrain.length; k++) {
  
@@ -115,11 +118,12 @@ public class WorldProperties implements Savable {
     public DbObject toDBO() {
 
 	    DbObject res = new DbObject();
-	    
+
+		res.put(Constants.WORLD_NAME_DB_KEY, name);
 	    res.put(Constants.WORLD_DESCRIPTION_DB_KEY, description);
 	    res.put(Constants.WORLD_WIDTH_DB_KEY, dimension.first);
 	    res.put(Constants.WORLD_HEIGHT_DB_KEY, dimension.second);
-		res.put(Constants.WORLD_BIOME_DB_KEY,biome);
+		res.put(Constants.WORLD_BIOME_DB_KEY,biome.toString());
 
 	    DbObject mapDBO = new DbObject();
 	    int tileIndex = 0;

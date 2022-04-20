@@ -29,7 +29,7 @@ public class GameMap extends TiledMap {
      * @param world The world that will be on the gui
      * @param stage
      */
-    public GameMap(World world, Stage stage, Controller controller, int tileSize) {
+    public GameMap(World world, Stage stage, Controller controller, int tileSize, boolean entity) {
         super();
         atlas = Assets.getInstance().get(controller.getModel().getBiome());
         width = world.getDimension().first;
@@ -40,11 +40,21 @@ public class GameMap extends TiledMap {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new MapTile(world.at(i, j), atlas));
-                addEntityImage(stage, controller, world, i, j);
+                if (entity) {
+                    addEntityImage(stage, controller, world, i, j);
+                }
                 tileLayer.setCell(i, j, cell);
             }
         }
         this.getLayers().add(tileLayer);
+    }
+
+    public GameMap(World world, Stage stage, Controller controller, int tileSize) {
+        this(world,stage,controller,tileSize,true);
+    }
+
+    public GameMap(World world, Stage stage, Controller controller, boolean entity) {
+        this(world, stage, controller, 20, entity);
     }
 
     public GameMap(World world, Stage stage, Controller controller) {

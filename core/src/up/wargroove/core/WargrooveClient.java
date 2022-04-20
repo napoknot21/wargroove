@@ -47,8 +47,6 @@ public class WargrooveClient extends Game {
 
     public WargrooveClient(boolean debug) {
         this.debug = debug;
-        Json json = new Json();
-        TextureAtlas atlas = new TextureAtlas();
     }
 
     public WargrooveClient() {

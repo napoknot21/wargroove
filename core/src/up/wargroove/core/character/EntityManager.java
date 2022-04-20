@@ -1,13 +1,8 @@
 package up.wargroove.core.character;
 
+import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.world.Recruitment;
-import up.wargroove.core.character.Faction;
 import up.wargroove.utils.Log;
-
-/*
- * Gestionnaire des classes d'entités
- * en singleton
- */
 
 import java.lang.reflect.Constructor;
 import java.util.Vector;
@@ -115,6 +110,16 @@ public class EntityManager {
 
 		}
 
+		return null;
+	}
+
+	@Null
+	public static Entity instantiate(Entity.Type type, String name, Faction faction) {
+		for (Class<? extends Entity> c : entitySubClasses) {
+			if (c.getSimpleName().equalsIgnoreCase(type.toString())) {
+				return instantiate(c,name,faction);
+			}
+		}
 		return null;
 	}
 
