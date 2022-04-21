@@ -287,7 +287,7 @@ public class Controller {
 
     public int getScopedEntityMovementCost() {
         Entity entity = getScopedEntity();
-        return (entity == null) ? -1 : entity.getRange();
+        return (entity == null) ? -1 : entity.getMovRange();
     }
 
     /**

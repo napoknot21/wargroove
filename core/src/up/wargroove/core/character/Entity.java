@@ -72,7 +72,7 @@ public abstract class Entity {
 
     }
 
-    public int getRange() {
+    public int getMovRange() {
 
         return this.movRange;
 

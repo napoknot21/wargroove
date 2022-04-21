@@ -1,1 +1,1 @@
-A powerful unit built to combat air threats.
+Ranged ground units able to move and attack in the same turn
