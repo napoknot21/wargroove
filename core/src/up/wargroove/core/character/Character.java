@@ -3,14 +3,10 @@ package up.wargroove.core.character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.*;
-
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.core.character.entities.*;
 import up.wargroove.utils.Pair;
-import up.wargroove.utils.Constants;
+
 
 public abstract class Character extends Entity {
 
@@ -31,47 +27,6 @@ public abstract class Character extends Entity {
         stats = new Stats();
 
     }
-
-    public void attack (Character ch) {
-        if (ch == null) return;
-        Pair<Integer,Integer> attacks = this.getAttacksValues(ch);
-        Pair<Integer,Integer> defends = ch.getDefendsValues(this);
-        ch.setHealth(ch.getHealth() - attacks.first + defends.first);
-    }
-
-    protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
-        try {
-            String name = this.getType().toString().toLowerCase();
-            File f = new File(Constants.DEFAULT_DM_ROOT + name + ".yml");
-            return new Yaml().load(new FileInputStream(f));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public Map<String, List <Integer> > getAttacksAndDefendsValues (Character ch) {
-        var data = this.readDamageMatrixValues();
-        if (data == null || ch == null) return null;
-        return data.get(ch.getType().name().toUpperCase());
-    }
-
-    public Pair<Integer, Integer> getAttacksValues (Character ch) {
-        var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(20,20);
-        List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return new Pair<>(10,10);;
-        return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
-    }
-
-    public Pair<Integer,Integer> getDefendsValues (Character ch) {
-        var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(0,10);;
-        List <Integer> defends = data.get("defends");
-        if (defends.size() != 2) return new Pair<>(10,10);;
-        return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
-    }
-
 
     public Faction getFaction() {
         return super.getFaction();
