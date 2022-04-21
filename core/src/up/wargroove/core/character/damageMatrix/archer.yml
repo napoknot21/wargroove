@@ -1,4 +1,12 @@
 ---
+MINIMUM :
+  attacks :
+    - 10 #Valeur la plus petite dans les attaques
+    - 10
+  defends :
+    - 10
+    - 10
+
 SOLDIER :
   attacks : #first = base, second = critical
     - 75

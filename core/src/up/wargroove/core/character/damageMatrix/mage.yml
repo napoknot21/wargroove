@@ -1,4 +1,12 @@
 ---
+MINIMUM :
+  attacks :
+    - 20
+    - 30
+  defends :
+    - 20
+    - 20
+
 SOLDIER :
   attacks : #first = base, second = critical
     - 90

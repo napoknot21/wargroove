@@ -1,4 +1,12 @@
 ---
+MINIMUM :
+  attacks :
+    - 10
+    - 20
+  defends :
+    - 35
+    - 10
+
 SOLDIER :
   attacks:
     - 80

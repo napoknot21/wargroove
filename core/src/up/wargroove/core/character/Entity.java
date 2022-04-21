@@ -35,13 +35,14 @@ public abstract class Entity {
     }
 
     public void setHealth(double health) {
-        this.health = health;
+        if (health < 0) this.health = 0;
+        else this.health = health;
     }
 
     public void initialize() {
         this.health = getHealth();
         isExhausted = false;
-    };
+    }
 
     public boolean isExhausted() {
 
@@ -118,18 +119,17 @@ public abstract class Entity {
         var data = this.getAttacksAndDefendsValues(ch);
         if (data == null || ch == null) return new Pair<>(20,20);
         List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return new Pair<>(10,10);;
+        if (attacks.size() != 2) return new Pair<>(10,10);
         return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
     }
 
     public Pair<Integer,Integer> getDefendsValues (Entity ch) {
         var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(0,10);;
+        if (data == null || ch == null) return new Pair<>(0,10);
         List <Integer> defends = data.get("defends");
-        if (defends.size() != 2) return new Pair<>(10,10);;
+        if (defends.size() != 2) return new Pair<>(10,10);
         return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
     }
-
 
     public enum Component {
 
