@@ -34,9 +34,11 @@ public class Codex extends Table {
     private final TextButton openCodex;
     private final TextButton exitCodex;
     private final Label description;
+    private final ScrollPane paneDescription;
     private ArrayList<TextButton> subject= new ArrayList<TextButton>();
     private ArrayList<TextButton> object= new ArrayList<TextButton>();
     private Table tableObjects;
+    private final ScrollPane paneObject;
     private TextureRegion textureRegion;
     private final Assets assets;
 
@@ -47,30 +49,38 @@ public class Codex extends Table {
         Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
         openCodex = new TextButton("Codex", skin);
         openCodex.setColor(Color.FIREBRICK);
-
         exitCodex = new TextButton("X", skin);
         exitCodex.setColor(Color.RED);
-        dialog= new Dialog("Codex",skin);
-        dialog.setBounds(500,500,50,50);
+        dialog= new Dialog("Codex",skin){
+            @Override
+            public float getPrefHeight() {
+                return Math.min(Gdx.graphics.getHeight()/1.5f , 300);
+            }
+            public float getPrefWidth() {
+                return Math.min(Gdx.graphics.getHeight(), 500);
+            }
+        };
         description= new Label("This is the codex of the game",skin);
-        ScrollPane pane= new ScrollPane(description,skin);
         createSubject(skin);
         createObject("",skin);
         tableObjects= new Table();
         actualiseTableObject();
-        Table top = new Table();
-        top.add();
-        top.right().add(exitCodex).right().top();
-        top.row();
-        top.add();
-        top.add(addSubject());
-        top.row();
-        top.add(tableObjects);
-        top.add(pane);
-        top.add();
-        dialog.top().add(top);
+        paneDescription= new ScrollPane(description,skin);
+        paneObject= new ScrollPane(tableObjects,skin);
+        paneObject.setScrollbarsVisible(false);
+        dialog.getContentTable().add();
+        dialog.getContentTable().add();
+        dialog.getContentTable().add(exitCodex).right();
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(addSubject()).center().colspan(5);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(paneObject);
+        dialog.getContentTable().add(paneDescription);
         initInput(controller);
         add(openCodex);
+        resize();
+        dialog.getContentTable().debugAll();
+
 
     }
     private void initInput(Controller controller) {
@@ -78,8 +88,8 @@ public class Codex extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
                         dialog.show(getStage());
+                        resize();
                     }
                 });
         exitCodex.addListener(
@@ -96,7 +106,7 @@ public class Codex extends Table {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         setDescription(b.getLabel().getText().toString());
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
+                        resize();
 
                     }
                 });
@@ -105,17 +115,10 @@ public class Codex extends Table {
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            float x= dialog.getX();
-                            float y= dialog.getY();
-                            float h= dialog.getHeight();
-                            dialog.setBounds(x,y, dialog.getPrefWidth(), dialog.getPrefHeight());
-                            dialog.setPosition(x,y-(dialog.getPrefHeight()-h));
-                            object.removeAll(object);
-                            tableObjects.clear();
                             createObject(a.getLabel().getText().toString(),openCodex.getSkin());
                             actualiseTableObject();
-                            description.setText("Here you can find the description of the differents "+a.getLabel().getText().toString()+"s ");
-
+                            description.setText("Here you can find the description\n of the differents "+a.getLabel().getText().toString()+"s ");
+                            resize();
                         }
                     });
 
@@ -138,6 +141,7 @@ public class Codex extends Table {
     }
 
     private void actualiseTableObject(){
+        tableObjects.clear();
         for (int i=0;i<object.size();i++){
             tableObjects.add(object.get(i));
             tableObjects.row();
@@ -153,6 +157,7 @@ public class Codex extends Table {
     }
 
     private void createObject(String s, Skin skin){
+        object.removeAll(object);
         Object [] values=null;
         switch (s){
             case "Tile": values= Tile.Type.values(); break;
@@ -169,7 +174,6 @@ public class Codex extends Table {
                 public void changed(ChangeEvent event, Actor actor) {
                     try {
                         setDescription(t.toString());
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
                     } catch (Exception e) {
                         description.setText( "Unknown description");
                     }
@@ -177,6 +181,15 @@ public class Codex extends Table {
             });
         }
 
+    }
+
+
+    private void resize(){
+        float x= dialog.getX();
+        float y= dialog.getY();
+        float h= dialog.getHeight();
+        dialog.setBounds(x,y, dialog.getPrefWidth(), dialog.getPrefHeight());
+        dialog.setPosition(x,y-(dialog.getPrefHeight()-h));
     }
 
 

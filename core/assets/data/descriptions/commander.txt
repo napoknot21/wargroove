@@ -1,1 +1,1 @@
-The final boss
+Most powerful unit type. Able to use a special ability. If they fall, then the battle is lost.
