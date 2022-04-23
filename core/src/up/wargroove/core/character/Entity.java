@@ -13,6 +13,8 @@ public abstract class Entity {
 
     protected Type type;
 
+    private Random r = new Random();
+
     protected Movement movement;
     private Faction faction;
     private double health;
@@ -92,9 +94,18 @@ public abstract class Entity {
 
     public void attack (Entity ch) {
         if (ch == null) return;
-        Pair<Integer,Integer> attacks = this.getAttacksValues(ch);
-        Pair<Integer,Integer> defends = ch.getDefendsValues(this);
-        ch.setHealth(ch.getHealth() - attacks.first + defends.first);
+        Pair<Integer,Integer> attacksMedian = this.getAttacksValues(ch);
+        int baseDamage = this.getAttacksAndBaseValues(ch).get("base").get(0);
+        int a = attacksMedian.first - baseDamage;
+        if (a <= 0) {
+            ch.setHealth((ch.getHealth() - baseDamage < 0) ? 0 : (ch.getHealth() - baseDamage) );
+            return;
+        }
+        int min = attacksMedian.first - a;
+        int max = attacksMedian.first + a;
+        int randAttack = r.nextInt(max - min + 1) + min;
+        ch.setHealth((ch.getHealth() - randAttack < 0) ? 0 : (ch.getHealth() - randAttack) );
+
     }
 
     protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
@@ -108,49 +119,18 @@ public abstract class Entity {
         }
     }
 
-    public Map<String, List <Integer> > getAttacksAndDefendsValues (Entity ch) {
+    public Map<String, List <Integer> > getAttacksAndBaseValues (Entity ch) {
         var data = this.readDamageMatrixValues();
         if (data == null || ch == null) return null;
         return data.get(ch.getType().name().toUpperCase());
     }
 
     public Pair<Integer, Integer> getAttacksValues (Entity ch) {
-        var data = this.getAttacksAndDefendsValues(ch);
+        var data = this.getAttacksAndBaseValues(ch);
         if (data == null || ch == null) return new Pair<>(20,20);
         List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return new Pair<>(20,20);;
+        if (attacks.size() != 2) return new Pair<>(0,0);;
         return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
-    }
-
-    public Pair<Integer,Integer> getDefendsValues (Entity ch) {
-        var data = this.getAttacksAndDefendsValues(ch);
-        if (data == null || ch == null) return new Pair<>(10,10);;
-        List <Integer> defends = data.get("defends");
-        if (defends.size() != 2) return new Pair<>(10,10);;
-        return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
-    }
-
-
-    protected Map<String, List <Integer>> getMinimumAttacksAndDefendsValues () {
-        var data = this.readDamageMatrixValues();
-        if (data == null) return null;
-        return data.get("MINIMUM");
-    }
-
-    public Pair<Integer,Integer> getMinimumAttacksValues () {
-        var data = this.getMinimumAttacksAndDefendsValues();
-        if (data == null) return new Pair<>(0,0);
-        List <Integer> minimumAttacks = data.get("attacks");
-        if (minimumAttacks.size() != 2) return new Pair<>(0,0);
-        return new Pair<>(minimumAttacks.get(0),minimumAttacks.get(1));
-    }
-
-    public Pair<Integer,Integer> getMinimumDefendsValues () {
-        var data = this.getMinimumAttacksAndDefendsValues();
-        if (data == null) return new Pair<>(0,0);
-        List<Integer> minimumDefends = data.get("defends");
-        if (minimumDefends.size() != 2) return new Pair<>(0,0);
-        return new Pair<>(minimumDefends.get(0),minimumDefends.get(1));
     }
 
     public enum Component {
