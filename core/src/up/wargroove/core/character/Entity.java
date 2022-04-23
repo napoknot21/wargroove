@@ -3,7 +3,7 @@ package up.wargroove.core.character;
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.Pair;
-
+import java.util.Random;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -94,7 +94,6 @@ public abstract class Entity {
         if (ch == null) return;
         Pair<Integer,Integer> attacks = this.getAttacksValues(ch);
         Pair<Integer,Integer> defends = ch.getDefendsValues(this);
-        if (defends.first - attacks.first > 0) return;
         ch.setHealth(ch.getHealth() - attacks.first + defends.first);
     }
 
@@ -131,6 +130,28 @@ public abstract class Entity {
         return new Pair<Integer,Integer>(defends.get(0),defends.get(1));
     }
 
+
+    protected Map<String, List <Integer>> getMinimumAttacksAndDefendsValues () {
+        var data = this.readDamageMatrixValues();
+        if (data == null) return null;
+        return data.get("MINIMUM");
+    }
+
+    public Pair<Integer,Integer> getMinimumAttacksValues () {
+        var data = this.getMinimumAttacksAndDefendsValues();
+        if (data == null) return new Pair<>(0,0);
+        List <Integer> minimumAttacks = data.get("attacks");
+        if (minimumAttacks.size() != 2) return new Pair<>(0,0);
+        return new Pair<>(minimumAttacks.get(0),minimumAttacks.get(1));
+    }
+
+    public Pair<Integer,Integer> getMinimumDefendsValues () {
+        var data = this.getMinimumAttacksAndDefendsValues();
+        if (data == null) return new Pair<>(0,0);
+        List<Integer> minimumDefends = data.get("defends");
+        if (minimumDefends.size() != 2) return new Pair<>(0,0);
+        return new Pair<>(minimumDefends.get(0),minimumDefends.get(1));
+    }
 
     public enum Component {
 

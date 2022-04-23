@@ -1,64 +1,49 @@
 ---
-MINIMUM :
-  attacks :
-    - 10
-    - 0
-  defends :
-    - 10
-    - 10
-
 SOLDIER :
   attacks : #first = base, second = critical
     - 60
     - 90
-  defends :
-    - 60
-    - 90
+  base :
+    - 55
 
 VILLAGER :
   attacks:
     - 60
     - 90
-  defends:
-    - 0
-    - 0
+  base :
+    - 55
 
 COMMANDER :
   attacks:
     - 15
     - 23
-  defends:
-    - 95
-    - 0
+  base :
+    - 10
 
 SPEARMAN :
   attacks:
     - 40
     - 60
-  defends:
-    - 80
-    - 120
+  base :
+    - 35
 
 MAGE :
   attacks :
     - 60
     - 90
-  defends :
-    - 90
-    - 135
+  base :
+    - 55
 
 ARCHER :
   attacks :
     - 70
     - 105
-  defends :
-    - 75
-    - 101
+  base :
+    - 65
 
 GIANT :
   attacks :
     - 10
     - 15
-  defends :
-    - 135
-    - 338
+  base :
+    - 5
