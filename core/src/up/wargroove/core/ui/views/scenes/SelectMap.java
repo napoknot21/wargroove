@@ -46,6 +46,7 @@ public class SelectMap extends ViewWithPrevious {
     private String collectionName;
     private Button choseMap;
     private ScrollPane buttons;
+    private int amt = 2;
 
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
@@ -227,6 +228,7 @@ public class SelectMap extends ViewWithPrevious {
         }
         WorldProperties properties = new WorldProperties();
         properties.load(object);
+        properties.amt = amt;
         getModel().setWorld(properties);
         VRT.clear();
        buildMap(getModel().getWorld());
@@ -293,6 +295,7 @@ public class SelectMap extends ViewWithPrevious {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     getController().playSound(buttonSound);
+                    amt = i;
                     collectionName = i + "_players";
                     getController().changeCategory(collectionName,database,buttons);
                 }
