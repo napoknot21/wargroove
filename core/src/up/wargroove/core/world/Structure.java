@@ -11,7 +11,7 @@ public abstract class Structure extends Entity {
 
     static enum Type {
 
-	    RECRUITMENT,
+	    RECRUITMENT,STRONGHOLD, VILLAGE
 
     }
 
@@ -36,6 +36,10 @@ public abstract class Structure extends Entity {
         switch (type) {
             case RECRUITMENT:
                 return Recruitment.loadRecruitment(from,faction);
+            case VILLAGE:
+                return new Village(faction);
+            case STRONGHOLD:
+                return new Stronghold(faction);
             default: return null;
         }
     }
@@ -45,5 +49,9 @@ public abstract class Structure extends Entity {
         DbObject res =  super.toDBO();
         res.put(Constants.STRUCTURE_TYPE_DB_KEY,type);
         return res;
+    }
+
+    public Type getStructureType() {
+        return type;
     }
 }
