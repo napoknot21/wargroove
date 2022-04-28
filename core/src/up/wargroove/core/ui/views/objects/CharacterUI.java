@@ -269,7 +269,7 @@ public class CharacterUI extends EntityUI {
             case SPEARMAN: ATTACK_FRAMES=8; break;
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
             case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>((int)(1.5*getTileSize()),(int)(2.5*getTileSize())));
-            decalage.first= (getTileSize() - getSize().first)/2;
+            decalage.first= (int)(getTileSize() - getSize().first)/2;
             break;
             case MAGE: ATTACK_FRAMES= 7;
             default:

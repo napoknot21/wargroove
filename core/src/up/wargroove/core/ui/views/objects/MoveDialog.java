@@ -94,6 +94,7 @@ public class MoveDialog extends Table {
             public void changed(ChangeEvent event, Actor actor) {
                 controller.playSound(Assets.getInstance().getDefault(Sound.class));
                 controller.endTurn();
+                nextUnit.setVisible(true);
                 clear();
             }
         });
@@ -151,5 +152,9 @@ public class MoveDialog extends Table {
 
     public void dispose() {
         clear(true);
+    }
+
+    public void removeNextUnit() {
+        nextUnit.setVisible(false);
     }
 }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Null;
@@ -53,6 +52,9 @@ public class Controller {
      * World scale.
      */
     private float worldScale;
+
+    private boolean cameraMoving = false;
+    private Pair<Float,Float> cameraDestination = new Pair<>();
 
     /**
      * Create a controller.
@@ -491,13 +493,42 @@ public class Controller {
     public void nextUnit() {
         GameView gameView = (GameView) getScreen();
         gameView.clearAll();
-        Entity e = getModel().getCurrentPlayer().next();
-        if (e == null) return;
+        Entity e = getModel().getCurrentPlayer().nextPlayableEntity();
+        if (e == null) {
+            gameView.getMoveDialog().removeNextUnit();
+            return;
+        }
         Actor ui = gameView.getCharacterUI(e);
         if (ui == null) return;
         Camera camera = gameView.getCamera();
-        camera.position.set(ui.getX(),ui.getY(),camera.position.z);
+
+        cameraDestination.first = ui.getX();
+        cameraDestination.second = ui.getY();
+        cameraMoving = true;
+        //camera.position.set(ui.getX(),ui.getY(),camera.position.z);
         gameView.getCursor().setPosition(ui.getX(),ui.getY());
+    }
+
+    public void actCamera(Camera camera) {
+        float velocity = getClient().getCameraVelocity() * 64 * Gdx.graphics.getDeltaTime();
+        boolean negX = cameraDestination.first - camera.position.x < 0;
+        boolean negY = cameraDestination.second - camera.position.y < 0;
+        float dx = (camera.position.x != cameraDestination.first)? Model.getTileSize() : 0;
+        float dy = (camera.position.y != cameraDestination.second)? Model.getTileSize() : 0;
+        dx *= (negX)? -velocity : velocity;
+        dy *= (negY)? -velocity : velocity;
+        camera.translate(dx,dy,0);
+        cameraMoving = (
+                Math.abs(cameraDestination.first - camera.position.x) > Model.getTileSize()
+                        || Math.abs(cameraDestination.second - camera.position.y) > Model.getTileSize()
+        );
+        if (!cameraMoving) {
+            camera.position.set(cameraDestination.first,cameraDestination.second,camera.position.z);
+        }
+    }
+
+    public boolean isCameraMoving() {
+        return cameraMoving;
     }
 
     public void stopGame() {

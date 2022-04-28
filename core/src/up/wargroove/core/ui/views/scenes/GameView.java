@@ -279,7 +279,7 @@ public class GameView extends View {
         getStage().draw();
         gameViewUi.act(delta);
         gameViewUi.draw();
-
+        if (getController().isCameraMoving()) getController().actCamera(camera);
     }
 
     @Override

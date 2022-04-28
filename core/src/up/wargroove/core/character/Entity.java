@@ -41,7 +41,7 @@ public abstract class Entity implements Savable {
     public void initialize() {
         this.health = getHealth();
         isExhausted = false;
-    };
+    }
 
     public boolean isExhausted() {
 

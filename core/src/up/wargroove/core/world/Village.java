@@ -6,5 +6,10 @@ import up.wargroove.utils.DbObject;
 public class Village extends Structure{
     public Village(Faction faction) {
         super(Type.VILLAGE, faction);
+        exhaust();
+    }
+
+    @Override
+    public void nextTurn() {
     }
 }

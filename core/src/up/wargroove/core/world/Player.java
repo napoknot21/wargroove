@@ -55,12 +55,12 @@ public class Player {
 
 	@Null
 	public Entity next() {
-		if(entities.isEmpty() || entities.peek().isExhausted()) return null;
+		if(entities.isEmpty()) return null;
 
 		Entity entity = entities.poll();
 		entities.add(entity);
 
-		return entity;
+		return entity.isExhausted() ? null : entity;
 
 	}
 

@@ -11,13 +11,13 @@ import up.wargroove.utils.Pair;
 import java.util.Locale;
 
 public class StructureUI extends EntityUI {
+    private final boolean isPlayable;
     public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position, float scale) {
         super(position,structure, scale);
-        System.out.println(scale);
-        initialiseSprites();
         stage.addActor(this);
+        initialiseSprites();
         actualiseSprite(Assets.getInstance().get(structure));
-        getSprite().setPosition(position.first * getTileSize(), position.second * getTileSize());
+        isPlayable = structure instanceof Recruitment;
     }
 
     public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position) {
@@ -25,8 +25,17 @@ public class StructureUI extends EntityUI {
     }
 
     @Override
+    public void positionChanged() {
+        System.out.println();
+        System.out.println(getCoordinates().first * getTileSize());
+        getSprite().setPosition(getCoordinates().first * getTileSize(), getCoordinates().second * getTileSize());
+        getStats().setPosition(getX()+getSprite().getWidth()-getStats().getWidth()-1,1);
+        super.positionChanged();
+    }
+
+    @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (!canMove()) exhaust();
+        if (isPlayable) exhaust();
         super.draw(batch, parentAlpha);
     }
 }

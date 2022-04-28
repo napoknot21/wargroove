@@ -7,5 +7,10 @@ public class Stronghold extends Structure{
 
     public Stronghold(Faction faction) {
         super(Type.STRONGHOLD, faction);
+        exhaust();
+    }
+
+    @Override
+    public void nextTurn() {
     }
 }

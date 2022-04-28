@@ -14,7 +14,7 @@ import up.wargroove.utils.Pair;
 import up.wargroove.core.character.Character;
 
 public abstract class EntityUI extends Actor {
-    private static int TILE_SIZE= 20;
+    private static float TILE_SIZE= 20;
     private Sprite stats;
     private Sprite sprite;
     private Pair<Integer,Integer> coordinates;
@@ -28,9 +28,13 @@ public abstract class EntityUI extends Actor {
     public EntityUI(Pair<Integer, Integer> coord, Entity entity, float scale) {
         this.entity = entity;
         this.coordinates = coord;
-        TILE_SIZE = (int)(Model.getTileSize() * scale);
+        TILE_SIZE = (Model.getTileSize() * scale);
         System.out.println(TILE_SIZE);
-        size = (entity instanceof Character)? new Pair<>(TILE_SIZE,(int)(1.5*TILE_SIZE)) : new Pair<>(TILE_SIZE,TILE_SIZE);
+         if (entity instanceof Character) {
+             size = new Pair<>((int)TILE_SIZE,(int)(1.5*TILE_SIZE));
+         } else {
+             size = new Pair<>((int)TILE_SIZE,(int)TILE_SIZE);
+         }
         System.out.println(size);
     }
 
@@ -41,6 +45,7 @@ public abstract class EntityUI extends Actor {
         this.stats= new Sprite(getPathSTATS(0));
         stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
         setPosition(coordinates.first * TILE_SIZE,coordinates.second * TILE_SIZE);
+        System.out.println(new Pair<>(getX(),getY()));
         positionChanged();
     }
 
@@ -184,7 +189,7 @@ public abstract class EntityUI extends Actor {
         this.size = size;
     }
 
-    public static int getTileSize() {
+    public static float getTileSize() {
         return TILE_SIZE;
     }
 
