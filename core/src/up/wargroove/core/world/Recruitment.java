@@ -84,6 +84,10 @@ public class Recruitment extends Structure {
 
 	}
 
+	public Type getRecruitmentType() {
+		return type;
+	}
+
 	public Optional<Entity> buy(Class<? extends Entity> what, double m, String name, Faction faction) {
 
 		if (current == null) return Optional.empty();

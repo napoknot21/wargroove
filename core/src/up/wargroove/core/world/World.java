@@ -516,12 +516,16 @@ public class World {
 
     }
 
-    public boolean save(Database db) {
-        db.selectCollection("worlds");
+    public boolean save(Database db, String collectionName) {
+        db.selectCollection(collectionName);
         DbObject worldDBO = properties.toDBO();
         boolean status = db.insert(properties.getName(), worldDBO);
         db.flush();
         return status;
+    }
+
+    public boolean save(Database db) {
+        return save(db,"worlds");
     }
     
     @Override

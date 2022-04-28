@@ -1,3 +1,4 @@
+import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import java.net.URLClassLoader
 
@@ -32,7 +33,7 @@ tasks.create("selectPlugin") {
             val c = loader.loadClass(pluginPath + "PluginSelector")
             val method = c.getDeclaredMethod("run")
             method.invoke(null)
-        } catch (e: Exception) {
+        } catch (e:Exception) {
             e.printStackTrace()
         }
     }

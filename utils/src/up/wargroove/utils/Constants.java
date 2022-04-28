@@ -21,6 +21,7 @@ public abstract class Constants {
 	public static final String WORLD_MAP_DB_KEY = "map";
 	public static final String WORLD_TILE_TYPE_DB_KEY = "tile_type";
 	public static final String WORLD_TILE_ENTITY_DB_KEY= "entity";
+	public static final String WORLD_TILE_TEXTURE_VERSION_DB_KEY = "texture_version";
 
 	public static final String ENTITY_HEALTH_DB_KEY = "health";
 	public static final String ENTITY_FACTION_DB_KEY = "faction";

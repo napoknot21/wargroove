@@ -10,6 +10,7 @@ import java.util.Optional;
 public class Tile implements Savable {
 
     public static final int PRIMARY_TILE_TYPE = 5;
+    private int textureVersion;
 
     /*
      * Encodage de la défense et des coûts sur 32 bits
@@ -45,7 +46,17 @@ public class Tile implements Savable {
 
         setType(type); 
         entity = Optional.empty();
+        textureVersion = 1;
 
+    }
+
+    public Tile(Type type, int textureVersion) {
+        this(type);
+        this.textureVersion = textureVersion;
+    }
+
+    public Tile(int textureVersion) {
+        this(Type.PLAIN, textureVersion);
     }
 
     public Type getType() {
@@ -80,10 +91,15 @@ public class Tile implements Savable {
 
     }
 
+    public int getTextureVersion() {
+        return textureVersion;
+    }
+
     @Override
     public void load(DbObject dbo) {
 	String typeStr = dbo.get(Constants.WORLD_TILE_TYPE_DB_KEY).get();
 	type = Type.valueOf(typeStr);
+    textureVersion = Integer.parseInt(dbo.get(Constants.WORLD_TILE_TEXTURE_VERSION_DB_KEY).get());
     entity = Optional.ofNullable(Entity.loadEntity(dbo.get(Constants.WORLD_TILE_ENTITY_DB_KEY)));
     }
 
@@ -92,6 +108,7 @@ public class Tile implements Savable {
 
 	DbObject dbo = new DbObject();
 	dbo.put(Constants.WORLD_TILE_TYPE_DB_KEY, type.toString());
+    dbo.put(Constants.WORLD_TILE_TEXTURE_VERSION_DB_KEY,textureVersion);
     dbo.put(Constants.WORLD_TILE_ENTITY_DB_KEY, entity.map(Entity::toDBO).orElse(new DbObject()));
 	return dbo;
 
