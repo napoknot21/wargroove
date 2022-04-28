@@ -6,7 +6,6 @@ import up.wargroove.utils.Constants;
 import up.wargroove.utils.DbObject;
 
 public abstract class Structure extends Entity {
-    private final int bonus;
 
 
     static enum Type {
@@ -17,15 +16,14 @@ public abstract class Structure extends Entity {
 
     private Type type;
 
-    protected Structure(Type type, Faction faction, int bonus) {
+    protected Structure(Type type, Faction faction) {
 	super(Entity.Type.STRUCTURE, faction);
         this.type = type;
-        this.bonus = bonus;
     
     }
 
     public int getBonus() {
-        return bonus;
+        return 100;
     }
 
     public static Structure loadStructure(DbObject from, Faction faction) {

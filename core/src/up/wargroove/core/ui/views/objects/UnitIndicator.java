@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Structure;
@@ -20,8 +21,8 @@ public class UnitIndicator extends Indicator {
 
     /**
      * Create a unit indicator.
+     *  @param biome      the world biome.
      *
-     * @param biome      the world biome.
      */
     public UnitIndicator(Biome biome) {
         super(biome);
@@ -41,9 +42,12 @@ public class UnitIndicator extends Indicator {
             setStats(null);
             return;
         }
-        setBackground(getAtlas().findRegion(tile.getType().name().toLowerCase()));
-        var character = tile.entity.get();
-        if (character instanceof Structure) return; //Todo: structure case
+        setBackground(Assets.getInstance().get(tile,getBiome()));
+        Entity character = tile.entity.get();
+        if (character instanceof Structure) {
+            setForeground(Assets.getInstance().get((Structure)character));
+            return;
+        }
         var texture = assets.get(
                 "data/sprites/character/" + character.getFaction() + "/"
                         + character.getType() + "_DIE.png",

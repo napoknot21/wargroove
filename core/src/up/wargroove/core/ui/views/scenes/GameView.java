@@ -185,14 +185,10 @@ public class GameView extends View {
                 Vector3 worldPosition = cursor.getWorldPosition();
 
                 Tile tile = getController().getTile(worldPosition);
-                if (tile.entity.isPresent() && tile.entity.get().isExhausted()) {
-                    clearSelectors();
-                    movement = attack = false;
-                    return true;
-                }
+
                 if (
                         tile.entity.isPresent() && !tile.entity.get().isExhausted()
-                                && (tile.entity.get() instanceof Structure)
+                                && (tile.entity.get() instanceof Recruitment)
                                 && tile.entity.get().getFaction().equals(getModel().getCurrentPlayer().getFaction())
                 ) {
                     moveDialog.addBuy();
@@ -201,6 +197,14 @@ public class GameView extends View {
                     cursor.setLock(true);
                     return true;
                 }
+
+                if (tile.entity.isPresent() && (tile.entity.get().isExhausted()
+                        || (tile.entity.get() instanceof Structure))) {
+                    clearSelectors();
+                    movement = attack = false;
+                    return true;
+                }
+
                 if (buy && movementSelector.isValidPosition(worldPosition)) {
                     cursor.setLock(true);
                     getController().placeBoughtEntity();

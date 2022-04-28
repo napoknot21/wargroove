@@ -73,9 +73,10 @@ public class CharacterUI extends EntityUI {
 
     @Override
     public void positionChanged() {
-        getSprite().setPosition(getX()+decalage.first, getY()+decalage.second);
-        if(spriteWaiting!=null) spriteWaiting.setPosition(getX()+decalage.first, getY()+decalage.second);
-        getStats().setPosition(getX()+getSprite().getWidth()-getStats().getWidth()-1,getY()+1);
+        float centerY = (getTileSize()/3f);
+        getSprite().setPosition(getX()+decalage.first, getY() + centerY +decalage.second);
+        if(spriteWaiting!=null) spriteWaiting.setPosition(getX()+decalage.first, getY() + centerY +decalage.second);
+        getStats().setPosition(getX()+getSprite().getWidth()-getStats().getWidth()-1,centerY+1);
         super.positionChanged();
     }
 
@@ -268,7 +269,8 @@ public class CharacterUI extends EntityUI {
             case SPEARMAN: ATTACK_FRAMES=8; break;
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
             case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>((int)(1.5*getTileSize()),(int)(2.5*getTileSize())));
-            decalage.first=-5; break;
+            decalage.first= (getTileSize() - getSize().first)/2;
+            break;
             case MAGE: ATTACK_FRAMES= 7;
             default:
         }

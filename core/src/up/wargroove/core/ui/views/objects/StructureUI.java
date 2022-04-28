@@ -16,21 +16,12 @@ public class StructureUI extends EntityUI {
         System.out.println(scale);
         initialiseSprites();
         stage.addActor(this);
-        String texture = getTextureName(structure).toLowerCase(Locale.ROOT);
-        actualiseSprite(Assets.getInstance().get(Biome.GRASS).findRegion(texture));
+        actualiseSprite(Assets.getInstance().get(structure));
         getSprite().setPosition(position.first * getTileSize(), position.second * getTileSize());
     }
 
     public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position) {
         this(stage,structure,position,1);
-    }
-
-    private String getTextureName(Structure structure) {
-        if (structure instanceof Recruitment) {
-            return ((Recruitment)structure).getRecruitmentType() +"-"+structure.getFaction()+"-1";
-        } else {
-            return structure.getStructureType() +"-"+structure.getFaction()+"-1";
-        }
     }
 
     @Override

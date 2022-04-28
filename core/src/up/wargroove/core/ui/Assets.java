@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.world.Biome;
+import up.wargroove.core.world.Recruitment;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.utils.Log;
 
@@ -261,7 +263,7 @@ public class Assets {
     }
 
     public TextureRegion getTest() {
-        return get(AssetDir.WORLD.getPath()+"test.png");
+        return new TextureRegion(get(AssetDir.WORLD.getPath()+"test.png", Texture.class));
     }
 
     /**
@@ -354,6 +356,24 @@ public class Assets {
         return readFile(f, lineLength);
     }
 
+    public TextureRegion get(Tile tile, Biome biome) {
+        return get(biome).findRegion(tile.getType().name().toLowerCase()+"-"+tile.getTextureVersion());
+    }
+
+    public TextureRegion get(Structure structure) {
+        return get(Biome.GRASS).findRegion(getTextureName(structure));
+    }
+
+    private String getTextureName(Structure structure) {
+        String ret;
+        if (structure instanceof Recruitment) {
+            ret = ((Recruitment)structure).getRecruitmentType() +"-"+structure.getFaction()+"-1";
+        } else {
+            ret = structure.getStructureType() +"-"+structure.getFaction()+"-1";
+        }
+        return ret.toLowerCase();
+    }
+
     private String readFile(FileHandle file, int lineLength) {
         Scanner scanner = new Scanner(file.read());
         StringBuilder builder = new StringBuilder();
@@ -392,6 +412,8 @@ public class Assets {
         entitiesDescriptions.clear();
         tilesDescriptions.clear();
     }
+
+
 
     /**
      * List the assets directories and their manifest.

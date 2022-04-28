@@ -50,9 +50,14 @@ public class Recruitment extends Structure {
 
 	public Recruitment(Type type, Faction faction) {
 
-		super(Structure.Type.RECRUITMENT, faction, 100);
+		super(Structure.Type.RECRUITMENT, faction);
 		this.type = type;
 		initialize();
+	}
+
+	@Override
+	public int getBonus() {
+		return 0;
 	}
 
 	public void initialize() {

@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
-import java.util.Vector;
 
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
@@ -25,7 +24,7 @@ public class MovementSelector {
     /**
      * The tile scale between the view and the world.
      */
-    private final float worldScale;
+    private final float tileSize;
     /**
      * List of movements.
      */
@@ -53,10 +52,10 @@ public class MovementSelector {
     /**
      * Constructs a Movement selector.
      *
-     * @param worldScale The world scale used to place the sprites.
+     * @param tileSize The world scale used to place the sprites.
      */
-    public MovementSelector(float worldScale) {
-        this.worldScale = worldScale;
+    public MovementSelector(float tileSize) {
+        this.tileSize = tileSize;
         valid = new Valid();
         movements = new Movements();
         initX = 0;
@@ -292,9 +291,10 @@ public class MovementSelector {
          * @param coord   The sprites coordinates.
          */
         protected void add(TextureRegion texture, Pair<Integer, Integer> coord) {
-            int x = (int) (coord.first * worldScale);
-            int y = (int) (coord.second * worldScale);
+            int x = (int) (coord.first * tileSize);
+            int y = (int) (coord.second * tileSize);
             Sprite sprite = new Sprite(texture);
+            sprite.setSize(tileSize,tileSize);
             sprite.setPosition(x, y);
             this.add(new Pair<>(sprite, (coord)));
         }
@@ -513,7 +513,8 @@ public class MovementSelector {
             if (o.second.first < 0 || o.second.second < 0) {
                 throw new RuntimeException();
             }
-            o.first.setPosition(o.second.first * worldScale, o.second.second * worldScale);
+            o.first.setSize(tileSize,tileSize);
+            o.first.setPosition(o.second.first * tileSize, o.second.second * tileSize);
             return super.add(o);
         }
 
@@ -533,7 +534,7 @@ public class MovementSelector {
             Pair<Sprite, Pair<Integer, Integer>> tmp = this.get(index);
             tmp.first.setTexture(getArrow(assets, d));
             tmp.second = coordinate;
-            tmp.first.setPosition(tmp.second.first * worldScale, tmp.second.second * worldScale);
+            tmp.first.setPosition(tmp.second.first * tileSize, tmp.second.second * tileSize);
             path.append(d);
             currentCost += valid.getTileCost(tileIndex);
             index++;
@@ -570,12 +571,8 @@ public class MovementSelector {
          */
         private synchronized Texture getArrow(Assets assets, char d) {
             if (index > 0) {
-                try {
-                    String last = String.valueOf(path.charAt(index - 1)) + d;
-                    get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                String last = String.valueOf(path.charAt(index - 1)) + d;
+                get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
             }
             return assets.get(Assets.AssetDir.ARROWS.getPath() + d + ".png");
         }

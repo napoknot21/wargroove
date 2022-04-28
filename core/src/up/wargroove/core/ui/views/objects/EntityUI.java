@@ -161,7 +161,7 @@ public abstract class EntityUI extends Actor {
     }
 
     public static float getTimeLapse() {
-        return Gdx.graphics.getDeltaTime()*19;
+        return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
     }
 
     public float getTemps() {

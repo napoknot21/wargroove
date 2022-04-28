@@ -42,7 +42,7 @@ public class GameMap extends TiledMap {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new MapTile(world.at(i, j), atlas));
+                cell.setTile(new MapTile(world.at(i, j), controller.getModel().getBiome()));
                 if (structure || character) {
                     addEntityImage(stage, controller, world, i, j, structure, character, scale);
                 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 
 /**
@@ -51,9 +52,8 @@ public class MapTile extends StaticTiledMapTile {
      *
      * @param tile The tile.
      */
-    public MapTile(Tile tile, TextureAtlas atlas) {
-        super(new TextureRegion());
-        setTextureRegion(atlas.findRegion(tile.getType().name().toLowerCase()+"-"+tile.getTextureVersion()));
+    public MapTile(Tile tile, Biome biome) {
+        super(Assets.getInstance().get(tile,biome));
     }
 
     /**

@@ -6,6 +6,6 @@ import up.wargroove.utils.DbObject;
 public class Stronghold extends Structure{
 
     public Stronghold(Faction faction) {
-        super(Type.STRONGHOLD, faction, 0);
+        super(Type.STRONGHOLD, faction);
     }
 }
