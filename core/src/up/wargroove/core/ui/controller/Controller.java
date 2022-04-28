@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
@@ -19,6 +22,7 @@ import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
+import up.wargroove.utils.Database;
 import up.wargroove.utils.Pair;
 
 import java.util.List;
@@ -513,5 +517,11 @@ public class Controller {
         setPrevious();
         View screen = new InGameMenu(getScreen(),this,getModel(),getClient());
         setScreen(screen);
+    }
+
+    public void changeCategory(String name, Database database, ScrollPane buttons) {
+        database.selectCollection(name);
+        Table content = ((SelectMap)getScreen()).initButtonsTable(database.getKeys());
+        buttons.setActor(content);
     }
 }

@@ -40,11 +40,12 @@ public class SelectMap extends ViewWithPrevious {
     private Stage VRT;
     private Stage VRB;
     private Stage VL;
+    private Stage VT;
     private Sound buttonSound;
     private Database database;
     private String collectionName;
     private Button choseMap;
-    private Stage stage;
+    private ScrollPane buttons;
 
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
@@ -58,12 +59,12 @@ public class SelectMap extends ViewWithPrevious {
     @Override
     public void init() {
         setStage(new ScreenViewport());
-        stage = getStage();
         renderer = new OrthogonalTiledMapRenderer(new TiledMap());
         mapSize = new Pair<>(0f, 0f);
         VL = new Stage(new ScreenViewport());
         VRT = new Stage(new ScreenViewport());
         VRB = new Stage(new ScreenViewport());
+        VT = new Stage(new ScreenViewport());
         Skin skin = getAssets().getDefault(Skin.class);
         buttonSound = getAssets().getDefault(Sound.class);
         back = new TextButton("Back", skin);
@@ -73,16 +74,20 @@ public class SelectMap extends ViewWithPrevious {
         choseMap.setVisible(b);
 
 
-        collectionName = "2p";
+        collectionName = "";
         DBEngine.getInstance().connect();
         database = DBEngine.getInstance().getDatabase("wargroove");
         database.selectCollection(collectionName);
 
+        VT.addActor(buildCategories());
         Table VLTable = new Table();
         VLTable.setFillParent(true);
-        ScrollPane buttons = new ScrollPane(initButtonsTable(database.getKeys()), skin);
-        buttons.setCancelTouchFocus(false);
-        buttons.setSmoothScrolling(true);
+        buttons = new ScrollPane(initButtonsTable(database.getKeys()), skin);
+        //buttons.setCancelTouchFocus(false);
+        //buttons.setSmoothScrolling(true);
+
+        //categories.setCancelTouchFocus(false);
+        //categories.setSmoothScrolling(true);
         VLTable.add(buttons).expand().fill();
         VLTable.row();
         VL.addActor(VLTable);
@@ -91,15 +96,26 @@ public class SelectMap extends ViewWithPrevious {
 
         Table VRBTable = new Table();
         VRBTable.setFillParent(true);
+        VRBTable.bottom();
         description = new Description();
         VRBTable.addActor(description);
         VRBTable.add(back);
         VRBTable.add(choseMap);
         VRB.addActor(VRBTable);
-        addInput(VRB, VL);
+        addInput(VRB, VT,VL);
 
         initListener();
 
+    }
+
+    private Table buildCategories() {
+        Table table = new Table();
+        table.top();
+        table.setFillParent(true);
+        for (int i = 2; i < 5; i++) {
+            table.add(new CategoryButton(i)).expandX().fill();
+        }
+        return table;
     }
 
     /**
@@ -107,13 +123,15 @@ public class SelectMap extends ViewWithPrevious {
      *
      * @return The table.
      */
-    private Table initButtonsTable(List<String> mapNames) {
+    public Table initButtonsTable(List<String> mapNames) {
         Table table = new Table();
         table.setFillParent(true);
-        mapNames.forEach(name -> {
-            table.add(new MapButton(name));
-            table.row();
-        });
+        if (mapNames != null) {
+            mapNames.forEach(name -> {
+                table.add(new MapButton(name));
+                table.row();
+            });
+        }
         return table;
     }
 
@@ -121,10 +139,11 @@ public class SelectMap extends ViewWithPrevious {
     public void resize(int width, int height) {
         int newWidth = width / 2;
         int newHeight = height / 2;
-        VL.getViewport().update(newWidth, height, true);
+        VT.getViewport().update(width,newHeight/2, true);
+        VL.getViewport().update(newWidth, (3 * height)/4, true);
         VRT.getViewport().update(newWidth, newHeight, true);
-        VRB.getViewport().update(newWidth, newHeight, true);
-        VRT.getViewport().setScreenPosition(newWidth, newHeight);
+        VRB.getViewport().update(newWidth, newHeight / 2, true);
+        VRT.getViewport().setScreenPosition(newWidth, newHeight/2);
         VRB.getViewport().setScreenX(newWidth);
         if (getModel().getWorld() != null) {
             VRT.clear();
@@ -138,8 +157,11 @@ public class SelectMap extends ViewWithPrevious {
         int height = Gdx.graphics.getHeight() / 2;
         VL.getViewport().apply();
         VL.draw();
+        VT.getViewport().setScreenY((3*height)/2);
+        VT.getViewport().apply();
+        VT.draw();
         VRT.getViewport().setScreenX((int) (3 * width - mapSize.first) / 2);
-        VRT.getViewport().setScreenY((int) (3 * height - mapSize.second) / 2);
+        VRT.getViewport().setScreenY((int) (3 * height - mapSize.second) / 4);
         VRT.getViewport().apply();
         renderer.setView((OrthographicCamera) VRT.getCamera());
         renderer.render();
@@ -236,6 +258,7 @@ public class SelectMap extends ViewWithPrevious {
         VL.setDebugAll(debug);
         VRT.setDebugAll(debug);
         VRB.setDebugAll(debug);
+        VT.setDebugAll(debug);
     }
 
     private class MapButton extends TextButton {
@@ -255,6 +278,23 @@ public class SelectMap extends ViewWithPrevious {
                     setDescription(mapName);
                     choseMap.setDisabled(false);
                     choseMap.setVisible(true);
+                }
+            });
+        }
+    }
+
+    private class CategoryButton extends TextButton {
+        public CategoryButton(int i) {
+            super(
+                    Integer.toString(i),
+                    Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "rusty-robot-ui.json", Skin.class)
+            );
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    getController().playSound(buttonSound);
+                    collectionName = i + "_players";
+                    getController().changeCategory(collectionName,database,buttons);
                 }
             });
         }

@@ -112,7 +112,7 @@ public class ImportMap {
         System.out.println(players);
         System.out.println(properties.terrain.length);
         System.out.println(players+"p");
-        if (!world.save(db, players+"p")) {
+        if (!world.save(db, players+"_players")) {
             throw  new Exception("Something went wrong during the save");
         }
     }
