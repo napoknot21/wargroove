@@ -15,6 +15,8 @@ import java.util.Random;
  * The gui model.
  */
 public class Model {
+
+    private static int tileSize;
     /**
      * The world.
      */
@@ -63,7 +65,7 @@ public class Model {
         Recruitment.clearAll();
         EntityManager.getInstance().load();
         isActive = true;
-        addRandomStructure(); //for generate random structure
+        //addRandomStructure(); //for generate random structure
         setStartData();
     }
 
@@ -184,5 +186,13 @@ public class Model {
 
     public void setProperties(WorldProperties properties) {
         this.properties = properties;
+    }
+
+    public static int getTileSize() {
+        return tileSize;
+    }
+
+    public static void setTileSize(int tileSize) {
+        Model.tileSize = tileSize;
     }
 }

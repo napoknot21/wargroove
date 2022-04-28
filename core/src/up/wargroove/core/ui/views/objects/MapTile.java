@@ -53,7 +53,7 @@ public class MapTile extends StaticTiledMapTile {
      */
     public MapTile(Tile tile, TextureAtlas atlas) {
         super(new TextureRegion());
-        setTextureRegion(atlas.findRegion(tile.getType().name().toLowerCase()));
+        setTextureRegion(atlas.findRegion(tile.getType().name().toLowerCase()+"-"+tile.getTextureVersion()));
     }
 
     /**

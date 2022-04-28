@@ -34,8 +34,8 @@ public class CharacterUI extends EntityUI {
      */
 
 
-    public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
-        super(coord,character);
+    public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character, float scale) {
+        super(coord,character, scale);
         this.controller= controller;
         controller.getWorld().addEntity(coord, character);
         initialiseAnimation();
@@ -43,6 +43,15 @@ public class CharacterUI extends EntityUI {
         controller.getScreen().getStage().addActor(this);
 
 
+    }
+
+    public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
+        super(coord,character, 1);
+        this.controller= controller;
+        controller.getWorld().addEntity(coord, character);
+        initialiseAnimation();
+        initialiseSprites();
+        controller.getScreen().getStage().addActor(this);
     }
 
     @Override
@@ -258,7 +267,8 @@ public class CharacterUI extends EntityUI {
             case SOLDIER: ATTACK_FRAMES=6; break;
             case SPEARMAN: ATTACK_FRAMES=8; break;
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
-            case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>(30,50)); decalage.first=-5; break;
+            case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>((int)(1.5*getTileSize()),(int)(2.5*getTileSize())));
+            decalage.first=-5; break;
             case MAGE: ATTACK_FRAMES= 7;
             default:
         }

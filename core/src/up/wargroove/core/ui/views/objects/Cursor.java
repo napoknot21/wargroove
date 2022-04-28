@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.Model;
 
 /**
  * Game view cursor.
@@ -28,6 +29,7 @@ public class Cursor extends Sprite {
     public Cursor(TextureRegion texture, int worldScale) {
         super(texture);
         this.worldScale = worldScale;
+        setSize(worldScale, worldScale);
     }
 
     /**

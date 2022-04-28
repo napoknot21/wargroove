@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
@@ -17,11 +18,12 @@ import up.wargroove.utils.Pair;
  * Represent the visual of the world.
  */
 public class GameMap extends TiledMap {
-    private final int tileSize;
+    private final int tileSize = 64;
     int height;
     int width;
     TiledMapTileLayer tileLayer;
     TextureAtlas atlas;
+    private float scale = 1.0f;
 
     /**
      * Init the tiledMap according to the given model.
@@ -29,19 +31,20 @@ public class GameMap extends TiledMap {
      * @param world The world that will be on the gui
      * @param stage
      */
-    public GameMap(World world, Stage stage, Controller controller, int tileSize, boolean entity) {
+    public GameMap(World world, Stage stage, Controller controller, float scale, boolean structure, boolean character) {
         super();
+        Model.setTileSize(tileSize);
+        this.scale = scale;
         atlas = Assets.getInstance().get(controller.getModel().getBiome());
         width = world.getDimension().first;
         height = world.getDimension().second;
-        this.tileSize = tileSize;
         tileLayer = new TiledMapTileLayer(width, height, tileSize, tileSize);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new MapTile(world.at(i, j), atlas));
-                if (entity) {
-                    addEntityImage(stage, controller, world, i, j);
+                if (structure || character) {
+                    addEntityImage(stage, controller, world, i, j, structure, character, scale);
                 }
                 tileLayer.setCell(i, j, cell);
             }
@@ -49,25 +52,25 @@ public class GameMap extends TiledMap {
         this.getLayers().add(tileLayer);
     }
 
-    public GameMap(World world, Stage stage, Controller controller, int tileSize) {
-        this(world,stage,controller,tileSize,true);
+    public GameMap(World world, Stage stage, Controller controller, int scale) {
+        this(world,stage,controller,scale,true,true);
     }
 
-    public GameMap(World world, Stage stage, Controller controller, boolean entity) {
-        this(world, stage, controller, 20, entity);
+    public GameMap(World world, Stage stage, Controller controller, boolean structure, boolean character) {
+        this(world, stage, controller, 1, structure,character);
     }
 
     public GameMap(World world, Stage stage, Controller controller) {
-        this(world, stage, controller, 20);
+        this(world, stage, controller, 1);
     }
 
-    private void addEntityImage(Stage stage, Controller controller, World world, int i, int j) {
+    private void addEntityImage(Stage stage, Controller controller, World world, int i, int j, boolean structure, boolean character, float scale) {
         Tile tile = world.at(i, j);
         if (tile.entity.isEmpty()) return;
-        if (tile.entity.get() instanceof Character) {
-            new CharacterUI(controller, new Pair<>(i, j), (Character) tile.entity.get());
-        } else if (tile.entity.get() instanceof Structure) {
-            new StructureUI(stage, (Structure) tile.entity.get(), new Pair<>(i, j));
+        if (character && tile.entity.get() instanceof Character) {
+            new CharacterUI(controller, new Pair<>(i, j), (Character) tile.entity.get(), scale);
+        } else if (structure && tile.entity.get() instanceof Structure) {
+            new StructureUI(stage, (Structure) tile.entity.get(), new Pair<>(i, j), scale);
         }
     }
 
@@ -87,8 +90,11 @@ public class GameMap extends TiledMap {
         return tileLayer;
     }
 
-    public int getScale() {
+    public int getTileSize() {
         return tileSize;
     }
 
+    public float getScale() {
+        return scale;
+    }
 }

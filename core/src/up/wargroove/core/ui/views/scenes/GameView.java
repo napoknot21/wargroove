@@ -1,20 +1,15 @@
 package up.wargroove.core.ui.views.scenes;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -42,7 +37,7 @@ import java.util.List;
  * Represent the game screen.
  */
 public class GameView extends View {
-    private static final int DEFAULT_ZOOM = 10;
+    private static final int DEFAULT_ZOOM = 20;
     private Cursor cursor;
     /**
      * Visual of the world.
@@ -86,10 +81,10 @@ public class GameView extends View {
         initGameViewUI();
         initMap();
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
-        movementSelector = new MovementSelector(gameMap.getScale());
-        attackSelector = new AttackSelector(gameMap.getScale());
+        movementSelector = new MovementSelector(gameMap.getTileSize());
+        attackSelector = new AttackSelector(gameMap.getTileSize());
         TextureRegion texture = getAssets().getTest();
-        cursor = new Cursor(texture, gameMap.getScale());
+        cursor = new Cursor(texture, gameMap.getTileSize());
         initInput();
     }
 

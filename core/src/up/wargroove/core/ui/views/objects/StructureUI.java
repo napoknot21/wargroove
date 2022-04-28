@@ -1,36 +1,36 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
-import up.wargroove.core.ui.views.scenes.GameView;
+import up.wargroove.core.world.Biome;
+import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Structure;
 import up.wargroove.utils.Pair;
 
+import java.util.Locale;
+
 public class StructureUI extends EntityUI {
-    public StructureUI(Stage stage, Structure structure, Pair<Integer,Integer> position) {
-        super(position,structure);
+    public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position, float scale) {
+        super(position,structure, scale);
+        System.out.println(scale);
         initialiseSprites();
         stage.addActor(this);
-        actualiseSprite(Assets.getInstance().getTest());
+        String texture = getTextureName(structure).toLowerCase(Locale.ROOT);
+        actualiseSprite(Assets.getInstance().get(Biome.GRASS).findRegion(texture));
         getSprite().setPosition(position.first * getTileSize(), position.second * getTileSize());
-        Color color;
-        switch (structure.getFaction()) {
-            case FLORAN_TRIBES: color = Color.GREEN; break;
-            case FELHEIM_LEGION: color = Color.ROYAL; break;
-            case CHERRYSTONE_KINGDOM: color = Color.FIREBRICK; break;
-            case HEAVENSONG_EMPIRE: color = Color.WHITE; break;
-            default: color = Color.CLEAR;
+    }
+
+    public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position) {
+        this(stage,structure,position,1);
+    }
+
+    private String getTextureName(Structure structure) {
+        if (structure instanceof Recruitment) {
+            return ((Recruitment)structure).getRecruitmentType() +"-"+structure.getFaction()+"-1";
+        } else {
+            return structure.getStructureType() +"-"+structure.getFaction()+"-1";
         }
-        getSprite().setColor(color);
     }
 
     @Override

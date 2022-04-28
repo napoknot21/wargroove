@@ -9,11 +9,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.Model;
 import up.wargroove.utils.Pair;
 import up.wargroove.core.character.Character;
 
 public abstract class EntityUI extends Actor {
-    private static final int TILE_SIZE= 20;
+    private static int TILE_SIZE= 20;
     private Sprite stats;
     private Sprite sprite;
     private Pair<Integer,Integer> coordinates;
@@ -24,10 +25,13 @@ public abstract class EntityUI extends Actor {
     private float temps;
 
 
-    public EntityUI(Pair<Integer,Integer> coord, Entity entity) {
+    public EntityUI(Pair<Integer, Integer> coord, Entity entity, float scale) {
         this.entity = entity;
         this.coordinates = coord;
-        size = (entity instanceof Character)? new Pair<>(20,30) : new Pair<>(20,20);
+        TILE_SIZE = (int)(Model.getTileSize() * scale);
+        System.out.println(TILE_SIZE);
+        size = (entity instanceof Character)? new Pair<>(TILE_SIZE,(int)(1.5*TILE_SIZE)) : new Pair<>(TILE_SIZE,TILE_SIZE);
+        System.out.println(size);
     }
 
 

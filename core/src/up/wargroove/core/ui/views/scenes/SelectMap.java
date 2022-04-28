@@ -44,6 +44,7 @@ public class SelectMap extends ViewWithPrevious {
     private Database database;
     private String collectionName;
     private Button choseMap;
+    private Stage stage;
 
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
@@ -57,6 +58,7 @@ public class SelectMap extends ViewWithPrevious {
     @Override
     public void init() {
         setStage(new ScreenViewport());
+        stage = getStage();
         renderer = new OrthogonalTiledMapRenderer(new TiledMap());
         mapSize = new Pair<>(0f, 0f);
         VL = new Stage(new ScreenViewport());
@@ -85,7 +87,7 @@ public class SelectMap extends ViewWithPrevious {
         VLTable.row();
         VL.addActor(VLTable);
 
-        VRT.addActor(new MapActor());
+        new MapActor();
 
         Table VRBTable = new Table();
         VRBTable.setFillParent(true);
@@ -126,7 +128,7 @@ public class SelectMap extends ViewWithPrevious {
         VRB.getViewport().setScreenX(newWidth);
         if (getModel().getWorld() != null) {
             VRT.clear();
-            VRT.addActor(buildMap(getModel().getWorld()));
+            buildMap(getModel().getWorld());
         }
     }
 
@@ -139,6 +141,8 @@ public class SelectMap extends ViewWithPrevious {
         VRT.getViewport().setScreenX((int) (3 * width - mapSize.first) / 2);
         VRT.getViewport().setScreenY((int) (3 * height - mapSize.second) / 2);
         VRT.getViewport().apply();
+        renderer.setView((OrthographicCamera) VRT.getCamera());
+        renderer.render();
         VRT.draw();
         VRB.getViewport().setScreenX(width);
         VRB.getViewport().apply();
@@ -203,7 +207,7 @@ public class SelectMap extends ViewWithPrevious {
         properties.load(object);
         getModel().setWorld(properties);
         VRT.clear();
-        VRT.addActor(buildMap(getModel().getWorld()));
+       buildMap(getModel().getWorld());
         description.setInformation(properties);
     }
 
@@ -211,15 +215,17 @@ public class SelectMap extends ViewWithPrevious {
         MapActor newMap = new MapActor(world);
         TiledMap last = renderer.getMap();
         renderer.dispose();
-        mapSize.first = (float) (newMap.map.getHeight() * newMap.map.getScale());
-        mapSize.second = (float) (newMap.map.getWidth() * newMap.map.getScale());
+        mapSize.first = (float) (newMap.map.getHeight() * newMap.map.getTileSize());
+        mapSize.second = (float) (newMap.map.getWidth() * newMap.map.getTileSize());
         float heightRatio = (VRT.getHeight() / mapSize.first);
         float widthRatio = (VRT.getWidth() / mapSize.second);
 
         renderer = new OrthogonalTiledMapRenderer(newMap.map, Math.min(heightRatio, widthRatio));
         mapSize.first *= renderer.getUnitScale();
         mapSize.second *= renderer.getUnitScale();
+        System.out.println(renderer.getUnitScale());
         renderer.setMap(newMap.map);
+        System.out.println(newMap.map.getScale());
         last.dispose();
         return newMap;
     }
@@ -266,12 +272,16 @@ public class SelectMap extends ViewWithPrevious {
         }
     }
 
-    private class MapActor extends Actor {
+    private class MapActor {
         private final GameMap map;
 
         private MapActor(World world) {
-            map = new GameMap(world, getStage(), getController(), false);
-            setSize(map.getWidth(), map.getHeight());
+            float heightRatio = (VRT.getHeight() / (world.getDimension().first * 64));
+            float widthRatio = (VRT.getWidth() / (world.getDimension().second * 64));
+            float scale = Math.min(heightRatio,widthRatio);
+            System.out.println(scale);
+
+            map = new GameMap(world, VRT, getController(), scale,true,false);
         }
 
         private MapActor() {
@@ -281,14 +291,6 @@ public class SelectMap extends ViewWithPrevious {
         public void dispose() {
             if (map != null) {
                 map.dispose();
-            }
-        }
-
-        @Override
-        public void draw(Batch batch, float parentAlpha) {
-            if (renderer != null) {
-                renderer.setView((OrthographicCamera) VRT.getCamera());
-                renderer.render();
             }
         }
     }

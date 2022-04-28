@@ -90,7 +90,7 @@ public class Controller {
         getClient().playMusic();
         GameView view = new GameView(this, model, getClient());
         setScreen(view);
-        worldScale = view.getGameMap().getScale();
+        worldScale = view.getGameMap().getTileSize();
     }
 
     /**
@@ -145,7 +145,7 @@ public class Controller {
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
         camera.zoom += amountY * getClient().getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
-        float max = (camera.viewportHeight + camera.viewportWidth) / 2 + 5;
+        float max = (camera.viewportHeight + camera.viewportWidth) / 1.5f + 10;
         camera.zoom = (camera.zoom < 1) ? 1 : Math.min(camera.zoom, max);
         camera.update();
     }
@@ -200,8 +200,8 @@ public class Controller {
         v = camera.unproject(v);
         int x = (v.x < 0) ? 0 : (int) (v.x - v.x % worldScale);
         int y = (v.y < 0) ? 0 : (int) (v.y - v.y % worldScale);
-        int first = (getWorld().getDimension().first - 1) * 20;
-        int second = (getWorld().getDimension().second - 1) * 20;
+        int first = (int) ((getWorld().getDimension().first - 1) * worldScale);
+        int second = (int) ((getWorld().getDimension().second - 1) * worldScale);
         x = Math.min(first, x);
         y = Math.min(second, y);
         v.set(x, y, 0);
@@ -466,8 +466,7 @@ public class Controller {
         gameView.getMovementSelector().reset();
         Vector3 v = gameView.getCursor().getWorldPosition();
         CharacterUI c = new CharacterUI(
-                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
-        );
+                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity());
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();
