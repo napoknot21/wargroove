@@ -261,7 +261,7 @@ public class Assets {
     }
 
     public TextureRegion getTest() {
-        return get(Biome.GRASS).findRegion("test");
+        return get(Biome.ICE).findRegion("test");
     }
 
     /**
@@ -277,7 +277,7 @@ public class Assets {
     }
 
     public TextureAtlas get(Biome biome) {
-        String fileName = AssetDir.WORLD.getPath() + biome.name().toLowerCase() + ".txt";
+        String fileName = AssetDir.WORLD.getPath() + biome.name().toLowerCase() + ".atlas";
         return manager.get(fileName.replace('\\','/'));
     }
 
