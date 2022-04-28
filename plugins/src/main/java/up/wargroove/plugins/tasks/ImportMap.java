@@ -101,7 +101,7 @@ public class ImportMap {
     }
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/grass.atlas";
+        return "core/assets/data/sprites/world/grass.atlas.atlas";
     }
 
     private void load(File file) throws Exception {

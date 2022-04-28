@@ -118,7 +118,7 @@ public class ExportMap {
 
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/grass.atlas";
+        return "core/assets/data/sprites/world/grass.atlas.atlas";
     }
     //(option = "name", description = "name of the map stored in the database")
     private void setName(String name) {

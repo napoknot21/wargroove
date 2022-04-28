@@ -1,585 +1,662 @@
 grass.png
-size: 640, 640
+size: 680, 680
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest, Nearest
 repeat: none
-beach-1
+barracks-cherrystone_kingdom-1
   rotate: false
-  xy: 0, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-2
-  rotate: false
-  xy: 64, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-3
-  rotate: false
-  xy: 128, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-4
-  rotate: false
-  xy: 192, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-5
-  rotate: false
-  xy: 256, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-6
-  rotate: false
-  xy: 320, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-7
-  rotate: false
-  xy: 384, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-8
-  rotate: false
-  xy: 448, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-beach-9
-  rotate: false
-  xy: 512, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: 8
-bridge-1
-  rotate: false
-  xy: 576, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-2
-  rotate: false
-  xy: 0, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-3
-  rotate: false
-  xy: 64, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-4
-  rotate: false
-  xy: 128, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-5
-  rotate: false
-  xy: 192, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-6
-  rotate: false
-  xy: 256, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-7
-  rotate: false
-  xy: 320, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-8
-  rotate: false
-  xy: 384, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-9
-  rotate: false
-  xy: 448, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-10
-  rotate: false
-  xy: 512, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-11
-  rotate: false
-  xy: 576, 64
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-12
-  rotate: false
-  xy: 0, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-13
-  rotate: false
-  xy: 64, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-14
-  rotate: false
-  xy: 128, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-bridge-15
-  rotate: false
-  xy: 192, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-1
-  rotate: false
-  xy: 256, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-2
-  rotate: false
-  xy: 320, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-3
-  rotate: false
-  xy: 384, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-4
-  rotate: false
-  xy: 448, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-5
-  rotate: false
-  xy: 512, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-6
-  rotate: false
-  xy: 576, 128
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-forest-7
-  rotate: false
-  xy: 0, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-plain-1
-  rotate: false
-  xy: 64, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-plain-2
-  rotate: false
-  xy: 128, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-plain-3
-  rotate: false
-  xy: 192, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-plain-4
-  rotate: false
-  xy: 256, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-plain-5
-  rotate: false
-  xy: 320, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-mountain-1
-  rotate: false
-  xy: 384, 192
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-mountain-2
-  rotate: false
-  xy: 448, 192
+  xy: 2, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-felheim_legion-1
   rotate: false
-  xy: 512, 192
+  xy: 138, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-floran_tribes-1
   rotate: false
-  xy: 576, 192
+  xy: 342, 138
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-heavensong_empire-1
   rotate: false
-  xy: 0, 256
+  xy: 614, 410
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-outlaws-1
   rotate: false
-  xy: 64, 256
+  xy: 478, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
-barracks-cherrystone_kingdom-1
+beach-1
   rotate: false
-  xy: 128, 256
+  xy: 546, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-11
+  rotate: false
+  xy: 342, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-12
+  rotate: false
+  xy: 614, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-2
+  rotate: false
+  xy: 138, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-3
+  rotate: false
+  xy: 614, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-4
+  rotate: false
+  xy: 410, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-5
+  rotate: false
+  xy: 2, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-6
+  rotate: false
+  xy: 546, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-7
+  rotate: false
+  xy: 342, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-8
+  rotate: false
+  xy: 546, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+beach-9
+  rotate: false
+  xy: 274, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-1
+  rotate: false
+  xy: 478, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-10
+  rotate: false
+  xy: 342, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-11
+  rotate: false
+  xy: 206, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-12
+  rotate: false
+  xy: 410, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-13
+  rotate: false
+  xy: 138, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-14
+  rotate: false
+  xy: 138, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-15
+  rotate: false
+  xy: 342, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-2
+  rotate: false
+  xy: 410, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-3
+  rotate: false
+  xy: 2, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-4
+  rotate: false
+  xy: 546, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-5
+  rotate: false
+  xy: 274, 342
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-6
+  rotate: false
+  xy: 70, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-7
+  rotate: false
+  xy: 410, 342
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-8
+  rotate: false
+  xy: 274, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+bridge-9
+  rotate: false
+  xy: 478, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-1
+  rotate: false
+  xy: 410, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-2
+  rotate: false
+  xy: 546, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-3
+  rotate: false
+  xy: 206, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-4
+  rotate: false
+  xy: 2, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-5
+  rotate: false
+  xy: 410, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-6
+  rotate: false
+  xy: 478, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+forest-7
+  rotate: false
+  xy: 70, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+mountain-1
+  rotate: false
+  xy: 70, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+mountain-2
+  rotate: false
+  xy: 274, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+plain-1
+  rotate: false
+  xy: 546, 614
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+plain-2
+  rotate: false
+  xy: 138, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+plain-3
+  rotate: false
+  xy: 614, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+plain-4
+  rotate: false
+  xy: 70, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+plain-5
+  rotate: false
+  xy: 410, 70
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-1
   rotate: false
-  xy: 192, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-2
-  rotate: false
-  xy: 256, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-3
-  rotate: false
-  xy: 320, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-4
-  rotate: false
-  xy: 384, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-5
-  rotate: false
-  xy: 448, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-6
-  rotate: false
-  xy: 512, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-7
-  rotate: false
-  xy: 576, 256
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-8
-  rotate: false
-  xy: 0, 320
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-river-9
-  rotate: false
-  xy: 64, 320
+  xy: 138, 274
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-10
   rotate: false
-  xy: 128, 320
+  xy: 206, 70
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-11
   rotate: false
-  xy: 192, 320
+  xy: 206, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-12
   rotate: false
-  xy: 256, 320
+  xy: 614, 274
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-13
   rotate: false
-  xy: 320, 320
+  xy: 614, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-14
   rotate: false
-  xy: 384, 320
+  xy: 206, 478
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-15
   rotate: false
-  xy: 448, 320
+  xy: 206, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-2
+  rotate: false
+  xy: 546, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-3
+  rotate: false
+  xy: 478, 478
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-4
+  rotate: false
+  xy: 70, 342
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-5
+  rotate: false
+  xy: 274, 70
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-6
+  rotate: false
+  xy: 342, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-7
+  rotate: false
+  xy: 138, 614
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-8
+  rotate: false
+  xy: 478, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+river-9
+  rotate: false
+  xy: 410, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-1
   rotate: false
-  xy: 512, 320
+  xy: 138, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-10
+  rotate: false
+  xy: 614, 342
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-11
+  rotate: false
+  xy: 206, 206
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-12
+  rotate: false
+  xy: 206, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-13
+  rotate: false
+  xy: 410, 274
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-14
+  rotate: false
+  xy: 478, 614
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-15
+  rotate: false
+  xy: 2, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-2
   rotate: false
-  xy: 576, 320
+  xy: 2, 478
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-3
   rotate: false
-  xy: 0, 384
+  xy: 274, 206
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-4
   rotate: false
-  xy: 64, 384
+  xy: 2, 138
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-5
   rotate: false
-  xy: 128, 384
+  xy: 342, 70
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-6
   rotate: false
-  xy: 192, 384
+  xy: 70, 70
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-7
+  rotate: false
+  xy: 70, 410
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-8
+  rotate: false
+  xy: 274, 138
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+road-9
+  rotate: false
+  xy: 274, 410
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-1
   rotate: false
-  xy: 256, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-2
-  rotate: false
-  xy: 320, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-3
-  rotate: false
-  xy: 384, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-4
-  rotate: false
-  xy: 448, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-5
-  rotate: false
-  xy: 512, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-6
-  rotate: false
-  xy: 576, 384
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-7
-  rotate: false
-  xy: 0, 448
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-8
-  rotate: false
-  xy: 64, 448
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-sea-9
-  rotate: false
-  xy: 128, 448
+  xy: 546, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-10
   rotate: false
-  xy: 192, 448
+  xy: 410, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-2
+  rotate: false
+  xy: 2, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-3
+  rotate: false
+  xy: 206, 614
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-4
+  rotate: false
+  xy: 138, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-5
+  rotate: false
+  xy: 2, 70
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-6
+  rotate: false
+  xy: 478, 70
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-7
+  rotate: false
+  xy: 70, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-8
+  rotate: false
+  xy: 274, 546
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+sea-9
+  rotate: false
+  xy: 478, 274
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-cherrystone_kingdom-1
   rotate: false
-  xy: 256, 448
+  xy: 70, 138
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-felheim_legion-1
   rotate: false
-  xy: 320, 448
+  xy: 342, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-floran_tribes-1
   rotate: false
-  xy: 384, 448
+  xy: 274, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-heavensong_empire-1
   rotate: false
-  xy: 448, 448
+  xy: 2, 546
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-cherrystone_kingdom-1
   rotate: false
-  xy: 512, 448
+  xy: 70, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-felheim_legion-1
   rotate: false
-  xy: 576, 448
+  xy: 138, 70
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-floran_tribes-1
   rotate: false
-  xy: 0, 512
+  xy: 342, 614
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-heavensong_empire-1
   rotate: false
-  xy: 64, 512
+  xy: 342, 342
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-outlaws-1
   rotate: false
-  xy: 128, 512
+  xy: 206, 274
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

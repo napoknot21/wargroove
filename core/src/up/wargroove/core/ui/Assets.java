@@ -188,8 +188,8 @@ public class Assets {
     }
 
     /*public void loadBiomeMusic(){
-        Music grass = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
-        musics.put(Biome.GRASS, grass);
+        Music grass.atlas = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
+        musics.put(Biome.GRASS, grass.atlas);
         Music volcano = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/VOLCANO.mp3"));
         musics.put(Biome.VOLCANO, volcano);
         Music ice = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/ICE.mp3"));
@@ -431,7 +431,7 @@ public class Assets {
         HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "HEAVENSONG_EMPIRE"),
         STATS(CHARACTER.path + "STATS" + fs, "STATS"),
         WORLD(SPRITES.path + "world" + fs,"world","attack"),
-        GRASS(WORLD.path + "grass" + fs),
+        GRASS(WORLD.path + "grass.atlas" + fs),
         ICE(WORLD.path + "ice" + fs, "ice"),
         DESCRIPTION(DATA.path + "descriptions" + fs, "entities");
 
