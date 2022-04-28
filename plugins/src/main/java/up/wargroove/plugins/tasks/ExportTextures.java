@@ -1,8 +1,5 @@
 package up.wargroove.plugins.tasks;
 
-import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.TaskAction;
-import org.gradle.api.tasks.options.Option;
 import up.wargroove.core.world.Biome;
 import up.wargroove.utils.Log;
 
@@ -39,7 +36,6 @@ public class ExportTextures {
      *
      * @throws Exception if an error occurred.
      */
-    @TaskAction
     public void run() throws Exception {
         if (path == null || path.isEmpty()) {
             throw new Exception("The path cannot be empty");
@@ -76,23 +72,22 @@ public class ExportTextures {
         }
     }
 
-    @Input
     private String getWorldTexturePath() {
         return "core/assets/data/sprites/world/";
     }
 
-    @Option(option = "biome", description = "Biome of the texture")
+    //(option = "biome", description = "Biome of the texture")
     private void setBiome(String biome) {
         this.biome = biome;
     }
 
-    @Option(option = "path", description = "path where the texture will be downloaded")
+    //(option = "path", description = "path where the texture will be downloaded")
     private void setPath(String path) {
         this.path = path;
     }
 
-    @Option(option = "overwrite", description = "indicate if a file a the same name a the one given "
-            + "in the path or the default one will be be overwritten (Y/N)")
+    //(option = "overwrite", description = "indicate if a file a the same name a the one given "
+     //       + "in the path or the default one will be be overwritten (Y/N)")
     private void setOverwrite(String overwrite) {
         this.overwrite = overwrite.equalsIgnoreCase("Y");
     }
@@ -122,7 +117,7 @@ public class ExportTextures {
     private void copy(File origin, File destination) throws Exception {
         InputStream in = new FileInputStream(origin);
         OutputStream out = new FileOutputStream(destination);
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[2048];
         int len;
         while ((len = in.read(buf)) > 0) {
             out.write(buf, 0, len);
