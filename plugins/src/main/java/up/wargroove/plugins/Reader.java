@@ -21,12 +21,14 @@ public class Reader {
 
     public void load() throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(path));
-        for (int i = 0; i< 5 && scanner.hasNextLine(); i++) {
+        for (int i = 0; i < 5 && scanner.hasNextLine(); i++) {
             scanner.nextLine();
         }
         while (scanner.hasNextLine()) {
             String key = scanner.nextLine();
-            data.add(key);
+            if (!key.isBlank()) {
+                data.add(key);
+            }
             for (int i = 0; i< 6 && scanner.hasNextLine(); i++) {
                 scanner.nextLine();
             }

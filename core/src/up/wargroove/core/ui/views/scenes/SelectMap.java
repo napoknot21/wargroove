@@ -73,7 +73,7 @@ public class SelectMap extends ViewWithPrevious {
         choseMap.setVisible(b);
 
 
-        collectionName = "worlds";
+        collectionName = "2p";
         DBEngine.getInstance().connect();
         database = DBEngine.getInstance().getDatabase("wargroove");
         database.selectCollection(collectionName);

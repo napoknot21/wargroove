@@ -1,6 +1,7 @@
 package up.wargroove.plugins.tasks;
 
 
+import up.wargroove.core.character.Faction;
 import up.wargroove.core.world.*;
 import up.wargroove.plugins.Reader;
 import up.wargroove.utils.Database;
@@ -9,10 +10,7 @@ import up.wargroove.utils.Pair;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * This is a plugin. Its primary tasks is to import a given map in CLI to the local database.
@@ -55,7 +53,7 @@ public class ImportMap {
             try {
                 File file = new File(path);
                 if (!file.exists() || file.isDirectory()) {
-                    log.append("The specified path must indicate a file (").append(path).append(")").append('\n');
+                    log.append("The specified path must indicate a file (").append(path).append(" )").append('\n');
                 } else {
                     load(file);
                 }
@@ -66,7 +64,8 @@ public class ImportMap {
         }
 
         if (log.length() != 0) {
-            throw new Exception(log.toString());
+            System.err.println(log + "\n\n");
+            throw new Exception();
         }
     }
 
@@ -101,7 +100,7 @@ public class ImportMap {
     }
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/grass.atlas.atlas";
+        return "core/assets/data/sprites/world/grass.atlas";
     }
 
     private void load(File file) throws Exception {
@@ -112,8 +111,8 @@ public class ImportMap {
         World world = new World(properties);
         System.out.println(players);
         System.out.println(properties.terrain.length);
-        db.selectCollection(players+"p");
-        if (!world.save(db)) {
+        System.out.println(players+"p");
+        if (!world.save(db, players+"p")) {
             throw  new Exception("Something went wrong during the save");
         }
     }
@@ -129,22 +128,34 @@ public class ImportMap {
         Scanner scanner = new Scanner(file);
         int width = 0;
         int height = 0;
+        ArrayList<Faction> factions = new ArrayList<>(Arrays.asList(Faction.values()));
         ArrayList<Tile> array = new ArrayList<>();
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            height++;
-            String[] data = line.split(",");
-            width = data.length;
-            for (String d : data) {
-                Tile tile = reader.get(Integer.parseInt(d));
-                if (tile.entity.isPresent() && tile.entity.get() instanceof Stronghold) {
-                    players++;
+        try {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                height++;
+                String[] data = line.split(",");
+                width = data.length;
+                for (String d : data) {
+                    Tile tile = reader.get(Integer.parseInt(d));
+                    checkPlayers(tile, factions);
+                    array.add(tile);
                 }
-                array.add(tile);
             }
+        } finally {
+            scanner.close();
         }
         return generateProperties(array, width, height, file);
+    }
+
+    private void checkPlayers(Tile tile, ArrayList<Faction> factions) throws Exception {
+        if (factions.isEmpty()) throw new Exception("There is an issue with the structure configuration");
+        if (tile.entity.isPresent() && tile.entity.get() instanceof Stronghold) {
+            if (!factions.remove(tile.entity.get().getFaction())) {
+                throw new Exception("There is an issue with the structure configuration");
+            }
+            players++;
+        }
     }
 
     /**
