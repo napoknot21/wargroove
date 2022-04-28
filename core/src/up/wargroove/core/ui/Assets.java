@@ -261,7 +261,7 @@ public class Assets {
     }
 
     public TextureRegion getTest() {
-        return get(Biome.ICE).findRegion("test");
+        return get(AssetDir.WORLD.getPath()+"test.png");
     }
 
     /**
