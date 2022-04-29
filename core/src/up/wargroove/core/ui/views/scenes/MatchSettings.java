@@ -5,6 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
@@ -52,8 +53,6 @@ public class MatchSettings extends ViewWithPrevious {
     private Label fogLabel;
     private Label incomeLabel;
     private Label printIncome;
-    //private Label commandersLabel;
-    //private Label teamLabel;
     private Label biomeLabel;
     /**
      * Weather SelectBox
@@ -68,7 +67,7 @@ public class MatchSettings extends ViewWithPrevious {
 
     public MatchSettings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
-        this.skin = getAssets().getDefault(Skin.class);
+        this.skin = getAssets().getSkin();
         properties = (getModel().getProperties() != null) ? getModel().getProperties() : new WorldProperties();
 
     }
@@ -90,10 +89,12 @@ public class MatchSettings extends ViewWithPrevious {
         printIncome = new Label(income.getValue() + "%", skin);
         biomeLabel = new Label("Biome :", skin);
         weather = new SelectBox<String>(skin);
+        weather.setAlignment(Align.center);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
         checkFog = new CheckBox("On", skin);
         checkFog.setChecked(true);
         biome = new SelectBox<Biome>(skin);
+        biome.setAlignment(Align.center);
         biome.setItems(Biome.GRASS, Biome.ICE, Biome.DESERT, Biome.VOLCANO);
         initListener();
         setStage(viewport);

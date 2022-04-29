@@ -28,10 +28,10 @@ public class StructureMenu extends Dialog {
     private Stage stage;
 
     private StructureMenu(Assets assets, Controller controller) {
-        super("", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
+        super("", assets.getSkin());
         this.description = new Description(assets);
         this.controller = controller;
-        buy = new TextButton("buy", assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
+        buy = new TextButton("buy", assets.getSkin());
         player = controller.getModel().getCurrentPlayer();
         button("close", Buttons.CLOSE);
         button(buy, Buttons.BUY);
@@ -91,18 +91,20 @@ public class StructureMenu extends Dialog {
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
         ScrollPane pane = new ScrollPane(buttons);
+        pane.setSmoothScrolling(true);
+        pane.setScrollbarsVisible(true);
         instance.getContentTable().add(pane).expand();
         instance.getContentTable().add(instance.description).expand().fill();
     }
 
     @Override
     public float getPrefHeight() {
-        return Math.min(Gdx.graphics.getHeight() / 2f, 400);
+        return Math.min(Gdx.graphics.getHeight() /1.5f, 400);
     }
 
     @Override
     public float getPrefWidth() {
-        return Math.min(Gdx.graphics.getWidth() / 2f, 600);
+        return Math.min(Gdx.graphics.getWidth() / 1.5f, 600);
     }
 
     @Override
@@ -172,7 +174,7 @@ public class StructureMenu extends Dialog {
         Entity entity;
 
         public CharacterButton(Entity e, Assets assets) {
-            super(transformName(e), assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
+            super(transformName(e), assets.getSkin());
             entity = e;
             if (player.getMoney() < e.getCost()) {
                 TextButtonStyle style = new TextButtonStyle(this.getStyle());
@@ -204,7 +206,7 @@ public class StructureMenu extends Dialog {
         private final Label range;
 
         private Description(Assets assets) {
-            Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
+            Skin skin = assets.getSkin();
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);

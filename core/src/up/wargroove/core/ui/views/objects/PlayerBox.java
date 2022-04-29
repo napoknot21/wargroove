@@ -54,7 +54,7 @@ public class PlayerBox extends Table {
      *
      */
     public PlayerBox() {
-        Skin skin = Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
+        Skin skin = Assets.getInstance().getSkin();
         name = new Label("Friendly", skin);
         money = new Label("300", skin);
         income = new Label("+500", skin);
@@ -70,11 +70,11 @@ public class PlayerBox extends Table {
     private void setup() {
         Table table = new Table();
         table.left().top();
-        table.add(name).expandX().fillX().pad(0, 0, -5, 0);
+        table.add(name).expandX().fillX().pad(0, 0, -2, 0);
         table.row();
-        table.add(money).expandX().fillX().pad(0, 0, -10, 0);
+        table.add(money).expandX().fillX().pad(0, 0, -2, 0);
         table.row();
-        table.add(income).expandX().fillX().pad(0, 0, -5, 0);
+        table.add(income).expandX().fillX().pad(0, 0, -2, 0);
         table.row();
         table.add(round).expandX().fillX();
         add(table).expand().pad(10);

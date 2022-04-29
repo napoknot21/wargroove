@@ -62,6 +62,7 @@ public class WargrooveClient extends Game {
         batch = new SpriteBatch();
         assets = Assets.getInstance();
         assets.loadDefault();
+        assets.load(Assets.AssetDir.SKIN);
         assets.loadEntitiesDescription();
         Model model = new Model();
         controller = new Controller(model, this);

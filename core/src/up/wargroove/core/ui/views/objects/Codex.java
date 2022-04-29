@@ -44,7 +44,7 @@ public class Codex extends Table {
 
     public Codex(Assets assets, Controller controller) {
         this.assets=assets;
-        Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
+        Skin skin = assets.getSkin();
         openCodex = new TextButton("Codex", skin);
         openCodex.setColor(Color.FIREBRICK);
 

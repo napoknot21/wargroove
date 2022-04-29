@@ -32,7 +32,7 @@ public class InGameMenu extends View {
      */
     @Override
     public void init() {
-        Skin skin = Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json");
+        Skin skin = Assets.getInstance().getSkin();
         setStage(new ScreenViewport());
         TextButton close = new TextButton("Return", skin);
         TextButton mainMenu = new TextButton("Main Menu", skin);

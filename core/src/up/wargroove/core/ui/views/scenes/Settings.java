@@ -46,7 +46,7 @@ public class Settings extends ViewWithPrevious {
 
     public Settings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
-        Skin skin = getAssets().getDefault(Skin.class);
+        Skin skin = getAssets().getSkin();
         buttonSound = Assets.getInstance().getDefault(Sound.class);
         fullScreenLabel = new Label("Full screen",skin);
         cameraVelocityLabel = new Label("Camera velocity", skin);
@@ -132,7 +132,7 @@ public class Settings extends ViewWithPrevious {
         float padL = 10f;
         float padC = 10;
         Label empty = new Label(
-                "", Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class)
+                "", Assets.getInstance().getSkin()
         );
 
         table.setFillParent(true);

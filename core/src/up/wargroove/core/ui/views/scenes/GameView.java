@@ -116,7 +116,7 @@ public class GameView extends View {
         tileIndicator = new TileIndicator(getModel().getBiome());
         unitIndicator = new UnitIndicator(getModel().getBiome());
         moveDialog = new MoveDialog(getAssets(), getController());
-        menu = new TextButton("Menu", getAssets().get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class));
+        menu = new TextButton("Menu", getAssets().getSkin());
         playerBox = new PlayerBox();
         codex = new Codex(getAssets(), getController());
 

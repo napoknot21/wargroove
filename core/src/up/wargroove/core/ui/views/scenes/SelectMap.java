@@ -66,10 +66,10 @@ public class SelectMap extends ViewWithPrevious {
         VRT = new Stage(new ScreenViewport());
         VRB = new Stage(new ScreenViewport());
         VT = new Stage(new ScreenViewport());
-        Skin skin = getAssets().getDefault(Skin.class);
+        Skin skin = getAssets().getSkin();
         buttonSound = getAssets().getDefault(Sound.class);
         back = new TextButton("Back", skin);
-        choseMap = new TextButton("Choose this Map", skin);
+        choseMap = new TextButton("Select", skin);
         boolean b = getModel().getProperties() != null;
         choseMap.setDisabled(!b);
         choseMap.setVisible(b);
@@ -270,7 +270,7 @@ public class SelectMap extends ViewWithPrevious {
         public MapButton(String mapName) {
             super(
                     transform(mapName),
-                    Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "rusty-robot-ui.json", Skin.class)
+                    Assets.getInstance().getSkin()
             );
             this.mapName = mapName;
             addListener(new ChangeListener() {
@@ -289,7 +289,7 @@ public class SelectMap extends ViewWithPrevious {
         public CategoryButton(int i) {
             super(
                     Integer.toString(i),
-                    Assets.getInstance().get(Assets.AssetDir.SKIN.getPath() + "rusty-robot-ui.json", Skin.class)
+                    Assets.getInstance().getSkin()
             );
             addListener(new ChangeListener() {
                 @Override

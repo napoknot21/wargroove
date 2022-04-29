@@ -53,9 +53,9 @@ public class MainMenu extends View {
     @Override
     public void init() {
         Viewport viewport = new ScreenViewport();
-        Skin skin = getAssets().getDefault(Skin.class);
+        Skin skin = getAssets().getSkin();
         buttonSound = getAssets().getDefault(Sound.class);
-        startGame = new TextButton("Start Game", skin);
+        startGame = new TextButton("Start", skin);
         settings = new TextButton("Settings", skin);
         quit = new TextButton("Quit", skin);
         initListener();

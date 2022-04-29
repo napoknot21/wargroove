@@ -34,7 +34,7 @@ public class MoveDialog extends Table {
     public MoveDialog(Assets assets, Controller controller) {
         super();
         background(new SpriteDrawable(new Sprite(assets.getTest())));
-        Skin skin = assets.get(Assets.AssetDir.SKIN.getPath() + "uiskin.json", Skin.class);
+        Skin skin = assets.getSkin();
         wait = new TextButton("Wait", skin);
         attack = new TextButton("Attack", skin);
         move = new TextButton("Move", skin);

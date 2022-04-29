@@ -1,0 +1,228 @@
+{
+"BitmapFont": {
+	"font-export": {
+		"file": "font-export.fnt"
+	},
+	"font": {
+		"file": "font-export.fnt"
+	},
+	"title": {
+		"file": "font-title-export.fnt"
+	}
+},
+"Color": {
+	"RGBA_0_0_0_255": {
+		"r": 0,
+		"g": 0,
+		"b": 0,
+		"a": 1
+	},
+	"RGBA_255_255_255_255": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
+		"a": 1
+	},
+	"black": {
+		"r": 0,
+		"g": 0,
+		"b": 0,
+		"a": 1
+	},
+	"white": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
+		"a": 1
+	}
+},
+"TintedDrawable": {
+	"tan": {
+		"name": "white",
+		"color": {
+			"r": 1,
+			"g": 0.909659,
+			"b": 0.7633333,
+			"a": 1
+		}
+	},
+	"black": {
+		"name": "white",
+		"color": {
+			"r": 0,
+			"g": 0,
+			"b": 0,
+			"a": 1
+		}
+	},
+	"clear": {
+		"name": "white",
+		"color": {
+			"r": 1,
+			"g": 1,
+			"b": 1,
+			"a": 0
+		}
+	},
+	"dialog-bg": {
+		"name": "white",
+		"color": {
+			"r": 0.98333335,
+			"g": 0.8546715,
+			"b": 0.55722225,
+			"a": 0.52666664
+		}
+	}
+},
+"ButtonStyle": {
+	"default": {
+		"up": "button",
+		"down": "button-pressed"
+	}
+},
+"CheckBoxStyle": {
+	"default": {
+		"checkboxOn": "checkbox-pressed",
+		"checkboxOff": "checkbox",
+		"font": "font",
+		"fontColor": "black"
+	},
+	"radio": {
+		"checkboxOn": "radio-pressed",
+		"checkboxOff": "radio",
+		"font": "font",
+		"fontColor": "black"
+	}
+},
+"ImageButtonStyle": {
+	"default": {
+		"up": "button",
+		"down": "button-pressed"
+	}
+},
+"ImageTextButtonStyle": {
+	"default": {
+		"font": "font",
+		"fontColor": "black",
+		"up": "button",
+		"down": "button-pressed"
+	}
+},
+"LabelStyle": {
+	"default": {
+		"font": "font",
+		"fontColor": "white"
+	},
+	"title": {
+		"font": "title"
+	},
+	"bg": {
+		"font": "font",
+		"fontColor": "black"
+	}
+},
+"ListStyle": {
+	"default": {
+		"font": "font",
+		"fontColorSelected": "black",
+		"fontColorUnselected": "black",
+		"selection": "tan",
+		"background": "list"
+	}
+},
+"ProgressBarStyle": {
+	"default-horizontal": {
+		"background": "progress-bar-horizontal",
+		"knobBefore": "progress-bar-knob-horizontal"
+	},
+	"default-vertical": {
+		"background": "progress-bar-vertical",
+		"knobBefore": "progress-bar-knob-vertical"
+	}
+},
+"ScrollPaneStyle": {
+	"default": {
+		"hScrollKnob": "hscroll",
+		"vScrollKnob": "scrollbar-knob-vertical"
+	},
+	"empty": {
+		"background": "clear"
+	}
+},
+"SelectBoxStyle": {
+	"default": {
+		"font": "font",
+		"fontColor": "black",
+		"background": "select-box",
+		"scrollStyle": "empty",
+		"listStyle": "default"
+	}
+},
+"SliderStyle": {
+	"default-horizontal": {
+		"background": "slider-horizontal",
+		"knob": "slider-knob-horizontal"
+	},
+	"default-vertical": {
+		"background": "slider-vertical",
+		"knob": "slider-knob-vertical"
+	}
+},
+"SplitPaneStyle": {
+	"default-horizontal": {
+		"handle": "splitpane-horizontal"
+	},
+	"default-vertical": {
+		"handle": "splitpane-vertical"
+	}
+},
+"TextButtonStyle": {
+	"default": {
+		"font": "font",
+		"fontColor": "black",
+		"up": "button",
+		"down": "button-pressed"
+	}
+},
+"TextFieldStyle": {
+	"default": {
+		"font": "font",
+		"fontColor": "black",
+		"background": "text-field",
+		"cursor": "black",
+		"selection": "tan"
+	}
+},
+"TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+},
+"TreeStyle": {
+	"default": {
+		"plus": "plus",
+		"minus": "minus",
+		"selection": "tan"
+	}
+},
+"WindowStyle": {
+	"default": {
+		"background": "window",
+		"titleFont": "font"
+	},
+	"empty": {
+		"background": "clear",
+		"titleFont": "font"
+	},
+	"dialog": {
+		"background": "window",
+		"titleFont": "font",
+		"stageBackground": "dialog-bg"
+	},
+	"empty-bg": {
+		"background": "clear",
+		"titleFont": "font",
+		"stageBackground": "dialog-bg"
+	}
+}
+}

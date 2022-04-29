@@ -177,14 +177,16 @@ public class Assets {
      * Loads the defaults assets.
      */
     public void loadDefault() {
-        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "rusty-robot-ui.json"));
+        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "ui.json"));
         defaults.put(Skin.class, defaultSkin);
-        Texture texture = new Texture(Gdx.files.internal(AssetDir.SKIN.path + "uiskin.png"));
-        defaults.put(Texture.class, texture);
         Sound defaultSound = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
         defaults.put(Sound.class, defaultSound);
         Music defaultMusic = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/theme.mp3"));
         defaults.put(Music.class, defaultMusic);
+    }
+
+    public Skin getSkin() {
+        return get(AssetDir.SKIN.path+"ui.json", Skin.class);
     }
 
     /*public void loadBiomeMusic(){
