@@ -100,19 +100,19 @@ public class PlayerBox extends Table {
         String sign;
         if (player.getIncome() >= 0){
             sign = "+";
-            this.income.setColor(Color.GREEN);
+            this.income.setColor(new Color(90/255F,220/255f,90/255f,1));
         } else {
             sign = "-";
-            this.income.setColor(Color.RED);
+            this.income.setColor(new Color(81/255f,0,0,1));
         }
         income.setText(sign + player.getIncome());
         this.round.setText(round);
         Color color;
-        switch (player.getFaction()) {
-            case FLORAN_TRIBES: color = Color.GREEN; break;
-            case FELHEIM_LEGION: color = Color.ROYAL; break;
-            case CHERRYSTONE_KINGDOM: color = Color.FIREBRICK; break;
-            case HEAVENSONG_EMPIRE: color = Color.WHITE; break;
+        switch (player.getFaction()) {  //Color based on the tile set
+            case FLORAN_TRIBES: color = new Color(111/255f,153/255f,13/255f,1); break;
+            case FELHEIM_LEGION: color = new Color(13/255f,76/255f,153/255f,1); break;
+            case CHERRYSTONE_KINGDOM: color = new Color(153/255f,23/255f,13/255f,1); break;
+            case HEAVENSONG_EMPIRE: color = new Color(153/255f,120/255f,13/255f,1); break;
             default: color = Color.CLEAR;
         }
         Sprite sprite = new Sprite(Assets.getInstance().getTest());
