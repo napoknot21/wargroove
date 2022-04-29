@@ -5,35 +5,36 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.world.Biome;
+import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 
 /**
  * A game UI indicator.
  */
-public abstract class Indicator extends Actor {
-
-    /**
-     * The Tile indicator background. This shows the texture of the tile.
-     */
-    private Sprite foreground;
-
-    /**
-     * The tile indicator foreground. This shows the stats of the tile.
-     */
-    private Sprite background;
+public class Indicator extends Actor {
 
     /**
      * The tile biome.
      */
     private final Biome biome;
+    /**
+     * The Tile indicator background. This shows the texture of the tile.
+     */
+    private Sprite foreground;
+    /**
+     * The tile indicator foreground. This shows the stats of the tile.
+     */
+    private Sprite background;
+    private final Sprite Stats;
 
 
     /**
      * Create an indicator.
      *
-     * @param biome  the world biome.
+     * @param biome the world biome.
      */
     public Indicator(Biome biome) {
         super();
@@ -42,6 +43,8 @@ public abstract class Indicator extends Actor {
         this.background = new Sprite();
         background.setSize(50, 50);
         this.biome = biome;
+        this.Stats = new Sprite();
+        Stats.setSize(12, 12);
     }
 
     /**
@@ -50,7 +53,36 @@ public abstract class Indicator extends Actor {
      * @param assets the app assets.
      * @param tile   the tile that will be displayed.
      */
-    public abstract void setTexture(Assets assets, Tile tile);
+    public void setTexture(Assets assets, Tile tile) {
+        if (tile.entity.isEmpty()) {
+            setForeground((Texture) null);
+            setBackground(Assets.getInstance().get(tile, getBiome()));
+            setStats(null);
+            return;
+        }
+        setBackground(Assets.getInstance().get(tile, getBiome()));
+        Entity character = tile.entity.get();
+        if (character instanceof Structure) {
+            setForeground(Assets.getInstance().get((Structure) character));
+            return;
+        }
+        var texture = assets.get(
+                "data/sprites/character/" + character.getFaction() + "/"
+                        + character.getType() + "_DIE.png",
+                Texture.class
+        );
+        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
+        setForeground((tmp[0][0]));
+        int numero = 0;
+        if (character.getHealth() < 90) {
+            numero = (int) ((character.getHealth() / 10) + 1);
+        }
+        if ((character.getHealth() <= 0) || (character.getHealth() == 90)) {
+            numero = (int) ((character.getHealth() / 10));
+        }
+        Texture stats = assets.get("data/sprites/character/STATS/Stats" + numero + ".png");
+        setStats(stats);
+    }
 
     public Sprite getForeground() {
         return foreground;
@@ -116,18 +148,6 @@ public abstract class Indicator extends Actor {
         return biome;
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        getBackground().setPosition(getX(), getY());
-        if (background.getTexture() != null) {
-            background.draw(batch);
-        }
-        foreground.setPosition(getX(), getY());
-        if (foreground.getTexture() != null) {
-            foreground.draw(batch);
-        }
-    }
-
 
     @Override
     public float getWidth() {
@@ -142,5 +162,31 @@ public abstract class Indicator extends Actor {
     public void dispose() {
         foreground = null;
         background = null;
+    }
+
+
+    public void setStats(Texture texture) {
+        if (texture != null) {
+            Stats.setRegion(new TextureRegion(texture));
+        } else {
+            Stats.setTexture(null);
+        }
+    }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        getBackground().setPosition(getX(), getY());
+        if (background.getTexture() != null) {
+            background.draw(batch);
+        }
+        foreground.setPosition(getX(), getY());
+        if (foreground.getTexture() != null) {
+            foreground.draw(batch);
+        }
+
+        Stats.setPosition(getX() + 36, getY() + 1);
+        if (Stats.getTexture() != null) {
+            Stats.draw(batch);
+        }
     }
 }

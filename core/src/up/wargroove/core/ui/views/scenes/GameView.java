@@ -9,7 +9,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -47,8 +46,7 @@ public class GameView extends View {
     private Viewport viewport;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
-    private TileIndicator tileIndicator;
-    private UnitIndicator unitIndicator;
+    private Indicator indicator;
     private PlayerBox playerBox;
     private Stage gameViewUi;
     private TextButton menu;
@@ -117,8 +115,7 @@ public class GameView extends View {
      * Initiates the gameView UI above the board.
      */
     private void initGameViewUI() {
-        tileIndicator = new TileIndicator(getModel().getBiome());
-        unitIndicator = new UnitIndicator(getModel().getBiome());
+        indicator = new Indicator(getModel().getBiome());
         moveDialog = new MoveDialog(getAssets(), getController());
         menu = new TextButton("Menu", getAssets().getSkin());
         playerBox = new PlayerBox();
@@ -140,15 +137,14 @@ public class GameView extends View {
         Table indicators = new Table();
         indicators.background(getAssets().getSkin().getDrawable("window"));
         indicators.bottom().right();
-        indicators.add(unitIndicator).pad(10);
-        indicators.add(tileIndicator).pad(10);
+        indicators.add(indicator).pad(2);
 
         table.add(menu).left().top().pad(10);
         table.add(guide).left().top().pad(10);
 
-        table.add(playerBox).right().top().pad(10);
+        table.add(playerBox).right().top().pad(2);
         table.row();
-        table.add(buttons).expand().left().bottom().pad(10);
+        table.add(buttons).expand().left().bottom().pad(2);
         table.add();
         table.add(indicators).expand().right().bottom();
 
@@ -172,8 +168,7 @@ public class GameView extends View {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 cursor.setPosition(vector);
                 Tile tile = getController().getTile(cursor.getWorldPosition());
-                tileIndicator.setTexture(getAssets(), tile);
-                unitIndicator.setTexture(getAssets(), tile);
+                indicator.setTexture(getAssets(), tile);
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
@@ -217,8 +212,7 @@ public class GameView extends View {
                     return true;
                 }
                 buy = false;
-                tileIndicator.setTexture(getAssets(), tile);
-                unitIndicator.setTexture(getAssets(), tile);
+                indicator.setTexture(getAssets(), tile);
                 movement = getController().showMovements(movement, movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
 
@@ -297,10 +291,8 @@ public class GameView extends View {
         camera = null;
         renderer.dispose();
         renderer = null;
-        tileIndicator.dispose();
-        tileIndicator = null;
-        unitIndicator.dispose();
-        unitIndicator = null;
+        indicator.dispose();
+        indicator = null;
         playerBox.dispose();
         playerBox = null;
         gameViewUi.dispose();

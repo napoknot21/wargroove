@@ -78,7 +78,7 @@ public class PlayerBox extends Table {
         table.add(income).expandX().fillX().pad(0, 0, -2, 0);
         table.row();
         table.add(round).expandX().fillX();
-        add(table).expand().pad(10);
+        add(table).expand().padRight(10).padLeft(5);
         add(avatar).size(70);
     }
 
