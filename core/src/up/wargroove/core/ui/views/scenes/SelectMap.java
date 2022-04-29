@@ -16,6 +16,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.objects.GameMap;
+import up.wargroove.core.ui.views.objects.MapActor;
 import up.wargroove.core.world.World;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.DBEngine;
@@ -93,15 +94,13 @@ public class SelectMap extends ViewWithPrevious {
         VLTable.row();
         VL.addActor(VLTable);
 
-        new MapActor();
-
         Table VRBTable = new Table();
         VRBTable.setFillParent(true);
         VRBTable.bottom();
         description = new Description();
         VRBTable.addActor(description);
-        VRBTable.add(back);
-        VRBTable.add(choseMap);
+        VRBTable.add(back).pad(10);
+        VRBTable.add(choseMap).pad(10);
         VRB.addActor(VRBTable);
         addInput(VRB, VT,VL);
 
@@ -114,7 +113,7 @@ public class SelectMap extends ViewWithPrevious {
         table.top();
         table.setFillParent(true);
         for (int i = 2; i < 5; i++) {
-            table.add(new CategoryButton(i)).expandX().fill();
+            table.add(new CategoryButton(i)).expandX().fill().pad(10);
         }
         return table;
     }
@@ -127,9 +126,10 @@ public class SelectMap extends ViewWithPrevious {
     public Table initButtonsTable(List<String> mapNames) {
         Table table = new Table();
         table.setFillParent(true);
+        table.center();
         if (mapNames != null) {
             mapNames.forEach(name -> {
-                table.add(new MapButton(name));
+                table.add(new MapButton(name)).expandX().pad(10);
                 table.row();
             });
         }
@@ -148,7 +148,7 @@ public class SelectMap extends ViewWithPrevious {
         VRB.getViewport().setScreenX(newWidth);
         if (getModel().getWorld() != null) {
             VRT.clear();
-            buildMap(getModel().getWorld());
+            renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
         }
     }
 
@@ -231,27 +231,8 @@ public class SelectMap extends ViewWithPrevious {
         properties.amt = amt;
         getModel().setWorld(properties);
         VRT.clear();
-       buildMap(getModel().getWorld());
+        renderer = MapActor.buildMap(getModel().getWorld(), VRT,mapSize, getController());
         description.setInformation(properties);
-    }
-
-    private MapActor buildMap(World world) {
-        MapActor newMap = new MapActor(world);
-        TiledMap last = renderer.getMap();
-        renderer.dispose();
-        mapSize.first = (float) (newMap.map.getHeight() * newMap.map.getTileSize());
-        mapSize.second = (float) (newMap.map.getWidth() * newMap.map.getTileSize());
-        float heightRatio = (VRT.getHeight() / mapSize.first);
-        float widthRatio = (VRT.getWidth() / mapSize.second);
-
-        renderer = new OrthogonalTiledMapRenderer(newMap.map, Math.min(heightRatio, widthRatio));
-        mapSize.first *= renderer.getUnitScale();
-        mapSize.second *= renderer.getUnitScale();
-        System.out.println(renderer.getUnitScale());
-        renderer.setMap(newMap.map);
-        System.out.println(newMap.map.getScale());
-        last.dispose();
-        return newMap;
     }
 
     @Override
@@ -312,29 +293,6 @@ public class SelectMap extends ViewWithPrevious {
         }
 
         public void setInformation(WorldProperties properties) {
-        }
-    }
-
-    private class MapActor {
-        private final GameMap map;
-
-        private MapActor(World world) {
-            float heightRatio = (VRT.getHeight() / (world.getDimension().first * 64));
-            float widthRatio = (VRT.getWidth() / (world.getDimension().second * 64));
-            float scale = Math.min(heightRatio,widthRatio);
-            System.out.println(scale);
-
-            map = new GameMap(world, VRT, null,getController(), scale,true,false);
-        }
-
-        private MapActor() {
-            this.map = null;
-        }
-
-        public void dispose() {
-            if (map != null) {
-                map.dispose();
-            }
         }
     }
 

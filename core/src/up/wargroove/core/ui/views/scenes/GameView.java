@@ -138,6 +138,7 @@ public class GameView extends View {
         guide.add(codex);
 
         Table indicators = new Table();
+        indicators.background(getAssets().getSkin().getDrawable("window"));
         indicators.bottom().right();
         indicators.add(unitIndicator).pad(10);
         indicators.add(tileIndicator).pad(10);
@@ -303,14 +304,10 @@ public class GameView extends View {
         playerBox.dispose();
         playerBox = null;
         gameViewUi.dispose();
-        menu.clear();
         menu = null;
-        moveDialog.dispose();
         moveDialog = null;
         scopedEntity = null;
-        movementSelector.dispose();
         movementSelector = null;
-        attackSelector.dispose();
         attackSelector = null;
         super.dispose();
     }

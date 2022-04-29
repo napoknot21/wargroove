@@ -62,13 +62,14 @@ public class PlayerBox extends Table {
         avatar = new Image(Assets.getInstance().getTest());
         isStatic = false;
         setup();
+        background(skin.getDrawable("window"));
     }
 
     /**
      * builds the playerBox and manage its elements.
      */
     private void setup() {
-        Table table = new Table();
+        Table table = new Table(Assets.getInstance().getSkin());
         table.left().top();
         table.add(name).expandX().fillX().pad(0, 0, -2, 0);
         table.row();

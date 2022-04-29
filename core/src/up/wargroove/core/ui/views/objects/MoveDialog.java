@@ -32,8 +32,8 @@ public class MoveDialog extends Table {
      * @param controller The app controller.
      */
     public MoveDialog(Assets assets, Controller controller) {
-        super();
-        background(new SpriteDrawable(new Sprite(assets.getTest())));
+        super(Assets.getInstance().getSkin());
+        background(getSkin().getDrawable("window"));
         Skin skin = assets.getSkin();
         wait = new TextButton("Wait", skin);
         attack = new TextButton("Attack", skin);

@@ -98,11 +98,15 @@ public class MainMenu extends View {
         Table table = new Table();
         table.setFillParent(true);
         //table.top();
-        table.add(startGame);
+        table.add().expand();
         table.row();
-        table.add(settings);
+        table.add().expand();
         table.row();
-        table.add(quit);
+        table.add(startGame).expand();
+        table.row();
+        table.add(settings).expand();
+        table.row();
+        table.add(quit).expand();
 
         return table;
     }
