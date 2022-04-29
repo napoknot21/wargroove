@@ -73,20 +73,22 @@ public class Player {
 	/**
 	 * Passe le tour du joueur
 	 *
-	 * @return faux si le commandant n'existe plus et vrai sinon
+	 * @return faux si le commandant n'existe plus et vrai sinon ou que la base a ete detruite.
 	 */
 	public boolean nextTurn() {
 
 		boolean isCommanderAlive = false;
+		boolean isStrongholdAlive = false;
 
 		for(Entity c : entities) {
 		
 			c.nextTurn();
 			isCommanderAlive |= c.getType() == Entity.Type.COMMANDER;
+			isStrongholdAlive |= c instanceof Stronghold;
 		
 		}
 		money = Math.max(money + income, 0);
-		return isCommanderAlive;
+		return isCommanderAlive && isStrongholdAlive;
 
 	}
 
