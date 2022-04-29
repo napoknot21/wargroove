@@ -29,10 +29,16 @@ public class GameMap extends TiledMap {
      * Init the tiledMap according to the given model.
      *
      * @param world The world that will be on the gui
-     * @param stage
+     * @param structures
      */
-    public GameMap(World world, Stage stage, Controller controller, float scale, boolean structure, boolean character) {
+    public GameMap(World world, Stage structures, Stage characters, Controller controller, float scale, boolean s, boolean c) {
         super();
+        if (characters == null) {
+            c = false;
+        }
+        if (structures == null) {
+            s = false;
+        }
         Model.setTileSize(tileSize);
         this.scale = scale;
         atlas = Assets.getInstance().get(controller.getModel().getBiome());
@@ -43,8 +49,8 @@ public class GameMap extends TiledMap {
             for (int j = 0; j < height; j++) {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new MapTile(world.at(i, j), controller.getModel().getBiome()));
-                if (structure || character) {
-                    addEntityImage(stage, controller, world, i, j, structure, character, scale);
+                if (s || c) {
+                    addEntityImage(structures, characters,controller, world, i, j, s, c, scale);
                 }
                 tileLayer.setCell(i, j, cell);
             }
@@ -52,23 +58,23 @@ public class GameMap extends TiledMap {
         this.getLayers().add(tileLayer);
     }
 
-    public GameMap(World world, Stage stage, Controller controller, int scale) {
-        this(world,stage,controller,scale,true,true);
+    public GameMap(World world, Stage stage, Stage characters,Controller controller, int scale) {
+        this(world,stage, characters,controller,scale,true,true);
     }
 
     public GameMap(World world, Stage stage, Controller controller, boolean structure, boolean character) {
-        this(world, stage, controller, 1, structure,character);
+        this(world, stage, null,controller, 1, structure,character);
     }
 
-    public GameMap(World world, Stage stage, Controller controller) {
-        this(world, stage, controller, 1);
+    public GameMap(World world, Stage stage, Stage characters,Controller controller) {
+        this(world, stage, characters,controller, 1);
     }
 
-    private void addEntityImage(Stage stage, Controller controller, World world, int i, int j, boolean structure, boolean character, float scale) {
+    private void addEntityImage(Stage stage, Stage characters, Controller controller, World world, int i, int j, boolean structure, boolean character, float scale) {
         Tile tile = world.at(i, j);
         if (tile.entity.isEmpty()) return;
         if (character && tile.entity.get() instanceof Character) {
-            new CharacterUI(controller, new Pair<>(i, j), (Character) tile.entity.get(), scale);
+            new CharacterUI(controller, characters ,new Pair<>(i, j), (Character) tile.entity.get(), scale);
         } else if (structure && tile.entity.get() instanceof Structure) {
             new StructureUI(stage, (Structure) tile.entity.get(), new Pair<>(i, j), scale);
         }

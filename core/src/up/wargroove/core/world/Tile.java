@@ -147,5 +147,9 @@ public class Tile implements Savable {
 
         }
 
+        public boolean isWalkable() {
+            return this != SEA && this != DEEP_SEA && this != REEF && this != WALL;
+        }
+
     }
 }

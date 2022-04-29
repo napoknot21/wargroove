@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.*;
 import up.wargroove.core.WargrooveClient;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
@@ -57,6 +58,7 @@ public class GameView extends View {
     private MoveDialog moveDialog;
     private Codex codex;
     private Actor scopedEntity;
+    private Stage characters;
     /**
      * The current character possible movement.
      */
@@ -100,9 +102,11 @@ public class GameView extends View {
         viewport.apply();
         camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
-        gameMap = new GameMap(getModel().getWorld(), getStage(), getController());
+        characters = new Stage(viewport,getBatch());
+        gameMap = new GameMap(getModel().getWorld(), getStage(), characters, getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
+        addInput(characters);
 
 
         //camera.position.set(gameMap.getCenter());
@@ -277,6 +281,7 @@ public class GameView extends View {
         attackSelector.draw(getBatch());
         getStage().act(delta);
         getStage().draw();
+        characters.draw();
         gameViewUi.act(delta);
         gameViewUi.draw();
         if (getController().isCameraMoving()) getController().actCamera(camera);
@@ -349,7 +354,7 @@ public class GameView extends View {
     }
 
     private void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
-        var array = getStage().getActors();
+        var array = characters.getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
             if (tmp instanceof CharacterUI && (((CharacterUI) tmp)).getCoordinates().equals(worldCoordinate)) {
@@ -362,7 +367,7 @@ public class GameView extends View {
 
     @Null
     public Actor getCharacterUI(Entity entity) {
-        var array = getStage().getActors();
+        var array = (entity instanceof Character)? characters.getActors() : getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
             if (tmp instanceof CharacterUI && ((CharacterUI) tmp).getEntity().equals(entity)) {
@@ -444,4 +449,7 @@ public class GameView extends View {
         playerBox.setInformations(currentPlayer, round);
     }
 
+    public Stage getCharacters() {
+        return characters;
+    }
 }

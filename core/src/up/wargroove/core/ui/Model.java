@@ -5,9 +5,12 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.EntityManager;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.entities.Commander;
+import up.wargroove.core.character.entities.Soldier;
 import up.wargroove.core.world.*;
 import up.wargroove.utils.Pair;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -87,12 +90,45 @@ public class Model {
             for (int j = 0; j < properties.getDimension().second; j++) {
                 if (world.at(i, j).entity.isPresent()) {
                     Entity entity = world.at(i, j).entity.get();
-                    Player player = getPlayer(entity.getFaction());
-                    if (player != null) {
-                        player.addEntity(entity);
+                    if ((entity instanceof Structure)) {
+                        Player player = getPlayer(entity.getFaction());
+                        if (player != null) {
+                            player.addEntity(entity);
+                            if (entity instanceof Stronghold) {
+                                loadCommander(i, j, player);
+                            }
+                        }
                     }
                 }
             }
+        }
+        System.out.println();
+    }
+
+    private void loadCommander(int i, int j, Player player) {
+        List<Integer> adj = getWorld().adjacentOf(World.coordinatesToInt(new Pair<>(i,j),getWorld().getDimension()));
+        adj.removeIf(pos -> {
+            Tile t = getWorld().at(pos);
+            return t.entity.isPresent() || !t.getType().isWalkable();
+        });
+        Random random = new Random();
+        int pos = adj.get(random.nextInt(adj.size()));
+        Entity entity = new Commander("Commander",player.getFaction());
+        player.addEntity(entity);
+        getWorld().at(pos).entity = Optional.of(entity);
+        loadGuards(pos,player);
+    }
+
+    private void loadGuards(int pos, Player player) {
+        List<Integer> adj = getWorld().adjacentOf(pos);
+        adj.removeIf(i -> {
+            Tile t = getWorld().at(i);
+            return t.entity.isPresent() || !t.getType().isWalkable();
+        });
+        for (int i = 0; i< adj.size() && i < 2; i++) {
+            Entity entity = new Soldier("Commander",player.getFaction());
+            player.addEntity(entity);
+            getWorld().at(adj.get(i)).entity = Optional.of(entity);
         }
     }
 

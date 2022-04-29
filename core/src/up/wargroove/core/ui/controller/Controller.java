@@ -471,14 +471,17 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         gameView.getMovementSelector().reset();
         Vector3 v = gameView.getCursor().getWorldPosition();
+
         CharacterUI c = new CharacterUI(
-                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity());
+                this, gameView.getCharacters() ,new Pair<>((int) v.x, (int) v.y),
+                (Character) getModel().getBoughtEntity()
+        );
+
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();
         getModel().getActiveStructure().exhaust();
         gameView.setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
-        gameView.getStage().addActor(c);
         gameView.getCursor().setLock(false);
     }
 
@@ -500,12 +503,10 @@ public class Controller {
         }
         Actor ui = gameView.getCharacterUI(e);
         if (ui == null) return;
-        Camera camera = gameView.getCamera();
 
         cameraDestination.first = ui.getX();
         cameraDestination.second = ui.getY();
         cameraMoving = true;
-        //camera.position.set(ui.getX(),ui.getY(),camera.position.z);
         gameView.getCursor().setPosition(ui.getX(),ui.getY());
     }
 

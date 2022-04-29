@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.utils.Pair;
@@ -36,13 +37,26 @@ public class CharacterUI extends EntityUI {
 
     public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character, float scale) {
         super(coord,character, scale);
-        this.controller= controller;
+        this.controller = controller;
         controller.getWorld().addEntity(coord, character);
         initialiseAnimation();
         initialiseSprites();
         controller.getScreen().getStage().addActor(this);
 
 
+    }
+
+    public CharacterUI(Controller controller, Stage stage, Pair<Integer, Integer> coord, Character character, float scale) {
+        super(coord, character, scale);
+        this.controller = controller;
+        controller.getWorld().addEntity(coord, character);
+        initialiseAnimation();
+        initialiseSprites();
+        stage.addActor(this);
+    }
+
+    public CharacterUI(Controller controller, Stage stage, Pair<Integer, Integer> coord, Character character) {
+        this(controller,stage,coord,character,1);
     }
 
     public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
@@ -268,7 +282,7 @@ public class CharacterUI extends EntityUI {
             case SOLDIER: ATTACK_FRAMES=6; break;
             case SPEARMAN: ATTACK_FRAMES=8; break;
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
-            case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>((int)(1.5*getTileSize()),(int)(2.5*getTileSize())));
+            case GIANT: ATTACK_FRAMES=6; setSize(new Pair<>((int)(1*getTileSize()),(int)(1.5*getTileSize())));
             decalage.first= (int)(getTileSize() - getSize().first)/2;
             break;
             case MAGE: ATTACK_FRAMES= 7;

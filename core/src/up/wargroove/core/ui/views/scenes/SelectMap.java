@@ -324,7 +324,7 @@ public class SelectMap extends ViewWithPrevious {
             float scale = Math.min(heightRatio,widthRatio);
             System.out.println(scale);
 
-            map = new GameMap(world, VRT, getController(), scale,true,false);
+            map = new GameMap(world, VRT, null,getController(), scale,true,false);
         }
 
         private MapActor() {

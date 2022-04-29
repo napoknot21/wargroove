@@ -23,7 +23,7 @@ public class Player {
 		entities = new LinkedList<>();
 		this.faction = faction;
 		this.money = (int)(1000 * ratio);
-		addEntity(new Commander());
+		//addEntity(new Commander());
 		this.ratio = ratio;
 
 	}

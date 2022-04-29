@@ -31,7 +31,7 @@ public abstract class EntityUI extends Actor {
         TILE_SIZE = (Model.getTileSize() * scale);
         System.out.println(TILE_SIZE);
          if (entity instanceof Character) {
-             size = new Pair<>((int)TILE_SIZE,(int)(1.5*TILE_SIZE));
+             size = new Pair<>((int)(1*TILE_SIZE),(int)(1*TILE_SIZE));
          } else {
              size = new Pair<>((int)TILE_SIZE,(int)TILE_SIZE);
          }
