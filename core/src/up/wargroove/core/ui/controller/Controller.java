@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Commander;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
@@ -18,6 +19,7 @@ import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.EntityUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
+import up.wargroove.core.world.Player;
 import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
@@ -26,6 +28,7 @@ import up.wargroove.utils.Pair;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Vector;
 
 
@@ -103,21 +106,21 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new SelectMap(getScreen(),this, model, getClient()));
+        setScreen(new SelectMap(getScreen(), this, model, getClient()));
     }
 
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new Settings(getScreen(),this, model, getClient()));
+        setScreen(new Settings(getScreen(), this, model, getClient()));
     }
 
     public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new MatchSettings(getScreen(),this, model, getClient()));
+        setScreen(new MatchSettings(getScreen(), this, model, getClient()));
     }
 
     public void setPrevious() {
@@ -161,9 +164,7 @@ public class Controller {
      */
     public void drag(int pointer, OrthographicCamera camera) {
         float velocity = getClient().getCameraVelocity() * 50 * Gdx.graphics.getDeltaTime();
-        camera.translate(
-                -Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity
-        );
+        camera.translate(-Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity);
         camera.update();
     }
 
@@ -181,10 +182,9 @@ public class Controller {
         getClient().setScreen(screen);
     }
 
-    private void chooseMusic(){
+    private void chooseMusic() {
         if (getModel().getBiome() != null) {
-            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath()
-                    + getModel().getBiome().name() + ".mp3"), true);
+            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + getModel().getBiome().name() + ".mp3"), true);
         } else {
             getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
         }
@@ -281,7 +281,8 @@ public class Controller {
      *
      * @return the world's scoped entity.
      */
-    public @Null Entity getScopedEntity() {
+    public @Null
+    Entity getScopedEntity() {
         return getWorld().getScopedEntity();
     }
 
@@ -376,7 +377,6 @@ public class Controller {
         }
     }
 
-    //TODO Pas pris en compte de si on veut attaquer une entity en general
     public void endAttack() {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
@@ -385,30 +385,76 @@ public class Controller {
         String path = selector.getPath();
         Pair<Integer, Integer> position = selector.getPositionAttack();
         Pair<Integer, Integer> positionTarget = selector.getDestination();
-        if (path.isBlank()) {
-            selector.reset();
-            return;
-        }
         gameView.clearSelectors();
+        if (invalidDeplacementeAttack(path, position)) return;
         Actor actor = gameView.getScopedEntity();
-        Entity entity= getWorld().getScopedEntity();
-        entity.exhaust();
-        getWorld().unscopeEntity();
-        getWorld().scopeEntity(positionTarget);
-        Entity entityTarget= getWorld().getScopedEntity();
-        gameView.scopeEntity(positionTarget);
+        Entity entity = getWorld().getScopedEntity();
+        actualiseFocusEntity(positionTarget);
+        Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
-        if (path.length() > 1) {
-            getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
-        }
-        if ((actor instanceof CharacterUI) &&(entity instanceof Character)) {
-            ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
-            ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
-            ((Character) entity).attack((Character) entityTarget);
-            ((EntityUI) actorTarget).setInjured(true);
+        entity.exhaust();
+        ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
+        ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
+        entity.attack(entityTarget);
+        ((EntityUI) actorTarget).setInjured(true);
+        commanderDie((Character) entityTarget);
+
+    }
+
+    /**
+     * In case the Commander is dead, the player lost the game and he is remove of the game
+     *
+     * @param entityTarget is the commander
+     */
+
+    private void commanderDie(Character entityTarget) {
+        if (entityTarget instanceof Commander) {
+            if (entityTarget.getHealth() <= 0) {
+                Player player = getWorld().getPlayer(entityTarget.getFaction());
+                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()));
+                getWorld().removePlayer(entityTarget.getFaction());
+            }
         }
     }
 
+    private void killArmyAndDestroyBases(Player player) {
+        Tile[] terrain = getWorld().getTerrain();
+        for (int i = 0; i < terrain.length; i++) {
+            if ((terrain[i].entity.isPresent()) && ((terrain[i].entity.get().getFaction().equals(player.getFaction())))) {
+                Entity entity = terrain[i].entity.get();
+                if (entity instanceof Character) {
+                    getWorld().delEntity(i, entity);
+                    player.removeEntity(entity);
+                } else {
+                    entity.setFaction(Faction.OUTLAWS);
+                }
+            }
+        }
+    }
+
+    private boolean invalidDeplacementeAttack(String path, Pair<Integer, Integer> position) {
+        GameView gameView = (GameView) getScreen();
+        if (path.isBlank()) {
+            gameView.getAttackSelector().reset();
+            return true;
+        }
+        if (path.length() > 1) {
+            if (getWorld().checkEntity(position)) {
+                gameView.getAttackSelector().reset();
+                return true;
+            } else {
+                getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
+        getWorld().actualiseEntity(positionTarget);
+        GameView gameView = (GameView) getScreen();
+        gameView.scopeEntity(positionTarget);
+    }
 
     /**
      * Make the unit inactive for the turn.
@@ -428,8 +474,7 @@ public class Controller {
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         Optional<Entity> s = getTile(gameView.getCursor().getWorldPosition()).entity;
-        if (s.isEmpty() || !(s.get() instanceof Recruitment)
-                || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
+        if (s.isEmpty() || !(s.get() instanceof Recruitment) || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
             return;
         }
         Recruitment r = (Recruitment) s.get();
@@ -442,7 +487,7 @@ public class Controller {
      */
     public void closeStructureMenu() {
         Gdx.input.setInputProcessor(getScreen().getInputs());
-        ((GameView)getScreen()).getCursor().setLock(false);
+        ((GameView) getScreen()).getCursor().setLock(false);
     }
 
     /**
@@ -479,9 +524,7 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         gameView.getMovementSelector().reset();
         Vector3 v = gameView.getCursor().getWorldPosition();
-        CharacterUI c = new CharacterUI(
-                this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity()
-        );
+        CharacterUI c = new CharacterUI(this, new Pair<>((int) v.x, (int) v.y), (Character) getModel().getBoughtEntity());
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();
@@ -492,11 +535,11 @@ public class Controller {
     }
 
     public void endTurn() {
-        ((GameView)getScreen()).getCursor().setLock(false);
+        ((GameView) getScreen()).getCursor().setLock(false);
         ((GameView) getScreen()).clearAll();
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
-        ((GameView)getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+        ((GameView) getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
     }
 
     public void nextUnit() {
@@ -507,8 +550,8 @@ public class Controller {
         Actor ui = gameView.getCharacterUI(e);
         if (ui == null) return;
         Camera camera = gameView.getCamera();
-        camera.position.set(ui.getX(),ui.getY(),camera.position.z);
-        gameView.getCursor().setPosition(ui.getX(),ui.getY());
+        camera.position.set(ui.getX(), ui.getY(), camera.position.z);
+        gameView.getCursor().setPosition(ui.getX(), ui.getY());
     }
 
     public void stopGame() {
@@ -517,7 +560,7 @@ public class Controller {
 
     public void openMainMenu() {
         getClient().stopMusic(true);
-        setScreen(new MainMenu(this,getModel(),getClient()));
+        setScreen(new MainMenu(this, getModel(), getClient()));
     }
 
     public void closeClient() {
@@ -526,7 +569,7 @@ public class Controller {
 
     public void openInGameMenu() {
         setPrevious();
-        View screen = new InGameMenu(getScreen(),this,getModel(),getClient());
+        View screen = new InGameMenu(getScreen(), this, getModel(), getClient());
         setScreen(screen);
     }
 }

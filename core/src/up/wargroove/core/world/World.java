@@ -105,6 +105,14 @@ public class World {
         players.remove(players.size() - 1);
     }
 
+    public void removePlayer(Faction faction){
+        for (Player player : players) {
+            if (player.getFaction().equals(faction)) {
+                players.remove(player);
+            }
+        }
+    }
+
     @Null
     public Player getPlayer(Faction faction) {
         for (Player player : players) {
@@ -266,6 +274,21 @@ public class World {
         currentEntityLinPosition = Optional.empty();
 
     }
+
+    public void actualiseEntity(Pair<Integer, Integer> coordinate){
+
+        unscopeEntity();
+        scopeEntity(coordinate);
+
+    }
+
+    public boolean checkEntity(Pair<Integer, Integer> coordinate) {
+
+        int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
+
+        return terrain[linCoordinate].entity.isPresent();
+    }
+
 
     /**
      * Retourne les tuiles adjacentes
@@ -467,7 +490,11 @@ public class World {
 	    return properties.getDescription();
 
     }
-    
+
+    public Tile[] getTerrain() {
+        return terrain;
+    }
+
     @Null
     public Entity getScopedEntity(){
         if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {

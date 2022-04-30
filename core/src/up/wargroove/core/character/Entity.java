@@ -88,6 +88,10 @@ public abstract class Entity {
         return faction;
     }
 
+    public void setFaction(Faction faction) {
+        this.faction = faction;
+    }
+
     public double getHealth() {
         return health;
     }
@@ -129,8 +133,8 @@ public abstract class Entity {
         var data = this.getAttacksAndBaseValues(ch);
         if (data == null || ch == null) return new Pair<>(20,20);
         List <Integer> attacks = data.get("attacks");
-        if (attacks.size() != 2) return new Pair<>(0,0);;
-        return new Pair<Integer,Integer>(attacks.get(0),attacks.get(1));
+        if (attacks.size() != 2) return new Pair<>(0,0);
+        return new Pair<>(attacks.get(0),attacks.get(1));
     }
 
     public enum Component {

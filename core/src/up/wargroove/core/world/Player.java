@@ -4,6 +4,7 @@ import java.util.Queue;
 import java.util.LinkedList;
 
 import com.badlogic.gdx.utils.Null;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.entities.Commander;
@@ -11,7 +12,7 @@ import up.wargroove.core.character.entities.Commander;
 public class Player {
 
 	private Queue<Entity> entities;
-	private Faction faction;
+	private final Faction faction;
 	private String name;
 	private int money;
 	private int income;
@@ -124,6 +125,11 @@ public class Player {
 
 	public int getIncome() {
 		return income;
+	}
+
+
+	public Queue<Entity> getEntities() {
+		return entities;
 	}
 
 	public void buy(int amount) {

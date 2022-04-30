@@ -25,6 +25,7 @@ public class CharacterUI extends EntityUI {
     private Pair<Integer, Integer> decalage;
 
 
+
     /**
      * Represent a visual character.
      */
@@ -64,7 +65,7 @@ public class CharacterUI extends EntityUI {
     @Override
     public void positionChanged() {
         getSprite().setPosition(getX() + decalage.first, getY() + decalage.second);
-        getSprite().setSize(20, 30);
+        getSprite().setSize(getSize().first,getSize().second);
         getStats().setPosition(getX() + getSprite().getWidth() - getStats().getWidth() - 1, getY() + 1);
         super.positionChanged();
     }
@@ -127,7 +128,7 @@ public class CharacterUI extends EntityUI {
             AnimationWalk(texture);
         }
         getSprite().setRegion(animationMove[(int) (getTemps() / 3) % animationMove.length]);
-        getSprite().setSize(getSize().first, getSize().second);
+        setSize(getSize().first,getSize().second);
         setPosition(getX() + getTimeLapse() * x, getY() + getTimeLapse() * y);
         if (getTemps() >= getTileSize()) {
             setTemps(0);
@@ -277,7 +278,7 @@ public class CharacterUI extends EntityUI {
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
             case GIANT:
                 ATTACK_FRAMES = 6;
-                setSize(new Pair<>(30, 50));
+                setSize( new Pair<>(30,50));
                 decalage.first = -5;
                 break;
             case MAGE:
