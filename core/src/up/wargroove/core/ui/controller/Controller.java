@@ -92,6 +92,7 @@ public class Controller {
     public void startGame() {
         Model model = getModel();
         getModel().startGame();
+        getClient().stopMusic(true);
         chooseMusic();
         getClient().playMusic();
         GameView view = new GameView(this, model, getClient());

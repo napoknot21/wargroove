@@ -22,10 +22,13 @@ import up.wargroove.utils.Database;
 public class WargrooveClient extends Game {
 
     /**
+     * Indicate if the client is in debug mode.
+     */
+    private final boolean debug;
+    /**
      * The drawing tool.
      */
     private SpriteBatch batch;
-
     private Music music;
     /**
      * The app assets.
@@ -39,10 +42,6 @@ public class WargrooveClient extends Game {
      * The shown scene.
      */
     private View scene;
-    /**
-     * Indicate if the client is in debug mode.
-     */
-    private final boolean debug;
     private Preferences settings;
 
     public WargrooveClient(boolean debug) {
@@ -55,15 +54,14 @@ public class WargrooveClient extends Game {
 
     @Override
     public void create() {
-        System.out.println(Gdx.graphics.getWidth());
-        System.out.println(Gdx.graphics.getHeight());
-        settings = Gdx.app.getPreferences("settings");
-        loadSettings();
-        batch = new SpriteBatch();
         assets = Assets.getInstance();
+        assets.load(Assets.AssetDir.SOUND);
         assets.loadDefault();
         assets.load(Assets.AssetDir.SKIN);
         assets.loadEntitiesDescription();
+        settings = Gdx.app.getPreferences("settings");
+        loadSettings();
+        batch = new SpriteBatch();
         Model model = new Model();
         controller = new Controller(model, this);
         controller.create();
@@ -125,7 +123,7 @@ public class WargrooveClient extends Game {
 
     @Override
     public void setScreen(Screen screen) {
-        if (getScreen()!= null) {
+        if (getScreen() != null) {
             getScreen().dispose();
         }
         super.setScreen(screen);
@@ -163,7 +161,7 @@ public class WargrooveClient extends Game {
 
     public void playMusic() {
         if (music != null) {
-            music.setVolume(settings.getFloat(Settings.MUSIC_VOLUME.name()));
+            music.setVolume(getMusicVolume());
             music.play();
         }
     }
@@ -173,7 +171,7 @@ public class WargrooveClient extends Game {
     }
 
     public void setCameraVelocity(float cameraVelocity) {
-        cameraVelocity = Math.max(0,Math.min(1,cameraVelocity));
+        cameraVelocity = Math.max(0, Math.min(1, cameraVelocity));
         this.settings.putFloat(Settings.CAMERA_VELOCITY.name(), cameraVelocity);
     }
 
@@ -182,7 +180,7 @@ public class WargrooveClient extends Game {
     }
 
     public void setCameraZoomVelocity(float cameraZoomVelocity) {
-        cameraZoomVelocity = Math.max(0,Math.min(1,cameraZoomVelocity));
+        cameraZoomVelocity = Math.max(0, Math.min(1, cameraZoomVelocity));
         settings.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), cameraZoomVelocity);
     }
 
@@ -191,20 +189,20 @@ public class WargrooveClient extends Game {
     }
 
     public void setMusicVolume(float volume) {
-        volume = Math.max(0,Math.min(1,volume));
+        volume = Math.max(0, Math.min(1, volume));
         settings.putFloat(Settings.MUSIC_VOLUME.name(), volume);
         if (music != null) {
             music.setVolume(volume);
         }
     }
 
-    public void setSoundVolume(float volume) {
-        volume = Math.max(0,Math.min(1,volume));
-        settings.putFloat(Settings.SOUND_VOLUME.name(), volume);
-    }
-
     public float getSoundVolume() {
         return settings.getFloat(Settings.SOUND_VOLUME.name());
+    }
+
+    public void setSoundVolume(float volume) {
+        volume = Math.max(0, Math.min(1, volume));
+        settings.putFloat(Settings.SOUND_VOLUME.name(), volume);
     }
 
     public boolean isFullScreen() {
