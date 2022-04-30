@@ -67,7 +67,7 @@ public class Indicator extends Actor {
             return;
         }
         var texture = assets.get(
-                "data/sprites/character/" + character.getFaction() + "/"
+                Assets.AssetDir.CHARACTER.path() + character.getFaction() + "/"
                         + character.getType() + "_DIE.png",
                 Texture.class
         );
@@ -80,7 +80,7 @@ public class Indicator extends Actor {
         if ((character.getHealth() <= 0) || (character.getHealth() == 90)) {
             numero = (int) ((character.getHealth() / 10));
         }
-        Texture stats = assets.get("data/sprites/character/STATS/Stats" + numero + ".png");
+        Texture stats = assets.get(Assets.AssetDir.STATS.path()+"Stats" + numero + ".png");
         setStats(stats);
     }
 

@@ -172,7 +172,7 @@ public class World {
 
     public int turns() {
 
-	    return states.size();
+	    return states.size()  + 1;
 
     }
 

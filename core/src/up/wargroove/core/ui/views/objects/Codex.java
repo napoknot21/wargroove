@@ -53,6 +53,7 @@ public class Codex extends Table {
         dialog= new Dialog("Codex",skin);
         dialog.setBounds(500,500,50,50);
         description= new Label("This is the codex of the game",skin);
+        description.setColor(Color.BLACK);
         ScrollPane pane= new ScrollPane(description,skin);
         createSubject(skin);
         createObject("",skin);

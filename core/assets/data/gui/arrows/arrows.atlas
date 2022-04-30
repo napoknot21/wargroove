@@ -1,0 +1,118 @@
+
+arrows.png
+size: 684, 72
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+D
+  rotate: false
+  xy: 2, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+DD
+  rotate: false
+  xy: 70, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+ UU
+   rotate: false
+   xy: 70, 6
+   size: 64, 64
+   orig: 64, 64
+   offset: 0, 0
+   index: -1
+DL
+  rotate: false
+  xy: 138, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RU
+  rotate: false
+  xy: 138, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+DR
+  rotate: false
+  xy: 206, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+LU
+  rotate: false
+  xy: 206, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+L
+  rotate: false
+  xy: 274, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+LD
+  rotate: false
+  xy: 342, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+UR
+  rotate: false
+  xy: 342, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+LL
+  rotate: false
+  xy: 410, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RR
+  rotate: false
+  xy: 410, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+R
+  rotate: false
+  xy: 478, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+RD
+  rotate: false
+  xy: 546, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+UL
+  rotate: false
+  xy: 546, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+U
+  rotate: false
+  xy: 614, 6
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

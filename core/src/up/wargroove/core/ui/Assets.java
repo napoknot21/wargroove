@@ -265,7 +265,7 @@ public class Assets {
     }
 
     public TextureRegion getTest() {
-        return new TextureRegion(get(AssetDir.WORLD.getPath()+"test.png", Texture.class));
+        return new TextureRegion(get(AssetDir.WORLD.path()+"test.png", Texture.class));
     }
 
     /**
@@ -281,7 +281,7 @@ public class Assets {
     }
 
     public TextureAtlas get(Biome biome) {
-        String fileName = AssetDir.WORLD.getPath() + biome.name().toLowerCase() + ".atlas";
+        String fileName = AssetDir.WORLD.path() + biome.name().toLowerCase() + ".atlas";
         return manager.get(fileName.replace('\\','/'));
     }
 
@@ -421,21 +421,21 @@ public class Assets {
      * List the assets directories and their manifest.
      */
     public enum AssetDir {
-        DATA("data" + fs), GUI(DATA.path + "gui" + fs),
+        DATA("data" + fs),
+        DESCRIPTION(DATA.path + "descriptions" + fs, "entities"),
+        GUI(DATA.path + "gui" + fs,"gui"),
+        ARROWS(GUI.path + "arrows" + fs, "arrows"),
+        CHARACTER(GUI.path + "character" + fs),
         SKIN(GUI.path + "skin" + fs, "skin"),
         SOUND(GUI.path + "sound" + fs, "sound","music"),
-        SPRITES(DATA.path + "sprites" + fs),
-        ARROWS(SPRITES.path + "arrows" + fs, "arrows"),
-        CHARACTER(SPRITES.path + "character" + fs),
+        WORLD(GUI.path + "world" + fs,"world","attack"),
         CHERRYSTONE_KINGDOM(CHARACTER.path + "CHERRYSTONE_KINGDOM" + fs, "CHERRYSTONE_KINGDOM"),
         FELHEIM_LEGION(CHARACTER.path + "FELHEIM_LEGION" + fs, "FELHEIM_LEGION"),
         FLORAN_TRIBES(CHARACTER.path + "FLORAN_TRIBES" + fs, "FLORAN_TRIBES"),
         HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "HEAVENSONG_EMPIRE"),
         STATS(CHARACTER.path + "STATS" + fs, "STATS"),
-        WORLD(SPRITES.path + "world" + fs,"world","attack"),
         GRASS(WORLD.path + "grass.atlas" + fs),
-        ICE(WORLD.path + "ice" + fs, "ice"),
-        DESCRIPTION(DATA.path + "descriptions" + fs, "entities");
+        ICE(WORLD.path + "ice" + fs, "ice");
 
         // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 
@@ -458,7 +458,7 @@ public class Assets {
             this(path, "");
         }
 
-        public String getPath() {
+        public String path() {
             return path;
         }
 
@@ -472,7 +472,7 @@ public class Assets {
      * List the Assets Types.
      */
     public enum AssetType {
-        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), TEXTURE_ATLAS(TextureAtlas.class),
+        TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), ATLAS(TextureAtlas.class),
         MUSIC(Music.class);
         //TODO : remplir la liste avec les type de donnees a charger
 

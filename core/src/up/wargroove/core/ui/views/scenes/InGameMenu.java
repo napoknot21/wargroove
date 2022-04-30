@@ -40,13 +40,17 @@ public class InGameMenu extends View {
         TextButton settings = new TextButton("Settings", skin);
         Table table = new Table();
         table.setFillParent(true);
-        table.add(close);
+        table.add().expand();
         table.row();
-        table.add(settings);
+        table.add().expand();
         table.row();
-        table.add(mainMenu);
+        table.add(close).expand();
         table.row();
-        table.add(quit);
+        table.add(settings).expand();
+        table.row();
+        table.add(mainMenu).expand();
+        table.row();
+        table.add(quit).expand();
         addActor(table);
 
         close.addListener(new ChangeListener() {

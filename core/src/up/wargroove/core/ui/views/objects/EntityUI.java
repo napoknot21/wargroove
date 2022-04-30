@@ -61,7 +61,7 @@ public abstract class EntityUI extends Actor {
     }
 
     private Texture getPathSTATS(int file) {
-        return Assets.getInstance().get( Assets.AssetDir.STATS.getPath()+"Stats" + file + ".png", Texture.class);
+        return Assets.getInstance().get( Assets.AssetDir.STATS.path()+"Stats" + file + ".png", Texture.class);
     }
 
     public Pair<Integer, Integer> getCoordinates() {
@@ -106,7 +106,7 @@ public abstract class EntityUI extends Actor {
 
     protected Texture getPath(String nameFile) {
         return Assets.getInstance().get(
-                Assets.AssetDir.CHARACTER.getPath() + entity.getFaction() + "/" +
+                Assets.AssetDir.CHARACTER.path() + entity.getFaction() + "/" +
                         entity.getType() + "_" + nameFile, Texture.class);
     }
 

@@ -4,6 +4,7 @@ package up.wargroove.core.ui.views.scenes;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -83,7 +84,7 @@ public class GameView extends View {
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         movementSelector = new MovementSelector(gameMap.getTileSize());
         attackSelector = new AttackSelector(gameMap.getTileSize());
-        TextureRegion texture = getAssets().getTest();
+        Texture texture = getAssets().get(Assets.AssetDir.GUI.path()+ "game_cursor.png");
         cursor = new Cursor(texture, gameMap.getTileSize());
         initInput();
     }

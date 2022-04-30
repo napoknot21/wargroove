@@ -22,11 +22,6 @@ public class Settings extends ViewWithPrevious {
      */
     private final Button back;
 
-    /**
-     * Sound state label.
-     */
-    private final Label stateLabel;
-
     private final Slider cameraZoomVelocity;
     private final Slider musicVolume;
     private final CheckBox fullScreen;
@@ -53,7 +48,6 @@ public class Settings extends ViewWithPrevious {
         cameraZoomVelocityLabel = new Label("Zoom velocity", skin);
         musicVolumeLabel = new Label("Music Volume",skin);
         soundVolumeLabel = new Label("Sound Volume", skin);
-        stateLabel = new Label("", skin);
         back = new TextButton("Back", skin);
         cameraVelocity = new Slider(1,100,1,false,skin);
         printCameraVelocity = new Label("",skin);

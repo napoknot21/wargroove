@@ -90,10 +90,10 @@ public class StructureMenu extends Dialog {
         }
         Table buttons = new Table();
         characters.forEach(c -> buttons.add(new CharacterButton(c, assets)).row());
-        ScrollPane pane = new ScrollPane(buttons);
+        ScrollPane pane = new ScrollPane(buttons, assets.getSkin());
         pane.setSmoothScrolling(true);
         pane.setScrollbarsVisible(true);
-        instance.getContentTable().add(pane).expand();
+        instance.getContentTable().add(pane).expand().fill();
         instance.getContentTable().add(instance.description).expand().fill();
     }
 

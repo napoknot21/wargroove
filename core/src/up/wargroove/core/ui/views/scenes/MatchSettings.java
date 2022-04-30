@@ -37,26 +37,12 @@ public class MatchSettings extends ViewWithPrevious {
      * Button to send the configuration into the model
      */
     private Button chooseConfig;
-    /**
-     * the viewport
-     */
-    private Viewport viewport;
+
     /**
      * The sound of the buttons
      */
     private Sound buttonSound;
-    /**
-     * label of the timer SelectBox
-     */
-    //private Label turnTimeLabel;
-    /**
-     * label of the weather SelectBox
-     */
-    private Label weatherLabel;
-    /**
-     * label of the fog SelectBox
-     */
-    private Label fogLabel;
+
     private Label incomeLabel;
     private Label printIncome;
     private Label biomeLabel;
@@ -93,8 +79,6 @@ public class MatchSettings extends ViewWithPrevious {
         back = new TextButton("Back", skin);
         reset = new TextButton("Reset", skin);
         chooseConfig = new TextButton("Choose this configuration", skin);
-        weatherLabel = new Label("Weather :", skin);
-        fogLabel = new Label("Fog of War :", skin);
         incomeLabel = new Label("Income :", skin);
         income = new Slider(20, 500, 10, false, skin);
         income.setValue(100);

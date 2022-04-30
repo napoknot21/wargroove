@@ -186,10 +186,10 @@ public class Controller {
 
     private void chooseMusic(){
         if (getModel().getBiome() != null) {
-            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath()
+            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.path()
                     + getModel().getBiome().name() + ".mp3"), true);
         } else {
-            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.getPath() + "theme.mp3"), true);
+            getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.path() + "theme.mp3"), true);
         }
     }
 

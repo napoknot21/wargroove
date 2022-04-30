@@ -1,9 +1,14 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -47,7 +52,7 @@ public class PlayerBox extends Table {
     /**
      * The current player's avatar.
      */
-    private Image avatar;
+    private Rectangle avatar;
 
     /**
      * Inits an empty player box.
@@ -56,10 +61,14 @@ public class PlayerBox extends Table {
     public PlayerBox() {
         Skin skin = Assets.getInstance().getSkin();
         name = new Label("Friendly", skin);
+        name.setColor(Color.BLACK);
         money = new Label("300", skin);
+        money.setColor(Color.BLACK);
         income = new Label("+500", skin);
+        this.income.setColor(new Color(0.2f,0.6f,0.2f,1));
         round = new Label("Round 1", skin);
-        avatar = new Image(Assets.getInstance().getTest());
+        round.setColor(Color.BLACK);
+        avatar = new Rectangle();
         isStatic = false;
         setup();
         background(skin.getDrawable("window"));
@@ -97,16 +106,8 @@ public class PlayerBox extends Table {
         }
         name.setText(player.getName());
         money.setText(player.getMoney());
-        String sign;
-        if (player.getIncome() >= 0){
-            sign = "+";
-            this.income.setColor(new Color(90/255F,220/255f,90/255f,1));
-        } else {
-            sign = "-";
-            this.income.setColor(new Color(81/255f,0,0,1));
-        }
-        income.setText(sign + player.getIncome());
-        this.round.setText(round);
+        income.setText("+" + player.getIncome());
+        this.round.setText("Round " + round);
         Color color;
         switch (player.getFaction()) {  //Color based on the tile set
             case FLORAN_TRIBES: color = new Color(111/255f,153/255f,13/255f,1); break;
@@ -115,9 +116,7 @@ public class PlayerBox extends Table {
             case HEAVENSONG_EMPIRE: color = new Color(153/255f,120/255f,13/255f,1); break;
             default: color = Color.CLEAR;
         }
-        Sprite sprite = new Sprite(Assets.getInstance().getTest());
-        sprite.setColor(color);
-        this.avatar.setDrawable(new SpriteDrawable(sprite));
+        this.avatar.setColor(color);
         this.isStatic = isStatic;
     }
 
@@ -129,5 +128,32 @@ public class PlayerBox extends Table {
         round = null;
         income = null;
 
+    }
+
+    private static class Rectangle extends Actor {
+        private ShapeRenderer renderer;
+        private Rectangle() {
+            super();
+        }
+
+        @Override
+        public void draw(Batch batch, float parentAlpha) {
+            batch.end();
+
+            if (renderer == null) {
+                renderer = new ShapeRenderer();
+            }
+
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            renderer.setProjectionMatrix(batch.getProjectionMatrix());
+            renderer.setTransformMatrix(batch.getTransformMatrix());
+            renderer.setColor(getColor());
+            renderer.begin(ShapeRenderer.ShapeType.Filled);
+            renderer.rect(getX(),getY(),getWidth(),getHeight());
+            renderer.end();
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+
+            batch.begin();
+        }
     }
 }

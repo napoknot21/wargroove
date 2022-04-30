@@ -5,7 +5,6 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
 
 import java.util.List;
-import java.util.Vector;
 
 public class AttackSelector extends MovementSelector {
     /**
@@ -19,7 +18,8 @@ public class AttackSelector extends MovementSelector {
 
     public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
         reset();
-        pair.first.forEach(v -> valid.add(assets.get( "data/sprites/world/attack.png", Texture.class), v));
+        Texture texture = assets.get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
+        pair.first.forEach(v -> valid.add(texture, v));
         valid.addIntel(pair.second);
 
     }

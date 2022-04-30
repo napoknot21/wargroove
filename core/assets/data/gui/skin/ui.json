@@ -209,6 +209,7 @@
 	"default": {
 		"background": "window",
 		"titleFont": "font"
+		"titleFontColor": black
 	},
 	"empty": {
 		"background": "clear",
@@ -224,10 +225,5 @@
 		"titleFont": "font",
 		"stageBackground": "dialog-bg"
 	}
-},
-	"com.badlogic.gdx.scenes.scene2d.ui.Table": {
-		"default": {
-			"background": "window",
-		}
-	}
+}
 }

@@ -3,6 +3,7 @@ package up.wargroove.core.ui.views.objects;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
@@ -199,13 +200,15 @@ public class MovementSelector {
      */
     public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
         reset();
-        pair.first.forEach(v -> valid.add(assets.getTest(), v));
+        Texture texture = assets.get(Assets.AssetDir.GUI.path()+"valids.png");
+        pair.first.forEach(v -> valid.add(texture, v));
         valid.addIntel(pair.second);
     }
 
     public void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates) {
         reset();
-        coordinates.forEach(v -> valid.add(assets.getTest(), v));
+        Texture texture = assets.get(Assets.AssetDir.GUI.path()+"valids.png");
+        coordinates.forEach(v -> valid.add(texture, v));
     }
 
     /**
@@ -532,7 +535,7 @@ public class MovementSelector {
                 return false;
             }
             Pair<Sprite, Pair<Integer, Integer>> tmp = this.get(index);
-            tmp.first.setTexture(getArrow(assets, d));
+            tmp.first.setRegion(getArrow(assets, d));
             tmp.second = coordinate;
             tmp.first.setPosition(tmp.second.first * tileSize, tmp.second.second * tileSize);
             path.append(d);
@@ -554,7 +557,7 @@ public class MovementSelector {
                 if (get(i).second.equals(coordinate)) {
                     index = i + 1;
                     path.delete(index, path.length());
-                    get(i).first.setTexture(getArrow(assets, path.charAt(i)));
+                    get(i).first.setRegion(getArrow(assets, path.charAt(i)));
                     currentCost -= valid.getTileCost(tileIndex);
                     return true;
                 }
@@ -569,12 +572,14 @@ public class MovementSelector {
          * @param d      The direction.
          * @return The sprite texture.
          */
-        private synchronized Texture getArrow(Assets assets, char d) {
+        private synchronized TextureRegion getArrow(Assets assets, char d) {
+            TextureAtlas atlas =
+                    assets.get(Assets.AssetDir.ARROWS.path() + "arrows.atlas", TextureAtlas.class);
             if (index > 0) {
                 String last = String.valueOf(path.charAt(index - 1)) + d;
-                get(index - 1).first.setTexture(assets.get(Assets.AssetDir.ARROWS.getPath() + last + ".png"));
+                get(index - 1).first.setRegion(atlas.findRegion(last));
             }
-            return assets.get(Assets.AssetDir.ARROWS.getPath() + d + ".png");
+            return atlas.findRegion(String.valueOf(d));
         }
 
         /**

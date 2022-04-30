@@ -26,20 +26,10 @@ public class Cursor extends Sprite {
      * @param texture    The cursor's texture.
      * @param worldScale The world scale.
      */
-    public Cursor(TextureRegion texture, int worldScale) {
+    public Cursor(Texture texture, int worldScale) {
         super(texture);
         this.worldScale = worldScale;
         setSize(worldScale, worldScale);
-    }
-
-    /**
-     * Creates a cursor with a Texture stocked in assets/data/gui a start position and the world scale.
-     *
-     * @param worldScale The world scale.
-     */
-    public Cursor(Assets assets, int worldScale) {
-        super(assets.get(Assets.AssetDir.GUI + "game_cursor.png", Texture.class));
-        this.worldScale = worldScale;
     }
 
     /**
