@@ -24,6 +24,12 @@ public class PluginSelector {
         }
     }
 
+    /**
+     * Inits the plugins list. Its searched all the class in the tasks' repository.
+     *
+     * @return the plugins list.
+     * @throws ClassNotFoundException if a class doesn't exist.
+     */
     private static Map<String, Class<?>> initPlugins() throws ClassNotFoundException {
         String packageName = PluginSelector.class.getPackageName() + ".tasks";
         String path = "plugins/src/main/java/up/wargroove/plugins/tasks";
@@ -53,6 +59,13 @@ public class PluginSelector {
         checkCommand(args[0], args);
     }
 
+    /**
+     * Check if the command is valid. if true, run the selected plugin.
+     *
+     * @param arg  The plugin name.
+     * @param args The plugin's arguments.
+     * @throws Exception if the plugin is unknown.
+     */
     private static void checkCommand(String arg, String[] args) throws Exception {
         if (plugins == null) {
             throw new Exception("There is no plugins");

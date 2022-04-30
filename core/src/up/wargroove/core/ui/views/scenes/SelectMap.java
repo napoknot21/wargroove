@@ -29,30 +29,51 @@ import java.util.Locale;
 
 /**
  * The World Settings Menu.
+ * @see up.wargroove.core.ui.views.scenes.ViewWithPrevious
+ * @see up.wargroove.core.ui.views.scenes.View
  */
 public class SelectMap extends ViewWithPrevious {
-    Description description;
     /**
      * Previous screen button.
      */
     private Button back;
     private OrthogonalTiledMapRenderer renderer;
     private Pair<Float, Float> mapSize;
+    /**
+     * The right top stage.
+     */
     private Stage VRT;
+    /**
+     * The right bottom stage.
+     */
     private Stage VRB;
+    /**
+     * The left stage
+     */
     private Stage VL;
+    /**
+     * The right stage.
+     */
     private Stage VT;
     private Sound buttonSound;
     private Database database;
     private String collectionName;
     private Button choseMap;
     private ScrollPane buttons;
+    /**
+     * the amount of players.
+     */
     private int amt = 2;
 
     public SelectMap(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
     }
 
+    /**
+     * Transform the string into a pretty one.
+     * @param mapName The string which will be transformed.
+     * @return The pretty sting.
+     */
     private static String transform(String mapName) {
         String s = mapName.toLowerCase(Locale.ROOT);
         return s.substring(0, 1).toUpperCase() + s.substring(1);
@@ -74,40 +95,32 @@ public class SelectMap extends ViewWithPrevious {
         boolean b = getModel().getProperties() != null;
         choseMap.setDisabled(!b);
         choseMap.setVisible(b);
-
-
         collectionName = "";
         DBEngine.getInstance().connect();
         database = DBEngine.getInstance().getDatabase("wargroove");
         database.selectCollection(collectionName);
-
         VT.addActor(buildCategories());
         Table VLTable = new Table();
         VLTable.setFillParent(true);
         buttons = new ScrollPane(initButtonsTable(database.getKeys()), skin);
-        //buttons.setCancelTouchFocus(false);
-        //buttons.setSmoothScrolling(true);
-
-        //categories.setCancelTouchFocus(false);
-        //categories.setSmoothScrolling(true);
         VLTable.add(buttons).expand().fill();
         VLTable.row();
         VL.addActor(VLTable);
-
         Table VRBTable = new Table();
         VRBTable.setFillParent(true);
         VRBTable.bottom();
-        description = new Description();
-        VRBTable.addActor(description);
         VRBTable.add(back).pad(10);
         VRBTable.add(choseMap).pad(10);
         VRB.addActor(VRBTable);
-        addInput(VRB, VT,VL);
-
+        addInput(VRB, VT, VL);
         initListener();
 
     }
 
+    /**
+     * Builds the maps categories.
+     * @return the generated table with the categories inside.
+     */
     private Table buildCategories() {
         Table table = new Table();
         table.top();
@@ -140,15 +153,15 @@ public class SelectMap extends ViewWithPrevious {
     public void resize(int width, int height) {
         int newWidth = width / 2;
         int newHeight = height / 2;
-        VT.getViewport().update(width,newHeight/2, true);
-        VL.getViewport().update(newWidth, (3 * height)/4, true);
+        VT.getViewport().update(width, newHeight / 2, true);
+        VL.getViewport().update(newWidth, (3 * height) / 4, true);
         VRT.getViewport().update(newWidth, newHeight, true);
         VRB.getViewport().update(newWidth, newHeight / 2, true);
-        VRT.getViewport().setScreenPosition(newWidth, newHeight/2);
+        VRT.getViewport().setScreenPosition(newWidth, newHeight / 2);
         VRB.getViewport().setScreenX(newWidth);
         if (getModel().getWorld() != null) {
             VRT.clear();
-            renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
+            renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
         }
     }
 
@@ -158,7 +171,7 @@ public class SelectMap extends ViewWithPrevious {
         int height = Gdx.graphics.getHeight() / 2;
         VL.getViewport().apply();
         VL.draw();
-        VT.getViewport().setScreenY((3*height)/2);
+        VT.getViewport().setScreenY((3 * height) / 2);
         VT.getViewport().apply();
         VT.draw();
         VRT.getViewport().setScreenX((int) (3 * width - mapSize.first) / 2);
@@ -190,7 +203,12 @@ public class SelectMap extends ViewWithPrevious {
     @Override
     public void dispose() {
         super.dispose();
-        //buttonSound.dispose();
+        VRT.dispose();
+        VL.dispose();
+        VT.dispose();
+        VRB.dispose();
+        renderer.getMap().dispose();
+        renderer.dispose();
     }
 
     /**
@@ -220,6 +238,11 @@ public class SelectMap extends ViewWithPrevious {
         );
     }
 
+    /**
+     * Sets the map description.
+     *
+     * @param mapName The map name.
+     */
     private void setDescription(String mapName) {
         DbObject object = database.get(mapName + "/");
         if (object == null) {
@@ -231,8 +254,7 @@ public class SelectMap extends ViewWithPrevious {
         properties.amt = amt;
         getModel().setWorld(properties);
         VRT.clear();
-        renderer = MapActor.buildMap(getModel().getWorld(), VRT,mapSize, getController());
-        description.setInformation(properties);
+        renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
     }
 
     @Override
@@ -244,16 +266,16 @@ public class SelectMap extends ViewWithPrevious {
         VT.setDebugAll(debug);
     }
 
+    /**
+     * Button which represent a map
+     * @see TextButton
+     */
     private class MapButton extends TextButton {
-
-        private final String mapName;
-
         public MapButton(String mapName) {
             super(
                     transform(mapName),
                     Assets.getInstance().getSkin()
             );
-            this.mapName = mapName;
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
@@ -266,6 +288,10 @@ public class SelectMap extends ViewWithPrevious {
         }
     }
 
+    /**
+     * Button which represent a category.
+     * @see TextButton
+     */
     private class CategoryButton extends TextButton {
         public CategoryButton(int i) {
             super(
@@ -278,22 +304,9 @@ public class SelectMap extends ViewWithPrevious {
                     getController().playSound(buttonSound);
                     amt = i;
                     collectionName = i + "_players";
-                    getController().changeCategory(collectionName,database,buttons);
+                    getController().changeCategory(collectionName, database, buttons);
                 }
             });
         }
     }
-
-    private class Description extends Table {
-        private MapActor map;
-
-        @Override
-        public void draw(Batch batch, float parentAlpha) {
-            super.draw(batch, parentAlpha);
-        }
-
-        public void setInformation(WorldProperties properties) {
-        }
-    }
-
 }

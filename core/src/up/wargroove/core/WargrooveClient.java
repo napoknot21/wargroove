@@ -6,15 +6,13 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.utils.Json;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
-import up.wargroove.utils.DBEngine;
-import up.wargroove.utils.Database;
+
+import javax.annotation.Nonnull;
 
 /**
  * The wargroove client.
@@ -35,13 +33,13 @@ public class WargrooveClient extends Game {
      */
     private Assets assets;
     /**
-     * The client controller.
-     */
-    private Controller controller;
-    /**
      * The shown scene.
      */
     private View scene;
+
+    /**
+     * The client settings.
+     */
     private Preferences settings;
 
     public WargrooveClient(boolean debug) {
@@ -63,12 +61,15 @@ public class WargrooveClient extends Game {
         loadSettings();
         batch = new SpriteBatch();
         Model model = new Model();
-        controller = new Controller(model, this);
+        Controller controller = new Controller(model, this);
         controller.create();
         scene = new MainMenu(controller, controller.getModel(), this);
         controller.setScreen(scene);
     }
 
+    /**
+     * Loads the setting from the user directory.
+     */
     private void loadSettings() {
         if (!settings.contains(Settings.MUSIC_VOLUME.name())) {
             setMusicVolume(1f);
@@ -133,15 +134,13 @@ public class WargrooveClient extends Game {
         }
     }
 
-    public int getVirtualWidth() {
-        return 1920;
-    }
-
-    public int getVirtualHeight() {
-        return 1080;
-    }
-
-    public void setMusic(Music music, boolean looping) {
+    /**
+     * Sets the client music
+     *
+     * @param music   The future music
+     * @param looping indicate if the music will loop.
+     */
+    public void setMusic(@Nonnull Music music, boolean looping) {
         this.music = music;
         this.music.setLooping(looping);
     }
@@ -159,6 +158,9 @@ public class WargrooveClient extends Game {
         }
     }
 
+    /**
+     * Play the loaded music.
+     */
     public void playMusic() {
         if (music != null) {
             music.setVolume(getMusicVolume());
@@ -166,28 +168,58 @@ public class WargrooveClient extends Game {
         }
     }
 
+    /**
+     * Gets the camera's velocity.
+     *
+     * @return the velocity in percentage.
+     */
     public float getCameraVelocity() {
         return settings.getFloat(Settings.CAMERA_VELOCITY.name());
     }
 
+    /**
+     * Sets the camera's velocity.
+     *
+     * @param cameraVelocity The value in percentage.
+     */
     public void setCameraVelocity(float cameraVelocity) {
         cameraVelocity = Math.max(0, Math.min(1, cameraVelocity));
         this.settings.putFloat(Settings.CAMERA_VELOCITY.name(), cameraVelocity);
     }
 
+    /**
+     * Gets the zoom velocity of the camera.
+     *
+     * @return The velocity in percentage.
+     */
     public float getCameraZoomVelocity() {
         return settings.getFloat(Settings.CAMERA_ZOOM_VELOCITY.name());
     }
 
+    /**
+     * Sets the zoom velocity of the camera.
+     *
+     * @param cameraZoomVelocity The value in percentage.
+     */
     public void setCameraZoomVelocity(float cameraZoomVelocity) {
         cameraZoomVelocity = Math.max(0, Math.min(1, cameraZoomVelocity));
         settings.putFloat(Settings.CAMERA_ZOOM_VELOCITY.name(), cameraZoomVelocity);
     }
 
+    /**
+     * Gets the music's volume.
+     *
+     * @return the music's volume in percentage.
+     */
     public float getMusicVolume() {
         return settings.getFloat(Settings.MUSIC_VOLUME.name());
     }
 
+    /**
+     * Sets the music's volume.
+     *
+     * @param volume the value in percentage.
+     */
     public void setMusicVolume(float volume) {
         volume = Math.max(0, Math.min(1, volume));
         settings.putFloat(Settings.MUSIC_VOLUME.name(), volume);
@@ -196,28 +228,51 @@ public class WargrooveClient extends Game {
         }
     }
 
+    /**
+     * Gets the sounds' volume.
+     *
+     * @return the sound's volume in percentage.
+     */
     public float getSoundVolume() {
         return settings.getFloat(Settings.SOUND_VOLUME.name());
     }
 
+    /**
+     * Sets the sounds' volume.
+     *
+     * @param volume The value in percentage.
+     */
     public void setSoundVolume(float volume) {
         volume = Math.max(0, Math.min(1, volume));
         settings.putFloat(Settings.SOUND_VOLUME.name(), volume);
     }
 
+    /**
+     * Indicates if the client is in full screen.
+     *
+     * @return true is the client is in full screen mode, false otherwise.
+     */
     public boolean isFullScreen() {
         return settings.getBoolean(Settings.FULLSCREEN.name());
     }
 
+    /**
+     * Sets the full screen mode according to the argument
+     *
+     * @param fullScreen if true the client will be in full screen else it will be in windowed mode.
+     */
     public void setFullScreen(boolean fullScreen) {
         settings.putBoolean(Settings.FULLSCREEN.name(), fullScreen);
         if (fullScreen) {
             Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
         } else {
-            Gdx.graphics.setWindowedMode(640, 480);
+            Gdx.graphics.setWindowedMode(800, 600);
         }
     }
 
+    /**
+     * The settings' map keys.
+     */
     private enum Settings {
         FULLSCREEN, CAMERA_VELOCITY, CAMERA_ZOOM_VELOCITY, MUSIC_VOLUME, SOUND_VOLUME
     }

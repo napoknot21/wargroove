@@ -12,7 +12,7 @@ import java.util.Locale;
  * This is a plugin. Its primary task is to export the local textures to the given path.
  * For compatibility reasons, it must be used to draw a map with an external application.
  */
-public class ExportTextures {
+public class ExportTextures extends Plugin {
     private String biome;
     private String path;
     private boolean overwrite = false;
@@ -23,12 +23,7 @@ public class ExportTextures {
      * @param args The CLI arguments.
      */
     public ExportTextures(String... args) {
-        for (String arg : args) {
-            if (arg.startsWith("--")) {
-                String[] parameter = arg.substring(2).split("=");
-                initParameter(parameter);
-            }
-        }
+        super(args);
     }
 
     /**
@@ -53,7 +48,12 @@ public class ExportTextures {
         System.out.println("Exportation successful");
     }
 
-    private void initParameter(String... parameter) {
+    /**
+     * Inits the tasks parameters according to the given arguments.
+     *
+     * @param parameter the CLI arguments.
+     */
+    void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }
@@ -87,7 +87,7 @@ public class ExportTextures {
     }
 
     //(option = "overwrite", description = "indicate if a file a the same name a the one given "
-     //       + "in the path or the default one will be be overwritten (Y/N)")
+    //       + "in the path or the default one will be be overwritten (Y/N)")
     private void setOverwrite(String overwrite) {
         this.overwrite = overwrite.equalsIgnoreCase("Y");
     }
@@ -102,6 +102,13 @@ public class ExportTextures {
         return destination;
     }
 
+
+    /**
+     * Gets the destination file path.
+     *
+     * @param name The Map name.
+     * @return the destination file. The file might be non existant.
+     */
     private File getDestination(String name) {
         char last = path.charAt(path.length() - 1);
         if (last == '/' || last == '\\') {
@@ -114,6 +121,13 @@ public class ExportTextures {
         return new File(file.getParent() + '/' + name);
     }
 
+    /**
+     * Copy the origin file to the destination file.
+     *
+     * @param origin      The origin file.
+     * @param destination The destination file.
+     * @throws Exception if the file doesn't exist or if the buffers encountered an issues
+     */
     private void copy(File origin, File destination) throws Exception {
         InputStream in = new FileInputStream(origin);
         OutputStream out = new FileOutputStream(destination);

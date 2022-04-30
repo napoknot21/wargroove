@@ -9,34 +9,27 @@ import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
  * This is a plugin. Its primary tasks is to import a given map in CLI to the local database.
  */
-public class ImportMap {
+public class ImportMap extends Plugin {
+    private static int players = 0;
     private final StringBuilder log = new StringBuilder();
     private final Database db = new Database(getRoot());
+    private Reader reader;
     private String[] paths;
     private String biome;
-    private final Reader reader;
-    private static int players = 0;
 
     /**
      * Construct the plugin and set the given arguments.
      *
      * @param args The CLI arguments.
      */
-    public ImportMap(String... args) throws FileNotFoundException {
-        reader = new Reader(getWorldTexturePath());
-        reader.load();
-        for (String arg : args) {
-            if (arg.startsWith("--")) {
-                String[] parameter = arg.substring(2).split("=");
-                initParameter(parameter);
-            }
-        }
+    public ImportMap(String... args) {
+        super(args);
+
     }
 
     /**
@@ -45,6 +38,8 @@ public class ImportMap {
      * @throws Exception if an error occurred.
      */
     public void run() throws Exception {
+        reader = new Reader(getWorldTexturePath());
+        reader.load();
         if (paths == null || paths.length == 0) {
             throw new Exception("The args cannot be empty");
         }
@@ -69,7 +64,12 @@ public class ImportMap {
         }
     }
 
-    private void initParameter(String... parameter) {
+    /**
+     * Inits the tasks parameters according to the given arguments.
+     *
+     * @param parameter the CLI arguments.
+     */
+    void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }
@@ -103,17 +103,20 @@ public class ImportMap {
         return "core/assets/data/sprites/world/grass.atlas";
     }
 
+    /**
+     * Load the given file into the right database collection.
+     *
+     * @param file the file that contain the map to import.
+     * @throws Exception if something went wrong
+     */
     private void load(File file) throws Exception {
         if (!file.getName().split("\\.")[1].equals("csv")) {
             throw new Exception("The file must be a CSV file");
         }
         WorldProperties properties = traduction(file);
         World world = new World(properties);
-        System.out.println(players);
-        System.out.println(properties.terrain.length);
-        System.out.println(players+"p");
-        if (!world.save(db, players+"_players")) {
-            throw  new Exception("Something went wrong during the save");
+        if (!world.save(db, players + "_players")) {
+            throw new Exception("Something went wrong during the save");
         }
     }
 
@@ -148,6 +151,13 @@ public class ImportMap {
         return generateProperties(array, width, height, file);
     }
 
+    /**
+     * Check if the number of player is correct and if each player have at most one stronghold.
+     *
+     * @param tile     The tile that will be checked.
+     * @param factions The plugin factions' list
+     * @throws Exception if the configuration is wrong.
+     */
     private void checkPlayers(Tile tile, ArrayList<Faction> factions) throws Exception {
         if (factions.isEmpty()) throw new Exception("There is an issue with the structure configuration");
         if (tile.entity.isPresent() && tile.entity.get() instanceof Stronghold) {
@@ -177,18 +187,25 @@ public class ImportMap {
         return properties;
     }
 
+    /**
+     * Generate the properties' terrain.
+     *
+     * @param array     The properties' terrain data.
+     * @param dimension the dimension of the properties' terrain
+     * @return The generated terrain.
+     */
     private Tile[] buildTerrain(ArrayList<Tile> array, Pair<Integer, Integer> dimension) {
         Tile[][] terrain = new Tile[dimension.first][dimension.second];
         int arrI = 0;
-        for (int j = dimension.first - 1; j>= 0; j--) {
+        for (int j = dimension.first - 1; j >= 0; j--) {
             for (int k = 0; k < dimension.second; k++, arrI++) {
                 terrain[j][k] = array.get(arrI);
             }
         }
         Tile[] tiles = new Tile[array.size()];
         int tilesI = 0;
-        for (int j = 0; j< dimension.first; j++) {
-            for (int k = 0; k<dimension.second; k++, tilesI++) {
+        for (int j = 0; j < dimension.first; j++) {
+            for (int k = 0; k < dimension.second; k++, tilesI++) {
                 tiles[tilesI] = terrain[j][k];
             }
         }

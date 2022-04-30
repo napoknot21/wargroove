@@ -39,8 +39,6 @@ public abstract class View extends ScreenAdapter {
      */
     private Stage ui;
 
-    //final Sound BUTTON_SOUND;
-
     /**
      * The Screen input manager.
      */
@@ -87,7 +85,7 @@ public abstract class View extends ScreenAdapter {
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(32/255f, 30/255f, 26/255f, 1);
+        Gdx.gl.glClearColor(32 / 255f, 30 / 255f, 26 / 255f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         draw(delta);
     }
@@ -173,6 +171,11 @@ public abstract class View extends ScreenAdapter {
         return inputs;
     }
 
+    /**
+     * Adds the given inputs to the app screen input processor.
+     *
+     * @param inputs The list of inputs that will be added.
+     */
     public void addInput(InputProcessor... inputs) {
         for (InputProcessor input : inputs) {
             this.inputs.addProcessor(input);

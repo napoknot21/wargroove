@@ -56,7 +56,6 @@ public class PlayerBox extends Table {
 
     /**
      * Inits an empty player box.
-     *
      */
     public PlayerBox() {
         Skin skin = Assets.getInstance().getSkin();
@@ -65,7 +64,7 @@ public class PlayerBox extends Table {
         money = new Label("300", skin);
         money.setColor(Color.BLACK);
         income = new Label("+500", skin);
-        this.income.setColor(new Color(0.2f,0.6f,0.2f,1));
+        this.income.setColor(new Color(0.2f, 0.6f, 0.2f, 1));
         round = new Label("Round 1", skin);
         round.setColor(Color.BLACK);
         avatar = new Rectangle();
@@ -97,7 +96,7 @@ public class PlayerBox extends Table {
      * @param player The current player
      */
     public void setInformations(Player player, int round) {
-        setInformations(false,player,round);
+        setInformations(false, player, round);
     }
 
     public void setInformations(boolean isStatic, Player player, int round) {
@@ -110,11 +109,20 @@ public class PlayerBox extends Table {
         this.round.setText("Round " + round);
         Color color;
         switch (player.getFaction()) {  //Color based on the tile set
-            case FLORAN_TRIBES: color = new Color(111/255f,153/255f,13/255f,1); break;
-            case FELHEIM_LEGION: color = new Color(13/255f,76/255f,153/255f,1); break;
-            case CHERRYSTONE_KINGDOM: color = new Color(153/255f,23/255f,13/255f,1); break;
-            case HEAVENSONG_EMPIRE: color = new Color(153/255f,120/255f,13/255f,1); break;
-            default: color = Color.CLEAR;
+            case FLORAN_TRIBES:
+                color = new Color(111 / 255f, 153 / 255f, 13 / 255f, 1);
+                break;
+            case FELHEIM_LEGION:
+                color = new Color(13 / 255f, 76 / 255f, 153 / 255f, 1);
+                break;
+            case CHERRYSTONE_KINGDOM:
+                color = new Color(153 / 255f, 23 / 255f, 13 / 255f, 1);
+                break;
+            case HEAVENSONG_EMPIRE:
+                color = new Color(153 / 255f, 120 / 255f, 13 / 255f, 1);
+                break;
+            default:
+                color = Color.CLEAR;
         }
         this.avatar.setColor(color);
         this.isStatic = isStatic;
@@ -130,8 +138,12 @@ public class PlayerBox extends Table {
 
     }
 
+    /**
+     * Drawable rectangle.
+     */
     private static class Rectangle extends Actor {
         private ShapeRenderer renderer;
+
         private Rectangle() {
             super();
         }
@@ -149,7 +161,7 @@ public class PlayerBox extends Table {
             renderer.setTransformMatrix(batch.getTransformMatrix());
             renderer.setColor(getColor());
             renderer.begin(ShapeRenderer.ShapeType.Filled);
-            renderer.rect(getX(),getY(),getWidth(),getHeight());
+            renderer.rect(getX(), getY(), getWidth(), getHeight());
             renderer.end();
             Gdx.gl.glDisable(GL20.GL_BLEND);
 

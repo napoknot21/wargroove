@@ -25,6 +25,7 @@ import up.wargroove.utils.Pair;
  */
 public class MatchSettings extends ViewWithPrevious {
     private final WorldProperties properties;
+    private final Skin skin;
     /**
      * Previous screen button.
      */
@@ -37,12 +38,10 @@ public class MatchSettings extends ViewWithPrevious {
      * Button to send the configuration into the model
      */
     private Button chooseConfig;
-
     /**
      * The sound of the buttons
      */
     private Sound buttonSound;
-
     private Label incomeLabel;
     private Label printIncome;
     private Label biomeLabel;
@@ -54,7 +53,6 @@ public class MatchSettings extends ViewWithPrevious {
     private Slider income;
     private SelectBox<Biome> biome;
     private CheckBox checkFog;
-    private final Skin skin;
     private Stage VLT;
     private Stage VRT;
     private Stage VB;
@@ -84,12 +82,12 @@ public class MatchSettings extends ViewWithPrevious {
         income.setValue(100);
         printIncome = new Label(income.getValue() + "%", skin);
         biomeLabel = new Label("Biome :", skin);
-        weather = new SelectBox<String>(skin);
+        weather = new SelectBox<>(skin);
         weather.setAlignment(Align.center);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
         checkFog = new CheckBox("On", skin);
         checkFog.setChecked(true);
-        biome = new SelectBox<Biome>(skin);
+        biome = new SelectBox<>(skin);
         biome.setAlignment(Align.center);
         biome.setItems(Biome.GRASS, Biome.ICE, Biome.DESERT, Biome.VOLCANO);
         last = Biome.GRASS;
@@ -97,8 +95,8 @@ public class MatchSettings extends ViewWithPrevious {
         VLT.addActor(buildLeftTop());
         VB.addActor(buildBottom());
         addInput(VRT, VLT, VB);
-        mapSize = new Pair<>(0f,0f);
-        renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
+        mapSize = new Pair<>(0f, 0f);
+        renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
     }
 
     private Table buildLeftTop() {
@@ -111,7 +109,7 @@ public class MatchSettings extends ViewWithPrevious {
         intel.add(income).padBottom(20f).expand();
         printIncome.setText("9999%");
         intel.add(printIncome).size(printIncome.getWidth());
-        printIncome.setText(income.getValue() +"%");
+        printIncome.setText(income.getValue() + "%");
         intel.row();
         return intel;
     }
@@ -122,7 +120,7 @@ public class MatchSettings extends ViewWithPrevious {
             VRT.clear();
             renderer.getMap().dispose();
             renderer.dispose();
-            renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
+            renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
             last = biome.getSelected();
         }
         int width = Gdx.graphics.getWidth() / 2;
@@ -166,7 +164,7 @@ public class MatchSettings extends ViewWithPrevious {
             VRT.clear();
             renderer.getMap().dispose();
             renderer.dispose();
-            renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
+            renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
         }
     }
 
@@ -178,6 +176,12 @@ public class MatchSettings extends ViewWithPrevious {
     @Override
     public void dispose() {
         super.dispose();
+        /*VRT.dispose();
+        VB.dispose();
+        VRT.dispose();
+        VLT.dispose();*/
+        renderer.getMap().dispose();
+        renderer.dispose();
     }
 
 
@@ -201,8 +205,6 @@ public class MatchSettings extends ViewWithPrevious {
      * Init the buttons' listener.
      */
     private void initListener() {
-
-        biome.getClickListener();
 
         back.addListener(
                 new ChangeListener() {
@@ -234,7 +236,7 @@ public class MatchSettings extends ViewWithPrevious {
                         VRT.clear();
                         renderer.getMap().dispose();
                         renderer.dispose();
-                        renderer = MapActor.buildMap(getModel().getWorld(),VRT,mapSize,getController());
+                        renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
                         checkFog.setChecked(true);
                         income.setValue(100);
                         printIncome.setText(income.getValue() + "%");

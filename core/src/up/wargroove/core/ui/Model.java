@@ -19,6 +19,9 @@ import java.util.Random;
  */
 public class Model {
 
+    /**
+     * The map tile size.
+     */
     private static int tileSize;
     /**
      * The world.
@@ -39,7 +42,19 @@ public class Model {
      */
     private Entity boughtEntity = null;
 
+    /**
+     * Structure that bought the entity.
+     */
     private Entity activeStructure = null;
+
+
+    public static int getTileSize() {
+        return tileSize;
+    }
+
+    public static void setTileSize(int tileSize) {
+        Model.tileSize = tileSize;
+    }
 
     /**
      * Start a new game.
@@ -68,23 +83,12 @@ public class Model {
         Recruitment.clearAll();
         EntityManager.getInstance().load();
         isActive = true;
-        //addRandomStructure(); //for generate random structure
         setStartData();
     }
 
-    private void addRandomStructure() {
-        Random random = new Random();
-        for (int i = 0; i < properties.getDimension().first; i++) {
-            for (int j = 0; j < properties.getDimension().second; j++) {
-                int rand = random.nextInt(100);
-                if (rand < 10) {
-                    Faction faction = (rand % 2 == 0) ? Faction.FELHEIM_LEGION : Faction.CHERRYSTONE_KINGDOM;
-                    world.at(i, j).entity = Optional.of(new Recruitment(Recruitment.Type.BARRACKS, faction));
-                }
-            }
-        }
-    }
-
+    /**
+     * Initialize the players' data according to the World.
+     */
     private void setStartData() {
         for (int i = 0; i < properties.getDimension().first; i++) {
             for (int j = 0; j < properties.getDimension().second; j++) {
@@ -102,31 +106,44 @@ public class Model {
                 }
             }
         }
-        System.out.println();
     }
 
+    /**
+     * Load the commander at an adjacent tile to the tile (i,j) which contains the stronghold.
+     * Calls to loadGuards() in order to instantiate the close-knit guards.
+     *
+     * @param i      The tile first coordinate
+     * @param j      The tile second coordinate
+     * @param player The owner of the stronghold
+     */
     private void loadCommander(int i, int j, Player player) {
-        List<Integer> adj = getWorld().adjacentOf(World.coordinatesToInt(new Pair<>(i,j),getWorld().getDimension()));
+        List<Integer> adj = getWorld().adjacentOf(World.coordinatesToInt(new Pair<>(i, j), getWorld().getDimension()));
         adj.removeIf(pos -> {
             Tile t = getWorld().at(pos);
             return t.entity.isPresent() || !t.getType().isWalkable();
         });
         Random random = new Random();
         int pos = adj.get(random.nextInt(adj.size()));
-        Entity entity = new Commander("Commander",player.getFaction());
+        Entity entity = new Commander("Commander", player.getFaction());
         player.addEntity(entity);
         getWorld().at(pos).entity = Optional.of(entity);
-        loadGuards(pos,player);
+        loadGuards(pos, player);
     }
 
+    /**
+     * Instantiates the close-knit guards next to the previous loaded commander.
+     *
+     * @param pos    The commander position.
+     * @param player the commander owner.
+     */
     private void loadGuards(int pos, Player player) {
         List<Integer> adj = getWorld().adjacentOf(pos);
         adj.removeIf(i -> {
             Tile t = getWorld().at(i);
             return t.entity.isPresent() || !t.getType().isWalkable();
         });
-        for (int i = 0; i< adj.size() && i < 2; i++) {
-            Entity entity = new Soldier("Commander",player.getFaction());
+        for (int i = 0; i < adj.size() && i < 2; i++) {
+            Entity entity = new Soldier("Knit-Guards", player.getFaction());
             player.addEntity(entity);
             getWorld().at(adj.get(i)).entity = Optional.of(entity);
         }
@@ -141,6 +158,11 @@ public class Model {
         this.properties = properties;
     }
 
+    /**
+     * Gets the world biome.
+     *
+     * @return The biome.
+     */
     public Biome getBiome() {
         return properties.getBiome();
     }
@@ -172,6 +194,20 @@ public class Model {
         return world.at(x, y);
     }
 
+    /**
+     * Gets the tile at the given vector.
+     *
+     * @param x The tile x position.
+     * @param y The tile y position.
+     * @return The tile indicated by the vector.
+     */
+    public Tile getTile(int x, int y) {
+
+        x = (x < 0) ? 0 : Math.min(world.getDimension().first - 1, x);
+        y = (y < 0) ? 0 : Math.min(world.getDimension().second - 1, y);
+        return world.at(x, y);
+    }
+
     public Entity getBoughtEntity() {
         return boughtEntity;
     }
@@ -180,26 +216,53 @@ public class Model {
         this.boughtEntity = boughtEntity;
     }
 
+    /**
+     * Change the current player.
+     */
     public void nextTurn() {
         world.nextPlayer();
     }
 
+    /**
+     * Gets the current player.
+     *
+     * @return return the player.
+     */
     public Player getCurrentPlayer() {
         return world.getCurrentPlayer();
     }
 
+    /**
+     * Gets the round number.
+     *
+     * @return the round number.
+     */
     public int getRound() {
         return world.turns();
     }
 
+    /**
+     * Add a player to the list
+     *
+     * @param faction The player's faction.
+     */
     public void addPlayer(Faction faction) {
         world.addPlayer(faction);
     }
 
+    /**
+     * Remove the last entered player.
+     */
     public void removeLastPlayer() {
         world.removeLastPlayer();
     }
 
+    /**
+     * Gets the faction's player.
+     *
+     * @param faction the requested faction.
+     * @return the player if its exist, null otherwise.
+     */
     @Null
     private Player getPlayer(Faction faction) {
         return world.getPlayer(faction);
@@ -222,13 +285,5 @@ public class Model {
 
     public void setProperties(WorldProperties properties) {
         this.properties = properties;
-    }
-
-    public static int getTileSize() {
-        return tileSize;
-    }
-
-    public static void setTileSize(int tileSize) {
-        Model.tileSize = tileSize;
     }
 }

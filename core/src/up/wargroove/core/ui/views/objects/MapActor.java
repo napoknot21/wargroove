@@ -6,32 +6,22 @@ import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-public class MapActor{
-        private final GameMap map;
+public class MapActor {
+    private final GameMap map;
 
-       private MapActor(World world, Stage stage, Controller controller) {
-            float heightRatio = (stage.getHeight() / (world.getDimension().first * 64));
-            float widthRatio = (stage.getWidth() / (world.getDimension().second * 64));
-            float scale = Math.min(heightRatio,widthRatio);
-            map = new GameMap(world, stage, null,controller, scale,true,false);
-        }
+    private MapActor(World world, Stage stage, Controller controller) {
+        float heightRatio = (stage.getHeight() / (world.getDimension().first * 64));
+        float widthRatio = (stage.getWidth() / (world.getDimension().second * 64));
+        float scale = Math.min(heightRatio, widthRatio);
+        map = new GameMap(world, stage, null, controller, scale, true, false);
+    }
 
-        private MapActor() {
-            this.map = null;
-        }
-
-        public void dispose() {
-            if (map != null) {
-                map.dispose();
-            }
-        }
-
-    public GameMap getMap() {
-        return map;
+    private MapActor() {
+        this.map = null;
     }
 
     public static OrthogonalTiledMapRenderer buildMap(
-            World world, Stage stage, Pair<Float,Float> mapSize, Controller controller
+            World world, Stage stage, Pair<Float, Float> mapSize, Controller controller
     ) {
 
         MapActor newMap = new MapActor(world, stage, controller);
@@ -45,6 +35,16 @@ public class MapActor{
         mapSize.second *= renderer.getUnitScale();
         System.out.println(renderer.getUnitScale());
         return renderer;
+    }
+
+    public void dispose() {
+        if (map != null) {
+            map.dispose();
+        }
+    }
+
+    public GameMap getMap() {
+        return map;
     }
 
 }

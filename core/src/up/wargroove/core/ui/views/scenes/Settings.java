@@ -17,11 +17,8 @@ import up.wargroove.core.ui.controller.Controller;
  * The World Settings Menu.
  */
 public class Settings extends ViewWithPrevious {
-    /**
-     * Full Screen button.
-     */
-    private final Button back;
 
+    private final Button back;
     private final Slider cameraZoomVelocity;
     private final Slider musicVolume;
     private final CheckBox fullScreen;
@@ -43,23 +40,26 @@ public class Settings extends ViewWithPrevious {
         super(previous, controller, model, wargroove);
         Skin skin = getAssets().getSkin();
         buttonSound = Assets.getInstance().getDefault(Sound.class);
-        fullScreenLabel = new Label("Full screen",skin);
+        fullScreenLabel = new Label("Full screen", skin);
         cameraVelocityLabel = new Label("Camera velocity", skin);
         cameraZoomVelocityLabel = new Label("Zoom velocity", skin);
-        musicVolumeLabel = new Label("Music Volume",skin);
+        musicVolumeLabel = new Label("Music Volume", skin);
         soundVolumeLabel = new Label("Sound Volume", skin);
         back = new TextButton("Back", skin);
-        cameraVelocity = new Slider(1,100,1,false,skin);
-        printCameraVelocity = new Label("",skin);
-        printCameraZoomVelocity = new Label("",skin);
-        cameraZoomVelocity = new Slider(1,100,1,false,skin);
-        musicVolume = new Slider(0,100,10,false,skin);
-        soundVolume = new Slider(0,100,10,false,skin);
+        cameraVelocity = new Slider(1, 100, 1, false, skin);
+        printCameraVelocity = new Label("", skin);
+        printCameraZoomVelocity = new Label("", skin);
+        cameraZoomVelocity = new Slider(1, 100, 1, false, skin);
+        musicVolume = new Slider(0, 100, 10, false, skin);
+        soundVolume = new Slider(0, 100, 10, false, skin);
         fullScreen = new CheckBox("", skin);
-        pane = new ScrollPane(null,skin);
+        pane = new ScrollPane(null, skin);
         setSettings();
     }
 
+    /**
+     * Sets the screen default values according to the values stores in the client' settings.
+     */
     private void setSettings() {
         cameraVelocity.setValue(getClient().getCameraVelocity() * 100);
         printCameraVelocity.setText(cameraVelocity.getValue() + " %");
@@ -78,7 +78,7 @@ public class Settings extends ViewWithPrevious {
         setStage(viewport);
         pane.setActor(drawTable());
         pane.setColor(Color.BLACK);
-        pane.setScrollingDisabled(true,false);
+        pane.setScrollingDisabled(true, false);
         pane.setScrollbarsVisible(true);
         pane.setCancelTouchFocus(false);
         pane.setSmoothScrolling(true);
@@ -191,7 +191,7 @@ public class Settings extends ViewWithPrevious {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
-                printCameraVelocity.setText(cameraVelocity.getValue() +"%");
+                printCameraVelocity.setText(cameraVelocity.getValue() + "%");
                 getClient().setCameraVelocity(cameraVelocity.getValue() / 100);
                 pane.cancel();
             }
@@ -200,7 +200,7 @@ public class Settings extends ViewWithPrevious {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 getController().playSound(buttonSound);
-                printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() +"%");
+                printCameraZoomVelocity.setText(cameraZoomVelocity.getValue() + "%");
                 getClient().setCameraZoomVelocity(cameraZoomVelocity.getValue() / 100);
                 pane.cancel();
             }

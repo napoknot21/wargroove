@@ -23,8 +23,8 @@ public class StructureMenu extends Dialog {
     private final Description description;
     private final TextButton buy;
     private final Controller controller;
-    private Entity current;
     private final Player player;
+    private Entity current;
     private Stage stage;
 
     private StructureMenu(Assets assets, Controller controller) {
@@ -44,7 +44,7 @@ public class StructureMenu extends Dialog {
     /**
      * Shows the menu on the screen above all. All the inputs are catch by this.
      *
-     * @param list list of purchasable characters.
+     * @param list       list of purchasable characters.
      * @param assets     The app assets manager.
      * @param controller The app controller.
      * @param stage      The view stage.
@@ -67,13 +67,19 @@ public class StructureMenu extends Dialog {
      * @return The displayable unit name.
      */
     private static String transformName(Entity e) {
-        String s = e.getClass().getSimpleName().toLowerCase(Locale.ROOT) + " (" + e.getCost()+ ")";
+        String s = e.getClass().getSimpleName().toLowerCase(Locale.ROOT) + " (" + e.getCost() + ")";
         return s.substring(0, 1).toUpperCase() + s.substring(1);
     }
 
+    /**
+     * Resize the menu according to the given argument.
+     *
+     * @param width The new screen width.
+     * @param height The new screen height.
+     */
     public static void resize(int width, int height) {
         if (instance != null) {
-            instance.stage.getViewport().update(width,height);
+            instance.stage.getViewport().update(width, height);
             instance.show(instance.stage);
         }
     }
@@ -99,7 +105,7 @@ public class StructureMenu extends Dialog {
 
     @Override
     public float getPrefHeight() {
-        return Math.min(Gdx.graphics.getHeight() /1.5f, 400);
+        return Math.min(Gdx.graphics.getHeight() / 1.5f, 400);
     }
 
     @Override
@@ -163,37 +169,11 @@ public class StructureMenu extends Dialog {
         super.setDebug(debug);
     }
 
+    /**
+     * The buttons type.
+     */
     enum Buttons {
         CLOSE, BUY
-    }
-
-    /**
-     * A character button is a button with the character name and its cost.
-     */
-    private class CharacterButton extends TextButton {
-        Entity entity;
-
-        public CharacterButton(Entity e, Assets assets) {
-            super(transformName(e), assets.getSkin());
-            entity = e;
-            if (player.getMoney() < e.getCost()) {
-                TextButtonStyle style = new TextButtonStyle(this.getStyle());
-                style.fontColor = Color.RED;
-                this.setStyle(style);
-
-            }
-            addListener(new ChangeListener() {
-                @Override
-                public void changed(ChangeEvent event, Actor actor) {
-                    controller.playSound(Assets.getInstance().getDefault(Sound.class));
-                    description.setDescription(e, assets);
-                    current = e;
-                    if (player.getMoney() >= e.getCost()) {
-                        buy.setVisible(true);
-                    }
-                }
-            });
-        }
     }
 
     /**
@@ -228,13 +208,14 @@ public class StructureMenu extends Dialog {
 
         /**
          * Sets the description according to the given character.
-         *  @param entity      The scoped character.
+         *
+         * @param entity The scoped character.
          * @param assets The app assets manager.
          */
         private void setDescription(Entity entity, Assets assets) {
             setVisible(true);
-            movementCost.setText("Movement : "+entity.getMovement().id);
-            range.setText("Range : "+entity.getRange());
+            movementCost.setText("Movement : " + entity.getMovement().id);
+            range.setText("Range : " + entity.getRange());
             try {
                 text.setText(assets.get(entity.getType(), 25));
             } catch (Exception e) {
@@ -246,6 +227,35 @@ public class StructureMenu extends Dialog {
         public void clear() {
             text.clear();
             movementCost.clear();
+        }
+    }
+
+    /**
+     * A character button is a button with the character name and its cost.
+     */
+    private class CharacterButton extends TextButton {
+        Entity entity;
+
+        public CharacterButton(Entity e, Assets assets) {
+            super(transformName(e), assets.getSkin());
+            entity = e;
+            if (player.getMoney() < e.getCost()) {
+                TextButtonStyle style = new TextButtonStyle(this.getStyle());
+                style.fontColor = Color.RED;
+                this.setStyle(style);
+
+            }
+            addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                    description.setDescription(e, assets);
+                    current = e;
+                    if (player.getMoney() >= e.getCost()) {
+                        buy.setVisible(true);
+                    }
+                }
+            });
         }
     }
 }

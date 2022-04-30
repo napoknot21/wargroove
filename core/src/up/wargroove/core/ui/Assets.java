@@ -186,7 +186,7 @@ public class Assets {
     }
 
     public Skin getSkin() {
-        return get(AssetDir.SKIN.path+"ui.json", Skin.class);
+        return get(AssetDir.SKIN.path + "ui.json", Skin.class);
     }
 
     /*public void loadBiomeMusic(){
@@ -265,7 +265,7 @@ public class Assets {
     }
 
     public TextureRegion getTest() {
-        return new TextureRegion(get(AssetDir.WORLD.path()+"test.png", Texture.class));
+        return new TextureRegion(get(AssetDir.WORLD.path() + "test.png", Texture.class));
     }
 
     /**
@@ -282,7 +282,7 @@ public class Assets {
 
     public TextureAtlas get(Biome biome) {
         String fileName = AssetDir.WORLD.path() + biome.name().toLowerCase() + ".atlas";
-        return manager.get(fileName.replace('\\','/'));
+        return manager.get(fileName.replace('\\', '/'));
     }
 
     /**
@@ -326,7 +326,7 @@ public class Assets {
     /**
      * Gets the description of the given type.
      *
-     * @param type The tile type.
+     * @param type       The tile type.
      * @param lineLength The length of the lines.
      * @return the description as a String. Each line is of length lineLength.
      * @throws FileNotFoundException if the description wasn't loaded
@@ -342,7 +342,7 @@ public class Assets {
     /**
      * Gets the description of the given type.
      *
-     * @param type The entity type.
+     * @param type       The entity type.
      * @param lineLength The length of the lines.
      * @return the description as a String. Each line is of length lineLength.
      * @throws FileNotFoundException if the description wasn't loaded
@@ -359,7 +359,7 @@ public class Assets {
     }
 
     public TextureRegion get(Tile tile, Biome biome) {
-        return get(biome).findRegion(tile.getType().name().toLowerCase()+"-"+tile.getTextureVersion());
+        return get(biome).findRegion(tile.getType().name().toLowerCase() + "-" + tile.getTextureVersion());
     }
 
     public TextureRegion get(Structure structure) {
@@ -369,9 +369,9 @@ public class Assets {
     private String getTextureName(Structure structure) {
         String ret;
         if (structure instanceof Recruitment) {
-            ret = ((Recruitment)structure).getRecruitmentType() +"-"+structure.getFaction()+"-1";
+            ret = ((Recruitment) structure).getRecruitmentType() + "-" + structure.getFaction() + "-1";
         } else {
-            ret = structure.getStructureType() +"-"+structure.getFaction()+"-1";
+            ret = structure.getStructureType() + "-" + structure.getFaction() + "-1";
         }
         return ret.toLowerCase();
     }
@@ -415,6 +415,9 @@ public class Assets {
         tilesDescriptions.clear();
     }
 
+    public void writeSettings() {
+
+    }
 
 
     /**
@@ -423,12 +426,12 @@ public class Assets {
     public enum AssetDir {
         DATA("data" + fs),
         DESCRIPTION(DATA.path + "descriptions" + fs, "entities"),
-        GUI(DATA.path + "gui" + fs,"gui"),
+        GUI(DATA.path + "gui" + fs, "gui"),
         ARROWS(GUI.path + "arrows" + fs, "arrows"),
         CHARACTER(GUI.path + "character" + fs),
         SKIN(GUI.path + "skin" + fs, "skin"),
-        SOUND(GUI.path + "sound" + fs, "sound","music"),
-        WORLD(GUI.path + "world" + fs,"world","attack"),
+        SOUND(GUI.path + "sound" + fs, "sound", "music"),
+        WORLD(GUI.path + "world" + fs, "world", "attack"),
         CHERRYSTONE_KINGDOM(CHARACTER.path + "CHERRYSTONE_KINGDOM" + fs, "CHERRYSTONE_KINGDOM"),
         FELHEIM_LEGION(CHARACTER.path + "FELHEIM_LEGION" + fs, "FELHEIM_LEGION"),
         FLORAN_TRIBES(CHARACTER.path + "FLORAN_TRIBES" + fs, "FLORAN_TRIBES"),
@@ -436,8 +439,6 @@ public class Assets {
         STATS(CHARACTER.path + "STATS" + fs, "STATS"),
         GRASS(WORLD.path + "grass.atlas" + fs),
         ICE(WORLD.path + "ice" + fs, "ice");
-
-        // TODO : remplir les chemins menant au repertoire et leur manifest pour charger les donnees
 
         private final String path;
         private final String[] manifest;
@@ -467,23 +468,17 @@ public class Assets {
         }
     }
 
-
     /**
      * List the Assets Types.
      */
     public enum AssetType {
         TEXTURE(Texture.class), SKIN(Skin.class), SOUND(Sound.class), ATLAS(TextureAtlas.class),
         MUSIC(Music.class);
-        //TODO : remplir la liste avec les type de donnees a charger
 
         private final Class<?> type;
 
         AssetType(Class<?> type) {
             this.type = type;
         }
-    }
-
-    public void writeSettings() {
-
     }
 }

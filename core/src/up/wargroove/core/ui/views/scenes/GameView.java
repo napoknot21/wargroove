@@ -84,7 +84,7 @@ public class GameView extends View {
         setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
         movementSelector = new MovementSelector(gameMap.getTileSize());
         attackSelector = new AttackSelector(gameMap.getTileSize());
-        Texture texture = getAssets().get(Assets.AssetDir.GUI.path()+ "game_cursor.png");
+        Texture texture = getAssets().get(Assets.AssetDir.GUI.path() + "game_cursor.png");
         cursor = new Cursor(texture, gameMap.getTileSize());
         initInput();
     }
@@ -101,7 +101,7 @@ public class GameView extends View {
         viewport.apply();
         camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
-        characters = new Stage(viewport,getBatch());
+        characters = new Stage(viewport, getBatch());
         gameMap = new GameMap(getModel().getWorld(), getStage(), characters, getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
@@ -131,7 +131,7 @@ public class GameView extends View {
         Table buttons = new Table();
         buttons.bottom().add(moveDialog);
 
-        Table guide= new Table();
+        Table guide = new Table();
         guide.top().left();
         guide.add(codex);
 
@@ -182,10 +182,10 @@ public class GameView extends View {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
-                cursor.setPosition(vector);
-                Vector3 worldPosition = cursor.getWorldPosition();
+                Tile tile = getController().getTile(
+                        (int) (vector.x / gameMap.getTileSize()), (int) (vector.y/ gameMap.getTileSize())
+                );
 
-                Tile tile = getController().getTile(worldPosition);
 
                 if (
                         tile.entity.isPresent() && !tile.entity.get().isExhausted()
@@ -198,10 +198,17 @@ public class GameView extends View {
                     cursor.setLock(true);
                     return true;
                 }
+                else {
+                    cursor.setLock(false);
+                }
 
+                cursor.setPosition(vector);
+                Vector3 worldPosition = cursor.getWorldPosition();
+                tile = getController().getTile(worldPosition);
                 if (tile.entity.isPresent() && (tile.entity.get().isExhausted()
                         || (tile.entity.get() instanceof Structure))) {
                     clearSelectors();
+                    clearMoveDialog();
                     movement = attack = false;
                     return true;
                 }
@@ -357,7 +364,7 @@ public class GameView extends View {
 
     @Null
     public Actor getCharacterUI(Entity entity) {
-        var array = (entity instanceof Character)? characters.getActors() : getStage().getActors();
+        var array = (entity instanceof Character) ? characters.getActors() : getStage().getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);
             if (tmp instanceof CharacterUI && ((CharacterUI) tmp).getEntity().equals(entity)) {

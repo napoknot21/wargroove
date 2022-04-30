@@ -54,7 +54,7 @@ public class Controller {
     private float worldScale;
 
     private boolean cameraMoving = false;
-    private Pair<Float,Float> cameraDestination = new Pair<>();
+    private final Pair<Float, Float> cameraDestination = new Pair<>();
 
     /**
      * Create a controller.
@@ -107,21 +107,21 @@ public class Controller {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new SelectMap(getScreen(),this, model, getClient()));
+        setScreen(new SelectMap(getScreen(), this, model, getClient()));
     }
 
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new Settings(getScreen(),this, model, getClient()));
+        setScreen(new Settings(getScreen(), this, model, getClient()));
     }
 
     public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
         setPrevious();
-        setScreen(new MatchSettings(getScreen(),this, model, getClient()));
+        setScreen(new MatchSettings(getScreen(), this, model, getClient()));
     }
 
     public void setPrevious() {
@@ -185,7 +185,7 @@ public class Controller {
         getClient().setScreen(screen);
     }
 
-    private void chooseMusic(){
+    private void chooseMusic() {
         if (getModel().getBiome() != null) {
             getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.path()
                     + getModel().getBiome().name() + ".mp3"), true);
@@ -216,13 +216,25 @@ public class Controller {
     }
 
     /**
-     * Finds the tile that will be displayed by the tile indicator.
+     * Finds the tile at the vector position.
      *
      * @param vector The cursor position.
-     * @return the tile that will be displayed by the tile indicator.
+     * @return the tile that at the vector position.
      */
     public Tile getTile(Vector3 vector) {
         return getModel().getTile(vector);
+
+    }
+
+    /**
+     * Finds the tile at the (x,y) position.
+     *
+     * @param x The cursor x position.
+     * @param y The cursor y position.
+     * @return the tile at the (x,y) position.
+     */
+    public Tile getTile(int x, int y) {
+        return getModel().getTile(x,y);
 
     }
 
@@ -285,7 +297,8 @@ public class Controller {
      *
      * @return the world's scoped entity.
      */
-    public @Null Entity getScopedEntity() {
+    public @Null
+    Entity getScopedEntity() {
         return getWorld().getScopedEntity();
     }
 
@@ -312,13 +325,13 @@ public class Controller {
             ((GameView) getScreen()).getCursor().setLock(true);
             return false;
         }
-        if (!setScopeEntity(worldPosition)) {
+        if (
+                !setScopeEntity(worldPosition)
+                || !getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+        ) {
             movementSelector.reset();
             ((GameView) getScreen()).clearMoveDialog();
             ((GameView) getScreen()).getCursor().setLock(false);
-            return false;
-        }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
@@ -435,7 +448,7 @@ public class Controller {
      */
     public void closeStructureMenu() {
         Gdx.input.setInputProcessor(getScreen().getInputs());
-        ((GameView)getScreen()).getCursor().setLock(false);
+        ((GameView) getScreen()).getCursor().setLock(false);
     }
 
     /**
@@ -474,7 +487,7 @@ public class Controller {
         Vector3 v = gameView.getCursor().getWorldPosition();
 
         CharacterUI c = new CharacterUI(
-                this, gameView.getCharacters() ,new Pair<>((int) v.x, (int) v.y),
+                this, gameView.getCharacters(), new Pair<>((int) v.x, (int) v.y),
                 (Character) getModel().getBoughtEntity()
         );
 
@@ -487,11 +500,11 @@ public class Controller {
     }
 
     public void endTurn() {
-        ((GameView)getScreen()).getCursor().setLock(false);
+        ((GameView) getScreen()).getCursor().setLock(false);
         ((GameView) getScreen()).clearAll();
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
-        ((GameView)getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+        ((GameView) getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
     }
 
     public void nextUnit() {
@@ -508,24 +521,24 @@ public class Controller {
         cameraDestination.first = ui.getX();
         cameraDestination.second = ui.getY();
         cameraMoving = true;
-        gameView.getCursor().setPosition(ui.getX(),ui.getY());
+        gameView.getCursor().setPosition(ui.getX(), ui.getY());
     }
 
     public void actCamera(Camera camera) {
         float velocity = getClient().getCameraVelocity() * 64 * Gdx.graphics.getDeltaTime();
         boolean negX = cameraDestination.first - camera.position.x < 0;
         boolean negY = cameraDestination.second - camera.position.y < 0;
-        float dx = (camera.position.x != cameraDestination.first)? Model.getTileSize() : 0;
-        float dy = (camera.position.y != cameraDestination.second)? Model.getTileSize() : 0;
-        dx *= (negX)? -velocity : velocity;
-        dy *= (negY)? -velocity : velocity;
-        camera.translate(dx,dy,0);
+        float dx = (camera.position.x != cameraDestination.first) ? Model.getTileSize() : 0;
+        float dy = (camera.position.y != cameraDestination.second) ? Model.getTileSize() : 0;
+        dx *= (negX) ? -velocity : velocity;
+        dy *= (negY) ? -velocity : velocity;
+        camera.translate(dx, dy, 0);
         cameraMoving = (
                 Math.abs(cameraDestination.first - camera.position.x) > Model.getTileSize()
                         || Math.abs(cameraDestination.second - camera.position.y) > Model.getTileSize()
         );
         if (!cameraMoving) {
-            camera.position.set(cameraDestination.first,cameraDestination.second,camera.position.z);
+            camera.position.set(cameraDestination.first, cameraDestination.second, camera.position.z);
         }
     }
 
@@ -539,7 +552,7 @@ public class Controller {
 
     public void openMainMenu() {
         getClient().stopMusic(true);
-        setScreen(new MainMenu(this,getModel(),getClient()));
+        setScreen(new MainMenu(this, getModel(), getClient()));
     }
 
     public void closeClient() {
@@ -548,13 +561,13 @@ public class Controller {
 
     public void openInGameMenu() {
         setPrevious();
-        View screen = new InGameMenu(getScreen(),this,getModel(),getClient());
+        View screen = new InGameMenu(getScreen(), this, getModel(), getClient());
         setScreen(screen);
     }
 
     public void changeCategory(String name, Database database, ScrollPane buttons) {
         database.selectCollection(name);
-        Table content = ((SelectMap)getScreen()).initButtonsTable(database.getKeys());
+        Table content = ((SelectMap) getScreen()).initButtonsTable(database.getKeys());
         buttons.setActor(content);
     }
 }

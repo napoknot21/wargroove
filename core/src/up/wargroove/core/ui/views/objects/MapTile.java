@@ -18,7 +18,7 @@ public class MapTile extends StaticTiledMapTile {
      * @param tile The tile.
      */
     public MapTile(Tile tile, Biome biome) {
-        super(Assets.getInstance().get(tile,biome));
+        super(Assets.getInstance().get(tile, biome));
     }
 
 }

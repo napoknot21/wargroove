@@ -14,7 +14,7 @@ import java.io.FileWriter;
 /**
  * This is a plugin. Its primary task is to export a map from the local database to the given path.
  */
-public class ExportMap {
+public class ExportMap extends Plugin {
     /**
      * Name of the map stored in the database.
      */
@@ -57,15 +57,9 @@ public class ExportMap {
      * Constructs the plugin with the given arguments.
      *
      * @param args The CLI arguments.
-     * @throws Exception if an error occurred.
      */
-    public ExportMap(String... args) throws Exception {
-        for (String arg : args) {
-            if (arg.startsWith("--")) {
-                String[] parameter = arg.substring(2).split("=");
-                initParameter(parameter);
-            }
-        }
+    public ExportMap(String... args) {
+        super(args);
     }
 
     /**
@@ -83,7 +77,8 @@ public class ExportMap {
         write(file, properties);
     }
 
-    private void initParameter(String... parameter) throws Exception {
+
+    void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }
@@ -120,6 +115,7 @@ public class ExportMap {
     private String getWorldTexturePath() {
         return "core/assets/data/sprites/world/grass.atlas";
     }
+
     //(option = "name", description = "name of the map stored in the database")
     private void setName(String name) {
         String[] s = name.split("/");
@@ -152,14 +148,12 @@ public class ExportMap {
      * The syntaxe <b>MUST</b> be the following : <i>dimension.first, dimension.second</i>
      *
      * @param ds The CLI argument.
-     * @throws Exception the argument doesn't respect the format
      */
-    /*(option = "dim", description = "World dimension. The syntaxe MUST be the following : "
-            + "dimension.first, dimension.second")*/
-    private void setDimension(String ds) throws Exception {
+    private void setDimension(String ds) {
         String[] dim = ds.split(",");
         if (dim.length != 2) {
-            throw new Exception("The dimension syntaxe is wrong");
+            dimension = getDimension();
+            return;
         }
         int first = Integer.parseInt(dim[0]);
         int second = Integer.parseInt(dim[1]);
@@ -195,12 +189,18 @@ public class ExportMap {
         return ".csv";
     }
 
-    // TODO: 10/03/2022 : Improvement of enum gestion
+    /**
+     * Write the map on the given file.
+     *
+     * @param file       the given file.
+     * @param properties the properties that will be written on the file.
+     * @throws Exception if something went wrong.
+     */
     private void write(File file, WorldProperties properties) throws Exception {
 
         int[][] tiles = readTerrain(properties);
         StringBuilder builder = new StringBuilder();
-        for (int i = tiles.length - 1; i>= 0; i--) {
+        for (int i = tiles.length - 1; i >= 0; i--) {
             for (int id : tiles[i]) {
                 builder.append(id).append(";");
             }
@@ -212,39 +212,59 @@ public class ExportMap {
         writer.close();
     }
 
+    /**
+     * Read the properties' terrain in order to get an easy workable array.
+     *
+     * @param properties the world's properties that will be exported.
+     * @return the properties' terrain.
+     * @throws FileNotFoundException if the texture indicated by worldTexturePath is missing
+     */
     private int[][] readTerrain(WorldProperties properties) throws FileNotFoundException {
         int[][] array = new int[properties.dimension.first][properties.dimension.second];
         Reader reader = new Reader(getWorldTexturePath());
         reader.load();
-        for (int i = array.length - 1; i >= 0 ; i--) {
-            for (int j = 0; j < array[i].length ; j++) {
+        for (int i = array.length - 1; i >= 0; i--) {
+            for (int j = 0; j < array[i].length; j++) {
                 Tile tile = properties.terrain[i * dimension.first + j];
-                array[i][j] = getTileId(reader,tile);
+                array[i][j] = getTileId(reader, tile);
             }
         }
         return array;
     }
 
+    /**
+     * Gets the tile CSV id according to its position in the texture file.
+     *
+     * @param reader The atlas file reader.
+     * @param tile   The world's tile.
+     * @return The tile CSV id.
+     */
     private int getTileId(Reader reader, Tile tile) {
         String s;
         if (tile.entity.isEmpty()) {
             s = (tile.getType().toString());
-        }
-        else {
+        } else {
 
             if (tile.entity.get() instanceof Stronghold || tile.entity.get() instanceof Village) {
                 s = String.valueOf(((Structure) tile.entity.get()).getStructureType());
             } else {
-                s = ((Recruitment)tile.entity.get()).getRecruitmentType().toString();
+                s = ((Recruitment) tile.entity.get()).getRecruitmentType().toString();
             }
 
             s += "-" + tile.entity.get().getFaction();
         }
 
-        s += "-" +tile.getTextureVersion();
+        s += "-" + tile.getTextureVersion();
         return reader.indexOf(s);
     }
 
+    /**
+     * Create the file destination if its doesn't exist or is overwritten is set to true.
+     *
+     * @param destination The file with the destination path.
+     * @return The destination file.
+     * @throws Exception if the creation of the file failed.
+     */
     private File createDestination(File destination) throws Exception {
         if (overwrite && destination.exists()) {
             return destination;
@@ -255,6 +275,12 @@ public class ExportMap {
         return destination;
     }
 
+    /**
+     * Gets the destination file path.
+     *
+     * @param name The Map name.
+     * @return the destination file. The file might be non existant.
+     */
     private File getDestination(String name) {
         char last = path.charAt(path.length() - 1);
         if (last == '/' || last == '\\') {
@@ -267,6 +293,12 @@ public class ExportMap {
         return new File(file.getParent() + '/' + name + getExtension());
     }
 
+    /**
+     * Retrieves the world in the database according to the given name.
+     *
+     * @return The loaded properties.
+     * @throws Exception if the map doesn't exist.
+     */
     private WorldProperties getWorld() throws Exception {
         Database data = new Database(getRoot());
         data.selectCollection(collection);
@@ -279,6 +311,11 @@ public class ExportMap {
         return properties;
     }
 
+    /**
+     * generates a world with the given generation parameters.
+     *
+     * @return the generate properties.
+     */
     private WorldProperties generate() {
         WorldProperties properties = new WorldProperties();
         properties.dimension = (dimension == null) ? getDimension() : dimension;

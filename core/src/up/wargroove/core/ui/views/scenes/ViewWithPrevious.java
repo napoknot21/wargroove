@@ -1,12 +1,18 @@
 package up.wargroove.core.ui.views.scenes;
 
-import com.badlogic.gdx.Screen;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.controller.Controller;
 
-public abstract class ViewWithPrevious extends View{
+/**
+ * This is a view who manage a back buttons.
+ */
+public abstract class ViewWithPrevious extends View {
+    /**
+     * The previous screen.
+     */
     private final View previous;
+
     /**
      * Initialize the screen.
      *

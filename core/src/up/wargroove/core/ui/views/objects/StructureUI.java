@@ -10,26 +10,43 @@ import up.wargroove.utils.Pair;
 
 import java.util.Locale;
 
+/**
+ * The structure sprite.
+ * @see up.wargroove.core.ui.views.objects.EntityUI
+ * @see Structure
+ */
 public class StructureUI extends EntityUI {
     private final boolean isPlayable;
+
+    /**
+     * Inits the drawable with the structure information. The sprites will be scaled.
+     * @param stage The stage where the actor will be added.
+     * @param structure The world' structure.
+     * @param position The world's structure position.
+     * @param scale The sprites scale.
+     */
     public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position, float scale) {
-        super(position,structure, scale);
+        super(position, structure, scale);
         stage.addActor(this);
         initialiseSprites();
         actualiseSprite(Assets.getInstance().get(structure));
         isPlayable = structure instanceof Recruitment;
     }
 
+    /**
+     * Inits the drawable with the structure information.
+     * @param stage The stage where the actor will be added.
+     * @param structure The world' structure.
+     * @param position The world's structure position.
+     */
     public StructureUI(Stage stage, Structure structure, Pair<Integer, Integer> position) {
-        this(stage,structure,position,1);
+        this(stage, structure, position, 1);
     }
 
     @Override
     public void positionChanged() {
-        System.out.println();
-        System.out.println(getCoordinates().first * getTileSize());
         getSprite().setPosition(getCoordinates().first * getTileSize(), getCoordinates().second * getTileSize());
-        getStats().setPosition(getX()+getSprite().getWidth()-getStats().getWidth()-1,1);
+        getStats().setPosition(getX() + getSprite().getWidth() - getStats().getWidth() - 1, 1);
         super.positionChanged();
     }
 

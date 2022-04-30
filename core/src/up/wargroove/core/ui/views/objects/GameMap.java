@@ -23,12 +23,12 @@ public class GameMap extends TiledMap {
     int width;
     TiledMapTileLayer tileLayer;
     TextureAtlas atlas;
-    private float scale = 1.0f;
+    private float scale;
 
     /**
      * Init the tiledMap according to the given model.
      *
-     * @param world The world that will be on the gui
+     * @param world      The world that will be on the gui
      * @param structures
      */
     public GameMap(World world, Stage structures, Stage characters, Controller controller, float scale, boolean s, boolean c) {
@@ -50,7 +50,7 @@ public class GameMap extends TiledMap {
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new MapTile(world.at(i, j), controller.getModel().getBiome()));
                 if (s || c) {
-                    addEntityImage(structures, characters,controller, world, i, j, s, c, scale);
+                    addEntityImage(structures, characters, controller, world, i, j, s, c, scale);
                 }
                 tileLayer.setCell(i, j, cell);
             }
@@ -58,23 +58,23 @@ public class GameMap extends TiledMap {
         this.getLayers().add(tileLayer);
     }
 
-    public GameMap(World world, Stage stage, Stage characters,Controller controller, int scale) {
-        this(world,stage, characters,controller,scale,true,true);
+    public GameMap(World world, Stage stage, Stage characters, Controller controller, int scale) {
+        this(world, stage, characters, controller, scale, true, true);
     }
 
     public GameMap(World world, Stage stage, Controller controller, boolean structure, boolean character) {
-        this(world, stage, null,controller, 1, structure,character);
+        this(world, stage, null, controller, 1, structure, character);
     }
 
-    public GameMap(World world, Stage stage, Stage characters,Controller controller) {
-        this(world, stage, characters,controller, 1);
+    public GameMap(World world, Stage stage, Stage characters, Controller controller) {
+        this(world, stage, characters, controller, 1);
     }
 
     private void addEntityImage(Stage stage, Stage characters, Controller controller, World world, int i, int j, boolean structure, boolean character, float scale) {
         Tile tile = world.at(i, j);
         if (tile.entity.isEmpty()) return;
         if (character && tile.entity.get() instanceof Character) {
-            new CharacterUI(controller, characters ,new Pair<>(i, j), (Character) tile.entity.get(), scale);
+            new CharacterUI(controller, characters, new Pair<>(i, j), (Character) tile.entity.get(), scale);
         } else if (structure && tile.entity.get() instanceof Structure) {
             new StructureUI(stage, (Structure) tile.entity.get(), new Pair<>(i, j), scale);
         }

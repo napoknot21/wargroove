@@ -20,6 +20,7 @@ public class Indicator extends Actor {
      * The tile biome.
      */
     private final Biome biome;
+    private final Sprite Stats;
     /**
      * The Tile indicator background. This shows the texture of the tile.
      */
@@ -28,7 +29,6 @@ public class Indicator extends Actor {
      * The tile indicator foreground. This shows the stats of the tile.
      */
     private Sprite background;
-    private final Sprite Stats;
 
 
     /**
@@ -80,7 +80,7 @@ public class Indicator extends Actor {
         if ((character.getHealth() <= 0) || (character.getHealth() == 90)) {
             numero = (int) ((character.getHealth() / 10));
         }
-        Texture stats = assets.get(Assets.AssetDir.STATS.path()+"Stats" + numero + ".png");
+        Texture stats = assets.get(Assets.AssetDir.STATS.path() + "Stats" + numero + ".png");
         setStats(stats);
     }
 
