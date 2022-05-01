@@ -477,9 +477,9 @@ public class World {
         if (currentEntityLinPosition.isEmpty()) return false;
 
         Entity e = terrain[currentEntityLinPosition.get()].entity.get();
+        terrain[currentEntityLinPosition.get()].entity = Optional.empty();
         terrain[linCoordinate].entity = Optional.of(e);
 
-        terrain[currentEntityLinPosition.get()].entity = Optional.empty();
         return true;
 
     }

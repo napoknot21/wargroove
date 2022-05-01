@@ -116,7 +116,7 @@ public class AttackSelector implements Selector{
 
     @Override
     public String getPath() {
-        if(path.isEmpty()) return "";
+        if(targetPosition == null || postionAttack == null) return "";
         int dx = targetPosition.first - postionAttack.first;
         int dy = targetPosition.second - postionAttack.second;
         return path + getAttackDirection(dx,dy);
