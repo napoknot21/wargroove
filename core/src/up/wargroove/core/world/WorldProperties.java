@@ -18,15 +18,13 @@ public class WorldProperties implements Savable {
     public Tile[] terrain;
     public GeneratorProperties genProperties;
 
-    private boolean fog;
     private float income;
     public AudioInputStream music;
 
     public int amt = 4;
 
-	public WorldProperties(Biome biome, boolean fog, float income){
+	public WorldProperties(Biome biome, float income){
 		this.biome = biome;
-		this.fog = fog;
 		this.income = income;
 	}
 
@@ -66,13 +64,6 @@ public class WorldProperties implements Savable {
 		this.income = income;
 	}
 
-	public boolean isFog() {
-		return fog;
-	}
-
-	public void setFog(boolean fog) {
-		this.fog = fog;
-	}
 
 	public Pair<Integer, Integer> getDimension() {
 		return dimension;

@@ -512,7 +512,6 @@ public class Controller {
         gameView.clearAll();
         Entity e = getModel().getCurrentPlayer().nextPlayableEntity();
         if (e == null) {
-            gameView.getMoveDialog().removeNextUnit();
             return;
         }
         Actor ui = gameView.getCharacterUI(e);

@@ -153,8 +153,4 @@ public class MoveDialog extends Table {
     public void dispose() {
         clear(true);
     }
-
-    public void removeNextUnit() {
-        nextUnit.setVisible(false);
-    }
 }

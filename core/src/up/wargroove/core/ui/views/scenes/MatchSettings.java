@@ -52,7 +52,6 @@ public class MatchSettings extends ViewWithPrevious {
     private SelectBox<String> weather;
     private Slider income;
     private SelectBox<Biome> biome;
-    private CheckBox checkFog;
     private Stage VLT;
     private Stage VRT;
     private Stage VB;
@@ -85,8 +84,6 @@ public class MatchSettings extends ViewWithPrevious {
         weather = new SelectBox<>(skin);
         weather.setAlignment(Align.center);
         weather.setItems("Random", "Good Weather", "Bad Weather", "Stormy");
-        checkFog = new CheckBox("On", skin);
-        checkFog.setChecked(true);
         biome = new SelectBox<>(skin);
         biome.setAlignment(Align.center);
         biome.setItems(Biome.GRASS, Biome.ICE, Biome.DESERT, Biome.VOLCANO);
@@ -120,9 +117,10 @@ public class MatchSettings extends ViewWithPrevious {
             VRT.clear();
             renderer.getMap().dispose();
             renderer.dispose();
+            getModel().getProperties().setBiome(biome.getSelected());
             renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
-            last = biome.getSelected();
         }
+        last = biome.getSelected();
         int width = Gdx.graphics.getWidth() / 2;
         int height = Gdx.graphics.getHeight() / 2;
         VLT.getViewport().setScreenHeight(height);
@@ -176,10 +174,9 @@ public class MatchSettings extends ViewWithPrevious {
     @Override
     public void dispose() {
         super.dispose();
-        /*VRT.dispose();
-        VB.dispose();
         VRT.dispose();
-        VLT.dispose();*/
+        VLT.dispose();
+        VB.dispose();
         renderer.getMap().dispose();
         renderer.dispose();
     }
@@ -211,6 +208,7 @@ public class MatchSettings extends ViewWithPrevious {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         getController().playSound(buttonSound);
+                        getModel().setWorld(null);
                         getController().back(getPrevious());
                     }
                 }
@@ -237,18 +235,9 @@ public class MatchSettings extends ViewWithPrevious {
                         renderer.getMap().dispose();
                         renderer.dispose();
                         renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
-                        checkFog.setChecked(true);
                         income.setValue(100);
                         printIncome.setText(income.getValue() + "%");
 
-                    }
-                }
-        );
-        checkFog.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        getController().playSound(buttonSound);
                     }
                 }
         );
@@ -261,7 +250,6 @@ public class MatchSettings extends ViewWithPrevious {
                         properties.setBiome(biome.getSelected());
                         properties.setIncome(income.getValue() / 100f);
                         properties.setIncome(income.getValue() / 100f);
-                        properties.setFog(checkFog.isChecked());
                         getModel().setProperties(properties);
                         getController().startGame();
                     }
