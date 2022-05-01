@@ -295,7 +295,7 @@ public class SelectMap extends ViewWithPrevious {
     private class CategoryButton extends TextButton {
         public CategoryButton(int i) {
             super(
-                    Integer.toString(i),
+                    i + " players",
                     Assets.getInstance().getSkin()
             );
             addListener(new ChangeListener() {
