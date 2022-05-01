@@ -91,7 +91,7 @@ public class AttackSelector implements Selector{
             double y2 = Math.pow(initialPosition.second - p2.second, 2);
             return (int) (Math.sqrt(x1+y1) - Math.sqrt(x2+y2));
         });
-        return results.get(0);
+        return !results.isEmpty()? results.get(0) : null;
     }
 
     @Override
@@ -139,10 +139,6 @@ public class AttackSelector implements Selector{
         targetPosition = null;
         attackRange = 0;
         postionAttack = null;
-    }
-
-    public Pair<Integer, Integer> getInitialPosition() {
-        return initialPosition;
     }
 
     private  char getAttackDirection(int dx, int dy) {
