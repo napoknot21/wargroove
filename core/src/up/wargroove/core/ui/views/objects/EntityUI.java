@@ -87,8 +87,13 @@ public abstract class EntityUI extends Actor {
         this.alive = alive;
     }
 
-    public void setInjured(boolean injured) {
+    public void setInjured(boolean injured, String path) {
         this.injured = injured;
+        if (path.length()==1) {
+            temps = -getTimeLapse() * TILE_SIZE * path.length();
+        } else {
+            temps = -getTimeLapse() * 2*TILE_SIZE * path.length();
+        }
     }
 
     public boolean isInjured() {

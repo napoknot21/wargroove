@@ -398,7 +398,7 @@ public class Controller {
         ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
         ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
         tile.entity.get().attack(entityTarget);
-        ((EntityUI) actorTarget).setInjured(true);
+        ((EntityUI) actorTarget).setInjured(true, path);
         commanderDie((Character) entityTarget);
 
     }
