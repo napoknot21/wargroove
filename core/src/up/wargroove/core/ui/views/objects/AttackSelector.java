@@ -65,21 +65,25 @@ public class AttackSelector implements Selector{
         Map<Integer, Boolean> checked = new HashMap<>();
         Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
         List<Pair<Integer,Integer>> results = new LinkedList<>();
-        int tileIndex = -1;
+        int tileIndex;
         int range = attackRange;
         emp.add(new Pair<>(World.coordinatesToInt(targetPosition, world.getDimension()), range));
-        while (range-- > 0 && emp.size() > 0) {
-            var element = emp.poll();
-            List<Integer> list = world.adjacentOf(element.first);
-            for (int lin : list) {
-                if (checked.containsKey(lin)) continue;
-                Pair<Integer, Integer> worldCoordinates = World.intToCoordinates(lin, world.getDimension());
-                if (worldCoordinates.equals(initialPosition)) return initialPosition;
-                tileIndex = movements.valid.isValid(worldCoordinates);
-                if (tileIndex >= 0) results.add(movements.valid.get(tileIndex).second);
-                checked.put(lin,attackRange >= 0);
+        while (range-- >= 0 && emp.size() > 0) {
+            int size = emp.size();
+            while(size-- > 0) {
+                var element = emp.poll();
+                List<Integer> list = world.adjacentOf(element.first);
+                for (int lin : list) {
+                    if (checked.containsKey(lin)) continue;
+                    Pair<Integer, Integer> worldCoordinates = World.intToCoordinates(lin, world.getDimension());
+                    if (worldCoordinates.equals(initialPosition)) return initialPosition;
+                    tileIndex = movements.valid.isValid(worldCoordinates);
+                    if (tileIndex >= 0) results.add(movements.valid.get(tileIndex).second);
+                    checked.put(lin, attackRange >= 0);
+                    emp.add(worldCoordinates);
                 }
             }
+        }
         results.sort((p1,p2) -> {
             double x1 = Math.pow(initialPosition.first - p1.first,2);
             double y1 = Math.pow(initialPosition.second - p1.second,2);

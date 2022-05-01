@@ -387,7 +387,7 @@ public class Controller {
         Pair<Integer, Integer> position = selector.getPositionAttack();
         Pair<Integer, Integer> positionTarget = selector.getDestination();
         gameView.clearSelectors();
-        if (invalidDeplacementeAttack(path, position)) return;
+        getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
         Actor actor = gameView.getScopedEntity();
         Tile tile = getWorld().at(position);
         if (tile.entity.isEmpty()) return;
@@ -445,7 +445,7 @@ public class Controller {
                 gameView.getAttackSelector().reset();
                 return true;
             } else {
-                getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+
                 return false;
             }
         }
