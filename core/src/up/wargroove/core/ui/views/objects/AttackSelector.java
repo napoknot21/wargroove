@@ -85,10 +85,10 @@ public class AttackSelector implements Selector{
             }
         }
         results.sort((p1,p2) -> {
-            double x1 = Math.pow(initialPosition.first - p1.first,2);
-            double y1 = Math.pow(initialPosition.second - p1.second,2);
-            double x2 = Math.pow(initialPosition.first - p2.first,2);
-            double y2 = Math.pow(initialPosition.second - p2.second,2);
+            double x1 = Math.pow(initialPosition.first - p1.first, 2);
+            double y1 = Math.pow(initialPosition.second - p1.second, 2);
+            double x2 = Math.pow(initialPosition.first - p2.first, 2);
+            double y2 = Math.pow(initialPosition.second - p2.second, 2);
             return (int) (Math.sqrt(x1+y1) - Math.sqrt(x2+y2));
         });
         return results.get(0);
@@ -116,7 +116,10 @@ public class AttackSelector implements Selector{
 
     @Override
     public String getPath() {
-        return path;
+        if(path.isEmpty()) return "";
+        int dx = targetPosition.first - postionAttack.first;
+        int dy = targetPosition.second - postionAttack.second;
+        return path + getAttackDirection(dx,dy);
     }
 
     @Override
@@ -140,5 +143,17 @@ public class AttackSelector implements Selector{
 
     public Pair<Integer, Integer> getInitialPosition() {
         return initialPosition;
+    }
+
+    private  char getAttackDirection(int dx, int dy) {
+        if (dx > 0) {
+            return 'R';
+        } else if (dx < 0) {
+            return 'L';
+        } else if (dy > 0) {
+            return 'U';
+        } else {
+            return 'D';
+        }
     }
 }
