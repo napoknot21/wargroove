@@ -178,7 +178,7 @@ public class GameView extends View {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 if (attack) {
-                    attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
+                    attackSelector.addMovement(cursor.getWorldPosition(), movementSelector, getModel().getWorld());
                 }
                 return true;
             }
@@ -215,7 +215,7 @@ public class GameView extends View {
                 buy = false;
                 tileIndicator.setTexture(getAssets(), tile);
                 unitIndicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                movement = getController().showMovements(movement, attack,movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
@@ -272,10 +272,9 @@ public class GameView extends View {
         getBatch().begin();
         cursor.draw(getBatch());
         movementSelector.drawValid(getBatch());
-        attackSelector.drawValid(getBatch());
-        getBatch().end();
-        movementSelector.draw(getBatch());
         attackSelector.draw(getBatch());
+        movementSelector.draw(getBatch());
+        getBatch().end();
         getStage().act(delta);
         getStage().draw();
         gameViewUi.act(delta);
@@ -306,7 +305,6 @@ public class GameView extends View {
         scopedEntity = null;
         movementSelector.dispose();
         movementSelector = null;
-        attackSelector.dispose();
         attackSelector = null;
         super.dispose();
     }

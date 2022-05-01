@@ -1,7 +1,6 @@
 package up.wargroove.core.ui.controller;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -25,10 +24,8 @@ import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.Vector;
 
 
@@ -295,24 +292,26 @@ public class Controller {
      * Manage the unit movements on the screen.
      *
      * @param movement         indicate if a movement is already in progress.
+     * @param attack
      * @param movementSelector The screen movement manager.
      * @param worldPosition    The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
-    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
+    public boolean showMovements(boolean movement, boolean attack, MovementSelector movementSelector, Vector3 worldPosition) {
+        GameView g = (GameView) getScreen();
         if (movement) {
-            if (!movementSelector.isValidPosition()) {
+            if (!g.canAttack() && !movementSelector.isValidPosition()) {
                 movementSelector.reset();
                 ((GameView) getScreen()).clearMoveDialog();
                 return false;
             }
-            ((GameView) getScreen()).getCursor().setLock(true);
+            g.getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
             movementSelector.reset();
-            ((GameView) getScreen()).clearMoveDialog();
-            ((GameView) getScreen()).getCursor().setLock(false);
+            g.clearMoveDialog();
+            g.getCursor().setLock(false);
             return false;
         }
         if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
@@ -325,18 +324,19 @@ public class Controller {
     }
 
     public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
+        GameView g = (GameView) getScreen();
         if (attack) {
             if (!attackSelector.isValidPosition()) {
                 attackSelector.reset();
-                ((GameView) getScreen()).clearMoveDialog();
+                g.clearMoveDialog();
                 return false;
             }
-            ((GameView) getScreen()).getCursor().setLock(true);
+            g.getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
             attackSelector.reset();
-            ((GameView) getScreen()).clearMoveDialog();
+            g.clearMoveDialog();
             return false;
         }
         if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
@@ -344,7 +344,7 @@ public class Controller {
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
         attackSelector.showValids(getScreen().getAssets(), pair);
-        attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
         return true;
     }
 
@@ -381,6 +381,7 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
         gameView.setAttack(false);
+        gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer, Integer> position = selector.getPositionAttack();
@@ -388,14 +389,15 @@ public class Controller {
         gameView.clearSelectors();
         if (invalidDeplacementeAttack(path, position)) return;
         Actor actor = gameView.getScopedEntity();
-        Entity entity = getWorld().getScopedEntity();
+        Tile tile = getWorld().at(position);
+        if (tile.entity.isEmpty()) return;
         actualiseFocusEntity(positionTarget);
         Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
-        entity.exhaust();
+        tile.entity.get().exhaust();
         ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
         ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
-        entity.attack(entityTarget);
+        tile.entity.get().attack(entityTarget);
         ((EntityUI) actorTarget).setInjured(true);
         commanderDie((Character) entityTarget);
 

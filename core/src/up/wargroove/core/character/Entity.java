@@ -137,6 +137,10 @@ public abstract class Entity {
         return new Pair<>(attacks.get(0),attacks.get(1));
     }
 
+    public int getRange() {
+        return 0;
+    }
+
     public enum Component {
 
         GROUND,

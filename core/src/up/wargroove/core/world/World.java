@@ -374,24 +374,25 @@ public class World {
 
     }
 
-    private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer> predicate) {
+    @SafeVarargs
+    private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer>... predicate) {
 
         Map<Integer, Boolean> checked = new HashMap<>();
-	    Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+        Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
-	    if(predicate == null) return res;
+        if(predicate == null) return res;
 
-	    Entity entity    = terrain[root].entity.get();
+        Entity entity    = terrain[root].entity.get();
 
         int movementId   = entity.getMovement().id;
         int movementCost = entity.getMovRange();
 
         var rootElement = new Pair<>(root, movementCost);
-    	int parentIndex = -1;
+        int parentIndex = -1;
 
-	    emp.add(rootElement);
+        emp.add(rootElement);
 
         while (emp.size() > 0) {
 
@@ -403,27 +404,38 @@ public class World {
 
                 if (checked.containsKey(lin)) continue;
 
-                if ((movementCost = predicate.test(lin, movementId, element.second,root)) >= 0) {
 
-		            var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
+                boolean added = false;
+
+                /*
+                Les premiers predicats indique si c'est possible, le dernier renseigne la valeur de movement cost
+                 */
+                for (var p : predicate) {
+                    movementCost = p.test(lin, movementId, element.second, root);
+                    if (movementCost >= 0) {
+                        if (!added) {
+                            added = emp.add(new Pair<>(lin, movementCost));
+                        }
+                    }
+                }
+                if (movementCost >= 0) {
                     BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
                     BitSet sub = bitset.sub(4 * movementId, 4);
-                    Pair<Integer,Integer> intel = new Pair<>(parentIndex,sub.toInt());
-                    res.add(new Pair<>(lin,intel));
-                    emp.add(predicateArg);
+                    Pair<Integer, Integer> intel = new Pair<>(parentIndex, sub.toInt());
+                    res.add(new Pair<>(lin, intel));
 
                 }
-
-		        checked.put(lin, movementCost >= 0);
+                checked.put(lin, movementCost >= 0);
 
             }
             parentIndex++;
 
         }
-
         return res;
-
     }
+
+
+
 
     /**
      * Recherche des tuiles valides pour
@@ -452,7 +464,7 @@ public class World {
 
         if (currentEntityLinPosition.isPresent()) {
 
-            positions = breadthFirstSearch(currentEntityLinPosition.get(), canAttack);
+            positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn, canAttack);
 
         }
 
