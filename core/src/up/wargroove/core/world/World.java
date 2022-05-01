@@ -31,30 +31,48 @@ public class World {
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]]; 
-	if(toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return -1;
+	if(toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return new Pair<>(-1,true);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
 
         int val = sub.toInt();
+        return val == 0 ? new Pair<>(-1,false) : new Pair<>(k[2] - val,true);
 
-        return val == 0 ? -1 : k[2] - val;
+    };
 
+    private final WPredicate<Integer> withinRange = (k) -> {
+        Optional<Entity> rootEntity  = terrain[k[3]].entity;
+        var p = intToCoordinates(k[0],getDimension());
+        if(!rootEntity.isPresent()) return new Pair<>(-1, false);
+        int attackRange = rootEntity.get().getRange();
+        if(k[2] + attackRange > 0) {
+            var initial = intToCoordinates(k[3],getDimension());
+            var current = intToCoordinates(k[0],getDimension());
+            if (current.first - initial.first == 0 || current.second - initial.second == 0)
+            return new Pair<>(1, false);
+        }
+        return new Pair<>(-2, false);
     };
 
     private final WPredicate<Integer> canAttack = (k) -> {
 
 	Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
 	
-	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return -1;	
+	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return new Pair<>(-1,false);
 
 	int attackRange = ((Character) rootEntity.get()).getRange();
-	if(k[Constants.WG_TWO] + attackRange <= 0) return -2;
+	if(k[2] + attackRange <= 0) {
+        var initial = intToCoordinates(k[3],getDimension());
+        var current = intToCoordinates(k[0],getDimension());
+        if (current.first - initial.first != 0 && current.second - initial.second != 0)
+        return new Pair<>(-2, false);
+    }
 
 	boolean status = true;
         status &= targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
-        return status ? 1 : -1;
+        return new Pair<>(status ? 1 : -1, false);
 
     };
 
@@ -106,11 +124,7 @@ public class World {
     }
 
     public void removePlayer(Faction faction){
-        for (Player player : players) {
-            if (player.getFaction().equals(faction)) {
-                players.remove(player);
-            }
-        }
+        players.removeIf(player -> player.getFaction().equals(faction));
     }
 
     @Null
@@ -356,8 +370,9 @@ public class World {
 
                 if (checked.containsKey(lin)) continue; 
 
-                if ((movementCost = predicate.test(lin, movementId, element.second, root)) >= 0) {
-
+                var result = predicate.test(lin, movementId, element.second, root);
+                if (result.first >= 0) {
+                movementCost = result.first;
 		    var predicateArg = new Pair<Integer, Integer>(lin, movementCost);
                     res.add(lin);
                     emp.add(predicateArg);
@@ -382,7 +397,7 @@ public class World {
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
-        if(predicate == null) return res;
+        if (predicate.length < 1) return res;
 
         Entity entity    = terrain[root].entity.get();
 
@@ -406,19 +421,24 @@ public class World {
 
 
                 boolean added = false;
+                Pair<Integer,Boolean> result = new Pair<>(-1,false);
 
                 /*
                 Les premiers predicats indique si c'est possible, le dernier renseigne la valeur de movement cost
+                La paire est constuite comme suit:
+                    first = resultat du predicat
+                    second indique si first est le movement cost
                  */
                 for (var p : predicate) {
-                    movementCost = p.test(lin, movementId, element.second, root);
-                    if (movementCost >= 0) {
+                    result = p.test(lin, movementId, element.second, root);
+                    if (result.second) movementCost = result.first;
+                        if (result.first >= 0) {
                         if (!added) {
                             added = emp.add(new Pair<>(lin, movementCost));
                         }
                     }
                 }
-                if (movementCost >= 0) {
+                if (result.first >= 0) {
                     BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
                     BitSet sub = bitset.sub(4 * movementId, 4);
                     Pair<Integer, Integer> intel = new Pair<>(parentIndex, sub.toInt());
@@ -464,7 +484,7 @@ public class World {
 
         if (currentEntityLinPosition.isPresent()) {
 
-            positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn, canAttack);
+            positions = breadthFirstSearch(currentEntityLinPosition.get(), canMoveOn, withinRange, canAttack);
 
         }
 
