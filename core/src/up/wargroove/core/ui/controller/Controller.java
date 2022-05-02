@@ -300,12 +300,11 @@ public class Controller {
     public boolean showMovements(boolean movement, boolean attack, MovementSelector movementSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
         if (movement) {
-            if (!g.canAttack() && !movementSelector.isValidPosition()) {
+            if (!g.canAttack() && !movementSelector.isValidPosition(worldPosition)) {
                 movementSelector.reset();
                 ((GameView) getScreen()).clearMoveDialog();
                 return false;
             }
-            g.getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
@@ -326,12 +325,11 @@ public class Controller {
     public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
         if (attack) {
-            if (!attackSelector.isValidPosition()) {
+            if (!attackSelector.isValidPosition(worldPosition)) {
                 attackSelector.reset();
                 g.clearMoveDialog();
                 return false;
             }
-            g.getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
@@ -368,6 +366,9 @@ public class Controller {
         }
         Pair<Integer, Integer> destination = selector.getDestination();
         gameView.clearSelectors();
+        if (gameView.isInAttackMode()) {
+            actualiseFocusEntity(gameView.getAttackSelector().getInitialPosition());
+        }
         getWorld().getScopedEntity().exhaust();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -452,7 +453,7 @@ public class Controller {
         return false;
     }
 
-    private void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
+    public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
         getWorld().actualiseEntity(positionTarget);
         GameView gameView = (GameView) getScreen();
         gameView.scopeEntity(positionTarget);
@@ -464,6 +465,9 @@ public class Controller {
     public void entityWait() {
         GameView gameView = (GameView) getScreen();
         gameView.clearSelectors();
+        if (gameView.isInAttackMode()) {
+            actualiseFocusEntity(gameView.getAttackSelector().getInitialPosition());
+        }
         getWorld().getScopedEntity().exhaust();
         gameView.setMovement(false);
         gameView.setAttack(false);

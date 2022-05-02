@@ -69,7 +69,7 @@ public class MovementSelector implements Selector{
      * @param assets The app assets.
      * @param v      The step coordinates.
      */
-    public  void addMovement(Assets assets, Vector3 v) {
+    public void addMovement(Assets assets, Vector3 v) {
         this.addMovement(assets, new Pair<>((int) v.x, (int) v.y));
     }
 

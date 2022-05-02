@@ -1,20 +1,15 @@
 package up.wargroove.core.ui.views.scenes;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -228,6 +223,8 @@ public class GameView extends View {
                 }
                 if (canAttack()) {
                     moveDialog.addAttack();
+                    getController().actualiseFocusEntity(attackSelector.getInitialPosition());
+                    moveDialog.addWait();
                 }
                 return true;
             }
@@ -444,4 +441,7 @@ public class GameView extends View {
         playerBox.setInformations(currentPlayer, round);
     }
 
+    public boolean isInAttackMode() {
+        return attack;
+    }
 }

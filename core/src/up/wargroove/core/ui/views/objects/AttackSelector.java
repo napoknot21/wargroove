@@ -93,8 +93,12 @@ public class AttackSelector implements Selector{
 
                     Pair<Integer, Integer> worldCoordinates = World.intToCoordinates(lin, world.getDimension());
                     tileIndex = movements.valid.isValid(worldCoordinates);
-                    if (tileIndex >= 0 && checkAlignement(worldCoordinates)) {
-                        results.add(movements.valid.get(tileIndex).second);
+                    if (checkAlignement(worldCoordinates)) {
+                        if (tileIndex >= 0) {
+                            results.add(movements.valid.get(tileIndex).second);
+                        } else if (worldCoordinates.equals(initialPosition)) {
+                            results.add(initialPosition);
+                        }
                     }
                     checked.put(lin, attackRange >= 0);
                     emp.add(World.coordinatesToInt(worldCoordinates, world.getDimension()));
@@ -165,5 +169,9 @@ public class AttackSelector implements Selector{
         } else {
             return 'D';
         }
+    }
+
+    public Pair<Integer, Integer> getInitialPosition() {
+        return initialPosition;
     }
 }
