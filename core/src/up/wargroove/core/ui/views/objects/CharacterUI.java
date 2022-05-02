@@ -266,6 +266,8 @@ public class CharacterUI extends EntityUI {
         decalage = new Pair<>(0, 0);
         switch (getEntity().getType()) {
             case COMMANDER:
+                ATTACK_FRAMES = 6;
+                break;
             case ARCHER:
                 ATTACK_FRAMES = 13;
                 break;
