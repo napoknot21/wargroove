@@ -214,8 +214,8 @@ public class StructureMenu extends Dialog {
          */
         private void setDescription(Entity entity, Assets assets) {
             setVisible(true);
-            movementCost.setText("Movement : " + entity.getMovement().id);
-            range.setText("Range : " + entity.getRange());
+            movementCost.setText("Movement : "+entity.getMovRange());
+            range.setText("Range : "+entity.getRange());
             try {
                 text.setText(assets.get(entity.getType(), 25));
             } catch (Exception e) {

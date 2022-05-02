@@ -1,5 +1,7 @@
 package up.wargroove.utils.functional;
 
+import up.wargroove.utils.Pair;
+
 /**
  * Prédicat k-uplet
  */
@@ -7,6 +9,6 @@ package up.wargroove.utils.functional;
 @FunctionalInterface
 public interface WPredicate<T> {
 
-	Integer test(T... k);
+	Pair<Integer,Boolean> test(T... k);
 
 }

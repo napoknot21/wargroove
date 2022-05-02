@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
+import java.util.Vector;
 
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
@@ -17,7 +18,7 @@ import up.wargroove.utils.Pair;
 /**
  * The screen movement manager.
  */
-public class MovementSelector {
+public class MovementSelector implements Selector{
     /**
      * List of valid positions.
      */
@@ -47,8 +48,6 @@ public class MovementSelector {
      */
     private int cost;
 
-    private boolean validPosition;
-
 
     /**
      * Constructs a Movement selector.
@@ -63,7 +62,6 @@ public class MovementSelector {
         initY = 0;
         cost = 0;
         active = false;
-        validPosition = false;
     }
 
     /**
@@ -72,7 +70,7 @@ public class MovementSelector {
      * @param assets The app assets.
      * @param v      The step coordinates.
      */
-    public  void addMovement(Assets assets, Vector3 v) {
+    public void addMovement(Assets assets, Vector3 v) {
         this.addMovement(assets, new Pair<>((int) v.x, (int) v.y));
     }
 
@@ -92,7 +90,7 @@ public class MovementSelector {
     }
 
     public boolean isValidPosition() {
-        return validPosition;
+        return valid.isValidPosition();
     }
 
     public boolean isValidPosition(Pair<Integer, Integer> c) {
@@ -148,9 +146,7 @@ public class MovementSelector {
         if (!active) {
             return;
         }
-        batch.begin();
         movements.draw(batch);
-        batch.end();
     }
 
     /**
@@ -159,9 +155,7 @@ public class MovementSelector {
      * @param batch The drawer.
      */
     public void drawValid(Batch batch) {
-        //batch.begin();
         valid.draw(batch);
-        //batch.end();
     }
 
     /**
@@ -177,10 +171,6 @@ public class MovementSelector {
         return movements.getLastMovement();
     }
 
-    public Pair<Integer, Integer> getPositionAttack() {
-        return movements.getNextToLastMovement();
-    }
-
     /**
      * Reset the movement selector.
      */
@@ -188,7 +178,6 @@ public class MovementSelector {
         valid.reset();
         movements.reset();
         active = false;
-        validPosition = false;
     }
 
     /**
@@ -266,125 +255,6 @@ public class MovementSelector {
 
     public void dispose() {
         this.reset();
-    }
-
-    /**
-     * List of valid positions.
-     */
-    protected class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
-        /**
-         * Tile useful information. The order of intel is the same as this.
-         * The first is the parentIndex, the second is the tile's movement cost.
-         */
-        private final ArrayList<Pair<Integer, Integer>> intel;
-
-        /**
-         * Index that point to the last used sprite.
-         */
-
-        private Valid() {
-            intel = new ArrayList<>();
-        }
-
-        /**
-         * Add a new sprite to the list if all the sprites are already used
-         * otherwise it will use a free sprite.
-         *
-         * @param texture The sprite texture.
-         * @param coord   The sprites coordinates.
-         */
-        protected void add(TextureRegion texture, Pair<Integer, Integer> coord) {
-            int x = (int) (coord.first * tileSize);
-            int y = (int) (coord.second * tileSize);
-            Sprite sprite = new Sprite(texture);
-            sprite.setSize(tileSize, tileSize);
-            sprite.setPosition(x, y);
-            this.add(new Pair<>(sprite, (coord)));
-        }
-
-        /**
-         * Add a new sprite to the list if all the sprites are already used
-         * otherwise it will use a free sprite.
-         *
-         * @param texture The sprite texture.
-         * @param coord   The sprites coordinates.
-         */
-        protected void add(Texture texture, Pair<Integer, Integer> coord) {
-            this.add(new TextureRegion(texture), coord);
-        }
-
-        /**
-         * Add all the tile's intel to intel.
-         *
-         * @param vector the list of intel.
-         */
-        protected void addIntel(List<Pair<Integer, Integer>> vector) {
-            intel.addAll(vector);
-        }
-
-        /**
-         * Checks is the coordinate is valid.
-         *
-         * @param coordinate the coordinate that needed to be checked.
-         * @return the index of the corresponding tile, -1 otherwise.
-         */
-        private int isValid(Pair<Integer, Integer> coordinate) {
-            for (int i = 0; i < size(); i++) {
-                if (this.get(i).second.equals(coordinate)) {
-                    validPosition = true;
-                    return i;
-                }
-            }
-            validPosition = false;
-            return -1;
-        }
-
-        /**
-         * Gets the tile movement cost.
-         *
-         * @param tileIndex the index of the tile.
-         * @return the cost of moving on the tile.
-         */
-        private int getTileCost(int tileIndex) {
-            return intel.get(tileIndex).second;
-        }
-
-        /**
-         * Gets the default path used in the bfs.
-         *
-         * @param tileIndex the destination tile index of the path.
-         * @return a stack with the character's path to the destination.
-         */
-        private Stack<Pair<Pair<Integer, Integer>, Integer>> getDefault(int tileIndex) {
-            Stack<Pair<Pair<Integer, Integer>, Integer>> res = new Stack<>();
-            int i = tileIndex;
-            while (i >= 0) {
-                var tmp = valid.get(i).second;
-                res.push(new Pair<>(new Pair<>(tmp.first, tmp.second), i));
-                i = intel.get(i).first;
-            }
-            return res;
-        }
-
-        /**
-         * Reset movement path and list index. All the build sprites
-         * are now considered free.
-         */
-        private void reset() {
-            intel.clear();
-            clear();
-        }
-
-        /**
-         * Draw the path on the screen.
-         *
-         * @param batch The drawer.
-         */
-        private void draw(Batch batch) {
-            for (int i = 0; i < size(); i++) {
-                valid.get(i).first.draw(batch);
-            }
-        }
     }
 
     /**

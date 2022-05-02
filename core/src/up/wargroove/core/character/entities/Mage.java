@@ -11,7 +11,7 @@ public class Mage extends Character {
     }
 
     public Mage (String name, Faction faction) {
-        super(name, Type.SPEARMAN, faction);
+        super(name, Type.MAGE, faction);
         initialize();
     }
 

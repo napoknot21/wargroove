@@ -7,7 +7,8 @@ public abstract class Constants {
 	public static final int WG_TWO = 2;
 
 
-	public static final String DEFAULT_DB_ROOT = "../db/";
+    public static String DEFAULT_DB_ROOT = "../db/";
+	public static String DEFAULT_DM_ROOT = "../core/src/up/wargroove/core/character/damageMatrix/";
 
 	public static final String WORLD_DESCRIPTION_DB_KEY = "description";
 	public static final String WORLD_WIDTH_DB_KEY = "width";
@@ -31,4 +32,3 @@ public abstract class Constants {
 	public static String RECRUITMENT_TYPE_DB_KEY = "recruitment_type";
 
 }
-

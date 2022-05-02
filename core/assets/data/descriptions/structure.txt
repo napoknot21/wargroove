@@ -1,0 +1,1 @@
+Special building types allow the player to recruit new units using gold. Each unit building can only recruit a unit once per turn. Recruited units can be produced in one of the four tiles directly adjacent to the building, provided the selected tile is unoccupied and of a valid terrain type.

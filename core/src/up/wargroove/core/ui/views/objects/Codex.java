@@ -34,9 +34,11 @@ public class Codex extends Table {
     private final TextButton openCodex;
     private final TextButton exitCodex;
     private final Label description;
-    private ArrayList<TextButton> subject= new ArrayList<TextButton>();
-    private ArrayList<TextButton> object= new ArrayList<TextButton>();
+    private final ScrollPane paneDescription;
+    private final ArrayList<TextButton> subject = new ArrayList<>();
+    private ArrayList<TextButton> object = new ArrayList<>();
     private Table tableObjects;
+    private final ScrollPane paneObject;
     private TextureRegion textureRegion;
     private final Assets assets;
 
@@ -50,37 +52,47 @@ public class Codex extends Table {
 
         exitCodex = new TextButton("X", skin);
         exitCodex.setColor(Color.RED);
-        dialog= new Dialog("Codex",skin);
-        dialog.setBounds(500,500,50,50);
-        description= new Label("This is the codex of the game",skin);
-        description.setColor(Color.BLACK);
-        ScrollPane pane= new ScrollPane(description,skin);
+        dialog = new Dialog("Codex", skin) {
+            @Override
+            public float getPrefHeight() {
+                return Math.min(Gdx.graphics.getHeight() / 1.5f, 300);
+            }
+
+            public float getPrefWidth() {
+                return Math.min(Gdx.graphics.getHeight(), 500);
+            }
+        };
+        description = new Label("This is the codex of the game", skin);
         createSubject(skin);
-        createObject("",skin);
-        tableObjects= new Table();
+        createObject("", skin);
+        tableObjects = new Table();
         actualiseTableObject();
-        Table top = new Table();
-        top.add();
-        top.right().add(exitCodex).right().top();
-        top.row();
-        top.add();
-        top.add(addSubject());
-        top.row();
-        top.add(tableObjects);
-        top.add(pane);
-        top.add();
-        dialog.top().add(top);
+        paneDescription = new ScrollPane(description, skin);
+        paneObject = new ScrollPane(tableObjects, skin);
+        initialisePanel(paneObject);
+        initialisePanel(paneDescription);
+        dialog.getContentTable().add();
+        dialog.getContentTable().add();
+        dialog.getContentTable().add(exitCodex).right();
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(addSubject()).center().colspan(5);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(paneObject);
+        dialog.getContentTable().add(paneDescription);
         initInput(controller);
         add(openCodex);
+        resize();
+
 
     }
+
     private void initInput(Controller controller) {
         openCodex.addListener(
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
                         dialog.show(getStage());
+                        resize();
                     }
                 });
         exitCodex.addListener(
@@ -91,87 +103,98 @@ public class Codex extends Table {
                         description.setText("Welcome to the world of NAME_NOT_FOUND ");
                     }
                 });
-        for (TextButton b: object
-             ) { b.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        setDescription(b.getLabel().getText().toString());
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
-
-                    }
-                });
-            for (TextButton a: subject
-            ) { a.addListener(
+        for (TextButton b : object
+        ) {
+            b.addListener(
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            float x= dialog.getX();
-                            float y= dialog.getY();
-                            dialog.setBounds(x,y, dialog.getPrefWidth(), dialog.getPrefHeight());
-                            dialog.setPosition(x,y);
-                            object.removeAll(object);
-                            tableObjects.clear();
-                            createObject(a.getLabel().getText().toString(),openCodex.getSkin());
-                            actualiseTableObject();
-                            description.setText("Here you can find the description of the differents "+a.getLabel().getText().toString()+"s ");
+                            setDescription(b.getLabel().getText().toString());
+                            resize();
 
                         }
                     });
+            for (TextButton a : subject
+            ) {
+                a.addListener(
+                        new ChangeListener() {
+                            @Override
+                            public void changed(ChangeEvent event, Actor actor) {
+                                createObject(a.getLabel().getText().toString(), openCodex.getSkin());
+                                actualiseTableObject();
+                                description.setText("Here you can find the description\n of the differents " + a.getLabel().getText().toString() + "s ");
+                                resize();
+                            }
+                        });
 
             }
         }
     }
 
+    private void initialisePanel(ScrollPane pane) {
+        pane.setScrollbarsVisible(false);
+        pane.setScrollingDisabled(true, false);
+        pane.setScrollbarsVisible(true);
+        pane.setCancelTouchFocus(false);
+        pane.setSmoothScrolling(true);
+    }
 
 
     public TextButton getOpenCodex() {
         return openCodex;
     }
 
-    private Table addSubject(){
-        Table table= new Table();
-        for (int i=0;i<subject.size();i++){
+    private Table addSubject() {
+        Table table = new Table();
+        for (int i = 0; i < subject.size(); i++) {
             table.add(subject.get(i)).expand();
         }
         return table;
     }
 
-    private void actualiseTableObject(){
-        for (int i=0;i<object.size();i++){
+    private void actualiseTableObject() {
+        tableObjects.clear();
+        for (int i = 0; i < object.size(); i++) {
             tableObjects.add(object.get(i));
             tableObjects.row();
         }
     }
 
-    private void createSubject(Skin skin){
-        subject.add(new TextButton("Entity",skin));
-        subject.add(new TextButton("Tile",skin));
-        subject.add(new TextButton("Faction",skin));
-        subject.add(new TextButton("Biome",skin));
-        subject.add(new TextButton("Game",skin));
+    private void createSubject(Skin skin) {
+        subject.add(new TextButton("Entity", skin));
+        subject.add(new TextButton("Tile", skin));
+        subject.add(new TextButton("Faction", skin));
+        subject.add(new TextButton("Biome", skin));
+        subject.add(new TextButton("Game", skin));
     }
 
-    private void createObject(String s, Skin skin){
-        Object [] values=null;
-        switch (s){
-            case "Tile": values= Tile.Type.values(); break;
-            case "Faction": values= Faction.values(); break;
-            case  "Biome": values= Biome.values(); break;
-            default: values= Entity.Type.values();
+    private void createObject(String s, Skin skin) {
+        object.clear();
+        Object[] values;
+        switch (s) {
+            case "Tile":
+                values = Tile.Type.values();
+                break;
+            case "Faction":
+                values = Faction.values();
+                break;
+            case "Biome":
+                values = Biome.values();
+                break;
+            default:
+                values = Entity.Type.values();
         }
-        for (Object t: values
+        for (Object t : values
         ) {
-            TextButton textButton=new TextButton(t.toString(),skin);
+            TextButton textButton = new TextButton(t.toString(), skin);
             object.add(textButton);
             textButton.addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     try {
                         setDescription(t.toString());
-                        dialog.setBounds(dialog.getX(),dialog.getY(), dialog.getPrefWidth(), dialog.getPrefHeight());
                     } catch (Exception e) {
-                        description.setText( "Unknown description");
+                        description.setText("Unknown description");
                     }
                 }
             });
@@ -180,13 +203,21 @@ public class Codex extends Table {
     }
 
 
+    private void resize() {
+        float x = dialog.getX();
+        float y = dialog.getY();
+        float h = dialog.getHeight();
+        dialog.setBounds(x, y, dialog.getPrefWidth(), dialog.getPrefHeight());
+        dialog.setPosition(x, y - (dialog.getPrefHeight() - h));
+        paneDescription.setSize(dialog.getPrefWidth() / 2, dialog.getHeight() / 3);
+
+    }
 
 
-    private void setDescription(String name){
+    private void setDescription(String name) {
         description.setText(getDescription(name));
     }
 
-    //TODO comprendre le systeme, pourquoi pas get(/descriptions/name)?
     private String getDescription(String name) {
         /*
 
@@ -197,9 +228,9 @@ public class Codex extends Table {
             default: values= Entity.Type.valueOf(name.toUpperCase());
         }
          */
-        var type= Entity.Type.valueOf(name.toUpperCase());
+        var type = Entity.Type.valueOf(name.toUpperCase());
         try {
-            return assets.get(type,60);
+            return assets.get(type, 40);
         } catch (Exception e) {
             return "Unknown description";
         }

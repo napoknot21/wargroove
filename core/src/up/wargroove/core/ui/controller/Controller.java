@@ -11,13 +11,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
+import up.wargroove.core.character.entities.Commander;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.CharacterUI;
+import up.wargroove.core.ui.views.objects.AttackSelector;
+import up.wargroove.core.ui.views.objects.EntityUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
+import up.wargroove.core.world.Player;
 import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;
@@ -263,7 +267,7 @@ public class Controller {
 
     //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
     public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
-        var valids = getWorld().validMovements();
+        var valids = getWorld().validTargets();
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         Vector<Pair<Integer, Integer>> intel = new Vector<>();
         valids.forEach(v -> {
@@ -304,34 +308,35 @@ public class Controller {
 
     public int getScopedEntityMovementCost() {
         Entity entity = getScopedEntity();
-        return (entity == null) ? -1 : entity.getRange();
+        return (entity == null) ? -1 : entity.getMovRange();
     }
 
     /**
      * Manage the unit movements on the screen.
      *
      * @param movement         indicate if a movement is already in progress.
+     * @param attack
      * @param movementSelector The screen movement manager.
      * @param worldPosition    The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
-    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
+    public boolean showMovements(boolean movement, boolean attack, MovementSelector movementSelector, Vector3 worldPosition) {
+        GameView g = (GameView) getScreen();
         if (movement) {
-            if (!movementSelector.isValidPosition()) {
+            if (!g.canAttack() && !movementSelector.isValidPosition(worldPosition)) {
                 movementSelector.reset();
                 ((GameView) getScreen()).clearMoveDialog();
                 return false;
             }
-            ((GameView) getScreen()).getCursor().setLock(true);
             return false;
         }
-        if (
-                !setScopeEntity(worldPosition)
-                || !getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
-        ) {
+        if (!setScopeEntity(worldPosition)) {
             movementSelector.reset();
-            ((GameView) getScreen()).clearMoveDialog();
-            ((GameView) getScreen()).getCursor().setLock(false);
+            g.clearMoveDialog();
+            g.getCursor().setLock(false);
+            return false;
+        }
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
@@ -341,26 +346,27 @@ public class Controller {
     }
 
     public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
+        GameView g = (GameView) getScreen();
         if (attack) {
-            if (!attackSelector.isValidPosition()) {
+            if (!attackSelector.isValidPosition(worldPosition)) {
                 attackSelector.reset();
-                ((GameView) getScreen()).clearMoveDialog();
+                g.clearMoveDialog();
                 return false;
             }
-            ((GameView) getScreen()).getCursor().setLock(true);
             return false;
         }
         if (!setScopeEntity(worldPosition)) {
             attackSelector.reset();
-            ((GameView) getScreen()).clearMoveDialog();
+            g.clearMoveDialog();
             return false;
         }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+                || getScopedEntity() instanceof Villager) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
         attackSelector.showValids(getScreen().getAssets(), pair);
-        attackSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
+        attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
         return true;
     }
 
@@ -384,6 +390,9 @@ public class Controller {
         }
         Pair<Integer, Integer> destination = selector.getDestination();
         gameView.clearSelectors();
+        if (gameView.isInAttackMode()) {
+            actualiseFocusEntity(gameView.getAttackSelector().getInitialPosition());
+        }
         getWorld().getScopedEntity().exhaust();
         getWorld().moveEntity(World.coordinatesToInt(destination, getWorld().getDimension()));
         Actor entity = gameView.getScopedEntity();
@@ -397,23 +406,81 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
         gameView.setAttack(false);
+        gameView.setMovement(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         Pair<Integer, Integer> position = selector.getPositionAttack();
-        if (path.isBlank()) {
-            selector.reset();
-            return;
-        }
+        Pair<Integer, Integer> positionTarget = selector.getDestination();
         gameView.clearSelectors();
-        Actor entity = gameView.getScopedEntity();
-        getWorld().getScopedEntity().exhaust();
+        getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+        Actor actor = gameView.getScopedEntity();
+        Tile tile = getWorld().at(position);
+        if (tile.entity.isEmpty()) return;
+        actualiseFocusEntity(positionTarget);
+        Entity entityTarget = getWorld().getScopedEntity();
+        Actor actorTarget = gameView.getCharacterUI(entityTarget);
+        tile.entity.get().exhaust();
+        ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
+        ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
+        tile.entity.get().attack(entityTarget);
+        ((EntityUI) actorTarget).setInjured(true, path);
+        commanderDie((Character) entityTarget);
+
+    }
+
+    /**
+     * In case the Commander is dead, the player lost the game and he is remove of the game
+     *
+     * @param entityTarget is the commander
+     */
+
+    private void commanderDie(Character entityTarget) {
+        if (entityTarget instanceof Commander) {
+            if (entityTarget.getHealth() <= 0) {
+                Player player = getWorld().getPlayer(entityTarget.getFaction());
+                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()));
+                getWorld().removePlayer(entityTarget.getFaction());
+            }
+        }
+    }
+
+    private void killArmyAndDestroyBases(Player player) {
+        Tile[] terrain = getWorld().getTerrain();
+        for (int i = 0; i < terrain.length; i++) {
+            if ((terrain[i].entity.isPresent()) && ((terrain[i].entity.get().getFaction().equals(player.getFaction())))) {
+                Entity entity = terrain[i].entity.get();
+                if (entity instanceof Character) {
+                    getWorld().delEntity(i, entity);
+                    player.removeEntity(entity);
+                } else {
+                    entity.setFaction(Faction.OUTLAWS);
+                }
+            }
+        }
+    }
+
+    private boolean invalidDeplacementeAttack(String path, Pair<Integer, Integer> position) {
+        GameView gameView = (GameView) getScreen();
+        if (path.isBlank()) {
+            gameView.getAttackSelector().reset();
+            return true;
+        }
         if (path.length() > 1) {
-            getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
+            if (getWorld().checkEntity(position)) {
+                gameView.getAttackSelector().reset();
+                return true;
+            } else {
+
+                return false;
+            }
         }
-        if (entity instanceof CharacterUI) {
-            ((CharacterUI) entity).setMove(path.substring(0, path.length() - 1));
-            ((CharacterUI) entity).setAttackDirection(path.charAt(path.length() - 1));
-        }
+        return false;
+    }
+
+    public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
+        getWorld().actualiseEntity(positionTarget);
+        GameView gameView = (GameView) getScreen();
+        gameView.scopeEntity(positionTarget);
     }
 
     /**
@@ -422,6 +489,9 @@ public class Controller {
     public void entityWait() {
         GameView gameView = (GameView) getScreen();
         gameView.clearSelectors();
+        if (gameView.isInAttackMode()) {
+            actualiseFocusEntity(gameView.getAttackSelector().getInitialPosition());
+        }
         getWorld().getScopedEntity().exhaust();
         gameView.setMovement(false);
         gameView.setAttack(false);
@@ -434,8 +504,7 @@ public class Controller {
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         Optional<Entity> s = getTile(gameView.getCursor().getWorldPosition()).entity;
-        if (s.isEmpty() || !(s.get() instanceof Recruitment)
-                || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
+        if (s.isEmpty() || !(s.get() instanceof Recruitment) || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
             return;
         }
         Recruitment r = (Recruitment) s.get();
@@ -466,7 +535,7 @@ public class Controller {
         }
         Recruitment r = (Recruitment) s.get();
         getModel().setActiveStructure(r);
-        Optional<Entity> bought = r.buy(c, 0, "test", getModel().getCurrentPlayer().getFaction());
+        Optional<Entity> bought = r.buy(c, 0, "soldier", getModel().getCurrentPlayer().getFaction());
         if (bought.isEmpty()) {
             return;
         }

@@ -3,14 +3,16 @@ package up.wargroove.core.ui.views.scenes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -175,7 +177,7 @@ public class GameView extends View {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
                 if (attack) {
-                    attackSelector.addMovement(getAssets(), cursor.getWorldPosition());
+                    attackSelector.addMovement(cursor.getWorldPosition(), movementSelector, getModel().getWorld());
                 }
                 return true;
             }
@@ -235,6 +237,8 @@ public class GameView extends View {
                 }
                 if (canAttack()) {
                     moveDialog.addAttack();
+                    getController().actualiseFocusEntity(attackSelector.getInitialPosition());
+                    moveDialog.addWait();
                 }
                 return true;
             }
@@ -279,10 +283,9 @@ public class GameView extends View {
         getBatch().begin();
         cursor.draw(getBatch());
         movementSelector.drawValid(getBatch());
-        attackSelector.drawValid(getBatch());
-        getBatch().end();
-        movementSelector.draw(getBatch());
         attackSelector.draw(getBatch());
+        movementSelector.draw(getBatch());
+        getBatch().end();
         getStage().act(delta);
         getStage().draw();
         characters.draw();
@@ -362,6 +365,7 @@ public class GameView extends View {
             scopedEntity = null;
         }
     }
+
 
     @Null
     public Actor getCharacterUI(Entity entity) {
@@ -449,5 +453,8 @@ public class GameView extends View {
 
     public Stage getCharacters() {
         return characters;
+    }
+    public boolean isInAttackMode() {
+        return attack;
     }
 }

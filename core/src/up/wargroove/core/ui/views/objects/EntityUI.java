@@ -96,8 +96,13 @@ public abstract class EntityUI extends Actor {
         this.alive = alive;
     }
 
-    public void setInjured(boolean injured) {
+    public void setInjured(boolean injured, String path) {
         this.injured = injured;
+        if (path.length()==1) {
+            temps = -getTimeLapse() * TILE_SIZE * path.length();
+        } else {
+            temps = -getTimeLapse() * 2*TILE_SIZE * path.length();
+        }
     }
 
     public boolean isInjured() {
@@ -125,12 +130,15 @@ public abstract class EntityUI extends Actor {
      * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
      */
     private void injure(){
-        sprite.setColor(Color.RED);
+        if (temps>100*getTimeLapse()) sprite.setColor(Color.RED);
         temps+=getTimeLapse();
-        if (temps>3){
+        if (temps>140*getTimeLapse()){
             temps=0;
             sprite.setColor(1,1,1,1);
             injured=false;
+            if(entity.getHealth()<=0) {
+                alive=false;
+            }
         }
     }
 

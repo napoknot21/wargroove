@@ -1,3 +1,1 @@
-Ceci est un test pour voir si tout fonctionne.
-
-Si c'est le cas je suis content.
+Ranged ground units able to move and attack in the same turn
