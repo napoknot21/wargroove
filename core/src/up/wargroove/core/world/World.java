@@ -3,7 +3,6 @@ package up.wargroove.core.world;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.character.Character;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
@@ -13,7 +12,6 @@ import up.wargroove.utils.DBEngine;
 import up.wargroove.utils.Database;
 import up.wargroove.utils.DbObject;
 import java.util.*;
-import java.io.IOException;
 
 public class World {
 
@@ -30,8 +28,8 @@ public class World {
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
-        Tile toTile = terrain[k[Constants.WG_ZERO]]; 
-	if(toTile.entity.isPresent() || k[Constants.WG_TWO] == 0) return new Pair<>(-1,true);
+        Tile toTile = terrain[k[Constants.WG_ZERO]];
+	if(toTile.entity.isPresent()) return new Pair<>(-1,false);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -44,12 +42,9 @@ public class World {
     private final WPredicate<Integer> withinRange = (k) -> {
         Optional<Entity> rootEntity  = terrain[k[3]].entity;
         var p = intToCoordinates(k[0],getDimension());
-        if(!rootEntity.isPresent()) return new Pair<>(-1, false);
-        int attackRange = rootEntity.get().getRange();
+        if(rootEntity.isEmpty()) return new Pair<>(-1, false);
+        int attackRange = rootEntity.get().getRange() - 1;
         if(k[2] + attackRange > 0) {
-            var initial = intToCoordinates(k[3],getDimension());
-            var current = intToCoordinates(k[0],getDimension());
-            if (current.first - initial.first == 0 || current.second - initial.second == 0)
             return new Pair<>(1, false);
         }
         return new Pair<>(-2, false);
@@ -59,18 +54,14 @@ public class World {
 
 	Optional<Entity> rootEntity  = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
 	
-	if(!rootEntity.isPresent() || !targetEntity.isPresent()) return new Pair<>(-1,false);
+	if(rootEntity.isEmpty() || targetEntity.isEmpty()) return new Pair<>(-1,false);
 
-	int attackRange = ((Character) rootEntity.get()).getRange();
+	int attackRange = rootEntity.get().getRange() - 1;
 	if(k[2] + attackRange <= 0) {
-        var initial = intToCoordinates(k[3],getDimension());
-        var current = intToCoordinates(k[0],getDimension());
-        if (current.first - initial.first != 0 && current.second - initial.second != 0)
-        return new Pair<>(-2, false);
+        return new Pair<>(k[2] + attackRange - 1, true);
     }
 
-	boolean status = true;
-        status &= targetEntity.get().getFaction() != rootEntity.get().getFaction();
+	boolean status = targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
         return new Pair<>(status ? 1 : -1, false);
 
@@ -173,7 +164,7 @@ public class World {
 
     }
 
-    public boolean nextPlayer() {
+    public void nextPlayer() {
 
 	    playerPtr = (playerPtr + 1) % players.size();
 
@@ -182,8 +173,6 @@ public class World {
 		    nextTurn();
 
 	    }
-
-	    return true;
 
     }
 
@@ -397,7 +386,7 @@ public class World {
 
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
-        if (predicate.length < 1) return res;
+        if (predicate.length == 0 || terrain[root].entity.isEmpty()) return res;
 
         Entity entity    = terrain[root].entity.get();
 

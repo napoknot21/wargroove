@@ -11,6 +11,7 @@ import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.*;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.entities.Commander;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
@@ -337,7 +338,8 @@ public class Controller {
             g.clearMoveDialog();
             return false;
         }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+                || getScopedEntity() instanceof Villager) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
