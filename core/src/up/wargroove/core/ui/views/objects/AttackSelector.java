@@ -55,15 +55,28 @@ public class AttackSelector implements Selector{
             return;
         }
         targetPosition = new Pair<>((int) worldPosition.x, (int) worldPosition.y);
-        postionAttack = breathFirstResearch(movementSelector,world);
+        postionAttack = getOptimalAttackPosition(movementSelector, world);
         if (postionAttack == null) return;
         movementSelector.addMovement(Assets.getInstance(),postionAttack);
         path = movementSelector.getPath();
     }
 
-    // TODO: 02/05/2022 Ameliorer la fonction et gerer le cas ou l'archer peut tirer en diagonale
+    private Pair<Integer, Integer> getOptimalAttackPosition(MovementSelector movements, World world) {
+        List<Pair<Integer,Integer>> results = breathFirstResearch(movements, world);
+        if (results.isEmpty()) {
+            return null;
+        }
+        results.sort((p1,p2) -> {
+            double x1 = Math.pow(initialPosition.first - p1.first, 2);
+            double y1 = Math.pow(initialPosition.second - p1.second, 2);
+            double x2 = Math.pow(initialPosition.first - p2.first, 2);
+            double y2 = Math.pow(initialPosition.second - p2.second, 2);
+            return (int) (Math.sqrt(x1+y1) - Math.sqrt(x2+y2));
+        });
+        return results.get(0);
+    }
 
-    private Pair<Integer, Integer> breathFirstResearch(MovementSelector movements, World world) {
+    private List<Pair<Integer, Integer>> breathFirstResearch(MovementSelector movements, World world) {
         Map<Integer, Boolean> checked = new HashMap<>();
         Queue<Integer> emp = new LinkedList<>();
         List<Pair<Integer,Integer>> results = new LinkedList<>();
@@ -79,23 +92,20 @@ public class AttackSelector implements Selector{
                     if (checked.containsKey(lin)) continue;
 
                     Pair<Integer, Integer> worldCoordinates = World.intToCoordinates(lin, world.getDimension());
-                    if (worldCoordinates.equals(initialPosition)) return initialPosition;
                     tileIndex = movements.valid.isValid(worldCoordinates);
-                    if (tileIndex >= 0) results.add(movements.valid.get(tileIndex).second);
-
+                    if (tileIndex >= 0 && checkAlignement(worldCoordinates)) {
+                        results.add(movements.valid.get(tileIndex).second);
+                    }
                     checked.put(lin, attackRange >= 0);
                     emp.add(World.coordinatesToInt(worldCoordinates, world.getDimension()));
                 }
             }
         }
-        results.sort((p1,p2) -> {
-            double x1 = Math.pow(initialPosition.first - p1.first, 2);
-            double y1 = Math.pow(initialPosition.second - p1.second, 2);
-            double x2 = Math.pow(initialPosition.first - p2.first, 2);
-            double y2 = Math.pow(initialPosition.second - p2.second, 2);
-            return (int) (Math.sqrt(x1+y1) - Math.sqrt(x2+y2));
-        });
-        return !results.isEmpty()? results.get(0) : null;
+        return results;
+    }
+
+    private boolean checkAlignement(Pair<Integer,Integer> c) {
+        return c.first - targetPosition.first == 0 || c.second - targetPosition.second == 0;
     }
 
     @Override
