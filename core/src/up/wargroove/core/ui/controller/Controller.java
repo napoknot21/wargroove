@@ -14,6 +14,7 @@ import up.wargroove.core.character.Character;
 import up.wargroove.core.character.entities.Commander;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.CharacterUI;
@@ -446,6 +447,7 @@ public class Controller {
 
     private void killArmyAndDestroyBases(Player player) {
         Tile[] terrain = getWorld().getTerrain();
+        GameView gameView= (GameView) getScreen();
         for (int i = 0; i < terrain.length; i++) {
             if ((terrain[i].entity.isPresent()) && ((terrain[i].entity.get().getFaction().equals(player.getFaction())))) {
                 Entity entity = terrain[i].entity.get();

@@ -7,6 +7,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
@@ -224,7 +225,7 @@ public class GameView extends View {
                 }
                 buy = false;
                 indicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                movement = getController().showMovements(movement, attack, movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
@@ -354,7 +355,7 @@ public class GameView extends View {
         return movementSelector.getDestination();
     }
 
-    private void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
+    public void scopeEntity(Pair<Integer, Integer> worldCoordinate) {
         var array = characters.getActors();
         for (int i = 0; i < array.size; i++) {
             Actor tmp = array.get(i);

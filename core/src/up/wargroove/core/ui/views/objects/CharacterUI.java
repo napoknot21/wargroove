@@ -89,8 +89,8 @@ public class CharacterUI extends EntityUI {
     @Override
     public void positionChanged() {
         float centerY = (getTileSize()/3f);
-        getSprite().setPosition(getX() + decalage.first, getY() + decalage.second);
-        getSprite().setPosition(getX()+decalage.first, getY() + centerY +decalage.second);
+        getSprite().setPosition(getX() + decalage.first, getY() +centerY+ decalage.second);
+        getSprite().setSize(getSize().first,getSize().second);
         getStats().setPosition(getX() + getSprite().getWidth() - getStats().getWidth() - 1, getY() + 1);
 
         super.positionChanged();
@@ -306,8 +306,8 @@ public class CharacterUI extends EntityUI {
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
             case GIANT:
                 ATTACK_FRAMES = 6;
-                setSize( new Pair<>(30,50));
-                decalage.first = -5;
+                setSize( new Pair<>(getSize().first+getSize().first/2,getSize().second+getSize().second/2));
+                decalage.first = (int) -(getTileSize()/4);
                 break;
             case MAGE:
                 ATTACK_FRAMES = 7;

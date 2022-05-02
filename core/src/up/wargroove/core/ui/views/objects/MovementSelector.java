@@ -26,7 +26,7 @@ public class MovementSelector implements Selector{
     /**
      * The tile scale between the view and the world.
      */
-    private final float tileSize;
+    private final float worldScale;
     /**
      * List of movements.
      */
@@ -52,11 +52,11 @@ public class MovementSelector implements Selector{
     /**
      * Constructs a Movement selector.
      *
-     * @param tileSize The world scale used to place the sprites.
+     * @param worldScale The world scale used to place the sprites.
      */
-    public MovementSelector(float tileSize) {
-        this.tileSize = tileSize;
-        valid = new Valid();
+    public MovementSelector(float worldScale) {
+        this.worldScale = worldScale;
+        valid = new Valid(worldScale);
         movements = new Movements();
         initX = 0;
         initY = 0;
@@ -391,8 +391,7 @@ public class MovementSelector implements Selector{
             if (o.second.first < 0 || o.second.second < 0) {
                 throw new RuntimeException();
             }
-            o.first.setSize(tileSize, tileSize);
-            o.first.setPosition(o.second.first * tileSize, o.second.second * tileSize);
+            o.first.setPosition(o.second.first * worldScale, o.second.second * worldScale);
             return super.add(o);
         }
 
@@ -412,7 +411,7 @@ public class MovementSelector implements Selector{
             Pair<Sprite, Pair<Integer, Integer>> tmp = this.get(index);
             tmp.first.setRegion(getArrow(assets, d));
             tmp.second = coordinate;
-            tmp.first.setPosition(tmp.second.first * tileSize, tmp.second.second * tileSize);
+            tmp.first.setPosition(tmp.second.first * worldScale, tmp.second.second * worldScale);
             path.append(d);
             currentCost += valid.getTileCost(tileIndex);
             index++;

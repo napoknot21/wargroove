@@ -63,6 +63,8 @@ public class Codex extends Table {
             }
         };
         description = new Label("This is the codex of the game", skin);
+        description.setColor(Color.BLACK);
+
         createSubject(skin);
         createObject("", skin);
         tableObjects = new Table();
@@ -77,12 +79,12 @@ public class Codex extends Table {
         dialog.getContentTable().row();
         dialog.getContentTable().add(addSubject()).center().colspan(5);
         dialog.getContentTable().row();
-        dialog.getContentTable().add(paneObject);
-        dialog.getContentTable().add(paneDescription);
+        dialog.getContentTable().add(paneObject).expand();
+        dialog.getContentTable().add(paneDescription).expand();
         initInput(controller);
         add(openCodex);
         resize();
-
+        dialog.debugAll();
 
     }
 
@@ -209,7 +211,6 @@ public class Codex extends Table {
         float h = dialog.getHeight();
         dialog.setBounds(x, y, dialog.getPrefWidth(), dialog.getPrefHeight());
         dialog.setPosition(x, y - (dialog.getPrefHeight() - h));
-        paneDescription.setSize(dialog.getPrefWidth() / 2, dialog.getHeight() / 3);
 
     }
 
@@ -230,7 +231,7 @@ public class Codex extends Table {
          */
         var type = Entity.Type.valueOf(name.toUpperCase());
         try {
-            return assets.get(type, 40);
+            return assets.get(type, 30);
         } catch (Exception e) {
             return "Unknown description";
         }
