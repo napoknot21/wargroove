@@ -61,26 +61,30 @@ public class AttackSelector implements Selector{
         path = movementSelector.getPath();
     }
 
+    // TODO: 02/05/2022 Ameliorer la fonction et gerer le cas ou l'archer peut tirer en diagonale
+
     private Pair<Integer, Integer> breathFirstResearch(MovementSelector movements, World world) {
         Map<Integer, Boolean> checked = new HashMap<>();
-        Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
+        Queue<Integer> emp = new LinkedList<>();
         List<Pair<Integer,Integer>> results = new LinkedList<>();
         int tileIndex;
         int range = attackRange;
-        emp.add(new Pair<>(World.coordinatesToInt(targetPosition, world.getDimension()), range));
-        while (range-- >= 0 && emp.size() > 0) {
+        emp.add(World.coordinatesToInt(targetPosition, world.getDimension()));
+        while (range-- > 0 && emp.size() > 0) {
             int size = emp.size();
             while(size-- > 0) {
                 var element = emp.poll();
-                List<Integer> list = world.adjacentOf(element.first);
+                List<Integer> list = world.adjacentOf(element);
                 for (int lin : list) {
                     if (checked.containsKey(lin)) continue;
+
                     Pair<Integer, Integer> worldCoordinates = World.intToCoordinates(lin, world.getDimension());
                     if (worldCoordinates.equals(initialPosition)) return initialPosition;
                     tileIndex = movements.valid.isValid(worldCoordinates);
                     if (tileIndex >= 0) results.add(movements.valid.get(tileIndex).second);
+
                     checked.put(lin, attackRange >= 0);
-                    emp.add(worldCoordinates);
+                    emp.add(World.coordinatesToInt(worldCoordinates, world.getDimension()));
                 }
             }
         }
