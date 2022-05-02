@@ -128,6 +128,10 @@ public class World {
         return null;
     }
 
+    public boolean isTheLastPlayer(){
+        return players.size()==1;
+    }
+
     /**
      * Initialise le monde avec ou sans génération procédurale.
      *

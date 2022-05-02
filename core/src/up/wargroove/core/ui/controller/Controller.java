@@ -3,11 +3,12 @@ package up.wargroove.core.ui.controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
@@ -441,6 +442,7 @@ public class Controller {
                 Player player = getWorld().getPlayer(entityTarget.getFaction());
                 killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()));
                 getWorld().removePlayer(entityTarget.getFaction());
+                gameOver();
             }
         }
     }
@@ -458,6 +460,33 @@ public class Controller {
                     entity.setFaction(Faction.OUTLAWS);
                 }
             }
+        }
+        for (Actor actor:  gameView.getStage().getActors()) {
+            if ((actor instanceof CharacterUI)&&(((CharacterUI) actor).isFaction(player.getFaction()))){
+                actor.remove();
+        }
+        }
+    }
+
+    private void gameOver(){
+        if (getWorld().isTheLastPlayer()){
+            GameView gameView= (GameView) getScreen();
+            Dialog dialog = new Dialog("The "+ getWorld().getCurrentPlayer().getFaction().name()+ " won the war", gameView.getAssets().getSkin());
+            TextButton button = new TextButton("X", gameView.getAssets().getSkin());
+            dialog.setBounds(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, dialog.getPrefWidth(), dialog.getPrefHeight());
+            dialog.row();
+            dialog.center().add(button);
+            dialog.show(getScreen().getStage());
+            Controller controller= this;
+            button.addListener(
+                    new ChangeListener() {
+                        @Override
+                        public void changed(ChangeEvent event, Actor actor) {
+                            controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                            controller.stopGame();
+                            controller.openMainMenu();
+                        }
+                    });
         }
     }
 

@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.utils.Pair;
@@ -197,8 +198,14 @@ public abstract class EntityUI extends Actor {
         this.size = size;
     }
 
+
+
     public static float getTileSize() {
         return TILE_SIZE;
+    }
+
+    public boolean isFaction(Faction faction){
+        return entity.getFaction().equals(faction);
     }
 
     @Override
