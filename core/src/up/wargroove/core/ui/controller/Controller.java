@@ -317,12 +317,11 @@ public class Controller {
      * Manage the unit movements on the screen.
      *
      * @param movement         indicate if a movement is already in progress.
-     * @param attack
      * @param movementSelector The screen movement manager.
      * @param worldPosition    The position in world coordinates.
      * @return true if the movements must be drawn false otherwise.
      */
-    public boolean showMovements(boolean movement, boolean attack, MovementSelector movementSelector, Vector3 worldPosition) {
+    public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
         if (movement) {
             if (!g.canAttack() && !movementSelector.isValidPosition(worldPosition)) {
@@ -668,5 +667,15 @@ public class Controller {
         database.selectCollection(name);
         Table content = ((SelectMap) getScreen()).initButtonsTable(database.getKeys());
         buttons.setActor(content);
+    }
+
+
+    public boolean haveARemainingUnit() {
+        for (var e : getModel().getCurrentPlayer().getEntities()) {
+            if (!e.isExhausted()) {
+                return true;
+            }
+        }
+        return false;
     }
 }

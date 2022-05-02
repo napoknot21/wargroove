@@ -84,7 +84,7 @@ public class AttackSelector implements Selector{
         int tileIndex;
         int range = attackRange;
         emp.add(World.coordinatesToInt(targetPosition, world.getDimension()));
-        while (range-- >= 0 && emp.size() > 0) {
+        while (range-- > 0 && emp.size() > 0) {
             int size = emp.size();
             while(size-- > 0) {
                 var element = emp.poll();

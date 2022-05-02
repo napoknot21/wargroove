@@ -1,19 +1,14 @@
 package up.wargroove.core.ui.views.scenes;
 
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -225,7 +220,7 @@ public class GameView extends View {
                 }
                 buy = false;
                 indicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, attack, movementSelector, worldPosition);
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
 
                 if (movement) {
@@ -278,6 +273,7 @@ public class GameView extends View {
 
     @Override
     public void draw(float delta) {
+        checkActions();
         gameViewUi.getViewport().apply();
         renderer.setView(camera);
         renderer.render();
@@ -293,6 +289,18 @@ public class GameView extends View {
         gameViewUi.act(delta);
         gameViewUi.draw();
         if (getController().isCameraMoving()) getController().actCamera(camera);
+    }
+
+    private void checkActions() {
+        moveDialog.setEndTurnVisible(!haveAnActiveEntity());
+        moveDialog.setNextUnitVisible(getController().haveARemainingUnit());
+    }
+
+    private boolean haveAnActiveEntity() {
+        boolean isActive = false;
+        var arr = characters.getActors();
+        for (int i = 0; i< arr.size; i++) isActive |= ((CharacterUI)arr.get(i)).isActing();
+        return isActive;
     }
 
     @Override

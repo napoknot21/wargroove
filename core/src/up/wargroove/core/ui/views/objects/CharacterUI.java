@@ -5,11 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import org.lwjgl.Sys;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.utils.Pair;
 
@@ -24,8 +21,6 @@ public class CharacterUI extends EntityUI {
     private static final int DEFAULT_FRAMES = 13;
     private int ATTACK_FRAMES;
     private Pair<Integer, Integer> decalage;
-
-
 
 
     /**
@@ -313,6 +308,10 @@ public class CharacterUI extends EntityUI {
                 ATTACK_FRAMES = 7;
             default:
         }
+    }
+
+    public boolean isActing() {
+        return canMove() && animationAttack != null;
     }
 
 

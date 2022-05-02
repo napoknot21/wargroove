@@ -1,16 +1,13 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 
@@ -152,5 +149,13 @@ public class MoveDialog extends Table {
 
     public void dispose() {
         clear(true);
+    }
+
+    public void setEndTurnVisible(boolean visible) {
+        endTurn.setVisible(visible);
+    }
+
+    public void setNextUnitVisible(boolean visible) {
+        nextUnit.setVisible(visible);
     }
 }

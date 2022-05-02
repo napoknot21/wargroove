@@ -43,9 +43,9 @@ public class World {
         Optional<Entity> rootEntity  = terrain[k[3]].entity;
         var p = intToCoordinates(k[0],getDimension());
         if(rootEntity.isEmpty()) return new Pair<>(-1, false);
-        int attackRange = rootEntity.get().getRange() - 1;
+        int attackRange = rootEntity.get().getRange();
         if(k[2] + attackRange > 0) {
-            return new Pair<>(1, false);
+            return new Pair<>(-1, false);
         }
         return new Pair<>(-2, false);
     };
@@ -56,9 +56,9 @@ public class World {
 	
 	if(rootEntity.isEmpty() || targetEntity.isEmpty()) return new Pair<>(-1,false);
 
-	int attackRange = rootEntity.get().getRange() - 1;
+	int attackRange = rootEntity.get().getRange();
 	if(k[2] + attackRange <= 0) {
-        return new Pair<>(k[2] + attackRange - 1, true);
+        return new Pair<>(k[2] + attackRange - 1, false);
     }
 
 	boolean status = targetEntity.get().getFaction() != rootEntity.get().getFaction();
