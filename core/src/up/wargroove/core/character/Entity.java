@@ -1,5 +1,6 @@
 package up.wargroove.core.character;
 
+import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.world.Structure;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.DbObject;
@@ -162,6 +163,7 @@ public abstract class Entity implements Savable {
             return null;
         }
     }
+
 
     public Map<String, List <Integer> > getAttacksAndBaseValues (Entity ch) {
         var data = this.readDamageMatrixValues();

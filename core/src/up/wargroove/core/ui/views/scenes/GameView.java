@@ -204,8 +204,8 @@ public class GameView extends View {
                 cursor.setPosition(vector);
                 Vector3 worldPosition = cursor.getWorldPosition();
                 tile = getController().getTile(worldPosition);
-                if (tile.entity.isPresent() && (tile.entity.get().isExhausted()
-                        || (tile.entity.get() instanceof Structure))) {
+
+                if ((tile.entity.isPresent() && (tile.entity.get().isExhausted()) && !(tile.entity.get() instanceof Structure))) {
                     clearSelectors();
                     clearMoveDialog();
                     movement = attack = false;
