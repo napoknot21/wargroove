@@ -4,6 +4,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.DbObject;
+import up.wargroove.core.character.Movement;
 
 public abstract class Structure extends Entity {
 
@@ -17,7 +18,8 @@ public abstract class Structure extends Entity {
     private Type type;
 
     protected Structure(Type type, Faction faction) {
-	super(Entity.Type.STRUCTURE, faction);
+	    super(Entity.Type.STRUCTURE, faction);
+        //super.movement = Movement.NULL;
         this.type = type;
     
     }

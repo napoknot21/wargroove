@@ -1,10 +1,10 @@
 ---
 SOLDIER :
   attacks : #first = base, second = critical
-    - 0
-    - 0
+    - 40
+    - 40
   base :
-    - 0
+    - 35
 
 VILLAGER :
   attacks:
@@ -15,38 +15,38 @@ VILLAGER :
 
 COMMANDER :
   attacks:
-    - 0
-    - 0
+    - 15
+    - 15
   base :
-    - 0
+    - 10
 
 SPEARMAN :
   attacks:
-    - 0
-    - 0
+    - 40
+    - 40
   base :
-    - 0
+    - 35
 
 MAGE :
   attacks :
-    - 0
-    - 0
+    - 45
+    - 45
   base :
-    - 0
+    - 40
 
 ARCHER :
   attacks :
-    - 0
-    - 0
+    - 40
+    - 40
   base :
-    - 0
+    - 35
 
 GIANT :
   attacks :
-    - 0
-    - 0
+    - 15
+    - 15
   base :
-    - 0
+    - 10
 
 STRUCTURE :
   attacks :

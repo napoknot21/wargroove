@@ -48,3 +48,10 @@ GIANT :
     - 23
   defends :
     - 10
+
+STRUCTURE :
+  attacks :
+    - 55
+    - 83
+  base :
+    - 50

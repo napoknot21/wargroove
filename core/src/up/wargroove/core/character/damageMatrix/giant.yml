@@ -47,3 +47,10 @@ GIANT :
     - 125
   base :
     - 45
+
+STRUCTURE :
+  attacks :
+    - 90
+    - 225
+  base :
+    - 85
