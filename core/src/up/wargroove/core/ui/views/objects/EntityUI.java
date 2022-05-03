@@ -30,13 +30,11 @@ public abstract class EntityUI extends Actor {
         this.entity = entity;
         this.coordinates = coord;
         TILE_SIZE = (Model.getTileSize() * scale);
-        System.out.println(TILE_SIZE);
          if (entity instanceof Character) {
              size = new Pair<>((int)(1*TILE_SIZE),(int)(1*TILE_SIZE));
          } else {
              size = new Pair<>((int)TILE_SIZE,(int)TILE_SIZE);
          }
-        System.out.println(size);
     }
 
 
@@ -46,7 +44,6 @@ public abstract class EntityUI extends Actor {
         this.stats= new Sprite(getPathSTATS(0));
         stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
         setPosition(coordinates.first * TILE_SIZE,coordinates.second * TILE_SIZE);
-        System.out.println(new Pair<>(getX(),getY()));
         positionChanged();
     }
 

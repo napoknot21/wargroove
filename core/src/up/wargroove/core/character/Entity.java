@@ -1,5 +1,7 @@
 package up.wargroove.core.character;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.world.Structure;
 import up.wargroove.utils.Constants;
@@ -18,7 +20,7 @@ public abstract class Entity implements Savable {
 
     protected Type type;
 
-    private Random r = new Random();
+    private final Random r = new Random();
 
     protected Movement movement;
     private Faction faction;
@@ -156,8 +158,8 @@ public abstract class Entity implements Savable {
     protected Map<String, Map<String, List<Integer>>> readDamageMatrixValues () {
         try {
             String name = this.getType().toString().toLowerCase();
-            File f = new File(Constants.DEFAULT_DM_ROOT + name + ".yml");
-            return new Yaml().load(new FileInputStream(f));
+            FileHandle f = Gdx.files.internal(Constants.DEFAULT_DM_ROOT + name + ".yml");
+            return new Yaml().load(new FileInputStream(f.file()));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -6,7 +6,7 @@ plugins {
 var gdxVersion = "1.10.0"
 
 allprojects {
-	version = "O.0.1"
+	version = "1.0"
 	group = "up"
 
 	repositories {

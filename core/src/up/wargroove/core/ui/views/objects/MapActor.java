@@ -33,7 +33,6 @@ public class MapActor {
         OrthogonalTiledMapRenderer renderer = new OrthogonalTiledMapRenderer(newMap.getMap(), Math.min(heightRatio, widthRatio));
         mapSize.first *= renderer.getUnitScale();
         mapSize.second *= renderer.getUnitScale();
-        System.out.println(renderer.getUnitScale());
         return renderer;
     }
 

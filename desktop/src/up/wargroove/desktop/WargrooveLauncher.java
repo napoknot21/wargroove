@@ -3,6 +3,8 @@ package up.wargroove.desktop;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import java.awt.EventQueue;
+import java.io.File;
+
 import up.wargroove.core.WargrooveClient;
 
 /**
@@ -25,6 +27,7 @@ public class WargrooveLauncher {
             config.setTitle("Wargroove");
             config.setWindowSizeLimits(800,600,-1,-1);
             EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(debug), config));
+            System.out.println(new File(".").getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

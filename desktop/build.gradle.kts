@@ -1,4 +1,3 @@
-import java.lang.reflect.InvocationTargetException
 import java.net.URL
 import java.net.URLClassLoader
 
@@ -8,17 +7,10 @@ plugins {
 
 }
 
-tasks.withType<Jar> {
+application {
 
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    dependsOn(configurations.runtimeClasspath)
-    from(
-        configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) }
-    )
-    manifest {
-        attributes["Main-Class"] = application.mainClass
-    }
+    mainClass.set("up.wargroove.desktop.WargrooveLauncher")
+    applicationName = "Wargroove"
 
 }
 
@@ -33,20 +25,26 @@ tasks.create("selectPlugin") {
             val c = loader.loadClass(pluginPath + "PluginSelector")
             val method = c.getDeclaredMethod("run")
             method.invoke(null)
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
 }
 
-
-
-application {
-
-    mainClass.set("up.wargroove.desktop.WargrooveLauncher")
-
+distributions {
+    main {
+        contents {
+            from("../db") {
+                into("db/")
+            }
+            from("../damageMatrix") {
+                into("damageMatrix/")
+            }
+        }
+    }
 }
+
 sourceSets {
     main {
         java {
