@@ -3,6 +3,7 @@ package up.wargroove.core.world;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.Movement;
 import up.wargroove.utils.BitSet;
 import up.wargroove.utils.Log;
 import up.wargroove.utils.Pair;
@@ -394,6 +395,7 @@ public class World {
 
         Entity entity    = terrain[root].entity.get();
 
+        if (entity.getMovement() == null || entity.getMovement() == Movement.NULL) return res;
         int movementId   = entity.getMovement().id;
         int movementCost = entity.getMovRange();
 

@@ -19,8 +19,9 @@ public abstract class Structure extends Entity {
 
     protected Structure(Type type, Faction faction) {
 	    super(Entity.Type.STRUCTURE, faction);
-        //super.movement = Movement.NULL;
+        movement = Movement.NULL;
         this.type = type;
+        setHealth(100);
     
     }
 

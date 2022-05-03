@@ -23,10 +23,7 @@ import up.wargroove.core.ui.views.objects.AttackSelector;
 import up.wargroove.core.ui.views.objects.EntityUI;
 import up.wargroove.core.ui.views.objects.MovementSelector;
 import up.wargroove.core.ui.views.scenes.*;
-import up.wargroove.core.world.Player;
-import up.wargroove.core.world.Recruitment;
-import up.wargroove.core.world.Tile;
-import up.wargroove.core.world.World;
+import up.wargroove.core.world.*;
 import up.wargroove.utils.Database;
 import up.wargroove.utils.Pair;
 
@@ -337,7 +334,8 @@ public class Controller {
             g.getCursor().setLock(false);
             return false;
         }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())) {
+        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
+                || getScopedEntity() instanceof Structure) {
             return false;
         }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
@@ -425,7 +423,7 @@ public class Controller {
         ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
         tile.entity.get().attack(entityTarget);
         ((EntityUI) actorTarget).setInjured(true, path);
-        commanderDie((Character) entityTarget);
+        commanderDie(entityTarget);
 
     }
 
@@ -435,7 +433,7 @@ public class Controller {
      * @param entityTarget is the commander
      */
 
-    private void commanderDie(Character entityTarget) {
+    private void commanderDie(Entity entityTarget) {
         if (entityTarget instanceof Commander) {
             if (entityTarget.getHealth() <= 0) {
                 Player player = getWorld().getPlayer(entityTarget.getFaction());
@@ -508,6 +506,7 @@ public class Controller {
     }
 
     public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
+        if (positionTarget == null) return;
         getWorld().actualiseEntity(positionTarget);
         GameView gameView = (GameView) getScreen();
         gameView.scopeEntity(positionTarget);

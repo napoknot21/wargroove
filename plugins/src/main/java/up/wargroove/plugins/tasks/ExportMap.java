@@ -113,7 +113,7 @@ public class ExportMap extends Plugin {
 
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/grass.atlas";
+        return "core/assets/data/gui/world/grass.atlas\"";
     }
 
     //(option = "name", description = "name of the map stored in the database")

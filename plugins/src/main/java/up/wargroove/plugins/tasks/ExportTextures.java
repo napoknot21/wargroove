@@ -73,7 +73,7 @@ public class ExportTextures extends Plugin {
     }
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/";
+        return "core/assets/data/gui/world/";
     }
 
     //(option = "biome", description = "Biome of the texture")

@@ -226,6 +226,7 @@ public class GameView extends View {
                 if (movement) {
                     moveDialog.clear();
                     scopeEntity(worldPosition);
+                    getController().actualiseFocusEntity(attackSelector.getInitialPosition());
                     moveDialog.addWait();
                 }
                 if (movementSelector.getPath().length() > 0) {

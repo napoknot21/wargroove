@@ -100,7 +100,7 @@ public class ImportMap extends Plugin {
     }
 
     private String getWorldTexturePath() {
-        return "core/assets/data/sprites/world/grass.atlas";
+        return "core/assets/data/gui/world/grass.atlas";
     }
 
     /**
