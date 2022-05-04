@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Null;
+import org.lwjgl.Sys;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.entities.Commander;
@@ -420,8 +421,9 @@ public class Controller {
         ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
         tile.entity.get().attack(entityTarget);
         ((EntityUI) actorTarget).setInjured(true, path);
-        structureAttackted(entityTarget, (EntityUI) actorTarget,tile.entity.get().getFaction());
-        commanderDie(entityTarget,tile.entity.get().getFaction());
+        if (!commanderDie(entityTarget,tile.entity.get().getFaction())){
+            structureAttackted(entityTarget, (EntityUI) actorTarget,tile.entity.get().getFaction());
+        }
     }
 
     /**
@@ -430,15 +432,16 @@ public class Controller {
      * @param entityTarget is the commander
      */
 
-    private void commanderDie(Entity entityTarget, Faction enemie) {
+    private boolean commanderDie(Entity entityTarget, Faction attack) {
         if (entityTarget instanceof Commander || entityTarget instanceof Stronghold) {
             if (entityTarget.getHealth() <= 0) {
-                Player player = getWorld().getPlayer(entityTarget.getFaction());
-                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()),enemie);
+                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()),attack);
                 getWorld().removePlayer(entityTarget.getFaction());
-                gameOver(enemie);
+                gameOver(attack);
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -446,34 +449,42 @@ public class Controller {
      * @param player
      * @param enemie
      */
-    private void killArmyAndDestroyBases(Player player, Faction enemie) {
-        Tile[] terrain = getWorld().getTerrain();
-        GameView gameView= (GameView) getScreen();
-        for (int i = 0; i < terrain.length; i++) {
-            if ((terrain[i].entity.isPresent()) && ((terrain[i].entity.get().getFaction().equals(player.getFaction())))) {
-                Entity entity = terrain[i].entity.get();
-                if (entity instanceof Character) {
-                    getWorld().delEntity(i, entity);
-                    player.removeEntity(entity);
-                } else if (entity instanceof Structure){
-                    entity.setFaction(enemie);
-                    Player rival = getWorld().getPlayer(enemie);
-                    rival.addEntity(entity);
-                    gameView.getStage().addActor(new StructureUI(gameView.getStage(), (Structure) entity,World.intToCoordinates(i,getWorld().getDimension()) ));
+    private void killArmyAndDestroyBases(Player player, Faction attack) {
+        Faction victim = player.getFaction();
+        GameView gameView = (GameView) getScreen();
+            for (Actor actor : gameView.getCharacters().getActors()) {
+                if ((actor instanceof CharacterUI) && ((CharacterUI) actor).getEntity().getFaction().equals(victim)) {
+                    deleteCharacterUI(actor,player);
                 }
             }
-        }
-        for (Actor actor:  gameView.getCharacters().getActors()) {
-            if ((actor instanceof CharacterUI)&&(((CharacterUI) actor).getEntity().getFaction().equals(player.getFaction()))){
-                ((EntityUI) actor).remove();
+            for (Actor actor : gameView.getStage().getActors()) {
+                if ((actor instanceof StructureUI) && (((StructureUI) actor).getEntity().getFaction().equals(victim))) {
+                    Entity entity = ((StructureUI) actor).getEntity();
+                    player.removeEntity(entity);
+                    Player rival = getWorld().getPlayer(attack);
+                    if (entity instanceof Stronghold) {
+                        getWorld().delEntity(((StructureUI) actor).getCoordinates(), entity);
+                    } else {
+                        rival.addEntity(entity);
+                        entity.setFaction(attack);
+                        gameView.getStage().addActor(new StructureUI(gameView.getStage(), (Structure) entity, ((StructureUI) actor).getCoordinates()));
+                    }
+                    actor.remove();
+                }
             }
-        }
     }
+
     private void structureAttackted(Entity entity, EntityUI entityUI, Faction faction){
         if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth()<=0) {
             entity.setFaction(faction);
             entityUI.actualiseSprite(Assets.getInstance().get((Structure) entity));
         }
+    }
+    private void deleteCharacterUI(Actor actor, Player player){
+        Entity entity = ((CharacterUI) actor).getEntity();
+        getWorld().delEntity(((CharacterUI) actor).getCoordinates(), entity);
+        player.removeEntity(entity);
+        actor.remove();
     }
 
     private void gameOver(Faction faction){
