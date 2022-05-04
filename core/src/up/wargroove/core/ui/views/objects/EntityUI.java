@@ -48,6 +48,9 @@ public abstract class EntityUI extends Actor {
     }
 
     public void actualiseStats(){
+        if (entity.getHealth()==100){
+            this.stats = new Sprite(getPathSTATS(0));
+        }
         if (entity.getHealth()<90){
             this.stats= new Sprite(getPathSTATS((int) ((entity.getHealth()/10)+1)));
         }
@@ -113,7 +116,7 @@ public abstract class EntityUI extends Actor {
                         entity.getType() + "_" + nameFile, Texture.class);
     }
 
-    protected void actualiseSprite(TextureRegion textureRegion) {
+    public void actualiseSprite(TextureRegion textureRegion) {
         sprite = new Sprite(textureRegion);
         sprite.setSize(size.first, size.second);
         positionChanged();
@@ -172,7 +175,9 @@ public abstract class EntityUI extends Actor {
     }
 
     public static float getTimeLapse() {
-        return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
+        //return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
+        return Gdx.graphics.getDeltaTime()*(getTileSize());
+
     }
 
     public float getTemps() {

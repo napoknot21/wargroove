@@ -52,6 +52,14 @@ public abstract class Structure extends Entity {
         return res;
     }
 
+    @Override
+    public void nextTurn() {
+        isExhausted = false;
+        if (this instanceof Structure && this.getHealth()<100){
+            this.setHealth(getHealth()+10);
+        }
+    }
+
     public Type getStructureType() {
         return type;
     }

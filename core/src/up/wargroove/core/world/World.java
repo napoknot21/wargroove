@@ -165,7 +165,6 @@ public class World {
 	    states.push(currentState);
 	    currentState = new State(); 
 
-	    players.removeIf(p -> !p.nextTurn());
 
     }
 

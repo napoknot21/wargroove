@@ -18,10 +18,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.views.objects.CharacterUI;
-import up.wargroove.core.ui.views.objects.AttackSelector;
-import up.wargroove.core.ui.views.objects.EntityUI;
-import up.wargroove.core.ui.views.objects.MovementSelector;
+import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.*;
 import up.wargroove.utils.Database;
@@ -423,8 +420,8 @@ public class Controller {
         ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
         tile.entity.get().attack(entityTarget);
         ((EntityUI) actorTarget).setInjured(true, path);
-        commanderDie(entityTarget);
-
+        structureAttackted(entityTarget, (EntityUI) actorTarget,tile.entity.get().getFaction());
+        commanderDie(entityTarget,tile.entity.get().getFaction());
     }
 
     /**
@@ -433,18 +430,23 @@ public class Controller {
      * @param entityTarget is the commander
      */
 
-    private void commanderDie(Entity entityTarget) {
-        if (entityTarget instanceof Commander) {
+    private void commanderDie(Entity entityTarget, Faction enemie) {
+        if (entityTarget instanceof Commander || entityTarget instanceof Stronghold) {
             if (entityTarget.getHealth() <= 0) {
                 Player player = getWorld().getPlayer(entityTarget.getFaction());
-                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()));
+                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()),enemie);
                 getWorld().removePlayer(entityTarget.getFaction());
-                gameOver();
+                gameOver(enemie);
             }
         }
     }
 
-    private void killArmyAndDestroyBases(Player player) {
+    /**
+     * Only way to catch the StructureUI, is reading all the map
+     * @param player
+     * @param enemie
+     */
+    private void killArmyAndDestroyBases(Player player, Faction enemie) {
         Tile[] terrain = getWorld().getTerrain();
         GameView gameView= (GameView) getScreen();
         for (int i = 0; i < terrain.length; i++) {
@@ -453,26 +455,37 @@ public class Controller {
                 if (entity instanceof Character) {
                     getWorld().delEntity(i, entity);
                     player.removeEntity(entity);
-                } else {
-                    entity.setFaction(Faction.OUTLAWS);
+                } else if (entity instanceof Structure){
+                    entity.setFaction(enemie);
+                    Player rival = getWorld().getPlayer(enemie);
+                    rival.addEntity(entity);
+                    gameView.getStage().addActor(new StructureUI(gameView.getStage(), (Structure) entity,World.intToCoordinates(i,getWorld().getDimension()) ));
                 }
             }
         }
-        for (Actor actor:  gameView.getStage().getActors()) {
-            if ((actor instanceof CharacterUI)&&(((CharacterUI) actor).isFaction(player.getFaction()))){
-                actor.remove();
+        for (Actor actor:  gameView.getCharacters().getActors()) {
+            if ((actor instanceof CharacterUI)&&(((CharacterUI) actor).getEntity().getFaction().equals(player.getFaction()))){
+                ((EntityUI) actor).remove();
+            }
         }
+    }
+    private void structureAttackted(Entity entity, EntityUI entityUI, Faction faction){
+        if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth()<=0) {
+            entity.setFaction(faction);
+            entityUI.actualiseSprite(Assets.getInstance().get((Structure) entity));
         }
     }
 
-    private void gameOver(){
+    private void gameOver(Faction faction){
         if (getWorld().isTheLastPlayer()){
             GameView gameView= (GameView) getScreen();
-            Dialog dialog = new Dialog("The "+ getWorld().getCurrentPlayer().getFaction().name()+ " won the war", gameView.getAssets().getSkin());
-            TextButton button = new TextButton("X", gameView.getAssets().getSkin());
-            dialog.setBounds(Gdx.graphics.getWidth()/2, Gdx.graphics.getHeight()/2, dialog.getPrefWidth(), dialog.getPrefHeight());
+            Dialog dialog = new Dialog("Game Over", gameView.getAssets().getSkin());
+            Label label = new Label("The "+ faction.name()+ " won the war in "+getModel().getRound() + " rounds", gameView.getAssets().getSkin());
+            TextButton button = new TextButton("Close", gameView.getAssets().getSkin());
+            dialog.setBounds((Gdx.graphics.getWidth()/2)-dialog.getWidth(), (Gdx.graphics.getHeight()/2)-dialog.getHeight(), dialog.getPrefWidth(), dialog.getPrefHeight());
+            dialog.add(label);
             dialog.row();
-            dialog.center().add(button);
+            dialog.add(button).center();
             dialog.show(getScreen().getStage());
             Controller controller= this;
             button.addListener(

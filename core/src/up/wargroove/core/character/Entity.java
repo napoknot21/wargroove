@@ -49,6 +49,8 @@ public abstract class Entity implements Savable {
 
     public void setHealth(double health) {
         if (health < 0) this.health = 0;
+        if (health > 100) this.health = 100;
+
         else this.health = health;
     }
 
@@ -68,7 +70,6 @@ public abstract class Entity implements Savable {
     }
 
     public void nextTurn() {
-
         isExhausted = false;
 
     }
