@@ -16,6 +16,7 @@ import up.wargroove.core.character.Character;
 
 public abstract class EntityUI extends Actor {
     private static float TILE_SIZE= 20;
+    public EntityUI victime;
     private Sprite stats;
     private Sprite sprite;
     private Pair<Integer,Integer> coordinates;
@@ -97,17 +98,16 @@ public abstract class EntityUI extends Actor {
         this.alive = alive;
     }
 
-    public void setInjured(boolean injured, String path) {
+    public void setInjured(boolean injured) {
         this.injured = injured;
-        if (path.length()==1) {
-            temps = -getTimeLapse() * TILE_SIZE * path.length();
-        } else {
-            temps = -getTimeLapse() * 2*TILE_SIZE * path.length();
-        }
     }
 
     public boolean isInjured() {
         return injured;
+    }
+
+    public void setVictime(EntityUI victime) {
+        this.victime = victime;
     }
 
     protected Texture getPath(String nameFile) {
@@ -131,9 +131,9 @@ public abstract class EntityUI extends Actor {
      * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
      */
     private void injure(){
-        if (temps>100*getTimeLapse()) sprite.setColor(Color.RED);
+        if (temps>0) sprite.setColor(Color.RED);
         temps+=getTimeLapse();
-        if (temps>140*getTimeLapse()){
+        if (temps>getTileSize()*getTimeLapse()){
             temps=0;
             sprite.setColor(1,1,1,1);
             injured=false;
@@ -176,7 +176,7 @@ public abstract class EntityUI extends Actor {
 
     public static float getTimeLapse() {
         //return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
-        return Gdx.graphics.getDeltaTime()*(getTileSize()*4);
+        return Gdx.graphics.getDeltaTime()*(getTileSize());
 
     }
 

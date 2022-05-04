@@ -206,7 +206,10 @@ public class CharacterUI extends EntityUI {
         if (getTemps() == getTimeLapse()) {
             AnimationAttack(texture);
         }
-        actualiseSprite(animationAttack[(int) (getTemps() / 10) % ATTACK_FRAMES]);
+        if (getTemps() >= (ATTACK_FRAMES * 10 - 2 * getTimeLapse())/2) {
+            victime.setInjured(true);
+        }
+            actualiseSprite(animationAttack[(int) (getTemps() / 10) % ATTACK_FRAMES]);
         if (getTemps() >= ATTACK_FRAMES * 10 - 2 * getTimeLapse()) {
             setTemps(0);
             attackDirection = null;
