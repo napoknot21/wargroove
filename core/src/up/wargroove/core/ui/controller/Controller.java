@@ -417,12 +417,43 @@ public class Controller {
         Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        ((CharacterUI) actor).setMove(path.substring(0, path.length() - 1));
-        ((CharacterUI) actor).setAttackDirection(path.charAt(path.length() - 1));
-        ((CharacterUI) actor).setVictime((EntityUI) actorTarget);
-        tile.entity.get().attack(entityTarget);
+        attack((CharacterUI) actor, (EntityUI) actorTarget,path);
         if (!commanderDie(entityTarget,tile.entity.get().getFaction())){
             structureAttackted(entityTarget, (EntityUI) actorTarget,tile.entity.get().getFaction());
+            if (actorTarget instanceof CharacterUI){
+                //contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
+            }
+        }
+    }
+
+    private String inversePath(String path) {
+        String res="";
+        for (int i=0; i<path.length();i++){
+            if (path.charAt(i) == 'R'){
+                res = res + 'L';
+            } else if (path.charAt(i) == 'L'){
+                res =res + 'R';
+            } else if (path.charAt(i) == 'U'){
+            res =res + 'D';
+            } else {
+                res =res + 'U';
+            }
+        }
+        return res;
+    }
+
+    private void attack(CharacterUI actor, EntityUI actorTarget, String path) {
+            actor.setMove(path.substring(0, path.length() - 1));
+            actor.setAttackDirection(path.charAt(path.length() - 1));
+            actor.setVictime(actorTarget);
+            actor.getEntity().attack(actorTarget.getEntity());
+
+    }
+    private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
+        if (actor.getEntity().getRange() == 1) {
+            actor.setAttackDirection(path.charAt(path.length() - 1));
+            actor.setVictime(actorTarget);
+            actor.getEntity().attack(actorTarget.getEntity());
         }
     }
 
