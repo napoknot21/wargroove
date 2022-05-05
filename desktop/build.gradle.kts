@@ -26,7 +26,7 @@ tasks.create("selectPlugin") {
             val method = c.getDeclaredMethod("run")
             method.invoke(null)
         } catch (e: Exception) {
-            e.printStackTrace()
+            throw e.cause!!
         }
     }
 

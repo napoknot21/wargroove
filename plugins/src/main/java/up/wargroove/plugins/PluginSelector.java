@@ -51,7 +51,7 @@ public class PluginSelector {
      *
      * @throws Exception if an error occurred.
      */
-    public static void run() throws Exception {
+    public static void run() throws Throwable {
         Log.print("Please enter the command : ");
         Scanner scanner = new Scanner(System.in);
         String[] args = scanner.nextLine().split(" ");
@@ -66,7 +66,7 @@ public class PluginSelector {
      * @param args The plugin's arguments.
      * @throws Exception if the plugin is unknown.
      */
-    private static void checkCommand(String arg, String[] args) throws Exception {
+    private static void checkCommand(String arg, String[] args) throws Throwable {
         if (plugins == null) {
             throw new Exception("There is no plugins");
         }
@@ -74,7 +74,11 @@ public class PluginSelector {
             if (name.equalsIgnoreCase(arg)) {
                 Object obj = plugins.get(name).getConstructor(String[].class).newInstance((Object) args);
                 Method method = plugins.get(name).getDeclaredMethod("run");
-                method.invoke(obj);
+                try {
+                    method.invoke(obj);
+                } catch (Exception e) {
+                    throw e.getCause();
+                }
                 return;
             }
         }

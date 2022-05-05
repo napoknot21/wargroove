@@ -48,7 +48,7 @@ public class ImportMap extends Plugin {
             try {
                 File file = new File(path);
                 if (!file.exists() || file.isDirectory()) {
-                    log.append("The specified path must indicate a file (").append(path).append(" )").append('\n');
+                    log.append("The specified path must indicate a file (").append(path).append(")").append('\n');
                 } else {
                     load(file);
                 }
@@ -59,8 +59,7 @@ public class ImportMap extends Plugin {
         }
 
         if (log.length() != 0) {
-            System.err.println(log + "\n\n");
-            throw new Exception();
+            throw new Exception(String.valueOf(log));
         }
     }
 
