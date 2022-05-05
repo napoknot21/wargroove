@@ -21,6 +21,7 @@ public class CharacterUI extends EntityUI {
     private static final int DEFAULT_FRAMES = 13;
     private int ATTACK_FRAMES;
     private Pair<Integer, Integer> decalage;
+    private boolean readyToAttack= true;
 
 
     /**
@@ -213,10 +214,8 @@ public class CharacterUI extends EntityUI {
      */
 
     public void attack(Texture texture) {
-        String path = "";
         if (getTemps() == getTimeLapse()) {
             AnimationAttack(texture);
-            path = move;
         }
         if (getTemps() >= (ATTACK_FRAMES * 10 - 2 * getTimeLapse())/2) {
             victime.setInjured(true);
@@ -226,7 +225,10 @@ public class CharacterUI extends EntityUI {
             setTemps(0);
             attackDirection = null;
             actualiseTexture();
-            //victime.vengeance(inversePath(path));
+            if (victime instanceof CharacterUI){
+                ((CharacterUI) victime).setReadyToAttack(true);
+                victime.setTemps(0);
+            }
         }
     }
 
@@ -298,6 +300,10 @@ public class CharacterUI extends EntityUI {
         return (!canMove() && attackDirection == null);
     }
 
+    public void setReadyToAttack(boolean bool){
+        readyToAttack=bool;
+    }
+
     private void removeFirstMove() {
         move = move.substring(1);
     }
@@ -349,12 +355,13 @@ public class CharacterUI extends EntityUI {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (canMove()) moveTo();
-        else if (attackDirection != null) attackTo();
-        else exhaust();
-        if (!isAlive()) {
-            die();
+        if (readyToAttack) {
+            if (canMove()) moveTo();
+            else if (attackDirection != null) attackTo();
+            else exhaust();
         }
+        if (!isAlive()) die();
+
         super.draw(batch, parentAlpha);
     }
 }

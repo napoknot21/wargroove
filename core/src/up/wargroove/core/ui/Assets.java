@@ -438,8 +438,10 @@ public class Assets {
         HEAVENSONG_EMPIRE(CHARACTER.path + "HEAVENSONG_EMPIRE" + fs, "HEAVENSONG_EMPIRE"),
         STATS(CHARACTER.path + "STATS" + fs, "STATS"),
         GRASS(WORLD.path + "grass.atlas" + fs),
-        ICE(WORLD.path + "ice" + fs, "ice"),
-        VOLCANO(WORLD.path +"volcano"+fs, "volcano");
+        ICE(WORLD.path + "ice" + fs),
+        DESERT(WORLD.path + "desert" + fs),
+        VOLCANO(WORLD.path +"volcano"+fs);
+
 
         private final String path;
         private final String[] manifest;

@@ -411,10 +411,10 @@ public class Controller {
         Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        attack((CharacterUI) actor, (EntityUI) actorTarget, path);
+        boolean inLive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
             structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
-            if (actorTarget instanceof CharacterUI) {
+            if ((actorTarget instanceof CharacterUI) && inLive && !(((EntityUI) actorTarget).getEntity() instanceof Villager)){
                 contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
             }
         }
@@ -434,16 +434,19 @@ public class Controller {
         return res.toString();
     }
 
-    private void attack(CharacterUI actor, EntityUI actorTarget, String path) {
+    private boolean attack(CharacterUI actor, EntityUI actorTarget, String path) {
         actor.setMove(path.substring(0, path.length() - 1));
         actor.setAttackDirection(path.charAt(path.length() - 1));
         actor.setVictime(actorTarget);
         actor.getEntity().attack(actorTarget.getEntity());
-
+        return actorTarget.getEntity().getHealth()>0;
     }
 
     private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
-            actor.getEntity().attack(actorTarget.getEntity());
+        actor.setReadyToAttack(false);
+        actor.setAttackDirection(path.charAt(path.length() - 1));
+        actor.setVictime(actorTarget);
+        actor.getEntity().attack(actorTarget.getEntity());
     }
 
     /**
