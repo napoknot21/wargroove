@@ -7,21 +7,21 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.utils.Pair;
-import up.wargroove.core.character.Character;
 
 public abstract class EntityUI extends Actor {
-    private static float TILE_SIZE= 20;
+    private static float TILE_SIZE = 20;
+    private final Entity entity;
     public EntityUI victime;
     private Sprite stats;
     private Sprite sprite;
-    private Pair<Integer,Integer> coordinates;
-    private final Entity entity;
-    private Pair<Integer,Integer> size;
+    private Pair<Integer, Integer> coordinates;
+    private Pair<Integer, Integer> size;
     private boolean alive = true;
     private boolean injured = false;
     private boolean waiting = true;
@@ -32,39 +32,46 @@ public abstract class EntityUI extends Actor {
         this.entity = entity;
         this.coordinates = coord;
         TILE_SIZE = (Model.getTileSize() * scale);
-         if (entity instanceof Character) {
-             size = new Pair<>((int)(1*TILE_SIZE),(int)(1*TILE_SIZE));
-         } else {
-             size = new Pair<>((int)TILE_SIZE,(int)TILE_SIZE);
-         }
+        if (entity instanceof Character) {
+            size = new Pair<>((int) (1 * TILE_SIZE), (int) (1 * TILE_SIZE));
+        } else {
+            size = new Pair<>((int) TILE_SIZE, (int) TILE_SIZE);
+        }
     }
 
+    public static float getTimeLapse() {
+        //return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
+        return Gdx.graphics.getDeltaTime() * (getTileSize());
+
+    }
+
+    public static float getTileSize() {
+        return TILE_SIZE;
+    }
 
     protected void initialiseSprites() {
         this.sprite = new Sprite();
-        sprite.setSize(size.first,size.second);
-        this.stats= new Sprite(getPathSTATS(0));
-        stats.setSize(sprite.getWidth()/4,sprite.getHeight()/4);
-        setPosition(coordinates.first * TILE_SIZE,coordinates.second * TILE_SIZE);
+        sprite.setSize(size.first, size.second);
+        this.stats = new Sprite(getPathSTATS(0));
+        stats.setSize(sprite.getWidth() / 4, sprite.getHeight() / 4);
+        setPosition(coordinates.first * TILE_SIZE, coordinates.second * TILE_SIZE);
         positionChanged();
     }
 
-    public void actualiseStats(){
-        if (entity.getHealth()==100){
+    public void actualiseStats() {
+        if ((entity.getHealth() <= 0) || entity.getHealth() > 90) {
             this.stats = new Sprite(getPathSTATS(0));
+        } else if (entity.getHealth() < 90) {
+            this.stats = new Sprite(getPathSTATS((int) ((entity.getHealth() / 10) + 1)));
+        } else {
+            this.stats = new Sprite(getPathSTATS((int) ((entity.getHealth() / 10))));
         }
-        if (entity.getHealth()<90){
-            this.stats= new Sprite(getPathSTATS((int) ((entity.getHealth()/10)+1)));
-        }
-        if ((entity.getHealth()<=0)||(entity.getHealth()==90)){
-            this.stats= new Sprite(getPathSTATS((int) ((entity.getHealth()/10))));
-        }
-        stats.setSize(TILE_SIZE/4f,TILE_SIZE/4f);
-        stats.setPosition(coordinates.first * TILE_SIZE+TILE_SIZE-6,coordinates.second * TILE_SIZE+1);
+        stats.setSize(TILE_SIZE / 4f, TILE_SIZE / 4f);
+        stats.setPosition(coordinates.first * TILE_SIZE + TILE_SIZE - 6, coordinates.second * TILE_SIZE + 1);
     }
 
     private Texture getPathSTATS(int file) {
-        return Assets.getInstance().get( Assets.AssetDir.STATS.path()+"Stats" + file + ".png", Texture.class);
+        return Assets.getInstance().get(Assets.AssetDir.STATS.path() + "Stats" + file + ".png", Texture.class);
     }
 
     public Pair<Integer, Integer> getCoordinates() {
@@ -77,6 +84,10 @@ public abstract class EntityUI extends Actor {
 
     public Sprite getSprite() {
         return sprite;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
     }
 
     public Sprite getStats() {
@@ -99,12 +110,12 @@ public abstract class EntityUI extends Actor {
         this.alive = alive;
     }
 
-    public void setInjured(boolean injured) {
-        this.injured = injured;
-    }
-
     public boolean isInjured() {
         return injured;
+    }
+
+    public void setInjured(boolean injured) {
+        this.injured = injured;
     }
 
     public void setVictime(EntityUI victime) {
@@ -124,25 +135,21 @@ public abstract class EntityUI extends Actor {
         positionChanged();
     }
 
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
-
     /**
      * Create a sequence of colors showing the character injured
      * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
      */
-    private void injure(){
-        if (temps>0) sprite.setColor(Color.RED);
-        temps+=getTimeLapse();
-        if (temps>getTileSize()*getTimeLapse()){
+    private void injure() {
+        if (temps > 0) sprite.setColor(Color.RED);
+        temps += getTimeLapse();
+        if (temps > getTileSize() * getTimeLapse()) {
             actualiseStats();
-            temps=0;
-            sprite.setColor(1,1,1,1);
-            injured=false;
-            waiting= true;
-            if(entity.getHealth()<=0) {
-                alive=false;
+            temps = 0;
+            sprite.setColor(1, 1, 1, 1);
+            injured = false;
+            waiting = true;
+            if (entity.getHealth() <= 0) {
+                alive = false;
             }
         }
     }
@@ -150,30 +157,29 @@ public abstract class EntityUI extends Actor {
     /**
      * Puts the character with a dark filter.
      */
-    protected void exhaust(){
-        if(entity.isExhausted()) {
+    protected void exhaust() {
+        if (entity.isExhausted()) {
             sprite.setColor(Color.GRAY);
         } else {
-            sprite.setColor(1,1,1,1);
+            sprite.setColor(1, 1, 1, 1);
         }
     }
 
-    protected boolean canMove(){
+    protected boolean canMove() {
         return false;
     }
 
-    public boolean isWaiting(){
+    public boolean isWaiting() {
         return waiting;
     }
 
-    public void setWaiting( boolean b){
-        this.waiting= b;
+    public void setWaiting(boolean b) {
+        this.waiting = b;
     }
-
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (isWaiting()&&!injured) {
+        if (isWaiting() && !injured) {
             actualiseStats();
             stats.draw(batch);
         }
@@ -184,22 +190,16 @@ public abstract class EntityUI extends Actor {
         super.draw(batch, parentAlpha);
     }
 
-    public static float getTimeLapse() {
-        //return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
-        return Gdx.graphics.getDeltaTime()*(getTileSize());
-
-    }
-
     public float getTemps() {
         return temps;
     }
 
-    public void addTemps(float temps) {
-        this.temps += temps;
-    }
-
     public void setTemps(float temps) {
         this.temps = temps;
+    }
+
+    public void addTemps(float temps) {
+        this.temps += temps;
     }
 
     public Pair<Integer, Integer> getSize() {
@@ -210,20 +210,14 @@ public abstract class EntityUI extends Actor {
         this.size = size;
     }
 
-
-
-    public static float getTileSize() {
-        return TILE_SIZE;
-    }
-
-    public boolean isFaction(Faction faction){
+    public boolean isFaction(Faction faction) {
         return entity.getFaction().equals(faction);
     }
 
     @Override
     public void moveBy(float x, float y) {
-        coordinates.first += (int)x;
-        coordinates.second += (int)y;
-        setPosition(coordinates.first * TILE_SIZE,coordinates.second * TILE_SIZE);
+        coordinates.first += (int) x;
+        coordinates.second += (int) y;
+        setPosition(coordinates.first * TILE_SIZE, coordinates.second * TILE_SIZE);
     }
 }

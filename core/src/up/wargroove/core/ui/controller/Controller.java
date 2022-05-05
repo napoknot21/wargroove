@@ -457,7 +457,7 @@ public class Controller {
             if (entityTarget.getHealth() <= 0) {
                 killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()), attack);
                 getWorld().removePlayer(entityTarget.getFaction());
-                //gameOver(attack);
+                gameOver(attack);
                 return true;
             }
         }
@@ -491,10 +491,11 @@ public class Controller {
     private void structureAttackted(EntityUI entityUI, Faction attack) {
         Entity entity = entityUI.getEntity();
         if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth() <= 0) {
-            entityUI.actualiseSprite(Assets.getInstance().get((Structure) entity));
+            entity.setHealth(1);
             if (entity.getFaction().equals(Faction.OUTLAWS)){
                 entity.setFaction(attack);
                 getWorld().getPlayer(attack).addEntity(entity);
+                entity.exhaust();
                 getScreen().getStage().addActor(
                         new StructureUI(getScreen().getStage(), (Structure) entity, entityUI.getCoordinates())
                 );

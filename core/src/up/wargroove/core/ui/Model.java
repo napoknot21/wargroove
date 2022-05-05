@@ -127,7 +127,7 @@ public class Model {
             return t.entity.isPresent() || !t.getType().isWalkable();
         });
         for (int i = 0; i < adj.size() && i < 2; i++) {
-            Entity entity = new Soldier("Knit-Guards", Faction.CHERRYSTONE_KINGDOM);
+            Entity entity = new Soldier("Knit-Guards", player.getFaction());
             player.addEntity(entity);
             getWorld().at(adj.get(i)).entity = Optional.of(entity);
         }

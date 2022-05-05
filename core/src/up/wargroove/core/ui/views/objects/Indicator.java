@@ -64,15 +64,15 @@ public class Indicator extends Actor {
         Entity character = tile.entity.get();
         if (character instanceof Structure) {
             setForeground(Assets.getInstance().get((Structure) character));
-            return;
+        } else {
+            var texture = assets.get(
+                    Assets.AssetDir.CHARACTER.path() + character.getFaction() + "/"
+                            + character.getType() + "_DIE.png",
+                    Texture.class
+            );
+            TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
+            setForeground((tmp[0][0]));
         }
-        var texture = assets.get(
-                Assets.AssetDir.CHARACTER.path() + character.getFaction() + "/"
-                        + character.getType() + "_DIE.png",
-                Texture.class
-        );
-        TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
-        setForeground((tmp[0][0]));
         int numero = 0;
         if (character.getHealth() < 90) {
             numero = (int) ((character.getHealth() / 10) + 1);
