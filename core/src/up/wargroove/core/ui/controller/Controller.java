@@ -503,6 +503,7 @@ public class Controller {
                 getWorld().getPlayer(entity.getFaction()).removeEntity(entity);
                 entity.setFaction(Faction.OUTLAWS);
                 getWorld().getFantome().addEntity(entity);
+                entity.setHealth(20);
                 getScreen().getStage().addActor(
                         new StructureUI(getScreen().getStage(), (Structure) entity, entityUI.getCoordinates())
                 );
