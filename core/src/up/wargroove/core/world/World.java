@@ -29,8 +29,9 @@ public class World {
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
+        Entity root = terrain[k[3]].entity.get();
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-	if(toTile.entity.isPresent()) return new Pair<>(-1,false);
+	if(toTile.entity.isPresent()) return new Pair<>(-100,true);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -42,8 +43,8 @@ public class World {
 
     private final WPredicate<Integer> withinRange = (k) -> {
         Optional<Entity> rootEntity  = terrain[k[3]].entity;
-        var p = intToCoordinates(k[0],getDimension());
-        if(rootEntity.isEmpty()) return new Pair<>(-1, false);
+        Tile toTile = terrain[k[Constants.WG_ZERO]];
+        if(rootEntity.isEmpty() || toTile.entity.isPresent()) return new Pair<>(-1, false);
         int attackRange = rootEntity.get().getRange();
         if(k[2] + attackRange > 0) {
             return new Pair<>(-1, false);
@@ -58,8 +59,8 @@ public class World {
 	if(rootEntity.isEmpty() || targetEntity.isEmpty()) return new Pair<>(-1,false);
 
 	int attackRange = rootEntity.get().getRange();
-	if(k[2] + attackRange <= 0) {
-        return new Pair<>(k[2] + attackRange - 1, false);
+	if(k[2] < 0) {
+        return new Pair<>(k[2] + attackRange - 1, true);
     }
 
 	boolean status = targetEntity.get().getFaction() != rootEntity.get().getFaction();
@@ -385,9 +386,8 @@ public class World {
     @SafeVarargs
     private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer>... predicate) {
 
-        Map<Integer, Boolean> checked = new HashMap<>();
+        Map<Integer, Integer> checked = new HashMap<>();
         Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
-
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
 
         if (predicate.length == 0 || terrain[root].entity.isEmpty()) return res;
@@ -411,7 +411,7 @@ public class World {
 
             for (Integer lin : adjacent) {
 
-                if (checked.containsKey(lin)) continue;
+                if (checked.containsKey(lin) && checked.get(lin) > 4) continue;
 
 
                 boolean added = false;
@@ -439,7 +439,8 @@ public class World {
                     res.add(new Pair<>(lin, intel));
 
                 }
-                checked.put(lin, movementCost >= 0);
+
+                checked.put(lin, checked.getOrDefault(lin,0)  + 1);
 
             }
             parentIndex++;

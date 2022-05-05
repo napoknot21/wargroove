@@ -467,4 +467,8 @@ public class GameView extends View {
     public boolean isInAttackMode() {
         return attack;
     }
+
+    public Stage getGameViewUi() {
+        return gameViewUi;
+    }
 }

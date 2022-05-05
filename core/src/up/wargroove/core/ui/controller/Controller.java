@@ -10,13 +10,12 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Null;
-import org.lwjgl.Sys;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.character.entities.Commander;
-import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
+import up.wargroove.core.character.entities.Commander;
+import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.*;
@@ -26,8 +25,7 @@ import up.wargroove.utils.Database;
 import up.wargroove.utils.Pair;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Vector;
+import java.util.*;
 
 
 /**
@@ -38,24 +36,20 @@ public class Controller {
      * The wargroove client.
      */
     private final WargrooveClient wargroove;
-
+    private final Pair<Float, Float> cameraDestination = new Pair<>();
     /**
      * The screen to control.
      */
     private View screen;
-
     /**
      * The game model.
      */
     private Model model;
-
     /**
      * World scale.
      */
     private float worldScale;
-
     private boolean cameraMoving = false;
-    private final Pair<Float, Float> cameraDestination = new Pair<>();
 
     /**
      * Create a controller.
@@ -235,7 +229,7 @@ public class Controller {
      * @return the tile at the (x,y) position.
      */
     public Tile getTile(int x, int y) {
-        return getModel().getTile(x,y);
+        return getModel().getTile(x, y);
 
     }
 
@@ -417,38 +411,37 @@ public class Controller {
         Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        attack((CharacterUI) actor, (EntityUI) actorTarget,path);
-        if (!commanderDie(entityTarget,tile.entity.get().getFaction())){
-            structureAttackted(entityTarget, (EntityUI) actorTarget,tile.entity.get().getFaction());
-            if (actorTarget instanceof CharacterUI){
+        attack((CharacterUI) actor, (EntityUI) actorTarget, path);
+        if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
+            structureAttackted(entityTarget, (EntityUI) actorTarget, tile.entity.get().getFaction());
+            if (actorTarget instanceof CharacterUI) {
                 //contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
             }
         }
     }
 
     private String inversePath(String path) {
-        String res="";
-        for (int i=0; i<path.length();i++){
-            if (path.charAt(i) == 'R'){
-                res = res + 'L';
-            } else if (path.charAt(i) == 'L'){
-                res =res + 'R';
-            } else if (path.charAt(i) == 'U'){
-            res =res + 'D';
-            } else {
-                res =res + 'U';
+        StringBuilder res = new StringBuilder();
+        for (int i = 0; i < path.length(); i++) {
+            switch (path.charAt(i)) {
+                case 'R':res.append('L');break;
+                case 'L':res.append('R'); break;
+                case 'U':res.append('D');break;
+                case'D':res.append('U'); break;
+                default:
             }
         }
-        return res;
+        return res.toString();
     }
 
     private void attack(CharacterUI actor, EntityUI actorTarget, String path) {
-            actor.setMove(path.substring(0, path.length() - 1));
-            actor.setAttackDirection(path.charAt(path.length() - 1));
-            actor.setVictime(actorTarget);
-            actor.getEntity().attack(actorTarget.getEntity());
+        actor.setMove(path.substring(0, path.length() - 1));
+        actor.setAttackDirection(path.charAt(path.length() - 1));
+        actor.setVictime(actorTarget);
+        actor.getEntity().attack(actorTarget.getEntity());
 
     }
+
     private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
         if (actor.getEntity().getRange() == 1) {
             actor.setAttackDirection(path.charAt(path.length() - 1));
@@ -466,7 +459,7 @@ public class Controller {
     private boolean commanderDie(Entity entityTarget, Faction attack) {
         if (entityTarget instanceof Commander || entityTarget instanceof Stronghold) {
             if (entityTarget.getHealth() <= 0) {
-                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()),attack);
+                killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()), attack);
                 getWorld().removePlayer(entityTarget.getFaction());
                 gameOver(attack);
                 return true;
@@ -477,59 +470,72 @@ public class Controller {
 
     /**
      * Only way to catch the StructureUI, is reading all the map
+     *
      * @param player
      * @param enemie
      */
     private void killArmyAndDestroyBases(Player player, Faction attack) {
         Faction victim = player.getFaction();
         GameView gameView = (GameView) getScreen();
-            for (Actor actor : gameView.getCharacters().getActors()) {
-                if ((actor instanceof CharacterUI) && ((CharacterUI) actor).getEntity().getFaction().equals(victim)) {
-                    deleteCharacterUI(actor,player);
-                }
+        Queue<Actor> delQueue = new LinkedList<>();
+        gameView.getCharacters().getActors().forEach(actor -> {
+            if ((actor instanceof CharacterUI) && ((CharacterUI) actor).getEntity().getFaction().equals(victim)) {
+                delQueue.add(actor);
             }
-            for (Actor actor : gameView.getStage().getActors()) {
-                if ((actor instanceof StructureUI) && (((StructureUI) actor).getEntity().getFaction().equals(victim))) {
-                    Entity entity = ((StructureUI) actor).getEntity();
-                    player.removeEntity(entity);
-                    Player rival = getWorld().getPlayer(attack);
-                    if (entity instanceof Stronghold) {
-                        getWorld().delEntity(((StructureUI) actor).getCoordinates(), entity);
-                    } else {
-                        rival.addEntity(entity);
-                        entity.setFaction(attack);
-                        gameView.getStage().addActor(new StructureUI(gameView.getStage(), (Structure) entity, ((StructureUI) actor).getCoordinates()));
-                    }
-                    actor.remove();
-                }
+        });
+        while (!delQueue.isEmpty()) deleteCharacterUI((CharacterUI) delQueue.poll(), player);
+        gameView.getStage().getActors().forEach(actor -> {
+            if ((actor instanceof StructureUI) && (((StructureUI) actor).getEntity().getFaction().equals(victim))) {
+                delQueue.add(actor);
             }
+        });
+        while (!delQueue.isEmpty()) deleteStructureUI((StructureUI) delQueue.poll(), player, attack);
     }
 
-    private void structureAttackted(Entity entity, EntityUI entityUI, Faction faction){
-        if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth()<=0) {
+    private void structureAttackted(Entity entity, EntityUI entityUI, Faction faction) {
+        if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth() <= 0) {
             entity.setFaction(faction);
             entityUI.actualiseSprite(Assets.getInstance().get((Structure) entity));
         }
     }
-    private void deleteCharacterUI(Actor actor, Player player){
-        Entity entity = ((CharacterUI) actor).getEntity();
-        getWorld().delEntity(((CharacterUI) actor).getCoordinates(), entity);
+
+    private void deleteCharacterUI(CharacterUI actor, Player player) {
+        Entity entity = actor.getEntity();
+        getWorld().delEntity(actor.getCoordinates(), entity);
         player.removeEntity(entity);
         actor.remove();
     }
 
-    private void gameOver(Faction faction){
-        if (getWorld().isTheLastPlayer()){
-            GameView gameView= (GameView) getScreen();
-            Dialog dialog = new Dialog("Game Over", gameView.getAssets().getSkin());
-            Label label = new Label("The "+ faction.name()+ " won the war in "+getModel().getRound() + " rounds", gameView.getAssets().getSkin());
-            TextButton button = new TextButton("Close", gameView.getAssets().getSkin());
-            dialog.setBounds((Gdx.graphics.getWidth()/2)-dialog.getWidth(), (Gdx.graphics.getHeight()/2)-dialog.getHeight(), dialog.getPrefWidth(), dialog.getPrefHeight());
-            dialog.add(label);
-            dialog.row();
-            dialog.add(button).center();
-            dialog.show(getScreen().getStage());
-            Controller controller= this;
+    private void deleteStructureUI(StructureUI actor, Player player, Faction attack) {
+        Entity entity = actor.getEntity();
+        player.removeEntity(entity);
+        Player rival = getWorld().getPlayer(attack);
+        if (entity instanceof Stronghold) {
+            getWorld().delEntity(actor.getCoordinates(), entity);
+        } else {
+            rival.addEntity(entity);
+            entity.setFaction(attack);
+            getScreen().getStage().addActor(
+                    new StructureUI(getScreen().getStage(), (Structure) entity, actor.getCoordinates())
+            );
+        }
+        actor.remove();
+    }
+
+    private void gameOver(Faction faction) {
+        if (getWorld().isTheLastPlayer()) {
+            GameView gameView = (GameView) getScreen();
+            Skin skin = gameView.getAssets().getSkin();
+            Dialog dialog = new Dialog("", gameView.getAssets().getSkin());
+            Label label = new Label(
+                    "The " + faction.prettyName() + " won the war in " + getModel().getRound() + " rounds", skin
+            );
+            label.setColor(Color.BLACK);
+            TextButton button = new TextButton("Close", skin);
+            dialog.getContentTable().add(label).expand().fill();
+            dialog.button(button);
+            dialog.show(gameView.getGameViewUi());
+            Controller controller = this;
             button.addListener(
                     new ChangeListener() {
                         @Override
@@ -643,7 +649,7 @@ public class Controller {
                 this, gameView.getCharacters(), new Pair<>((int) v.x, (int) v.y),
                 (Character) getModel().getBoughtEntity()
         );
-
+        gameView.getCharacters().addActor(c);
         getModel().getCurrentPlayer().addEntity(getModel().getBoughtEntity());
         getModel().getCurrentPlayer().buy(getModel().getBoughtEntity().getCost());
         getModel().getBoughtEntity().exhaust();

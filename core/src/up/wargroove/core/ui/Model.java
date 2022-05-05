@@ -63,22 +63,6 @@ public class Model {
         if (isActive) {
             return;
         }
-        if (world == null) {
-            if (properties == null) {
-                properties = new WorldProperties();
-                properties.dimension = new Pair<>(20, 20);
-                properties.genProperties = new GeneratorProperties(3, -3.2, -12.0);
-            }
-            world = new World(properties);
-
-            Thread gen = new Thread(() -> world.initialize(true));
-            gen.start();
-            try {
-                gen.join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         world.loadPlayers();
         Recruitment.clearAll();
         EntityManager.getInstance().load();
@@ -143,7 +127,7 @@ public class Model {
             return t.entity.isPresent() || !t.getType().isWalkable();
         });
         for (int i = 0; i < adj.size() && i < 2; i++) {
-            Entity entity = new Soldier("Knit-Guards", player.getFaction());
+            Entity entity = new Soldier("Knit-Guards", Faction.CHERRYSTONE_KINGDOM);
             player.addEntity(entity);
             getWorld().at(adj.get(i)).entity = Optional.of(entity);
         }
