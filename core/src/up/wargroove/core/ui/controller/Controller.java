@@ -413,9 +413,9 @@ public class Controller {
         tile.entity.get().exhaust();
         attack((CharacterUI) actor, (EntityUI) actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
-            structureAttackted(entityTarget, (EntityUI) actorTarget, tile.entity.get().getFaction());
+            structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
             if (actorTarget instanceof CharacterUI) {
-                //contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
+                contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
             }
         }
     }
@@ -443,11 +443,7 @@ public class Controller {
     }
 
     private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
-        if (actor.getEntity().getRange() == 1) {
-            actor.setAttackDirection(path.charAt(path.length() - 1));
-            actor.setVictime(actorTarget);
             actor.getEntity().attack(actorTarget.getEntity());
-        }
     }
 
     /**
@@ -461,7 +457,7 @@ public class Controller {
             if (entityTarget.getHealth() <= 0) {
                 killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()), attack);
                 getWorld().removePlayer(entityTarget.getFaction());
-                gameOver(attack);
+                //gameOver(attack);
                 return true;
             }
         }
@@ -492,10 +488,25 @@ public class Controller {
         while (!delQueue.isEmpty()) deleteStructureUI((StructureUI) delQueue.poll(), player, attack);
     }
 
-    private void structureAttackted(Entity entity, EntityUI entityUI, Faction faction) {
+    private void structureAttackted(EntityUI entityUI, Faction attack) {
+        Entity entity = entityUI.getEntity();
         if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth() <= 0) {
-            entity.setFaction(faction);
             entityUI.actualiseSprite(Assets.getInstance().get((Structure) entity));
+            if (entity.getFaction().equals(Faction.OUTLAWS)){
+                entity.setFaction(attack);
+                getWorld().getPlayer(attack).addEntity(entity);
+                getScreen().getStage().addActor(
+                        new StructureUI(getScreen().getStage(), (Structure) entity, entityUI.getCoordinates())
+                );
+            } else {
+                getWorld().getPlayer(entity.getFaction()).removeEntity(entity);
+                entity.setFaction(Faction.OUTLAWS);
+                getWorld().getFantome().addEntity(entity);
+                getScreen().getStage().addActor(
+                        new StructureUI(getScreen().getStage(), (Structure) entity, entityUI.getCoordinates())
+                );
+            }
+            entityUI.remove();
         }
     }
 
@@ -513,8 +524,8 @@ public class Controller {
         if (entity instanceof Stronghold) {
             getWorld().delEntity(actor.getCoordinates(), entity);
         } else {
-            rival.addEntity(entity);
-            entity.setFaction(attack);
+            entity.setFaction(Faction.OUTLAWS);
+            getWorld().getFantome().addEntity(entity);
             getScreen().getStage().addActor(
                     new StructureUI(getScreen().getStage(), (Structure) entity, actor.getCoordinates())
             );

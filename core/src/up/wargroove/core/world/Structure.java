@@ -55,7 +55,7 @@ public abstract class Structure extends Entity {
     @Override
     public void nextTurn() {
         isExhausted = false;
-        if (this instanceof Structure && this.getHealth()<100){
+        if (this.getHealth()<100){
             this.setHealth(getHealth()+10);
         }
     }

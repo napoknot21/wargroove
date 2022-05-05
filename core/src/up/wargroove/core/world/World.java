@@ -24,6 +24,7 @@ public class World {
 
     private Vector<Player> players;
     private int playerPtr = 0;
+    private Player fantome = new Player(Faction.OUTLAWS,0);
 
     private State currentState;
 
@@ -164,7 +165,7 @@ public class World {
     private void nextTurn() {
 
 	    states.push(currentState);
-	    currentState = new State(); 
+	    currentState = new State();
 
 
     }
@@ -176,6 +177,7 @@ public class World {
 	    if(playerPtr == 0) {
 
 		    nextTurn();
+            fantome.nextTurn();
 
 	    }
 
@@ -510,6 +512,10 @@ public class World {
 
 	    return properties.getName();
 
+    }
+
+    public Player getFantome(){
+        return fantome;
     }
 
     public String getDescription() {

@@ -118,6 +118,10 @@ public class CharacterUI extends EntityUI {
         move += 'L';
     }
 
+    public void addMove(String c){
+        move += c;
+    }
+
 
     /**
      * Decides movement's direction
@@ -162,6 +166,12 @@ public class CharacterUI extends EntityUI {
     }
 
 
+    public void vengeance(String path){
+        CharacterUI characterUI = (CharacterUI) victime;
+        ((CharacterUI) victime).addMove(path);
+        move.substring(0,path.length()-1);
+    }
+
     /**
      * Create the animation showing the character walking
      */
@@ -203,8 +213,10 @@ public class CharacterUI extends EntityUI {
      */
 
     public void attack(Texture texture) {
+        String path = "";
         if (getTemps() == getTimeLapse()) {
             AnimationAttack(texture);
+            path = move;
         }
         if (getTemps() >= (ATTACK_FRAMES * 10 - 2 * getTimeLapse())/2) {
             victime.setInjured(true);
@@ -214,7 +226,24 @@ public class CharacterUI extends EntityUI {
             setTemps(0);
             attackDirection = null;
             actualiseTexture();
+            //victime.vengeance(inversePath(path));
         }
+    }
+
+    private String inversePath(String path) {
+        String res="";
+        for (int i=0; i<path.length();i++){
+            if (path.charAt(i) == 'R'){
+                res = res + 'L';
+            } else if (path.charAt(i) == 'L'){
+                res =res + 'R';
+            } else if (path.charAt(i) == 'U'){
+                res =res + 'D';
+            } else {
+                res =res + 'U';
+            }
+        }
+        return res;
     }
 
     /**

@@ -24,6 +24,7 @@ public abstract class EntityUI extends Actor {
     private Pair<Integer,Integer> size;
     private boolean alive = true;
     private boolean injured = false;
+    private boolean waiting = true;
     private float temps;
 
 
@@ -108,6 +109,7 @@ public abstract class EntityUI extends Actor {
 
     public void setVictime(EntityUI victime) {
         this.victime = victime;
+        victime.setWaiting(false);
     }
 
     protected Texture getPath(String nameFile) {
@@ -134,9 +136,11 @@ public abstract class EntityUI extends Actor {
         if (temps>0) sprite.setColor(Color.RED);
         temps+=getTimeLapse();
         if (temps>getTileSize()*getTimeLapse()){
+            actualiseStats();
             temps=0;
             sprite.setColor(1,1,1,1);
             injured=false;
+            waiting= true;
             if(entity.getHealth()<=0) {
                 alive=false;
             }
@@ -159,18 +163,24 @@ public abstract class EntityUI extends Actor {
     }
 
     public boolean isWaiting(){
-        return true;
+        return waiting;
+    }
+
+    public void setWaiting( boolean b){
+        this.waiting= b;
     }
 
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (injured) injure();
-        sprite.draw(batch);
-        if (isWaiting()) {
+        if (isWaiting()&&!injured) {
             actualiseStats();
             stats.draw(batch);
         }
+        if (injured) injure();
+        sprite.draw(batch);
+
+
         super.draw(batch, parentAlpha);
     }
 
