@@ -11,6 +11,7 @@ public class Village extends Structure{
 
     @Override
     public void nextTurn() {
+        super.nextTurn();
         exhaust();
     }
 }

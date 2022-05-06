@@ -12,6 +12,7 @@ public class Stronghold extends Structure{
 
     @Override
     public void nextTurn() {
+        super.nextTurn();
         exhaust();
     }
 }
