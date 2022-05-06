@@ -55,14 +55,14 @@ public class Codex extends Table {
         dialog = new Dialog("Codex", skin) {
             @Override
             public float getPrefHeight() {
-                return Math.min(Gdx.graphics.getHeight() / 1.5f, 300);
+                return Math.max(Gdx.graphics.getHeight() / 1.5f, 300);
             }
 
             public float getPrefWidth() {
-                return Math.min(Gdx.graphics.getHeight(), 500);
+                return Math.max(Gdx.graphics.getWidth()/2, 500);
             }
         };
-        description = new Label("This is the codex of the game", skin);
+        description = new Label("This is the codex\n of the game", skin);
         description.setColor(Color.BLACK);
 
         createSubject(skin);
@@ -71,6 +71,7 @@ public class Codex extends Table {
         actualiseTableObject();
         paneDescription = new ScrollPane(description, skin);
         paneObject = new ScrollPane(tableObjects, skin);
+        paneObject.setSize(dialog.getPrefWidth()/5, getPrefHeight());
         initialisePanel(paneObject);
         initialisePanel(paneDescription);
         dialog.getContentTable().add();
@@ -102,7 +103,7 @@ public class Codex extends Table {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         dialog.hide();
-                        description.setText("Welcome to the world of NAME_NOT_FOUND ");
+                        description.setText("Welcome to the world\n of NAME_NOT_FOUND ");
                     }
                 });
         for (TextButton b : object
@@ -111,7 +112,7 @@ public class Codex extends Table {
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
-                            setDescription(b.getLabel().getText().toString());
+                            setDescription("Entity",b.getLabel().getText().toString());
                             resize();
 
                         }
@@ -124,8 +125,12 @@ public class Codex extends Table {
                             public void changed(ChangeEvent event, Actor actor) {
                                 createObject(a.getLabel().getText().toString(), openCodex.getSkin());
                                 actualiseTableObject();
-                                description.setText("Here you can find the description\n of the differents " + a.getLabel().getText().toString() + "s ");
+                                description.setText("Here you can find the\n description of \nthe differents " + a.getLabel().getText().toString() + "s ");
+                                if (a.getLabel().getText().toString().equals("Game")){
+                                    description.setText("Here you can find \nthe description \n about the game");
+                                }
                                 resize();
+
                             }
                         });
 
@@ -172,8 +177,11 @@ public class Codex extends Table {
 
     private void createObject(String s, Skin skin) {
         object.clear();
-        Object[] values;
+        Object[] values= null;
         switch (s) {
+            case "Entity":
+                values = Entity.Type.values();
+                break;
             case "Tile":
                 values = Tile.Type.values();
                 break;
@@ -183,8 +191,10 @@ public class Codex extends Table {
             case "Biome":
                 values = Biome.values();
                 break;
-            default:
-                values = Entity.Type.values();
+            case "Game":
+                values = Codex.Game.values();
+                break;
+            default: values = Entity.Type.values();
         }
         for (Object t : values
         ) {
@@ -194,9 +204,11 @@ public class Codex extends Table {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
                     try {
-                        setDescription(t.toString());
+                        setDescription(s,t.toString());
+                        resize();
                     } catch (Exception e) {
                         description.setText("Unknown description");
+
                     }
                 }
             });
@@ -209,33 +221,37 @@ public class Codex extends Table {
         float x = dialog.getX();
         float y = dialog.getY();
         float h = dialog.getHeight();
-        dialog.setBounds(x, y, dialog.getPrefWidth(), dialog.getPrefHeight());
         dialog.setPosition(x, y - (dialog.getPrefHeight() - h));
+        paneDescription.setSize(1000,1000);
+        paneDescription.getActor().getParent().setSize(200, 100);
 
     }
 
 
-    private void setDescription(String name) {
-        description.setText(getDescription(name));
+    private void setDescription(String object, String name) {
+        description.setText(getDescription(object, name));
     }
 
-    private String getDescription(String name) {
-        /*
+    private String getDescription(String object, String name) {
+        Object type = null;
 
-         switch (name){
-            case "Tile": values= Entity.Type.valueOf(name.toUpperCase()); break;
-            case "Faction": values= Faction.valueOf(name.toUpperCase()); break;
-            case  "Biome": values= Biome.valueOf(name.toUpperCase()); break;
-            default: values= Entity.Type.valueOf(name.toUpperCase());
+        switch (object){
+            case "Entity" :type= Entity.Type.valueOf(name.toUpperCase()); break;
+            case "Tile":type= Tile.Type.valueOf(name.toUpperCase()); break;
+            case "Faction": type= Faction.valueOf(name.toUpperCase()); break;
+            case  "Biome": type= Biome.valueOf(name.toUpperCase()); break;
+            case "Game" : type= Codex.Game.valueOf(name.toUpperCase()); break;
         }
-         */
-        var type = Entity.Type.valueOf(name.toUpperCase());
         try {
-            return assets.get(type, 30);
+            return assets.get(type,  (dialog.getPrefWidth()==Gdx.graphics.getWidth()/2)? 50: 20);
         } catch (Exception e) {
             return "Unknown description";
         }
-        //assets.getInstance
     }
-
+    public enum Game{
+        CREATORS,
+        MUSIC,
+        ART,
+        COPYRIGTH;
+    }
 }

@@ -1,0 +1,1 @@
+While projectiles can travel over walls, units are unable to.

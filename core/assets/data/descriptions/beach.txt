@@ -1,0 +1,1 @@
+Boats can move onto beach tiles to load units.

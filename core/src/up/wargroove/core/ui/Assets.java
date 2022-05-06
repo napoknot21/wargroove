@@ -13,6 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
+import up.wargroove.core.ui.views.objects.Codex;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Recruitment;
 import up.wargroove.core.world.Structure;
@@ -40,16 +42,19 @@ public class Assets {
     private final AssetManager manager;
     private final Map<Class<?>, Object> defaults;
 
-    private final Map<Entity.Type, FileHandle> entitiesDescriptions;
-    private final Map<Tile.Type, FileHandle> tilesDescriptions;
+    private final Map<Object, FileHandle> descriptions;
+
+
 
 
     private Assets() {
         manager = new AssetManager();
         defaults = new HashMap<>();
 
-        entitiesDescriptions = new HashMap<>();
-        tilesDescriptions = new HashMap<>();
+        descriptions = new HashMap<>();
+
+
+
         instance = this;
     }
 
@@ -116,35 +121,35 @@ public class Assets {
      */
 
 
-    public void loadEntitiesDescription() {
-        FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[0]);
-        Scanner scanner = new Scanner(fileLoader.read());
-        while (scanner.hasNextLine()) {
-            String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
-            FileHandle file = Gdx.files.internal(path);
-            Entity.Type type = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
-
-            entitiesDescriptions.put(type, file);
+    public void loadDescription() {
+        for(int i =0; i<5;i++){
+            FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[i]);
+            Scanner scanner = new Scanner(fileLoader.read());
+            while (scanner.hasNextLine()) {
+                String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
+                FileHandle file = Gdx.files.internal(path);
+                Object type = defineType(i, file);
+                descriptions.put(type, file);
+            }
+            scanner.close();
         }
-        scanner.close();
+    }
+
+    private Object defineType(int i, FileHandle file){
+        Object object = null;
+        switch (i){
+            case 0: object= Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+            case 1: object= Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+            case 2: object= Biome.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+            case 3: object= Faction.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+            case 4: object = Codex.Game.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+
+        }
+        return object;
     }
 
 
-    /**
-     * Loads the tile description on the description directory.
-     */
-    public void loadTilesDescription() {
-        FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[1]);
-        Scanner scanner = new Scanner(fileLoader.read());
-        while (scanner.hasNextLine()) {
-            String path = AssetDir.DESCRIPTION.path + scanner.nextLine();
-            FileHandle file = Gdx.files.internal(path);
-            Tile.Type type = Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
 
-            tilesDescriptions.put(type, file);
-        }
-        scanner.close();
-    }
 
 
     @SuppressWarnings("all")
@@ -323,21 +328,6 @@ public class Assets {
         return manager.get(fileName, type, required);
     }
 
-    /**
-     * Gets the description of the given type.
-     *
-     * @param type       The tile type.
-     * @param lineLength The length of the lines.
-     * @return the description as a String. Each line is of length lineLength.
-     * @throws FileNotFoundException if the description wasn't loaded
-     */
-    public String get(Tile.Type type, int lineLength) throws FileNotFoundException {
-        FileHandle f = tilesDescriptions.get(type);
-        if (f == null) {
-            throw new RuntimeException("The asset was not loaded for the Tile type : " + type.name());
-        }
-        return readFile(f, lineLength);
-    }
 
     /**
      * Gets the description of the given type.
@@ -347,13 +337,13 @@ public class Assets {
      * @return the description as a String. Each line is of length lineLength.
      * @throws FileNotFoundException if the description wasn't loaded
      */
-    public String get(Entity.Type type, int lineLength) throws FileNotFoundException {
+    public String get(Object type, int lineLength) throws FileNotFoundException {
         if (lineLength < 1) {
             return "";
         }
-        FileHandle f = entitiesDescriptions.get(type);
+        FileHandle f = descriptions.get(type);
         if (f == null) {
-            throw new RuntimeException("The asset was not loaded for the Entity type : " + type.name());
+            throw new RuntimeException("The asset was not loaded for the Entity type");
         }
         return readFile(f, lineLength);
     }
@@ -411,8 +401,8 @@ public class Assets {
         instance = null;
         defaults.clear();
 
-        entitiesDescriptions.clear();
-        tilesDescriptions.clear();
+        descriptions.clear();
+
     }
 
     public void writeSettings() {
@@ -425,7 +415,7 @@ public class Assets {
      */
     public enum AssetDir {
         DATA("data" + fs),
-        DESCRIPTION(DATA.path + "descriptions" + fs, "entities"),
+        DESCRIPTION(DATA.path + "descriptions" + fs, "entities", "tiles", "biomes", "factions","game"),
         GUI(DATA.path + "gui" + fs, "gui"),
         ARROWS(GUI.path + "arrows" + fs, "arrows"),
         CHARACTER(GUI.path + "character" + fs),

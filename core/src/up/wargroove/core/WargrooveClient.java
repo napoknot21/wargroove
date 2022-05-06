@@ -56,7 +56,7 @@ public class WargrooveClient extends Game {
         assets.load(Assets.AssetDir.SOUND);
         assets.loadDefault();
         assets.load(Assets.AssetDir.SKIN);
-        assets.loadEntitiesDescription();
+        assets.loadDescription();
         settings = Gdx.app.getPreferences("settings");
         loadSettings();
         batch = new SpriteBatch();
