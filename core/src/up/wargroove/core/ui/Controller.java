@@ -24,6 +24,7 @@ import up.wargroove.utils.Pair;
 
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -468,7 +469,7 @@ public class Controller {
      * Only way to catch the StructureUI, is reading all the map
      *
      * @param player
-     * @param enemie
+     * @param attack
      */
     private void killArmyAndDestroyBases(Player player, Faction attack) {
         Faction victim = player.getFaction();
@@ -672,11 +673,27 @@ public class Controller {
     }
 
     public void endTurn() {
-        ((GameView) getScreen()).getCursor().setLock(false);
-        ((GameView) getScreen()).clearAll();
+        GameView gameView = ((GameView) getScreen());
+        gameView.getCursor().setLock(false);
+        gameView.clearAll();
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
-        ((GameView) getScreen()).setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+        gameView.setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+        Queue<Entity> entities = getModel().getCurrentPlayer().getEntities();
+        Entity commander = null;
+        for (Entity e : entities) {
+            if (e instanceof Commander) {
+                commander = e;
+                break;
+            }
+        }
+        Actor ui = ((GameView) getScreen()).getCharacterUI(commander);
+        if (ui == null) return;
+
+        cameraDestination.first = ui.getX();
+        cameraDestination.second = ui.getY();
+        cameraMoving = true;
+        gameView.getCursor().setPosition(ui.getX(), ui.getY());
     }
 
     public void nextUnit() {
