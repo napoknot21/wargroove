@@ -36,9 +36,11 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * otherwise it will use a free sprite.
      *
      * @param texture The sprite texture.
-     * @param coord   The sprites coordinates.
+     * @param coordinates   The sprites coordinates.
      */
-    protected void add(TextureRegion texture, Pair<Integer, Integer> coord) {
+    protected void add(TextureRegion texture, Pair<?, ?> coordinates) {
+        if (!(coordinates.first instanceof Integer) || !(coordinates.second instanceof Integer)) return;
+        Pair<Integer,Integer> coord = new Pair<>((int) coordinates.first, (int) coordinates.second);
         int x = (int) (coord.first * worldScale);
         int y = (int) (coord.second * worldScale);
         Sprite sprite = new Sprite(texture);
@@ -53,7 +55,7 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * @param texture The sprite texture.
      * @param coord   The sprites coordinates.
      */
-    protected void add(Texture texture, Pair<Integer, Integer> coord) {
+    protected void add(Texture texture, Pair<?, ?> coord) {
         this.add(new TextureRegion(texture),coord);
     }
 

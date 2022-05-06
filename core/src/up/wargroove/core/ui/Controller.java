@@ -310,6 +310,7 @@ public class Controller {
      */
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
+        if (g.getAttackSelector().isActive()) return true;
         if (movement) {
             if (!g.canAttack() && !movementSelector.isValidPosition(worldPosition)) {
                 movementSelector.reset();
@@ -338,11 +339,18 @@ public class Controller {
         GameView g = (GameView) getScreen();
         if (attack) {
             if (!attackSelector.isValidPosition(worldPosition)) {
-                attackSelector.reset();
-                g.clearMoveDialog();
-                return false;
+                if (attackSelector.isPositionAvailable(worldPosition)) {
+                    attackSelector.selectAttackPosition(worldPosition,g.getMovementSelector());
+                    return true;
+                } else {
+                    attackSelector.reset();
+                    g.clearMoveDialog();
+                    return false;
+                }
             }
-            return false;
+            attackSelector.addMovement(worldPosition);
+            attackSelector.setAvailableAttackPosition(g.getMovementSelector(), getWorld());
+            return true;
         }
         if (!setScopeEntity(worldPosition)) {
             attackSelector.reset();

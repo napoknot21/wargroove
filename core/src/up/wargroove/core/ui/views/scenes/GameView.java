@@ -172,9 +172,6 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
-                if (attack) {
-                    attackSelector.addMovement(cursor.getWorldPosition(), movementSelector, getModel().getWorld());
-                }
                 return true;
             }
 
@@ -220,10 +217,9 @@ public class GameView extends View {
                 }
                 buy = false;
                 indicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
-
-                if (movement) {
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                if (movement && !attackSelector.isActive()) {
                     moveDialog.clear();
                     scopeEntity(worldPosition);
                     getController().actualiseFocusEntity(attackSelector.getInitialPosition());
