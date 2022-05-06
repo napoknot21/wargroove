@@ -247,7 +247,6 @@ public class Controller {
      * @return A vector of all the possible targets in world terrain coordinate.
      */
 
-    //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
     public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
         Vector<Pair<Integer, Pair<Integer, Integer>>> valid = getWorld().validTargets();
         return computeSelectorData(valid);
@@ -722,9 +721,6 @@ public class Controller {
                 Math.abs(cameraDestination.first - camera.position.x) > Model.getTileSize() * 2
                         || Math.abs(cameraDestination.second - camera.position.y) > Model.getTileSize() * 2
         );
-        if (!cameraMoving) {
-            camera.position.set(cameraDestination.first, cameraDestination.second, camera.position.z);
-        }
     }
 
     public boolean isCameraMoving() {
