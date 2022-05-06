@@ -414,7 +414,7 @@ public class Controller {
         boolean inLive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
             structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
-            if ((actorTarget instanceof CharacterUI) && inLive && !(((EntityUI) actorTarget).getEntity() instanceof Villager)){
+            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor,inLive)){
                 contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
             }
         }
@@ -753,5 +753,20 @@ public class Controller {
             }
         }
         return false;
+    }
+
+    public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor , boolean inLive){
+        return((actorTarget instanceof CharacterUI) && inLive && !(((CharacterUI) actorTarget).getEntity() instanceof Villager) && canFit((CharacterUI) actorTarget, actor));
+
+        }
+
+    public boolean canFit(CharacterUI characterUI, CharacterUI characterUIVictime){
+        Pair<Integer,Integer> posAttack= characterUI.getCoordinates();
+        Pair<Integer,Integer> posVictime= characterUIVictime.getCoordinates();
+        int distanceX = Math.abs(posAttack.first - posVictime.first);
+        int distanceY = Math.abs(posAttack.second -posVictime.second);
+        int distance = Math.max(distanceX,distanceY);
+        return distance<= characterUI.getEntity().getRange();
+
     }
 }
