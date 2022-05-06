@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
  */
 public class WargrooveClient extends Game {
 
-    private static final float FADING_STEP = 0.01f;
+    private static final float FADING_STEP = 0.03f;
 
     /**
      * Indicate if the client is in debug mode.
@@ -154,11 +154,21 @@ public class WargrooveClient extends Game {
 
     public void stopMusic(boolean delete) {
         if (music == null) return;
-        this.music.stop();
-        if (delete) {
-            music.dispose();
-            music = null;
-        }
+        Music tmp = music;
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                if (tmp.getVolume() > 0) {
+                    tmp.setVolume(Math.max(tmp.getVolume() - FADING_STEP, 0));
+                } else {
+                    tmp.stop();
+                    if (delete) {
+                        tmp.dispose();
+                    }
+                    this.cancel();
+                }
+            }
+        }, 0f, 0.01f);
     }
 
     /**
@@ -166,20 +176,19 @@ public class WargrooveClient extends Game {
      */
     public void playMusic() {
         if (music != null) {
-            music.setVolume(getMusicVolume());
+            music.setVolume(0);
             music.play();
             Timer.schedule(new Timer.Task() {
                 @Override
                 public void run() {
                     if (music.getVolume() < getMusicVolume()) {
-                        music.setVolume(music.getVolume() + FADING_STEP);
-                    }
-                    else {
+                        music.setVolume(Math.min(music.getVolume() + FADING_STEP, 1));
+                    } else {
                         music.setVolume(getMusicVolume());
                         this.cancel();
                     }
                 }
-            },0f, FADING_STEP);
+            }, 0f, 0.01f);
         }
     }
 
