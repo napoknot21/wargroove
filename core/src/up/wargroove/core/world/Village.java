@@ -9,5 +9,8 @@ public class Village extends Structure{
         exhaust();
     }
 
-
+    @Override
+    public void nextTurn() {
+        exhaust();
+    }
 }

@@ -21,7 +21,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MoveDialog;
 import up.wargroove.core.ui.views.objects.StructureMenu;

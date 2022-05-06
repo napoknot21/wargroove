@@ -1,4 +1,4 @@
-package up.wargroove.core.ui.controller;
+package up.wargroove.core.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
@@ -16,8 +16,6 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.entities.Commander;
 import up.wargroove.core.character.entities.Villager;
-import up.wargroove.core.ui.Assets;
-import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.*;
@@ -239,15 +237,8 @@ public class Controller {
      * @return A vector of all the possible movements in world terrain coordinate.
      */
     public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getMovementPossibilities() {
-        var valids = getWorld().validMovements();
-        Vector<Pair<Integer, Integer>> vectors = new Vector<>();
-        Vector<Pair<Integer, Integer>> intel = new Vector<>();
-        valids.forEach(v -> {
-            Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
-            vectors.add(new Pair<>(coord.first, coord.second));
-            intel.add(v.second);
-        });
-        return new Pair<>(vectors, intel);
+        Vector<Pair<Integer, Pair<Integer, Integer>>> valid = getWorld().validMovements();
+        return computeSelectorData(valid);
     }
 
     /**
@@ -258,10 +249,16 @@ public class Controller {
 
     //TODO Changer valids pour la vrai fonction qui trouve les possibles objectifs
     public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
-        var valids = getWorld().validTargets();
+        Vector<Pair<Integer, Pair<Integer, Integer>>> valid = getWorld().validTargets();
+        return computeSelectorData(valid);
+    }
+
+    private Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> computeSelectorData(
+            Vector<Pair<Integer, Pair<Integer, Integer>>> valid
+    ) {
         Vector<Pair<Integer, Integer>> vectors = new Vector<>();
         Vector<Pair<Integer, Integer>> intel = new Vector<>();
-        valids.forEach(v -> {
+        valid.forEach(v -> {
             Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
             vectors.add(new Pair<>(coord.first, coord.second));
             intel.add(v.second);
@@ -708,8 +705,8 @@ public class Controller {
         dy *= (negY) ? -velocity : velocity;
         camera.translate(dx, dy, 0);
         cameraMoving = (
-                Math.abs(cameraDestination.first - camera.position.x) > Model.getTileSize()
-                        || Math.abs(cameraDestination.second - camera.position.y) > Model.getTileSize()
+                Math.abs(cameraDestination.first - camera.position.x) > Model.getTileSize() * 2
+                        || Math.abs(cameraDestination.second - camera.position.y) > Model.getTileSize() * 2
         );
         if (!cameraMoving) {
             camera.position.set(cameraDestination.first, cameraDestination.second, camera.position.z);

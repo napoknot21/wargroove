@@ -6,9 +6,10 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Timer;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.ui.views.scenes.MainMenu;
 import up.wargroove.core.ui.views.scenes.View;
 
@@ -18,6 +19,8 @@ import javax.annotation.Nonnull;
  * The wargroove client.
  */
 public class WargrooveClient extends Game {
+
+    private static final float FADING_STEP = 0.01f;
 
     /**
      * Indicate if the client is in debug mode.
@@ -165,6 +168,18 @@ public class WargrooveClient extends Game {
         if (music != null) {
             music.setVolume(getMusicVolume());
             music.play();
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    if (music.getVolume() < getMusicVolume()) {
+                        music.setVolume(music.getVolume() + FADING_STEP);
+                    }
+                    else {
+                        music.setVolume(getMusicVolume());
+                        this.cancel();
+                    }
+                }
+            },0f, FADING_STEP);
         }
     }
 
