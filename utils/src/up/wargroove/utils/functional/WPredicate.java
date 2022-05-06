@@ -9,6 +9,6 @@ import up.wargroove.utils.Pair;
 @FunctionalInterface
 public interface WPredicate<T> {
 
-	Pair<Integer,Boolean> test(T... k);
+	Pair<Integer,Integer> test(T... k);
 
 }
