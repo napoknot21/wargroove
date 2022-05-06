@@ -12,6 +12,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.controller.Controller;
 import up.wargroove.core.world.Player;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
@@ -99,8 +100,11 @@ public class StructureMenu extends Dialog {
         ScrollPane pane = new ScrollPane(buttons, assets.getSkin());
         pane.setSmoothScrolling(true);
         pane.setScrollbarsVisible(true);
+        ScrollPane d = new ScrollPane(instance.description, assets.getSkin());
+        d.setScrollbarsVisible(true);
+        d.setSmoothScrolling(true);
         instance.getContentTable().add(pane).expand().fill();
-        instance.getContentTable().add(instance.description).expand().fill();
+        instance.getContentTable().add(d).expand().fill();
     }
 
     @Override
@@ -182,7 +186,7 @@ public class StructureMenu extends Dialog {
     private static class Description extends Table {
         private final Label text;
         private final Label movementCost;
-        //private final Label attack;
+        private final Label attack;
         private final Label range;
 
         private Description(Assets assets) {
@@ -190,6 +194,7 @@ public class StructureMenu extends Dialog {
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);
+            attack = new Label("",skin);
             left().center();
             add();
             add(movementCost).left();
@@ -200,10 +205,21 @@ public class StructureMenu extends Dialog {
             add();
             row();
             add();
-            add(new ScrollPane(text)).left();
+            add(attack).left();
+            add();
+            row();
+            add();
+            row();
+            add();
+            add(text).left();
             add();
             row();
             setVisible(false);
+
+            text.setColor(Color.BLACK);
+            movementCost.setColor(Color.BLACK);
+            attack.setColor(Color.BLACK);
+            range.setColor(Color.BLACK);
         }
 
         /**
@@ -216,11 +232,21 @@ public class StructureMenu extends Dialog {
             setVisible(true);
             movementCost.setText("Movement : "+entity.getMovRange());
             range.setText("Range : "+entity.getRange());
+            attack.setText(buildStrongAgainst(entity));
             try {
                 text.setText(assets.get(entity.getType(), 25));
             } catch (Exception e) {
                 text.setText("Description unavailable");
             }
+        }
+
+        private String buildStrongAgainst(Entity entity) {
+            Collection<Entity.Type> data = entity.getStrongAgainstValues();
+            if (data == null || data.isEmpty()) return "";
+            StringBuilder builder = new StringBuilder();
+            builder.append("Strong against : \n\n");
+            data.forEach(type -> builder.append("* ").append(type.prettyName()).append("\n\n"));
+            return builder.toString();
         }
 
         @Override

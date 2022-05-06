@@ -10,11 +10,10 @@ import up.wargroove.utils.Savable;
 import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
 import up.wargroove.utils.Constants;
 import up.wargroove.utils.Pair;
-import java.util.Random;
+
+import java.util.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
-import java.util.Map;
 
 public abstract class Entity implements Savable {
 
@@ -182,6 +181,17 @@ public abstract class Entity implements Savable {
         return new Pair<>(attacks.get(0),attacks.get(1));
     }
 
+    @Null
+    public Collection<Type> getStrongAgainstValues(){
+        Map<String, Map<String, List<Integer>>> data = readDamageMatrixValues();
+        if (data == null) return null;
+        Collection<Type> c = new LinkedList<>();
+        data.forEach((n,d) -> {
+            if (d.get("attacks").get(0) > 70) c.add(Type.valueOf(n.toUpperCase()));
+        });
+        return c;
+    }
+
     public int getRange() {
         return 0;
     }
@@ -231,6 +241,15 @@ public abstract class Entity implements Savable {
         SHADOW_SISTER;
         */
 
-	    STRUCTURE
+	    STRUCTURE;
+
+        public String prettyName() {
+                String[] name = name().split("_");
+                String ret = name[0].charAt(0) + name[0].substring(1).toLowerCase();
+                if (name.length == 2) {
+                    ret += " " + name[1].charAt(0) + name[1].substring(1).toLowerCase();
+                }
+                return ret;
+        }
     }
 }
