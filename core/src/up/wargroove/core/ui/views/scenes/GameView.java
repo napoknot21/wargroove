@@ -241,6 +241,7 @@ public class GameView extends View {
                 getController().drag(pointer, camera);
                 return true;
             }
+
         };
         addInput(input);
 

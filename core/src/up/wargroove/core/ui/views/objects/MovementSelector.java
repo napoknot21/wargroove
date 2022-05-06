@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -48,6 +49,8 @@ public class MovementSelector implements Selector{
      */
     private int cost;
 
+    private boolean owner = false;
+
 
     /**
      * Constructs a Movement selector.
@@ -81,6 +84,7 @@ public class MovementSelector implements Selector{
      * @param coord  The step coordinates.
      */
     public  void addMovement(Assets assets, Pair<Integer, Integer> coord) {
+        if (!owner) return;
         int tileIndex = valid.isValid(coord);
         if (tileIndex < 0) {
             movements.reset();
@@ -137,6 +141,19 @@ public class MovementSelector implements Selector{
         this.cost = cost;
     }
 
+    @Override
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+        if (!owner) {
+            valid.forEach(p -> p.first.setColor(Color.BLACK));
+        }
+    }
+
+    @Override
+    public boolean isOwner() {
+        return owner;
+    }
+
     /**
      * Draw the path on the screen.
      *
@@ -174,10 +191,11 @@ public class MovementSelector implements Selector{
     /**
      * Reset the movement selector.
      */
-    public  void reset() {
+    public void reset() {
         valid.reset();
         movements.reset();
         active = false;
+        owner = false;
     }
 
     /**

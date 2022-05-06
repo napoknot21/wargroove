@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
@@ -19,6 +20,7 @@ public class AttackSelector implements Selector{
     private String path = "";
     private int attackRange = 0;
     private boolean active;
+    private boolean owner = false;
     /**
      * Constructs a Movement selector.
      *
@@ -42,7 +44,6 @@ public class AttackSelector implements Selector{
         Texture texture = assets.get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
         pair.first.forEach(v -> valid.add(texture, v));
         valid.addIntel(pair.second);
-
     }
 
     public void addMovement(Vector3 worldPosition) {
@@ -69,8 +70,22 @@ public class AttackSelector implements Selector{
         this.attackRange = attackRange;
     }
 
+    @Override
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+        if (!owner) {
+            valid.forEach(p -> p.first.setColor(Color.BLACK));
+        }
+    }
+
+    @Override
+    public boolean isOwner() {
+        return owner;
+    }
+
     public void setAvailableAttackPosition(MovementSelector movements, World world) {
         availableAttackPositions.reset();
+        if (!owner) return;
         Pair<?,?>[] results = breathFirstResearch(movements, world);
         if (results.length == 0) {
             return;
@@ -83,6 +98,7 @@ public class AttackSelector implements Selector{
     }
 
     public void selectAttackPosition(Vector3 worldPosition, MovementSelector movements) {
+        if (!owner) return;
         if (!isPositionAvailable(worldPosition)) {
             availableAttackPositions.reset();
         } else {
@@ -184,6 +200,7 @@ public class AttackSelector implements Selector{
         targetPosition = null;
         attackRange = 0;
         postionAttack = null;
+        owner = false;
     }
 
     private  char getAttackDirection(int dx, int dy) {

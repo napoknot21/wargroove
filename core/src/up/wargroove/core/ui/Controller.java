@@ -24,7 +24,6 @@ import up.wargroove.utils.Pair;
 
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 
 
 /**
@@ -325,14 +324,11 @@ public class Controller {
             g.getCursor().setLock(false);
             return false;
         }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
-                || getScopedEntity() instanceof Structure) {
-            return false;
-        }
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
         movementSelector.showValids(getScreen().getAssets(), pair1);
         movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
-        return true;
+        movementSelector.setOwner(getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
+        return movementSelector.isOwner() && !(getScopedEntity() instanceof Structure);
     }
 
     public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
@@ -357,14 +353,22 @@ public class Controller {
             g.clearMoveDialog();
             return false;
         }
-        if (!getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction())
-                || getScopedEntity() instanceof Villager) {
-            return false;
-        }
+        Pair<Integer,Integer> lastPosition = attackSelector.getInitialPosition();
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
         attackSelector.showValids(getScreen().getAssets(), pair);
+        attackSelector.setOwner(isCurrentOwner(lastPosition));
         attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
-        return true;
+        return attackSelector.isOwner() && !(getScopedEntity() instanceof Villager);
+    }
+
+    private boolean isCurrentOwner(Pair<Integer, Integer> initialPosition) {
+        boolean scoped = getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction());
+        if (initialPosition == null) {
+            return scoped;
+        }
+        Tile t = getTile(initialPosition.first, initialPosition.second);
+        Faction faction = getModel().getCurrentPlayer().getFaction();
+        return (t.entity.isPresent() && t.entity.get().getFaction().equals(faction)) && scoped;
     }
 
 
@@ -531,7 +535,6 @@ public class Controller {
     private void deleteStructureUI(StructureUI actor, Player player, Faction attack) {
         Entity entity = actor.getEntity();
         player.removeEntity(entity);
-        Player rival = getWorld().getPlayer(attack);
         if (entity instanceof Stronghold) {
             getWorld().delEntity(actor.getCoordinates(), entity);
         } else {
@@ -570,24 +573,6 @@ public class Controller {
         }
     }
 
-    private boolean invalidDeplacementeAttack(String path, Pair<Integer, Integer> position) {
-        GameView gameView = (GameView) getScreen();
-        if (path.isBlank()) {
-            gameView.getAttackSelector().reset();
-            return true;
-        }
-        if (path.length() > 1) {
-            if (getWorld().checkEntity(position)) {
-                gameView.getAttackSelector().reset();
-                return true;
-            } else {
-
-                return false;
-            }
-        }
-        return false;
-    }
-
     public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
         if (positionTarget == null) return;
         getWorld().actualiseEntity(positionTarget);
@@ -616,9 +601,12 @@ public class Controller {
     public void openStructureMenu() {
         GameView gameView = (GameView) getScreen();
         Optional<Entity> s = getTile(gameView.getCursor().getWorldPosition()).entity;
-        if (s.isEmpty() || !(s.get() instanceof Recruitment) || !(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()))) {
+
+        if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
             return;
         }
+        gameView.getMovementSelector().setOwner(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
+        if (!gameView.getMovementSelector().isOwner()) return;
         Recruitment r = (Recruitment) s.get();
         List<Entity> characters = r.trainableEntityClasses();
         gameView.showsStructureMenu(characters);
@@ -638,8 +626,8 @@ public class Controller {
      * @param c The entity's class.
      */
     public void buy(Class<? extends Entity> c) {
-        GameView gameView = (GameView) getScreen();
-        Vector3 v = gameView.getCursor().getWorldPosition();
+        GameView g = (GameView) getScreen();
+        Vector3 v = g.getCursor().getWorldPosition();
         Tile t = getTile(v);
         Optional<Entity> s = t.entity;
         if (s.isEmpty() || !(s.get() instanceof Recruitment)) {
@@ -655,8 +643,9 @@ public class Controller {
         int pos = World.coordinatesToInt(new Pair<>((int) v.x, (int) v.y), getWorld().getDimension());
         List<Integer> list = getWorld().adjacentOf(pos);
         list.removeIf(i -> getWorld().at(i).entity.isPresent());
-        gameView.showsPlaceable(list);
-        gameView.getCursor().setLock(false);
+        g.showsPlaceable(list);
+        g.getMovementSelector().setOwner(s.get().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
+        g.getCursor().setLock(false);
     }
 
     /**
@@ -778,11 +767,11 @@ public class Controller {
     }
 
     public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor , boolean inLive){
-        return((actorTarget instanceof CharacterUI) && inLive && !(((CharacterUI) actorTarget).getEntity() instanceof Villager) && canFit((CharacterUI) actorTarget, actor));
+        return((actorTarget instanceof CharacterUI) && inLive && !(((CharacterUI) actorTarget).getEntity() instanceof Villager) && canHit((CharacterUI) actorTarget, actor));
 
         }
 
-    public boolean canFit(CharacterUI characterUI, CharacterUI characterUIVictime){
+    public boolean canHit(CharacterUI characterUI, CharacterUI characterUIVictime){
         Pair<Integer,Integer> posAttack= characterUI.getCoordinates();
         Pair<Integer,Integer> posVictime= characterUIVictime.getCoordinates();
         int distanceX = Math.abs(posAttack.first - posVictime.first);
