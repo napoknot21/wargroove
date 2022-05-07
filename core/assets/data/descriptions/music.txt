@@ -1,0 +1,3 @@
+Grass: "Introduction", "To the Battle", "March through the High Weeds" Soline Corm
+Volcano: "Steam and Soot in the Air", "The Volcano Awakens", "The Lava is Spreading" Soline Corm
+Desert: "Sandy Introduction", "Snake Concerto", "Mysteries of the Desert", "Heat Distorsion"
