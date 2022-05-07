@@ -46,6 +46,11 @@ public abstract class Structure extends Entity {
     }
 
     @Override
+    public int getRange() {
+        return 1;
+    }
+
+    @Override
     public DbObject toDBO() {
         DbObject res =  super.toDBO();
         res.put(Constants.STRUCTURE_TYPE_DB_KEY,type);

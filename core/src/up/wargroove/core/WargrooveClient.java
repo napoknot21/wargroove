@@ -66,8 +66,7 @@ public class WargrooveClient extends Game {
         Model model = new Model();
         Controller controller = new Controller(model, this);
         controller.create();
-        scene = new MainMenu(controller, controller.getModel(), this);
-        controller.setScreen(scene);
+        controller.openMainMenu();
     }
 
     /**
@@ -168,7 +167,7 @@ public class WargrooveClient extends Game {
                     this.cancel();
                 }
             }
-        }, 0f, 0.01f);
+        }, 0f, 0.04f);
     }
 
     /**
@@ -188,7 +187,7 @@ public class WargrooveClient extends Game {
                         this.cancel();
                     }
                 }
-            }, 0f, 0.01f);
+            }, 0f, 0.04f);
         }
     }
 

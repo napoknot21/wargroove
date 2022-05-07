@@ -308,7 +308,7 @@ public class Controller {
      */
     public boolean showMovements(boolean movement, MovementSelector movementSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
-        if (g.getAttackSelector().isActive()) return true;
+        if (g.getAttackSelector().isActive()) return !g.canAttack();
         if (movement) {
             if (!g.canAttack() && !movementSelector.isValidPosition(worldPosition)) {
                 movementSelector.reset();
@@ -336,12 +336,12 @@ public class Controller {
             if (!attackSelector.isValidPosition(worldPosition)) {
                 if (attackSelector.isPositionAvailable(worldPosition)) {
                     attackSelector.selectAttackPosition(worldPosition,g.getMovementSelector());
-                    return true;
+                    g.setMovement(false);
                 } else {
                     attackSelector.reset();
                     g.clearMoveDialog();
-                    return false;
                 }
+                return false;
             }
             attackSelector.addMovement(worldPosition);
             attackSelector.setAvailableAttackPosition(g.getMovementSelector(), getWorld());
@@ -352,10 +352,10 @@ public class Controller {
             g.clearMoveDialog();
             return false;
         }
-        Pair<Integer,Integer> lastPosition = attackSelector.getInitialPosition();
+        if (getScopedEntity() instanceof Structure) return false;
         Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
         attackSelector.showValids(getScreen().getAssets(), pair);
-        attackSelector.setOwner(isCurrentOwner(lastPosition));
+        attackSelector.setOwner(getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
         attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
         return attackSelector.isOwner() && !(getScopedEntity() instanceof Villager);
     }
@@ -382,10 +382,11 @@ public class Controller {
         GameView gameView = (GameView) getScreen();
         MovementSelector selector = gameView.getMovementSelector();
         gameView.setMovement(false);
+        gameView.setAttack(false);
         gameView.getCursor().setLock(false);
         String path = selector.getPath();
         if (path.isBlank()) {
-            selector.reset();
+            gameView.clearSelectors();
             return;
         }
         Pair<Integer, Integer> destination = selector.getDestination();
@@ -734,6 +735,8 @@ public class Controller {
     public void openMainMenu() {
         getClient().stopMusic(true);
         setScreen(new MainMenu(this, getModel(), getClient()));
+        getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.path() + "MENU.mp3"), true);
+        getClient().playMusic();
     }
 
     public void closeClient() {
