@@ -146,7 +146,8 @@ public class Controller {
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
         camera.zoom += amountY * getClient().getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
         float max = (camera.viewportHeight + camera.viewportWidth) / 1.5f + 10;
-        camera.zoom = (camera.zoom < 1) ? 1 : Math.min(camera.zoom, max);
+        float min = (camera.viewportHeight + camera.viewportWidth) / 3f;
+        camera.zoom = (camera.zoom < min) ? min : Math.min(camera.zoom, max);
         camera.update();
     }
 

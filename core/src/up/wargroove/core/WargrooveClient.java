@@ -197,7 +197,7 @@ public class WargrooveClient extends Game {
      * @return the velocity in percentage.
      */
     public float getCameraVelocity() {
-        return settings.getFloat(Settings.CAMERA_VELOCITY.name());
+        return 0.35f + settings.getFloat(Settings.CAMERA_VELOCITY.name());
     }
 
     /**
