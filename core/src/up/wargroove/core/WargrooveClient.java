@@ -66,8 +66,7 @@ public class WargrooveClient extends Game {
         Model model = new Model();
         Controller controller = new Controller(model, this);
         controller.create();
-        scene = new MainMenu(controller, controller.getModel(), this);
-        controller.setScreen(scene);
+        controller.openMainMenu();
     }
 
     /**
@@ -168,7 +167,7 @@ public class WargrooveClient extends Game {
                     this.cancel();
                 }
             }
-        }, 0f, 0.01f);
+        }, 0f, 0.04f);
     }
 
     /**
@@ -188,7 +187,7 @@ public class WargrooveClient extends Game {
                         this.cancel();
                     }
                 }
-            }, 0f, 0.01f);
+            }, 0f, 0.04f);
         }
     }
 
@@ -198,7 +197,7 @@ public class WargrooveClient extends Game {
      * @return the velocity in percentage.
      */
     public float getCameraVelocity() {
-        return settings.getFloat(Settings.CAMERA_VELOCITY.name());
+        return 0.35f + settings.getFloat(Settings.CAMERA_VELOCITY.name());
     }
 
     /**

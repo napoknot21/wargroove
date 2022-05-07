@@ -154,7 +154,7 @@ public class Assets {
 
     @SuppressWarnings("all")
     public <T> T getDefault(Class<T> defaultClass) {
-        return (T) defaults.get(defaultClass);
+        return defaultClass.cast(defaults.get(defaultClass));
     }
 
     /**
@@ -402,10 +402,6 @@ public class Assets {
         defaults.clear();
 
         descriptions.clear();
-
-    }
-
-    public void writeSettings() {
 
     }
 

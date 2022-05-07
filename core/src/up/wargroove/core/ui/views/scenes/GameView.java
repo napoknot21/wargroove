@@ -37,7 +37,6 @@ import java.util.List;
  * Represent the game screen.
  */
 public class GameView extends View {
-    private static final int DEFAULT_ZOOM = 20;
     private Cursor cursor;
     /**
      * Visual of the world.
@@ -98,16 +97,13 @@ public class GameView extends View {
         camera = new OrthographicCamera(x, y);
         viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
         viewport.apply();
-        camera.zoom = DEFAULT_ZOOM;
         setStage(viewport);
         characters = new Stage(viewport, getBatch());
         gameMap = new GameMap(getModel().getWorld(), getStage(), characters, getController());
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         addInput(characters);
-
-
-        //camera.position.set(gameMap.getCenter());
+        camera.zoom = (camera.viewportHeight + camera.viewportWidth) / 2.25f;
 
     }
 
@@ -467,5 +463,9 @@ public class GameView extends View {
 
     public Stage getGameViewUi() {
         return gameViewUi;
+    }
+
+    public Pair<Float,Float> getMapBound() {
+        return new Pair<>(renderer.getViewBounds().width, renderer.getViewBounds().height);
     }
 }
