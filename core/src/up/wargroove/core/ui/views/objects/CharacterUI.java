@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import up.wargroove.core.character.Character;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.utils.Pair;
 
 

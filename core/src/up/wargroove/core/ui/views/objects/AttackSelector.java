@@ -1,5 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector3;
@@ -12,11 +13,14 @@ import java.util.*;
 public class AttackSelector implements Selector{
 
     private final Valid valid;
+    private final Valid availableAttackPositions;
     private Pair<Integer,Integer> postionAttack;
     private Pair<Integer,Integer> targetPosition;
     private Pair<Integer, Integer> initialPosition;
     private String path = "";
     private int attackRange = 0;
+    private boolean active;
+    private boolean owner = false;
     /**
      * Constructs a Movement selector.
      *
@@ -24,6 +28,15 @@ public class AttackSelector implements Selector{
      */
     public AttackSelector(float worldScale) {
         valid = new Valid(worldScale);
+        availableAttackPositions = new Valid(worldScale) {
+            @Override
+            void reset() {
+                path = "";
+                postionAttack = null;
+                super.reset();
+            }
+        };
+        active = false;
     }
 
     public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
@@ -31,7 +44,13 @@ public class AttackSelector implements Selector{
         Texture texture = assets.get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
         pair.first.forEach(v -> valid.add(texture, v));
         valid.addIntel(pair.second);
+    }
 
+    public void addMovement(Vector3 worldPosition) {
+        if (!isValidPosition(worldPosition)) {
+            return;
+        }
+        targetPosition = new Pair<>((int) worldPosition.x, (int) worldPosition.y);
     }
 
     @Override
@@ -51,36 +70,49 @@ public class AttackSelector implements Selector{
         this.attackRange = attackRange;
     }
 
-    public void addMovement(Vector3 worldPosition, MovementSelector movementSelector, World world) {
-        if (!isValidPosition(worldPosition)) {
+    @Override
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+        if (!owner) {
+            valid.forEach(p -> p.first.setColor(Color.BLACK));
+        }
+    }
+
+    @Override
+    public boolean isOwner() {
+        return owner;
+    }
+
+    public void setAvailableAttackPosition(MovementSelector movements, World world) {
+        availableAttackPositions.reset();
+        if (!owner) return;
+        Pair<?,?>[] results = breathFirstResearch(movements, world);
+        if (results.length == 0) {
             return;
         }
-        targetPosition = new Pair<>((int) worldPosition.x, (int) worldPosition.y);
-        postionAttack = getOptimalAttackPosition(movementSelector, world);
-        if (postionAttack == null) return;
-        movementSelector.addMovement(Assets.getInstance(),postionAttack);
-        path = movementSelector.getPath();
-    }
-
-    private Pair<Integer, Integer> getOptimalAttackPosition(MovementSelector movements, World world) {
-        List<Pair<Integer,Integer>> results = breathFirstResearch(movements, world);
-        if (results.isEmpty()) {
-            return null;
+        Texture texture = Assets.getInstance().get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
+        for (Pair<?, ?> o : results) {
+            availableAttackPositions.add(texture, o);
         }
-        results.sort((p1,p2) -> {
-            double x1 = Math.pow(initialPosition.first - p1.first, 2);
-            double y1 = Math.pow(initialPosition.second - p1.second, 2);
-            double x2 = Math.pow(initialPosition.first - p2.first, 2);
-            double y2 = Math.pow(initialPosition.second - p2.second, 2);
-            return (int) (Math.sqrt(x1+y1) - Math.sqrt(x2+y2));
-        });
-        return results.get(0);
+        active = true;
     }
 
-    private List<Pair<Integer, Integer>> breathFirstResearch(MovementSelector movements, World world) {
+    public void selectAttackPosition(Vector3 worldPosition, MovementSelector movements) {
+        if (!owner) return;
+        if (!isPositionAvailable(worldPosition)) {
+            availableAttackPositions.reset();
+        } else {
+            Pair<Integer, Integer> pos = new Pair<>((int) worldPosition.x, (int) worldPosition.y);
+            postionAttack = pos;
+            movements.addMovement(Assets.getInstance(), pos);
+            path = movements.getPath();
+        }
+    }
+
+    private Pair<?,?>[] breathFirstResearch(MovementSelector movements, World world) {
         Map<Integer, Boolean> checked = new HashMap<>();
         Queue<Integer> emp = new LinkedList<>();
-        List<Pair<Integer,Integer>> results = new LinkedList<>();
+        Set<Pair<Integer,Integer>> results = new HashSet<>();
         int tileIndex;
         int range = attackRange;
         emp.add(World.coordinatesToInt(targetPosition, world.getDimension()));
@@ -106,7 +138,7 @@ public class AttackSelector implements Selector{
                 }
             }
         }
-        return results;
+        return results.toArray(new Pair[0]);
     }
 
     private boolean checkAlignement(Pair<Integer,Integer> c) {
@@ -128,9 +160,17 @@ public class AttackSelector implements Selector{
         return isValidPosition(new Pair<>((int) v.x, (int)v.y));
     }
 
+    public boolean isPositionAvailable(Vector3 v) {
+        return isPositionAvailable(new Pair<>((int) v.x, (int)v.y));
+    }
+    public boolean isPositionAvailable(Pair<Integer, Integer> c) {
+        return availableAttackPositions.isValid(c) > -1;
+    }
+
     @Override
     public void draw(Batch batch) {
         valid.draw(batch);
+        availableAttackPositions.draw(batch);
     }
 
     @Override
@@ -152,12 +192,15 @@ public class AttackSelector implements Selector{
 
     @Override
     public void reset() {
+        active = false;
         valid.reset();
+        availableAttackPositions.reset();
         path = "";
         initialPosition = null;
         targetPosition = null;
         attackRange = 0;
         postionAttack = null;
+        owner = false;
     }
 
     private  char getAttackDirection(int dx, int dy) {
@@ -174,5 +217,9 @@ public class AttackSelector implements Selector{
 
     public Pair<Integer, Integer> getInitialPosition() {
         return initialPosition;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

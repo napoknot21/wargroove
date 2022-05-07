@@ -113,7 +113,13 @@ public class World {
     }
 
     public void removePlayer(Faction faction){
-        players.removeIf(player -> player.getFaction().equals(faction));
+        for(int i = 0; i < players.size(); i++) {
+            if (players.get(i).getFaction().equals(faction)) {
+                players.remove(i);
+                if (i <= playerPtr) playerPtr--;
+                break;
+            }
+        }
     }
 
     @Null
@@ -340,6 +346,7 @@ public class World {
         HashSet<Integer> mouvements = new HashSet<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
         Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
+        mouvements.add(root);
 
         if (terrain[root].entity.isEmpty()) return res;
         WPredicate<Integer>[] predicates = new WPredicate[] {canMoveOn,withinRange,canAttack};
@@ -375,9 +382,11 @@ public class World {
                     first = resultat du predicat
                     second indique si first est le movement cost
                  */
+                movementCost = element.second.first;
+                attackRange = element.second.second;
                 for (var p : predicates) {
                     //linearPosition, movementId, movementCost, currentAttackRange, rootPosition.
-                    result = p.test(lin, movementId, element.second.first,element.second.second, root);
+                    result = p.test(lin, movementId, movementCost,attackRange, root);
                     switch (result.second) {
                         case 1: attackRange = result.first; break;
                         case 2: movementCost = result.first; if (movementCost >= 0) mouvements.add(lin);

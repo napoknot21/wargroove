@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.world.Structure;
 import up.wargroove.core.world.Tile;
 import up.wargroove.core.world.World;

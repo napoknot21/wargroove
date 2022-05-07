@@ -2,7 +2,7 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.world.World;
 import up.wargroove.utils.Pair;
 

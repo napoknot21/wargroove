@@ -60,4 +60,8 @@ public interface Selector {
      * @param coord the unit coordinates in world terrain coordinates.
      */
     void setEntityInformation(Pair<Integer, Integer> coord, int cost);
+
+    void setOwner(boolean owner);
+
+    boolean isOwner();
 }

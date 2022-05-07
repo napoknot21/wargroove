@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 
 /**
  * The in game Menu

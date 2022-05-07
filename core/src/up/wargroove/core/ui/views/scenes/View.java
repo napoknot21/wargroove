@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 
 /**
  * Represent a basic screen.

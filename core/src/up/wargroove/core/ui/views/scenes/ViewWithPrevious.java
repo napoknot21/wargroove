@@ -2,7 +2,7 @@ package up.wargroove.core.ui.views.scenes;
 
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 
 /**
  * This is a view who manage a back buttons.

@@ -21,7 +21,7 @@ import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
-import up.wargroove.core.ui.controller.Controller;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.ui.views.objects.CharacterUI;
 import up.wargroove.core.ui.views.objects.MoveDialog;
 import up.wargroove.core.ui.views.objects.StructureMenu;
@@ -172,9 +172,6 @@ public class GameView extends View {
                 if (movement) {
                     movementSelector.addMovement(getAssets(), cursor.getWorldPosition());
                 }
-                if (attack) {
-                    attackSelector.addMovement(cursor.getWorldPosition(), movementSelector, getModel().getWorld());
-                }
                 return true;
             }
 
@@ -220,10 +217,9 @@ public class GameView extends View {
                 }
                 buy = false;
                 indicator.setTexture(getAssets(), tile);
-                movement = getController().showMovements(movement, movementSelector, worldPosition);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
-
-                if (movement) {
+                movement = getController().showMovements(movement, movementSelector, worldPosition);
+                if (movement && !attackSelector.isActive()) {
                     moveDialog.clear();
                     scopeEntity(worldPosition);
                     getController().actualiseFocusEntity(attackSelector.getInitialPosition());
@@ -245,6 +241,7 @@ public class GameView extends View {
                 getController().drag(pointer, camera);
                 return true;
             }
+
         };
         addInput(input);
 
