@@ -167,7 +167,7 @@ public class WargrooveClient extends Game {
                     this.cancel();
                 }
             }
-        }, 0f, 0.04f);
+        }, 0f, 0.01f);
     }
 
     /**
