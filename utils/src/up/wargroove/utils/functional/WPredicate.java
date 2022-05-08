@@ -8,7 +8,7 @@ import up.wargroove.utils.Pair;
 
 @FunctionalInterface
 public interface WPredicate<T> {
-
+	@SuppressWarnings("unchecked")
 	Pair<Integer,Integer> test(T... k);
 
 }

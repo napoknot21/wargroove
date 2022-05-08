@@ -1,11 +1,13 @@
 package up.wargroove.utils;
 
+
+import java.io.Serializable;
 import java.util.Optional;
 import java.util.HashMap;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-public class DbObject extends HashMap<String, DbObject> {
+public class DbObject extends HashMap<String, DbObject>{
 
 	private Optional<String> data = Optional.empty();
 

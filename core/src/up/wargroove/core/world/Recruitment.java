@@ -62,7 +62,7 @@ public class Recruitment extends Structure {
 
 	public void initialize() {
 
-		switch ((Type) type) {
+		switch (type) {
 
 			case BARRACKS:
 				current = landEntityClasses;

@@ -43,7 +43,6 @@ public class World {
 
     };
 
-
     private final WPredicate<Integer> withinRange = (k) -> {
         int attackRange = k[3];
         if (k[2] >= 0) return new Pair<>(1, 0);
@@ -339,7 +338,7 @@ public class World {
      * @return le vecteur des coordonnées valides
      */
 
-    @SuppressWarnings("all")
+    @SuppressWarnings("unchecked")
     private Vector<Pair<Integer, Pair<Integer, Integer>>> attackBreadthFirstSearch(int root) {
 
         Map<Integer, Integer> checked = new HashMap<>();
@@ -394,6 +393,7 @@ public class World {
                         case 2:
                             movementCost = result.first;
                             if (movementCost >= 0) mouvements.add(lin);
+                            break;
                         default:
                     }
                     if (result.first >= 0) {

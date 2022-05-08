@@ -327,6 +327,7 @@ public class CharacterUI extends EntityUI {
                 break;
             case MAGE:
                 ATTACK_FRAMES = 7;
+                break;
             default:
         }
     }

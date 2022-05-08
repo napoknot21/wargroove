@@ -206,7 +206,7 @@ public class Database {
 
 			if(!value.isData()) {
 
-				builder.add(k, buildStream((DbObject) value));
+				builder.add(k, buildStream(value));
 
 			} else
 				builder.add(k, value.get());

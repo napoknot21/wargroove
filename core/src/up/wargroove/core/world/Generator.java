@@ -106,6 +106,7 @@ public class Generator {
      * sur le bruit de Perlin.
      */
 
+    @SuppressWarnings("unchecked")
     private void generateGradients() {
 
         int sizeX = dimension.first + 1;

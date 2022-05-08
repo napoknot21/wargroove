@@ -27,6 +27,7 @@ public class EntityManager {
 	 * Chargement des structures primitives et additives d'entity par réflexions
 	 * @return true si tout a été bien chargé, false (si il y a une exception) et null sinon
 	 */
+	@SuppressWarnings("unchecked")
 	public boolean load() {
 
 		var types = Entity.Type.values();
@@ -44,9 +45,10 @@ public class EntityManager {
 				String fmt = packageURI + 
 					"." + 
 					typeStr.charAt(0) + 
-					typeStr.substring(1, typeStr.length()).toLowerCase();
+					typeStr.substring(1).toLowerCase();
 
 				Log.print("Refléxion sur " + fmt);
+
 
 				Class<Entity> subClass = (Class<Entity>) Class.forName(fmt);
 				entitySubClasses.add(subClass);
