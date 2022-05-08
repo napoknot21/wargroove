@@ -20,9 +20,9 @@ import java.util.ArrayList;
 
 
 public class Codex extends Table {
-    private final Dialog dialog;
+    private final DialogWithCloseButton dialog;
     private final TextButton openCodex;
-    private final TextButton exitCodex;
+    private final CheckBox exitCodex;
     private final Label description;
     private final ScrollPane paneDescription;
     private final ArrayList<TextButton> subject = new ArrayList<>();
@@ -39,9 +39,8 @@ public class Codex extends Table {
         openCodex = new TextButton("Codex", skin);
         openCodex.setColor(Color.FIREBRICK);
 
-        exitCodex = new TextButton("X", skin);
-        exitCodex.setColor(Color.RED);
-        dialog = new Dialog("Codex", skin) {
+
+        dialog = new DialogWithCloseButton("", skin) {
             @Override
             public float getPrefHeight() {
                 return Math.max(Gdx.graphics.getHeight() / 1.5f, 300);
@@ -54,8 +53,11 @@ public class Codex extends Table {
         description = new Label("This is the codex\n of the game", skin);
         description.setColor(Color.BLACK);
 
+        exitCodex= dialog.getClosebuttonMenu();
+        exitCodex.setChecked(true);
+
         createSubject(skin);
-        createObject("", skin);
+        createObject("Entity", skin);
         tableObjects = new Table();
         actualiseTableObject();
         paneDescription = new ScrollPane(description, skin);
@@ -63,10 +65,12 @@ public class Codex extends Table {
         paneObject.setSize(dialog.getPrefWidth() / 5, getPrefHeight());
         initialisePanel(paneObject);
         initialisePanel(paneDescription);
-        dialog.getContentTable().add();
-        dialog.getContentTable().add();
-        dialog.getContentTable().add(exitCodex).right();
-        dialog.getContentTable().row();
+
+        dialog.getTitleTable().row();
+        dialog.getTitleTable().add(exitCodex).right();
+        dialog.getTitleTable().row();
+
+        dialog.getContentTable().row().expand();
         dialog.getContentTable().add(addSubject()).center().colspan(5);
         dialog.getContentTable().row();
         dialog.getContentTable().add(paneObject).expand();
@@ -74,8 +78,6 @@ public class Codex extends Table {
         initInput(controller);
         add(openCodex);
         resize();
-        dialog.debugAll();
-
     }
 
     private void initInput(Controller controller) {
@@ -85,6 +87,7 @@ public class Codex extends Table {
                     public void changed(ChangeEvent event, Actor actor) {
                         dialog.show(getStage());
                         resize();
+
                     }
                 });
         exitCodex.addListener(
@@ -93,6 +96,8 @@ public class Codex extends Table {
                     public void changed(ChangeEvent event, Actor actor) {
                         dialog.hide();
                         description.setText("Welcome to the world\n of NAME_NOT_FOUND ");
+                        exitCodex.setChecked(true);
+
                     }
                 });
         for (TextButton b : object
