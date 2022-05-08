@@ -24,6 +24,7 @@ import up.wargroove.utils.Pair;
 
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 /**
@@ -91,6 +92,8 @@ public class Controller {
         GameView view = new GameView(this, model, getClient());
         setScreen(view);
         worldScale = view.getGameMap().getTileSize();
+        moveCameraToCommander();
+        showNextTurnMessage();
     }
 
     /**
@@ -336,7 +339,7 @@ public class Controller {
         if (attack) {
             if (!attackSelector.isValidPosition(worldPosition)) {
                 if (attackSelector.isPositionAvailable(worldPosition)) {
-                    attackSelector.selectAttackPosition(worldPosition,g.getMovementSelector());
+                    attackSelector.selectAttackPosition(worldPosition, g.getMovementSelector());
                     g.setMovement(false);
                 } else {
                     attackSelector.reset();
@@ -425,8 +428,8 @@ public class Controller {
         boolean inLive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
             structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
-            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor,inLive)){
-                contreAttack((CharacterUI)actorTarget,(CharacterUI) actor,inversePath(path));
+            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor, inLive)) {
+                contreAttack((CharacterUI) actorTarget, (CharacterUI) actor, inversePath(path));
             }
         }
     }
@@ -435,10 +438,18 @@ public class Controller {
         StringBuilder res = new StringBuilder();
         for (int i = 0; i < path.length(); i++) {
             switch (path.charAt(i)) {
-                case 'R':res.append('L');break;
-                case 'L':res.append('R'); break;
-                case 'U':res.append('D');break;
-                case'D':res.append('U'); break;
+                case 'R':
+                    res.append('L');
+                    break;
+                case 'L':
+                    res.append('R');
+                    break;
+                case 'U':
+                    res.append('D');
+                    break;
+                case 'D':
+                    res.append('U');
+                    break;
                 default:
             }
         }
@@ -450,7 +461,7 @@ public class Controller {
         actor.setAttackDirection(path.charAt(path.length() - 1));
         actor.setVictime(actorTarget);
         actor.getEntity().attack(actorTarget.getEntity());
-        return actorTarget.getEntity().getHealth()>0;
+        return actorTarget.getEntity().getHealth() > 0;
     }
 
     private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
@@ -506,7 +517,7 @@ public class Controller {
         Entity entity = entityUI.getEntity();
         if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth() <= 0) {
             entity.setHealth(1);
-            if (entity.getFaction().equals(Faction.OUTLAWS)){
+            if (entity.getFaction().equals(Faction.OUTLAWS)) {
                 entity.setFaction(attack);
                 getWorld().getPlayer(attack).addEntity(entity);
                 entity.exhaust();
@@ -550,25 +561,36 @@ public class Controller {
 
     private void gameOver(Faction faction) {
         if (getWorld().isTheLastPlayer()) {
+            int seconds = 5;
             GameView gameView = (GameView) getScreen();
             Skin skin = gameView.getAssets().getSkin();
-            Dialog dialog = new Dialog("", gameView.getAssets().getSkin());
+            Dialog dialog = new Dialog("", gameView.getAssets().getSkin()) {
+                @Override
+                public void hide() {
+                    super.hide();
+                    stopGame();
+                    openMainMenu();
+                }
+            };
+            TextButton button = new TextButton("Close", skin);
+            Label timerText = new Label("Close in " + seconds + "seconds", skin);
             Label label = new Label(
                     "The " + faction.prettyName() + " won the war in " + getModel().getRound() + " rounds", skin
             );
             label.setColor(Color.BLACK);
-            TextButton button = new TextButton("Close", skin);
+            timerText.setColor(Color.FIREBRICK);
             dialog.getContentTable().add(label).expand().fill();
+            dialog.getContentTable().row();
+            dialog.getContentTable().add(timerText);
             dialog.button(button);
             dialog.show(gameView.getGameViewUi());
+            closeDialog(dialog, timerText, seconds);
             Controller controller = this;
             button.addListener(
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
                             controller.playSound(Assets.getInstance().getDefault(Sound.class));
-                            controller.stopGame();
-                            controller.openMainMenu();
                         }
                     });
         }
@@ -677,6 +699,11 @@ public class Controller {
         getModel().getCurrentPlayer().nextTurn();
         getModel().nextTurn();
         gameView.setPlayerBoxInformations(getModel().getCurrentPlayer(), getModel().getRound());
+        moveCameraToCommander();
+        showNextTurnMessage();
+    }
+
+    private void moveCameraToCommander() {
         Queue<Entity> entities = getModel().getCurrentPlayer().getEntities();
         Entity commander = null;
         for (Entity e : entities) {
@@ -685,13 +712,11 @@ public class Controller {
                 break;
             }
         }
-        Actor ui = ((GameView) getScreen()).getCharacterUI(commander);
-        if (ui == null) return;
-
-        cameraDestination.first = ui.getX();
-        cameraDestination.second = ui.getY();
-        cameraMoving = true;
-        gameView.getCursor().setPosition(ui.getX(), ui.getY());
+        Actor commanderSprite = ((GameView) getScreen()).getCharacterUI(commander);
+        if (commanderSprite == null) return;
+        Camera camera = ((GameView) getScreen()).getCamera();
+        camera.position.set(commanderSprite.getX(), commanderSprite.getY(), camera.position.z);
+        ((GameView) getScreen()).getCursor().setPosition(commanderSprite.getX(), commanderSprite.getY());
     }
 
     public void nextUnit() {
@@ -766,18 +791,58 @@ public class Controller {
         return false;
     }
 
-    public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor , boolean inLive){
-        return((actorTarget instanceof CharacterUI) && inLive && !(((CharacterUI) actorTarget).getEntity() instanceof Villager) && canHit((CharacterUI) actorTarget, actor));
+    public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor, boolean inLive) {
+        return ((actorTarget instanceof CharacterUI) && inLive && !(actorTarget.getEntity() instanceof Villager) && canHit((CharacterUI) actorTarget, actor));
 
-        }
+    }
 
-    public boolean canHit(CharacterUI characterUI, CharacterUI characterUIVictime){
-        Pair<Integer,Integer> posAttack= characterUI.getCoordinates();
-        Pair<Integer,Integer> posVictime= characterUIVictime.getCoordinates();
+    public boolean canHit(CharacterUI characterUI, CharacterUI characterUIVictime) {
+        Pair<Integer, Integer> posAttack = characterUI.getCoordinates();
+        Pair<Integer, Integer> posVictime = characterUIVictime.getCoordinates();
         int distanceX = Math.abs(posAttack.first - posVictime.first);
-        int distanceY = Math.abs(posAttack.second -posVictime.second);
-        int distance = Math.max(distanceX,distanceY);
-        return distance<= characterUI.getEntity().getRange();
+        int distanceY = Math.abs(posAttack.second - posVictime.second);
+        int distance = Math.max(distanceX, distanceY);
+        return distance <= characterUI.getEntity().getRange();
 
+    }
+
+    private void showNextTurnMessage() {
+        Player current = getModel().getCurrentPlayer();
+        Skin skin = Assets.getInstance().getSkin();
+        int timer = 5;
+        Dialog dialog = new Dialog("", skin);
+        Label label = new Label(current.getFaction().prettyName() + "'s turn to play", skin);
+        Label timerText = new Label("Close in " + timer + "seconds", skin);
+        timerText.setColor(Color.FIREBRICK);
+        label.setColor(Color.BLACK);
+        dialog.getContentTable().add(label).pad(10);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(timerText);
+        dialog.button("Close");
+        dialog.show(((GameView) getScreen()).getGameViewUi());
+        closeDialog(dialog, timerText, timer);
+    }
+
+    private void closeDialog(Dialog dialog, Label timerText, int seconds) {
+        closeDialog(dialog, timerText, seconds, null);
+    }
+
+    private void closeDialog(Dialog dialog, Label label, int seconds, Runnable action) {
+        if (label == null) {
+            label = new Label("", Assets.getInstance().getSkin());
+        }
+        AtomicInteger timer = new AtomicInteger(seconds);
+        Label timerText = label;
+        com.badlogic.gdx.utils.Timer.schedule(new com.badlogic.gdx.utils.Timer.Task() {
+            @Override
+            public void run() {
+                timerText.setText("Close in " + timer.getAndDecrement() + " seconds");
+                if (timer.get() < 0) {
+                    dialog.hide();
+                    if (action != null) action.run();
+                    this.cancel();
+                }
+            }
+        }, 0, 1);
     }
 }
