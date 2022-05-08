@@ -86,7 +86,7 @@ public class SelectMap extends ViewWithPrevious {
         VRB = new Stage(new ScreenViewport());
         VT = new Stage(new ScreenViewport());
         Skin skin = getAssets().getSkin();
-        buttonSound = getAssets().getDefault(Sound.class);
+        buttonSound = getAssets().getSound();
         back = new TextButton("Back", skin);
         choseMap = new TextButton("Select", skin);
         boolean b = getModel().getProperties() != null;

@@ -1,7 +1,6 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +18,7 @@ import java.util.Locale;
 /**
  * Structures' menu where the player can buy characters.
  */
-public class StructureMenu extends Dialog {
+public class StructureMenu extends DialogWithCloseButton {
     private static StructureMenu instance;
     private final Description description;
     private final TextButton buy;
@@ -29,15 +28,15 @@ public class StructureMenu extends Dialog {
     private Stage stage;
 
     private StructureMenu(Assets assets, Controller controller) {
-        super("", assets.getSkin());
+        super("", controller);
         this.description = new Description(assets);
         this.controller = controller;
-        buy = new TextButton("buy", assets.getSkin());
+        buy = new TextButton("Buy", assets.getSkin());
         player = controller.getModel().getCurrentPlayer();
-        button("close", Buttons.CLOSE);
-        button(buy, Buttons.BUY);
+        getButtonTable().add(buy).right();
+        setObject(buy, null);
         buy.setVisible(false);
-        setKeepWithinStage(false);
+        setKeepWithinStage(true);
         setMovable(false);
         setModal(true);
     }
@@ -74,13 +73,9 @@ public class StructureMenu extends Dialog {
 
     /**
      * Resize the menu according to the given argument.
-     *
-     * @param width The new screen width.
-     * @param height The new screen height.
      */
-    public static void resize(int width, int height) {
+    public static void resize() {
         if (instance != null) {
-            instance.stage.getViewport().update(width, height);
             instance.show(instance.stage);
         }
     }
@@ -125,21 +120,16 @@ public class StructureMenu extends Dialog {
 
     @Override
     protected void result(Object object) {
-        controller.playSound(Assets.getInstance().getDefault(Sound.class));
-        if (object == null) {
-            hide();
-            return;
-        }
-        switch ((Buttons) object) {
-            case BUY:
-                buy();
-                break;
-            case CLOSE:
-                close();
-                break;
-            default:
-                break;
-        }
+        controller.playSound(Assets.getInstance().getSound());
+        buy();
+    }
+
+    @Override
+    public void hide() {
+        super.hide();
+        controller.closeStructureMenu();
+        instance = null;
+
     }
 
     /**
@@ -151,7 +141,7 @@ public class StructureMenu extends Dialog {
             return;
         }
         controller.buy(current.getClass());
-        close();
+        hide();
     }
 
     @Override
@@ -159,25 +149,8 @@ public class StructureMenu extends Dialog {
         super.keepWithinStage();
     }
 
-    /**
-     * Close the menu.
-     */
-    private void close() {
-        clear();
-        controller.closeStructureMenu();
-        getStage().getActors().removeValue(instance, true);
-        instance = null;
-    }
-
     public void setDebug(boolean debug) {
         super.setDebug(debug);
-    }
-
-    /**
-     * The buttons type.
-     */
-    enum Buttons {
-        CLOSE, BUY
     }
 
     /**
@@ -194,7 +167,7 @@ public class StructureMenu extends Dialog {
             text = new Label("", skin);
             movementCost = new Label("", skin);
             range = new Label("", skin);
-            attack = new Label("",skin);
+            attack = new Label("", skin);
             left().center();
             add();
             add(movementCost).left();
@@ -230,8 +203,8 @@ public class StructureMenu extends Dialog {
          */
         private void setDescription(Entity entity, Assets assets) {
             setVisible(true);
-            movementCost.setText("Movement : "+entity.getMovRange());
-            range.setText("Range : "+entity.getRange());
+            movementCost.setText("Movement : " + entity.getMovRange());
+            range.setText("Range : " + entity.getRange());
             attack.setText(buildStrongAgainst(entity));
             try {
                 text.setText(assets.get(entity.getType(), 25));
@@ -274,7 +247,7 @@ public class StructureMenu extends Dialog {
             addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
-                    controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                    controller.playSound(Assets.getInstance().getSound());
                     description.setDescription(e, assets);
                     current = e;
                     if (player.getMoney() >= e.getCost()) {

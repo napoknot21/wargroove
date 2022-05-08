@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
@@ -606,7 +605,7 @@ public class Controller {
             int seconds = 5;
             GameView gameView = (GameView) getScreen();
             Skin skin = gameView.getAssets().getSkin();
-            Dialog dialog = new Dialog("", gameView.getAssets().getSkin()) {
+            Dialog dialog = new DialogWithCloseButton("", this) {
                 @Override
                 public void hide() {
                     super.hide();
@@ -614,7 +613,6 @@ public class Controller {
                     openMainMenu();
                 }
             };
-            TextButton button = new TextButton("Close", skin);
             Label timerText = new Label("Close in " + seconds + "seconds", skin);
             Label label = new Label(
                     "The " + faction.prettyName() + " won the war in " + getModel().getRound() + " rounds", skin
@@ -624,17 +622,8 @@ public class Controller {
             dialog.getContentTable().add(label).expand().fill();
             dialog.getContentTable().row();
             dialog.getContentTable().add(timerText);
-            dialog.button(button);
             dialog.show(gameView.getGameViewUi());
             closeDialog(dialog, timerText, seconds);
-            Controller controller = this;
-            button.addListener(
-                    new ChangeListener() {
-                        @Override
-                        public void changed(ChangeEvent event, Actor actor) {
-                            controller.playSound(Assets.getInstance().getDefault(Sound.class));
-                        }
-                    });
         }
     }
 
@@ -858,7 +847,7 @@ public class Controller {
         Player current = getModel().getCurrentPlayer();
         Skin skin = Assets.getInstance().getSkin();
         int timer = 5;
-        Dialog dialog = new Dialog("", skin);
+        Dialog dialog = new DialogWithCloseButton("", this);
         Label label = new Label(current.getFaction().prettyName() + "'s turn to play", skin);
         Label timerText = new Label("Close in " + timer + "seconds", skin);
         timerText.setColor(Color.FIREBRICK);
@@ -866,7 +855,6 @@ public class Controller {
         dialog.getContentTable().add(label).pad(10);
         dialog.getContentTable().row();
         dialog.getContentTable().add(timerText);
-        dialog.button("Close");
         dialog.show(((GameView) getScreen()).getGameViewUi());
         closeDialog(dialog, timerText, timer);
     }

@@ -40,19 +40,14 @@ public class Assets {
     private static final String asmext = ".asman";
     private static Assets instance = new Assets();
     private final AssetManager manager;
-    private final Map<Class<?>, Object> defaults;
 
     private final Map<Object, FileHandle> descriptions;
 
 
-
-
     private Assets() {
         manager = new AssetManager();
-        defaults = new HashMap<>();
 
         descriptions = new HashMap<>();
-
 
 
         instance = this;
@@ -122,7 +117,7 @@ public class Assets {
 
 
     public void loadDescription() {
-        for(int i =0; i<5;i++){
+        for (int i = 0; i < 5; i++) {
             FileHandle fileLoader = Gdx.files.internal(AssetDir.DESCRIPTION.path + AssetDir.DESCRIPTION.manifest[i]);
             Scanner scanner = new Scanner(fileLoader.read());
             while (scanner.hasNextLine()) {
@@ -135,26 +130,27 @@ public class Assets {
         }
     }
 
-    private Object defineType(int i, FileHandle file){
+    private Object defineType(int i, FileHandle file) {
         Object object = null;
-        switch (i){
-            case 0: object= Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
-            case 1: object= Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
-            case 2: object= Biome.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
-            case 3: object= Faction.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
-            case 4: object = Codex.Game.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT)); break;
+        switch (i) {
+            case 0:
+                object = Entity.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+                break;
+            case 1:
+                object = Tile.Type.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+                break;
+            case 2:
+                object = Biome.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+                break;
+            case 3:
+                object = Faction.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+                break;
+            case 4:
+                object = Codex.Game.valueOf(file.nameWithoutExtension().toUpperCase(Locale.ROOT));
+                break;
 
         }
         return object;
-    }
-
-
-
-
-
-    @SuppressWarnings("all")
-    public <T> T getDefault(Class<T> defaultClass) {
-        return defaultClass.cast(defaults.get(defaultClass));
     }
 
     /**
@@ -178,20 +174,12 @@ public class Assets {
         }
     }
 
-    /**
-     * Loads the defaults assets.
-     */
-    public void loadDefault() {
-        Skin defaultSkin = new Skin(Gdx.files.internal(AssetDir.SKIN.path + "ui.json"));
-        defaults.put(Skin.class, defaultSkin);
-        Sound defaultSound = Gdx.audio.newSound(Gdx.files.internal("data/gui/sound/switch.wav"));
-        defaults.put(Sound.class, defaultSound);
-        Music defaultMusic = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/theme.mp3"));
-        defaults.put(Music.class, defaultMusic);
-    }
-
     public Skin getSkin() {
         return get(AssetDir.SKIN.path + "ui.json", Skin.class);
+    }
+
+    public Sound getSound() {
+        return get(AssetDir.SOUND.path + "switch.wav");
     }
 
     /*public void loadBiomeMusic(){
@@ -374,13 +362,13 @@ public class Assets {
             String[] line = scanner.nextLine().split(" ");
             for (String l : line) {
                 if (len + l.length() >= lineLength) {
-                    builder.append("\n");
+                    builder.append('\n');
                     len = 0;
                 }
-                builder.append(l).append(" ");
+                builder.append(l).append(' ');
                 len += l.length() + 1;
             }
-            builder.append("\n");
+            builder.append('\n');
         }
         scanner.close();
         return builder.toString();
@@ -399,8 +387,6 @@ public class Assets {
     public void dispose() {
         manager.dispose();
         instance = null;
-        defaults.clear();
-
         descriptions.clear();
 
     }
@@ -411,7 +397,7 @@ public class Assets {
      */
     public enum AssetDir {
         DATA("data" + fs),
-        DESCRIPTION(DATA.path + "descriptions" + fs, "entities", "tiles", "biomes", "factions","game"),
+        DESCRIPTION(DATA.path + "descriptions" + fs, "entities", "tiles", "biomes", "factions", "game"),
         GUI(DATA.path + "gui" + fs, "gui"),
         ARROWS(GUI.path + "arrows" + fs, "arrows"),
         CHARACTER(GUI.path + "character" + fs),
@@ -426,7 +412,7 @@ public class Assets {
         GRASS(WORLD.path + "grass.atlas" + fs),
         ICE(WORLD.path + "ice" + fs),
         DESERT(WORLD.path + "desert" + fs),
-        VOLCANO(WORLD.path +"volcano"+fs);
+        VOLCANO(WORLD.path + "volcano" + fs);
 
 
         private final String path;

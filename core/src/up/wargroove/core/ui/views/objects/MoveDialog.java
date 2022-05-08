@@ -1,6 +1,5 @@
 package up.wargroove.core.ui.views.objects;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
@@ -49,7 +48,7 @@ public class MoveDialog extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
-                        controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                        controller.playSound(Assets.getInstance().getSound());
                         controller.entityWait();
                         clear();
                     }
@@ -57,7 +56,7 @@ public class MoveDialog extends Table {
         move.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                controller.playSound(Assets.getInstance().getSound());
                 controller.endMoving();
                 clear();
             }
@@ -72,7 +71,7 @@ public class MoveDialog extends Table {
         buy.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                controller.playSound(Assets.getInstance().getSound());
                 controller.openStructureMenu();
                 clear();
             }
@@ -80,7 +79,7 @@ public class MoveDialog extends Table {
         attack.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                controller.playSound(Assets.getInstance().getSound());
                 controller.endAttack();
                 clear();
             }
@@ -89,7 +88,7 @@ public class MoveDialog extends Table {
         endTurn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                controller.playSound(Assets.getInstance().getSound());
                 controller.endTurn();
                 nextUnit.setVisible(true);
                 clear();
@@ -99,7 +98,7 @@ public class MoveDialog extends Table {
         nextUnit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                controller.playSound(Assets.getInstance().getDefault(Sound.class));
+                controller.playSound(Assets.getInstance().getSound());
                 controller.nextUnit();
                 clear();
             }

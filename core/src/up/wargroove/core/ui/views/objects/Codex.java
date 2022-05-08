@@ -2,17 +2,13 @@ package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import up.wargroove.core.character.Entity;
 import up.wargroove.core.character.Faction;
-import up.wargroove.core.ui.Controller;
 import up.wargroove.core.ui.Assets;
+import up.wargroove.core.ui.Controller;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Tile;
 
@@ -22,14 +18,12 @@ import java.util.ArrayList;
 public class Codex extends Table {
     private final DialogWithCloseButton dialog;
     private final TextButton openCodex;
-    private final CheckBox exitCodex;
     private final Label description;
     private final ScrollPane paneDescription;
     private final ArrayList<TextButton> subject = new ArrayList<>();
-    private ArrayList<TextButton> object = new ArrayList<>();
-    private Table tableObjects;
+    private final ArrayList<TextButton> object = new ArrayList<>();
+    private final Table tableObjects;
     private final ScrollPane paneObject;
-    private TextureRegion textureRegion;
     private final Assets assets;
 
 
@@ -40,7 +34,7 @@ public class Codex extends Table {
         openCodex.setColor(Color.FIREBRICK);
 
 
-        dialog = new DialogWithCloseButton("", skin) {
+        dialog = new DialogWithCloseButton("", controller) {
             @Override
             public float getPrefHeight() {
                 return Math.max(Gdx.graphics.getHeight() / 1.5f, 300);
@@ -49,12 +43,15 @@ public class Codex extends Table {
             public float getPrefWidth() {
                 return Math.max(Gdx.graphics.getWidth() / 2, 500);
             }
+
+            @Override
+            public void hide() {
+                super.hide();
+                description.setText("Welcome to the world\n of NAME_NOT_FOUND ");
+            }
         };
         description = new Label("This is the codex\n of the game", skin);
         description.setColor(Color.BLACK);
-
-        exitCodex= dialog.getClosebuttonMenu();
-        exitCodex.setChecked(true);
 
         createSubject(skin);
         createObject("Entity", skin);
@@ -66,15 +63,11 @@ public class Codex extends Table {
         initialisePanel(paneObject);
         initialisePanel(paneDescription);
 
-        dialog.getTitleTable().row();
-        dialog.getTitleTable().add(exitCodex).right();
-        dialog.getTitleTable().row();
-
         dialog.getContentTable().row().expand();
-        dialog.getContentTable().add(addSubject()).center().colspan(5);
+        dialog.getContentTable().add(addSubject()).center().colspan(5).expand().fill();
         dialog.getContentTable().row();
-        dialog.getContentTable().add(paneObject).expand();
-        dialog.getContentTable().add(paneDescription).expand();
+        dialog.getContentTable().add(paneObject).expand().fill();
+        dialog.getContentTable().add(paneDescription).expand().fill();
         initInput(controller);
         add(openCodex);
         resize();
@@ -85,41 +78,35 @@ public class Codex extends Table {
                 new ChangeListener() {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
+                        controller.playSound(Assets.getInstance().getSound());
                         dialog.show(getStage());
                         resize();
 
                     }
                 });
-        exitCodex.addListener(
-                new ChangeListener() {
-                    @Override
-                    public void changed(ChangeEvent event, Actor actor) {
-                        dialog.hide();
-                        description.setText("Welcome to the world\n of NAME_NOT_FOUND ");
-                        exitCodex.setChecked(true);
-
-                    }
-                });
-        for (TextButton b : object
-        ) {
+        for (TextButton b : object) {
             b.addListener(
                     new ChangeListener() {
                         @Override
                         public void changed(ChangeEvent event, Actor actor) {
+                            controller.playSound(Assets.getInstance().getSound());
                             setDescription("Entity", b.getLabel().getText().toString());
                             resize();
 
                         }
                     });
-            for (TextButton a : subject
-            ) {
+            for (TextButton a : subject) {
                 a.addListener(
                         new ChangeListener() {
                             @Override
                             public void changed(ChangeEvent event, Actor actor) {
+                                controller.playSound(Assets.getInstance().getSound());
                                 createObject(a.getLabel().getText().toString(), openCodex.getSkin());
                                 actualiseTableObject();
-                                description.setText("Here you can find the\n description of \nthe differents " + a.getLabel().getText().toString() + "s ");
+                                description.setText(
+                                        "Here you can find the\n description of \nthe different "
+                                                + a.getLabel().getText().toString() + "s "
+                                );
                                 if (a.getLabel().getText().toString().equals("Game")) {
                                     description.setText("Here you can find \nthe description \n about the game");
                                 }
@@ -147,16 +134,16 @@ public class Codex extends Table {
 
     private Table addSubject() {
         Table table = new Table();
-        for (int i = 0; i < subject.size(); i++) {
-            table.add(subject.get(i)).expand();
+        for (TextButton textButton : subject) {
+            table.add(textButton).expand().size(textButton.getMinWidth(), textButton.getMinHeight());
         }
         return table;
     }
 
     private void actualiseTableObject() {
         tableObjects.clear();
-        for (int i = 0; i < object.size(); i++) {
-            tableObjects.add(object.get(i));
+        for (TextButton textButton : object) {
+            tableObjects.add(textButton);
             tableObjects.row();
         }
     }
@@ -171,11 +158,8 @@ public class Codex extends Table {
 
     private void createObject(String s, Skin skin) {
         object.clear();
-        Object[] values = null;
+        Object[] values;
         switch (s) {
-            case "Entity":
-                values = Entity.Type.values();
-                break;
             case "Tile":
                 values = Tile.Type.values();
                 break;
@@ -248,7 +232,7 @@ public class Codex extends Table {
                 break;
         }
         try {
-            return assets.get(type, (dialog.getPrefWidth() == Gdx.graphics.getWidth() / 2) ? 50 : 20);
+            return assets.get(type, (dialog.getPrefWidth() == Gdx.graphics.getWidth() / 2f) ? 50 : 20);
         } catch (Exception e) {
             return "Unknown description";
         }
@@ -258,6 +242,6 @@ public class Codex extends Table {
         CREATORS,
         MUSIC,
         ART,
-        COPYRIGTH;
+        COPYRIGHTS
     }
 }

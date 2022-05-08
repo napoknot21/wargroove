@@ -39,7 +39,7 @@ public class Settings extends ViewWithPrevious {
     public Settings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
         Skin skin = getAssets().getSkin();
-        buttonSound = Assets.getInstance().getDefault(Sound.class);
+        buttonSound = Assets.getInstance().getSound();
         fullScreenLabel = new Label("Full screen", skin);
         cameraVelocityLabel = new Label("Camera velocity", skin);
         cameraZoomVelocityLabel = new Label("Zoom velocity", skin);

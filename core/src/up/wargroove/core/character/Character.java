@@ -1,13 +1,5 @@
 package up.wargroove.core.character;
 
-import up.wargroove.core.character.Entity;
-import up.wargroove.core.character.Faction;
-
-import org.gradle.internal.impldep.org.yaml.snakeyaml.Yaml;
-import up.wargroove.core.character.entities.*;
-import up.wargroove.utils.Pair;
-
-
 public abstract class Character extends Entity {
 
     protected String name;
@@ -16,9 +8,9 @@ public abstract class Character extends Entity {
     /**
      * Constructeur pour Character
      *
-     * @param name nom du personnage
+     * @param name    nom du personnage
      * @param faction Faction du personnage
-     * @param type Type d'unité du personnage
+     * @param type    Type d'unité du personnage
      */
     public Character(String name, Entity.Type type, Faction faction) {
 
@@ -40,6 +32,10 @@ public abstract class Character extends Entity {
         return this.stats.cost;
     }
 
+    public void setCost(int cost) {
+        this.stats.cost = cost;
+    }
+
     public Stats getStats() {
         return stats;
     }
@@ -49,28 +45,32 @@ public abstract class Character extends Entity {
         return this.stats.health;
     }
 
+    @Override
+    public void setHealth(double health) {
+        super.setHealth(health);
+        this.stats.health = health;
+    }
+
     public int getRange() {
 
-	    return stats.range;
+        return stats.range;
 
+    }
+
+    public void setRange(int range) {
+        this.stats.range = range;
     }
 
     public double getAttack() {
         return this.stats.health;
     }
 
-    public double getDefense() {
-        return this.stats.defense;
-    }
-
-    @Override
-    public void setHealth(double health) {
-        this.stats.health = health;
-        super.setHealth(health);
-    }
-
     public void setAttack(double attack) {
         this.stats.attack = attack;
+    }
+
+    public double getDefense() {
+        return this.stats.defense;
     }
 
     public void setDefense(double defense) {
@@ -83,14 +83,6 @@ public abstract class Character extends Entity {
 
     public void setSight(int sight) {
         this.stats.sight = sight;
-    }
-
-    public void setRange(int range) {
-        this.stats.range = range;
-    }
-
-    public void setCost(int cost) {
-        this.stats.cost = cost;
     }
 
     /**

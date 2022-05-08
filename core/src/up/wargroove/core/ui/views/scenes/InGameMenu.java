@@ -1,6 +1,5 @@
 package up.wargroove.core.ui.views.scenes;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -14,6 +13,7 @@ import up.wargroove.core.ui.Controller;
 
 /**
  * The in game Menu
+ *
  * @see up.wargroove.core.ui.views.scenes.ViewWithPrevious
  */
 public class InGameMenu extends ViewWithPrevious {
@@ -26,7 +26,7 @@ public class InGameMenu extends ViewWithPrevious {
      * @param wargroove  The client.
      */
     public InGameMenu(View screen, Controller controller, Model model, WargrooveClient wargroove) {
-        super(screen,controller, model, wargroove);
+        super(screen, controller, model, wargroove);
     }
 
     /**
@@ -58,14 +58,14 @@ public class InGameMenu extends ViewWithPrevious {
         close.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getController().playSound(Assets.getInstance().getDefault(Sound.class));
+                getController().playSound(Assets.getInstance().getSound());
                 getController().back(getPrevious());
             }
         });
         settings.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getController().playSound(Assets.getInstance().getDefault(Sound.class));
+                getController().playSound(Assets.getInstance().getSound());
                 getController().openSettings();
             }
         });
@@ -73,7 +73,7 @@ public class InGameMenu extends ViewWithPrevious {
         mainMenu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getController().playSound(Assets.getInstance().getDefault(Sound.class));
+                getController().playSound(Assets.getInstance().getSound());
                 getController().stopGame();
                 getController().openMainMenu();
             }
@@ -82,7 +82,7 @@ public class InGameMenu extends ViewWithPrevious {
         quit.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getController().playSound(Assets.getInstance().getDefault(Sound.class));
+                getController().playSound(Assets.getInstance().getSound());
                 getController().closeClient();
             }
         });

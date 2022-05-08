@@ -70,7 +70,7 @@ public class MatchSettings extends ViewWithPrevious {
         VLT = new Stage(new ScreenViewport());
         VRT = new Stage(new ScreenViewport());
         VB = new Stage(new ScreenViewport());
-        buttonSound = getAssets().getDefault(Sound.class);
+        buttonSound = getAssets().getSound();
         back = new TextButton("Back", skin);
         reset = new TextButton("Reset", skin);
         chooseConfig = new TextButton("Choose this configuration", skin);

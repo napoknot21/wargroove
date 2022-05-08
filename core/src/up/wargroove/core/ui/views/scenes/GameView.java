@@ -2,14 +2,12 @@ package up.wargroove.core.ui.views.scenes;
 
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
@@ -244,7 +242,7 @@ public class GameView extends View {
         menu.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                getController().playSound(Assets.getInstance().getDefault(Sound.class));
+                getController().playSound(Assets.getInstance().getSound());
                 getController().openInGameMenu();
             }
         });
@@ -324,7 +322,7 @@ public class GameView extends View {
         viewport.update(width, height);
         gameViewUi.getViewport().update(width, height, true);
         camera.position.set(gameMap.getCenter());
-        StructureMenu.resize(width, height);
+        StructureMenu.resize();
     }
 
     public OrthographicCamera getCamera() {

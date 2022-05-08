@@ -57,7 +57,6 @@ public class WargrooveClient extends Game {
     public void create() {
         assets = Assets.getInstance();
         assets.load(Assets.AssetDir.SOUND);
-        assets.loadDefault();
         assets.load(Assets.AssetDir.SKIN);
         assets.loadDescription();
         settings = Gdx.app.getPreferences("settings");
