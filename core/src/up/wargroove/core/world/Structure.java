@@ -11,18 +11,18 @@ public abstract class Structure extends Entity {
 
     static enum Type {
 
-	    RECRUITMENT,STRONGHOLD, VILLAGE
+        RECRUITMENT, STRONGHOLD, VILLAGE
 
     }
 
     private Type type;
 
     protected Structure(Type type, Faction faction) {
-	    super(Entity.Type.STRUCTURE, faction);
+        super(Entity.Type.STRUCTURE, faction);
         movement = Movement.NULL;
         this.type = type;
         setHealth(100);
-    
+
     }
 
     public int getBonus() {
@@ -36,12 +36,13 @@ public abstract class Structure extends Entity {
         Type type = Type.valueOf(from.get(Constants.STRUCTURE_TYPE_DB_KEY).get());
         switch (type) {
             case RECRUITMENT:
-                return Recruitment.loadRecruitment(from,faction);
+                return Recruitment.loadRecruitment(from, faction);
             case VILLAGE:
                 return new Village(faction);
             case STRONGHOLD:
                 return new Stronghold(faction);
-            default: return null;
+            default:
+                return null;
         }
     }
 
@@ -52,16 +53,16 @@ public abstract class Structure extends Entity {
 
     @Override
     public DbObject toDBO() {
-        DbObject res =  super.toDBO();
-        res.put(Constants.STRUCTURE_TYPE_DB_KEY,type);
+        DbObject res = super.toDBO();
+        res.put(Constants.STRUCTURE_TYPE_DB_KEY, type);
         return res;
     }
 
     @Override
     public void nextTurn() {
         isExhausted = false;
-        if (this.getHealth()<100){
-            this.setHealth(getHealth()+10);
+        if (this.getHealth() < 100) {
+            this.setHealth(getHealth() + 10);
         }
     }
 

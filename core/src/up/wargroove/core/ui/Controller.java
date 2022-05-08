@@ -407,6 +407,9 @@ public class Controller {
         }
     }
 
+    /**
+     * End the units attack selection, attack the units in the chosen emplacement and do the counterattack of the units attackted
+     */
     public void endAttack() {
         GameView gameView = (GameView) getScreen();
         AttackSelector selector = gameView.getAttackSelector();
@@ -425,37 +428,45 @@ public class Controller {
         Entity entityTarget = getWorld().getScopedEntity();
         Actor actorTarget = gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        boolean inLive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
+        boolean alive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
             structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
-            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor, inLive)) {
-                contreAttack((CharacterUI) actorTarget, (CharacterUI) actor, inversePath(path));
+            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor, alive)) {
+                counterAttack((EntityUI) actorTarget, (CharacterUI) actor, inversePath(path.substring(path.length() - 1)));
             }
         }
     }
 
+    /**
+     * @param path of the character
+     * @return reverse the direction position of a the character
+     */
     private String inversePath(String path) {
-        StringBuilder res = new StringBuilder();
-        for (int i = 0; i < path.length(); i++) {
-            switch (path.charAt(i)) {
-                case 'R':
-                    res.append('L');
-                    break;
-                case 'L':
-                    res.append('R');
-                    break;
-                case 'U':
-                    res.append('D');
-                    break;
-                case 'D':
-                    res.append('U');
-                    break;
-                default:
-            }
+        String res = "";
+        switch (path) {
+            case "R":
+                res = "L";
+                break;
+            case "L":
+                res = "R";
+                break;
+            case "U":
+                res = "D";
+                break;
+            case "D":
+                res = "U";
+                break;
+            default:
         }
-        return res.toString();
+        return res;
     }
 
+    /**
+     * @param actor
+     * @param actorTarget
+     * @param path
+     * @return
+     */
     private boolean attack(CharacterUI actor, EntityUI actorTarget, String path) {
         actor.setMove(path.substring(0, path.length() - 1));
         actor.setAttackDirection(path.charAt(path.length() - 1));
@@ -464,9 +475,19 @@ public class Controller {
         return actorTarget.getEntity().getHealth() > 0;
     }
 
-    private void contreAttack(CharacterUI actor, EntityUI actorTarget, String path) {
+    /**
+     * When an entity is attacked, it can attack it aggressor
+     *
+     * @param actor       is the entity aggressed
+     * @param actorTarget is the aggressor
+     * @param path        of the aggressor
+     */
+    private void counterAttack(EntityUI actor, EntityUI actorTarget, String path) {
         actor.setReadyToAttack(false);
-        actor.setAttackDirection(path.charAt(path.length() - 1));
+        if (actor instanceof CharacterUI) {
+            CharacterUI characterUI = (CharacterUI) actor;
+            characterUI.setAttackDirection(path.charAt(0));
+        }
         actor.setVictime(actorTarget);
         actor.getEntity().attack(actorTarget.getEntity());
     }
@@ -491,6 +512,7 @@ public class Controller {
 
     /**
      * Only way to catch the StructureUI, is reading all the map
+     * Eliminate or free all the entities of a player
      *
      * @param player
      * @param attack
@@ -537,12 +559,26 @@ public class Controller {
         }
     }
 
+    /**
+     * Character is eliminated from the stage and world
+     *
+     * @param actor  is the character
+     * @param player who lost his characters
+     */
     private void deleteCharacterUI(CharacterUI actor, Player player) {
         Entity entity = actor.getEntity();
         getWorld().delEntity(actor.getCoordinates(), entity);
         player.removeEntity(entity);
         actor.remove();
     }
+
+    /**
+     * Structure change of owner, Stronghol and his entity are eliminated from the stage and world
+     *
+     * @param actor  is the structure
+     * @param attack Faction of new owner
+     * @param player who lost his structures
+     */
 
     private void deleteStructureUI(StructureUI actor, Player player, Faction attack) {
         Entity entity = actor.getEntity();
@@ -558,6 +594,12 @@ public class Controller {
         }
         actor.remove();
     }
+
+    /**
+     * Shoes final dialog and allows to go to the main menu
+     *
+     * @param faction winner
+     */
 
     private void gameOver(Faction faction) {
         if (getWorld().isTheLastPlayer()) {
@@ -791,19 +833,25 @@ public class Controller {
         return false;
     }
 
+    /**
+     * @param inLive if the actorTarget has survive to the actor atack
+     * @return if the actorTarget can attack the actor
+     */
     public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor, boolean inLive) {
-        return ((actorTarget instanceof CharacterUI) && inLive && !(actorTarget.getEntity() instanceof Villager) && canHit((CharacterUI) actorTarget, actor));
-
+        return inLive && !((actorTarget.getEntity()) instanceof Villager) && correctDistanceToCounterAttack(actorTarget, actor);
     }
 
-    public boolean canHit(CharacterUI characterUI, CharacterUI characterUIVictime) {
+    /**
+     * @return true if the actor who has atackk first is in the range of the other actor
+     * @return false if the actors are to futher
+     */
+    public boolean correctDistanceToCounterAttack(EntityUI characterUI, CharacterUI characterUIVictime) {
         Pair<Integer, Integer> posAttack = characterUI.getCoordinates();
-        Pair<Integer, Integer> posVictime = characterUIVictime.getCoordinates();
+        Pair<Integer, Integer> posVictime = characterUIVictime.calculateFinalPosition();
         int distanceX = Math.abs(posAttack.first - posVictime.first);
         int distanceY = Math.abs(posAttack.second - posVictime.second);
         int distance = Math.max(distanceX, distanceY);
         return distance <= characterUI.getEntity().getRange();
-
     }
 
     private void showNextTurnMessage() {
@@ -845,4 +893,5 @@ public class Controller {
             }
         }, 0, 1);
     }
+}
 }

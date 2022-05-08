@@ -25,6 +25,7 @@ public abstract class EntityUI extends Actor {
     private boolean alive = true;
     private boolean injured = false;
     private boolean waiting = true;
+    private boolean readyToAttack = true;
     private float temps;
 
 
@@ -37,16 +38,6 @@ public abstract class EntityUI extends Actor {
         } else {
             size = new Pair<>((int) TILE_SIZE, (int) TILE_SIZE);
         }
-    }
-
-    public static float getTimeLapse() {
-        //return Gdx.graphics.getDeltaTime()*(getTileSize()/1.8f);
-        return Gdx.graphics.getDeltaTime() * (getTileSize());
-
-    }
-
-    public static float getTileSize() {
-        return TILE_SIZE;
     }
 
     protected void initialiseSprites() {
@@ -68,6 +59,126 @@ public abstract class EntityUI extends Actor {
         }
         stats.setSize(TILE_SIZE / 4f, TILE_SIZE / 4f);
         stats.setPosition(coordinates.first * TILE_SIZE + TILE_SIZE - 6, coordinates.second * TILE_SIZE + 1);
+    }
+
+
+    protected Texture getPath(String nameFile) {
+        return Assets.getInstance().get(
+                Assets.AssetDir.CHARACTER.path() + entity.getFaction() + "/" +
+                        entity.getType() + "_" + nameFile, Texture.class);
+    }
+
+    /**
+     * Change the texture of the sprite and actialise size and postion
+     */
+
+    public void actualiseSprite(TextureRegion textureRegion) {
+        sprite = new Sprite(textureRegion);
+        sprite.setSize(size.first, size.second);
+        positionChanged();
+    }
+
+    /**
+     * Create a sequence of colors showing the character injured
+     */
+    private void injure() {
+        if (temps > 0) sprite.setColor(Color.RED);
+        temps += getTimeLapse();
+        if (temps > getTileSize() * getTimeLapse()) {
+            actualiseStats();
+            temps = 0;
+            sprite.setColor(1, 1, 1, 1);
+            injured = false;
+            waiting = true;
+            if (entity.getHealth() <= 0) {
+                alive = false;
+            }
+        }
+    }
+
+    /**
+     * Puts the character with a dark filter.
+     */
+    protected void exhaust() {
+        if (entity.isExhausted()) {
+            sprite.setColor(Color.GRAY);
+        } else {
+            sprite.setColor(1, 1, 1, 1);
+        }
+    }
+
+    @Override
+    public void moveBy(float x, float y) {
+        coordinates.first += (int) x;
+        coordinates.second += (int) y;
+        setPosition(coordinates.first * TILE_SIZE, coordinates.second * TILE_SIZE);
+    }
+
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        if (isWaiting() && !injured) {
+            actualiseStats();
+            stats.draw(batch);
+        }
+        if (injured) injure();
+        sprite.draw(batch);
+
+
+        super.draw(batch, parentAlpha);
+    }
+
+    public static float getTimeLapse() {
+        return Gdx.graphics.getDeltaTime() * (getTileSize());
+
+    }
+
+    public static float getTileSize() {
+        return TILE_SIZE;
+    }
+
+    protected boolean canMove() {
+        return false;
+    }
+
+    public boolean isWaiting() {
+        return waiting;
+    }
+
+    public void setWaiting(boolean b) {
+        this.waiting = b;
+    }
+
+    public float getTemps() {
+        return temps;
+    }
+
+    public void setTemps(float temps) {
+        this.temps = temps;
+    }
+
+    public void addTemps(float temps) {
+        this.temps += temps;
+    }
+
+    public Pair<Integer, Integer> getSize() {
+        return size;
+    }
+
+    public void setSize(Pair<Integer, Integer> size) {
+        this.size = size;
+    }
+
+    public boolean isFaction(Faction faction) {
+        return entity.getFaction().equals(faction);
+    }
+
+    public void setReadyToAttack(boolean bool) {
+        readyToAttack = bool;
+    }
+
+    public boolean getReadyAttack() {
+        return readyToAttack;
     }
 
     private Texture getPathSTATS(int file) {
@@ -123,101 +234,5 @@ public abstract class EntityUI extends Actor {
         victime.setWaiting(false);
     }
 
-    protected Texture getPath(String nameFile) {
-        return Assets.getInstance().get(
-                Assets.AssetDir.CHARACTER.path() + entity.getFaction() + "/" +
-                        entity.getType() + "_" + nameFile, Texture.class);
-    }
 
-    public void actualiseSprite(TextureRegion textureRegion) {
-        sprite = new Sprite(textureRegion);
-        sprite.setSize(size.first, size.second);
-        positionChanged();
-    }
-
-    /**
-     * Create a sequence of colors showing the character injured
-     * ~That which does not kill us makes us stronger~ Friedrich Nietzsche
-     */
-    private void injure() {
-        if (temps > 0) sprite.setColor(Color.RED);
-        temps += getTimeLapse();
-        if (temps > getTileSize() * getTimeLapse()) {
-            actualiseStats();
-            temps = 0;
-            sprite.setColor(1, 1, 1, 1);
-            injured = false;
-            waiting = true;
-            if (entity.getHealth() <= 0) {
-                alive = false;
-            }
-        }
-    }
-
-    /**
-     * Puts the character with a dark filter.
-     */
-    protected void exhaust() {
-        if (entity.isExhausted()) {
-            sprite.setColor(Color.GRAY);
-        } else {
-            sprite.setColor(1, 1, 1, 1);
-        }
-    }
-
-    protected boolean canMove() {
-        return false;
-    }
-
-    public boolean isWaiting() {
-        return waiting;
-    }
-
-    public void setWaiting(boolean b) {
-        this.waiting = b;
-    }
-
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        if (isWaiting() && !injured) {
-            actualiseStats();
-            stats.draw(batch);
-        }
-        if (injured) injure();
-        sprite.draw(batch);
-
-
-        super.draw(batch, parentAlpha);
-    }
-
-    public float getTemps() {
-        return temps;
-    }
-
-    public void setTemps(float temps) {
-        this.temps = temps;
-    }
-
-    public void addTemps(float temps) {
-        this.temps += temps;
-    }
-
-    public Pair<Integer, Integer> getSize() {
-        return size;
-    }
-
-    public void setSize(Pair<Integer, Integer> size) {
-        this.size = size;
-    }
-
-    public boolean isFaction(Faction faction) {
-        return entity.getFaction().equals(faction);
-    }
-
-    @Override
-    public void moveBy(float x, float y) {
-        coordinates.first += (int) x;
-        coordinates.second += (int) y;
-        setPosition(coordinates.first * TILE_SIZE, coordinates.second * TILE_SIZE);
-    }
 }

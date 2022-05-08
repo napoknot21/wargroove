@@ -21,7 +21,6 @@ public class CharacterUI extends EntityUI {
     private static final int DEFAULT_FRAMES = 13;
     private int ATTACK_FRAMES;
     private Pair<Integer, Integer> decalage;
-    private boolean readyToAttack= true;
 
 
     /**
@@ -30,14 +29,12 @@ public class CharacterUI extends EntityUI {
 
 
     public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character, float scale) {
-        super(coord,character, scale);
+        super(coord, character, scale);
         this.controller = controller;
         controller.getWorld().addEntity(coord, character);
         initialiseAnimation();
         initialiseSprites();
         controller.getScreen().getStage().addActor(this);
-
-
     }
 
     public CharacterUI(Controller controller, Stage stage, Pair<Integer, Integer> coord, Character character, float scale) {
@@ -50,12 +47,12 @@ public class CharacterUI extends EntityUI {
     }
 
     public CharacterUI(Controller controller, Stage stage, Pair<Integer, Integer> coord, Character character) {
-        this(controller,stage,coord,character,1);
+        this(controller, stage, coord, character, 1);
     }
 
     public CharacterUI(Controller controller, Pair<Integer, Integer> coord, Character character) {
-        super(coord,character, 1);
-        this.controller= controller;
+        super(coord, character, 1);
+        this.controller = controller;
         controller.getWorld().addEntity(coord, character);
         initialiseAnimation();
         initialiseSprites();
@@ -68,7 +65,9 @@ public class CharacterUI extends EntityUI {
         actualiseSprite(animationDie[0]);
     }
 
-
+    /**
+     * Initialise all the animations
+     */
     private void initialiseAnimation() {
         defineFeatures();
         animationAttack = new TextureRegion[ATTACK_FRAMES];
@@ -77,18 +76,24 @@ public class CharacterUI extends EntityUI {
     }
 
 
+    /**
+     * Change the texture for the default texture
+     */
     private void actualiseTexture() {
         setSprite(new Sprite(animationDie[0]));
         positionChanged();
     }
 
+    /**
+     * Change the postion of the sprite in the new position
+     */
+
     @Override
     public void positionChanged() {
-        float centerY = (getTileSize()/3f);
-        getSprite().setPosition(getX() + decalage.first, getY() +centerY+ decalage.second);
-        getSprite().setSize(getSize().first,getSize().second);
+        float centerY = (getTileSize() / 3f);
+        getSprite().setPosition(getX() + decalage.first, getY() + centerY + decalage.second);
+        getSprite().setSize(getSize().first, getSize().second);
         getStats().setPosition(getX() + getSprite().getWidth() - getStats().getWidth() - 1, getY() + 1);
-
         super.positionChanged();
     }
 
@@ -96,31 +101,6 @@ public class CharacterUI extends EntityUI {
     @Override
     public void act(float delta) {
         super.act(delta);
-    }
-
-
-    /**
-     * Functions for tests
-     */
-
-    public void moveNorth() {
-        move += 'U';
-    }
-
-    public void moveEast() {
-        move += 'R';
-    }
-
-    public void moveSouth() {
-        move += 'D';
-    }
-
-    public void moveWest() {
-        move += 'L';
-    }
-
-    public void addMove(String c){
-        move += c;
     }
 
 
@@ -154,7 +134,7 @@ public class CharacterUI extends EntityUI {
             AnimationWalk(texture);
         }
         getSprite().setRegion(animationMove[(int) (getTemps() / 3) % animationMove.length]);
-        setSize(getSize().first,getSize().second);
+        setSize(getSize().first, getSize().second);
         setPosition(getX() + getTimeLapse() * x, getY() + getTimeLapse() * y);
         if (getTemps() >= getTileSize()) {
             setTemps(0);
@@ -166,12 +146,6 @@ public class CharacterUI extends EntityUI {
         }
     }
 
-
-    public void vengeance(String path){
-        CharacterUI characterUI = (CharacterUI) victime;
-        ((CharacterUI) victime).addMove(path);
-        move.substring(0,path.length()-1);
-    }
 
     /**
      * Create the animation showing the character walking
@@ -217,36 +191,21 @@ public class CharacterUI extends EntityUI {
         if (getTemps() == getTimeLapse()) {
             AnimationAttack(texture);
         }
-        if (getTemps() >= (ATTACK_FRAMES * 10 - 2 * getTimeLapse())/2) {
+        if (getTemps() >= (ATTACK_FRAMES * 10 - 2 * getTimeLapse()) / 2) {
             victime.setInjured(true);
         }
-            actualiseSprite(animationAttack[(int) (getTemps() / 10) % ATTACK_FRAMES]);
+        actualiseSprite(animationAttack[(int) (getTemps() / 10) % ATTACK_FRAMES]);
         if (getTemps() >= ATTACK_FRAMES * 10 - 2 * getTimeLapse()) {
             setTemps(0);
             attackDirection = null;
             actualiseTexture();
-            if (victime instanceof CharacterUI){
+            if (victime instanceof CharacterUI) {
                 ((CharacterUI) victime).setReadyToAttack(true);
                 victime.setTemps(0);
             }
         }
     }
 
-    private String inversePath(String path) {
-        String res="";
-        for (int i=0; i<path.length();i++){
-            if (path.charAt(i) == 'R'){
-                res = res + 'L';
-            } else if (path.charAt(i) == 'L'){
-                res =res + 'R';
-            } else if (path.charAt(i) == 'U'){
-                res =res + 'D';
-            } else {
-                res =res + 'U';
-            }
-        }
-        return res;
-    }
 
     /**
      * Create the animation showing the character doing the attack
@@ -259,7 +218,7 @@ public class CharacterUI extends EntityUI {
     }
 
     /**
-     *
+     * The character is removed from the stage and the world
      */
 
     private void die() {
@@ -268,6 +227,7 @@ public class CharacterUI extends EntityUI {
         if (getTemps() > 20) {
             setTemps(0);
             this.remove();
+            this.clear();
             controller.getWorld().delEntity(getCoordinates(), getEntity());
         }
     }
@@ -286,10 +246,41 @@ public class CharacterUI extends EntityUI {
         }
     }
 
+    /**
+     * Calcule the final coordinates
+     */
+
+    public Pair<Integer, Integer> calculateFinalPosition() {
+        Pair<Integer, Integer> finalPos = new Pair<>(getCoordinates().first, getCoordinates().second);
+        String path = move;
+        while (path.length() != 0) {
+            switch (path.charAt(path.length() - 1)) {
+                case 'U':
+                    finalPos.second += 1;
+                    break;
+                case 'R':
+                    finalPos.first += 1;
+                    break;
+                case 'D':
+                    finalPos.second -= 1;
+                    break;
+                case 'L':
+                    finalPos.first -= 1;
+                    break;
+            }
+            path = path.substring(0, path.length() - 1);
+        }
+
+        return finalPos;
+    }
+
     public void setMove(String path) {
         move = move + path;
     }
 
+    /**
+     * @return true while the character can move
+     */
     @Override
     protected boolean canMove() {
         return (move.length() > 0);
@@ -300,8 +291,8 @@ public class CharacterUI extends EntityUI {
         return (!canMove() && attackDirection == null);
     }
 
-    public void setReadyToAttack(boolean bool){
-        readyToAttack=bool;
+    public boolean isAttackFinish() {
+        return (attackDirection == null);
     }
 
     private void removeFirstMove() {
@@ -312,15 +303,7 @@ public class CharacterUI extends EntityUI {
         this.attackDirection = attackDirection;
     }
 
-    public Texture characterTextureDefault() {
-        return animationDie[0].getTexture();
-    }
 
-    private boolean isInTime(float x, float y) {
-        return (getTemps() >= x) && (getTemps() <= y);
-    }
-
-    //todo: decomenter quand les types seront bon (pas besoin d'utiliser le type, le switch prend en charge les enum)
     private void defineFeatures() {
         decalage = new Pair<>(0, 0);
         switch (getEntity().getType()) {
@@ -339,14 +322,18 @@ public class CharacterUI extends EntityUI {
             //case AMPHIBIAN: ATTACK_FRAMES=8; break;
             case GIANT:
                 ATTACK_FRAMES = 6;
-                setSize( new Pair<>(getSize().first+getSize().first/2,getSize().second+getSize().second/2));
-                decalage.first = (int) -(getTileSize()/4);
+                setSize(new Pair<>(getSize().first + getSize().first / 2, getSize().second + getSize().second / 2));
+                decalage.first = (int) -(getTileSize() / 4);
                 break;
             case MAGE:
                 ATTACK_FRAMES = 7;
             default:
         }
     }
+
+    /**
+     * @return true if the character is doing a movement or an attack
+     */
 
     public boolean isActing() {
         return canMove() && animationAttack != null;
@@ -355,7 +342,7 @@ public class CharacterUI extends EntityUI {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-        if (readyToAttack) {
+        if (getReadyAttack()) {
             if (canMove()) moveTo();
             else if (attackDirection != null) attackTo();
             else exhaust();

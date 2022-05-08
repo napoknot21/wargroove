@@ -176,7 +176,7 @@ public class GameView extends View {
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
                 Tile tile = getController().getTile(
-                        (int) (vector.x / gameMap.getTileSize()), (int) (vector.y/ gameMap.getTileSize())
+                        (int) (vector.x / gameMap.getTileSize()), (int) (vector.y / gameMap.getTileSize())
                 );
 
 
@@ -190,8 +190,7 @@ public class GameView extends View {
                     movement = attack = false;
                     cursor.setLock(true);
                     return true;
-                }
-                else {
+                } else {
                     cursor.setLock(false);
                 }
 
@@ -294,7 +293,7 @@ public class GameView extends View {
     private boolean haveAnActiveEntity() {
         boolean isActive = false;
         var arr = characters.getActors();
-        for (int i = 0; i< arr.size; i++) isActive |= ((CharacterUI)arr.get(i)).isActing();
+        for (int i = 0; i < arr.size; i++) isActive |= ((CharacterUI) arr.get(i)).isActing();
         return isActive;
     }
 
@@ -421,7 +420,7 @@ public class GameView extends View {
     public boolean canAttack() {
         return ((attackSelector.getPath().length() > 0)
                 && (scopedEntity instanceof CharacterUI)
-                && (!(((CharacterUI) scopedEntity).getEntity() instanceof Villager)));
+                && (!(((EntityUI) scopedEntity).getEntity() instanceof Villager)));
     }
 
 
@@ -458,6 +457,7 @@ public class GameView extends View {
     public Stage getCharacters() {
         return characters;
     }
+
     public boolean isInAttackMode() {
         return attack;
     }
@@ -466,7 +466,7 @@ public class GameView extends View {
         return gameViewUi;
     }
 
-    public Pair<Float,Float> getMapBound() {
+    public Pair<Float, Float> getMapBound() {
         return new Pair<>(renderer.getViewBounds().width, renderer.getViewBounds().height);
     }
 }

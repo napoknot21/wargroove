@@ -12,26 +12,27 @@ import up.wargroove.utils.functional.WPredicate;
 import up.wargroove.utils.DBEngine;
 import up.wargroove.utils.Database;
 import up.wargroove.utils.DbObject;
+
 import java.util.*;
 
 public class World {
 
-    private final int [] permutations;
-    private final WorldProperties properties; 
- 
+    private final int[] permutations;
+    private final WorldProperties properties;
+
     private Optional<Integer> currentEntityLinPosition;
     private Tile[] terrain;
 
     private Vector<Player> players;
     private int playerPtr = 0;
-    private Player fantome = new Player(Faction.OUTLAWS,0);
+    private Player fantome = new Player(Faction.OUTLAWS, 0);
 
     private State currentState;
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-        if(toTile.entity.isPresent() || k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
+        if (toTile.entity.isPresent() || k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
@@ -45,7 +46,7 @@ public class World {
 
     private final WPredicate<Integer> withinRange = (k) -> {
         int attackRange = k[3];
-        if (k[2] >= 0) return new Pair<>(1,0);
+        if (k[2] >= 0) return new Pair<>(1, 0);
         if (attackRange > 0) {
             return new Pair<>(attackRange - 1, 1);
         }
@@ -54,10 +55,10 @@ public class World {
 
     private final WPredicate<Integer> canAttack = (k) -> {
 
-        Optional<Entity> rootEntity  = terrain[k[4]].entity, targetEntity = terrain[k[0]].entity;
+        Optional<Entity> rootEntity = terrain[k[4]].entity, targetEntity = terrain[k[0]].entity;
 
-        if(!rootEntity.isPresent() || !targetEntity.isPresent()) return new Pair<>(-1, 0);
-        if(k[3] < 0) return new Pair<>(-2,0);
+        if (!rootEntity.isPresent() || !targetEntity.isPresent()) return new Pair<>(-1, 0);
+        if (k[3] < 0) return new Pair<>(-2, 0);
 
         boolean status = targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
@@ -74,46 +75,46 @@ public class World {
 
         currentEntityLinPosition = Optional.empty();
 
-	permutations = new int[] {
-		-properties.dimension.first, 
-		1, 
-		properties.dimension.first, 
-		-1
-	};
-    states = new Stack<>();
-	players = new Vector<>();
+        permutations = new int[]{
+                -properties.dimension.first,
+                1,
+                properties.dimension.first,
+                -1
+        };
+        states = new Stack<>();
+        players = new Vector<>();
     }
 
     public void loadPlayers() {
         int amt = Math.min(properties.amt, Faction.values().length - 1);
 
-	if(amt < Constants.WG_TWO) {
+        if (amt < Constants.WG_TWO) {
 
-		amt = Constants.WG_TWO;
+            amt = Constants.WG_TWO;
 
-	}
+        }
 
-	for(int k = 0; k < amt; k++) {
+        for (int k = 0; k < amt; k++) {
 
             Player p = new Player(Faction.values()[k], properties.getIncome());
-            p.setName("Player "+ (k+1));
+            p.setName("Player " + (k + 1));
             players.add(p);
         }
     }
 
     public void addPlayer(Faction faction) {
-        players.add(new Player(faction,properties.getIncome()));
+        players.add(new Player(faction, properties.getIncome()));
     }
 
-    public void removeLastPlayer(){
+    public void removeLastPlayer() {
         if (players.isEmpty()) {
             return;
         }
         players.remove(players.size() - 1);
     }
 
-    public void removePlayer(Faction faction){
-        for(int i = 0; i < players.size(); i++) {
+    public void removePlayer(Faction faction) {
+        for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getFaction().equals(faction)) {
                 players.remove(i);
                 if (i <= playerPtr) playerPtr--;
@@ -132,8 +133,8 @@ public class World {
         return null;
     }
 
-    public boolean isTheLastPlayer(){
-        return players.size()==1;
+    public boolean isTheLastPlayer() {
+        return players.size() == 1;
     }
 
     /**
@@ -158,41 +159,41 @@ public class World {
 
         }
 
-	    properties.terrain = terrain;
+        properties.terrain = terrain;
 
         Log.print("Initialisation terminée ...");
     }
 
     private void nextTurn() {
 
-	    states.push(currentState);
-	    currentState = new State();
+        states.push(currentState);
+        currentState = new State();
 
 
     }
 
     public void nextPlayer() {
 
-	    playerPtr = (playerPtr + 1) % players.size();
+        playerPtr = (playerPtr + 1) % players.size();
 
-	    if(playerPtr == 0) {
+        if (playerPtr == 0) {
 
-		    nextTurn();
+            nextTurn();
             fantome.nextTurn();
 
-	    }
+        }
 
     }
 
     public Player getCurrentPlayer() {
 
-	    return players.get(playerPtr);
+        return players.get(playerPtr);
 
     }
 
     public int turns() {
 
-	    return states.size()  + 1;
+        return states.size() + 1;
 
     }
 
@@ -204,7 +205,7 @@ public class World {
 
     @Null
     public Tile at(int linCoordinate) {
-        if (!validCoordinates(linCoordinate,getDimension())) {
+        if (!validCoordinates(linCoordinate, getDimension())) {
             return null;
         }
         return terrain[linCoordinate];
@@ -222,7 +223,7 @@ public class World {
         if (spawnTile.entity.isPresent()) return false;
 
         terrain[linCoordinate].entity = Optional.of(entity);
-	    players.get(playerPtr).addEntity(entity);
+        players.get(playerPtr).addEntity(entity);
 
         return true;
 
@@ -232,8 +233,7 @@ public class World {
      * Ajout d'une entité sur le monde
      *
      * @param coordinate la coordonnée
-     * @param entity l'entité
-     *
+     * @param entity     l'entité
      * @return le succès de l'ajout
      */
 
@@ -243,7 +243,7 @@ public class World {
         return addEntity(linCoordinate, entity);
 
     }
-    
+
     public boolean delEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -272,7 +272,7 @@ public class World {
 
         if (exists) currentEntityLinPosition = Optional.of(linCoordinate);
 
-	    return exists;
+        return exists;
 
     }
 
@@ -286,7 +286,7 @@ public class World {
 
     }
 
-    public void actualiseEntity(Pair<Integer, Integer> coordinate){
+    public void actualiseEntity(Pair<Integer, Integer> coordinate) {
 
         unscopeEntity();
         scopeEntity(coordinate);
@@ -316,8 +316,8 @@ public class World {
 
             int lco = linCoordinate + delta;
 
-	        int lncMod = linCoordinate % properties.dimension.first;
-	        int lcoMod = lco % properties.dimension.first;
+            int lncMod = linCoordinate % properties.dimension.first;
+            int lcoMod = lco % properties.dimension.first;
 
             boolean isValid = Math.abs(lncMod - lcoMod) <= 1 && validCoordinates(lco, properties.dimension);
 
@@ -345,20 +345,20 @@ public class World {
         Map<Integer, Integer> checked = new HashMap<>();
         HashSet<Integer> mouvements = new HashSet<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
-        Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
+        Vector<Pair<Integer, Pair<Integer, Integer>>> res = new Vector<>();
         mouvements.add(root);
 
         if (terrain[root].entity.isEmpty()) return res;
-        WPredicate<Integer>[] predicates = new WPredicate[] {canMoveOn,withinRange,canAttack};
+        WPredicate<Integer>[] predicates = new WPredicate[]{canMoveOn, withinRange, canAttack};
 
         Entity entity = terrain[root].entity.get();
 
         if (entity.getMovement() == null || entity.getMovement() == Movement.NULL) return res;
-        int movementId   = entity.getMovement().id;
+        int movementId = entity.getMovement().id;
         int movementCost = entity.getMovRange();
         int attackRange = entity.getRange();
 
-        var rootElement = new Pair<>(root, new Pair<>(movementCost,attackRange));
+        var rootElement = new Pair<>(root, new Pair<>(movementCost, attackRange));
         int parentIndex = -1;
 
         emp.add(rootElement);
@@ -374,7 +374,7 @@ public class World {
 
 
                 boolean added = false;
-                Pair<Integer, Integer> result = new Pair<>(-1,0);
+                Pair<Integer, Integer> result = new Pair<>(-1, 0);
 
                 /*
                 Les premiers predicats indique si c'est possible, le dernier renseigne la valeur de movement cost
@@ -386,10 +386,14 @@ public class World {
                 attackRange = element.second.second;
                 for (var p : predicates) {
                     //linearPosition, movementId, movementCost, currentAttackRange, rootPosition.
-                    result = p.test(lin, movementId, movementCost,attackRange, root);
+                    result = p.test(lin, movementId, movementCost, attackRange, root);
                     switch (result.second) {
-                        case 1: attackRange = result.first; break;
-                        case 2: movementCost = result.first; if (movementCost >= 0) mouvements.add(lin);
+                        case 1:
+                            attackRange = result.first;
+                            break;
+                        case 2:
+                            movementCost = result.first;
+                            if (movementCost >= 0) mouvements.add(lin);
                         default:
                     }
                     if (result.first >= 0) {
@@ -401,7 +405,7 @@ public class World {
                 if (result.first >= 0 && correctAlignement(mouvements, lin, entity.getRange())) {
                     res.add(bfsBuildResultValue(movementId, parentIndex, lin));
                 }
-                checked.put(lin, checked.getOrDefault(lin,0)  + 1);
+                checked.put(lin, checked.getOrDefault(lin, 0) + 1);
             }
             parentIndex++;
 
@@ -417,31 +421,31 @@ public class World {
     }
 
     private boolean correctAlignement(HashSet<Integer> mouvements, int lin, int range) {
-        Pair<Integer,Integer> pos = intToCoordinates(lin,getDimension());
+        Pair<Integer, Integer> pos = intToCoordinates(lin, getDimension());
         boolean valid = false;
         for (int i = 0; i <= range && !valid; i++) {
             valid = mouvements.contains(coordinatesToInt(new Pair<>(pos.first + i, pos.second), getDimension()));
             valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first - i, pos.second), getDimension()));
             valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first, pos.second + i), getDimension()));
             valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first, pos.second - i), getDimension()));
-    }
+        }
         return valid;
 
-}
+    }
 
     @SafeVarargs
-    private Vector<Pair<Integer,Pair<Integer,Integer>>> breadthFirstSearch(int root, WPredicate<Integer>... predicates) {
+    private Vector<Pair<Integer, Pair<Integer, Integer>>> breadthFirstSearch(int root, WPredicate<Integer>... predicates) {
 
         Map<Integer, Integer> checked = new HashMap<>();
         Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
-        Vector<Pair<Integer,Pair<Integer,Integer>>> res = new Vector<>();
+        Vector<Pair<Integer, Pair<Integer, Integer>>> res = new Vector<>();
 
         if (predicates.length == 0 || terrain[root].entity.isEmpty()) return res;
 
         Entity entity = terrain[root].entity.get();
 
         if (entity.getMovement() == null || entity.getMovement() == Movement.NULL) return res;
-        int movementId   = entity.getMovement().id;
+        int movementId = entity.getMovement().id;
         int movementCost = entity.getMovRange();
 
         var rootElement = new Pair<>(root, movementCost);
@@ -461,7 +465,7 @@ public class World {
 
 
                 boolean added = false;
-                Pair<Integer, Integer> result = new Pair<>(-1,0);
+                Pair<Integer, Integer> result = new Pair<>(-1, 0);
 
                 /*
                 Les premiers predicats indique si c'est possible, le dernier renseigne la valeur de movement cost
@@ -484,7 +488,7 @@ public class World {
                 if (result.first >= 0) {
                     res.add(bfsBuildResultValue(movementId, parentIndex, lin));
                 }
-                checked.put(lin, checked.getOrDefault(lin,0)  + 1);
+                checked.put(lin, checked.getOrDefault(lin, 0) + 1);
             }
             parentIndex++;
 
@@ -493,18 +497,16 @@ public class World {
     }
 
 
-
-
     /**
      * Recherche des tuiles valides pour
      * l'entité courrante
      *
      * @return le vecteur des positions valides
      */
-    
-    public Vector<Pair<Integer,Pair<Integer,Integer>>> validMovements() {
 
-        Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
+    public Vector<Pair<Integer, Pair<Integer, Integer>>> validMovements() {
+
+        Vector<Pair<Integer, Pair<Integer, Integer>>> positions = new Vector<>();
 
         if (currentEntityLinPosition.isPresent()) {
 
@@ -516,9 +518,9 @@ public class World {
 
     }
 
-    public Vector<Pair<Integer,Pair<Integer,Integer>>> validTargets() {
+    public Vector<Pair<Integer, Pair<Integer, Integer>>> validTargets() {
 
-        Vector<Pair<Integer,Pair<Integer,Integer>>> positions = new Vector<>();
+        Vector<Pair<Integer, Pair<Integer, Integer>>> positions = new Vector<>();
 
         if (currentEntityLinPosition.isPresent()) {
 
@@ -551,17 +553,17 @@ public class World {
 
     public String getName() {
 
-	    return properties.getName();
+        return properties.getName();
 
     }
 
-    public Player getFantome(){
+    public Player getFantome() {
         return fantome;
     }
 
     public String getDescription() {
 
-	    return properties.getDescription();
+        return properties.getDescription();
 
     }
 
@@ -570,7 +572,7 @@ public class World {
     }
 
     @Null
-    public Entity getScopedEntity(){
+    public Entity getScopedEntity() {
         if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {
             return null;
         }
@@ -616,19 +618,19 @@ public class World {
 
     public boolean save() {
 
-	DBEngine engine = DBEngine.getInstance();
-	engine.connect();
+        DBEngine engine = DBEngine.getInstance();
+        engine.connect();
 
-	Database db = engine.getDatabase("wargroove");
-	db.selectCollection("worlds");
+        Database db = engine.getDatabase("wargroove");
+        db.selectCollection("worlds");
 
-	DbObject worldDBO = properties.toDBO();
-	boolean status = db.insert(properties.getName(), worldDBO);
+        DbObject worldDBO = properties.toDBO();
+        boolean status = db.insert(properties.getName(), worldDBO);
 
-	db.flush();
-	engine.disconnect();	
+        db.flush();
+        engine.disconnect();
 
-	return status;
+        return status;
 
     }
 
@@ -641,9 +643,9 @@ public class World {
     }
 
     public boolean save(Database db) {
-        return save(db,"worlds");
+        return save(db, "worlds");
     }
-    
+
     @Override
     public String toString() {
 
