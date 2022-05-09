@@ -1,6 +1,8 @@
 package up.wargroove.core.ui.views.objects;
 
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -28,6 +30,16 @@ public class DialogWithCloseButton extends Dialog {
                         exitBox.setChecked(true);
                     }
                 });
+        this.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (x < 0 || y < 0 || x > getWidth() || y > getHeight()) {
+                    hide();
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     public CheckBox getCloseButtonMenu() {

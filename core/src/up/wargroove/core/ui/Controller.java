@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.WargrooveClient;
@@ -146,8 +148,9 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
-        camera.zoom += amountY * getClient().getCameraZoomVelocity() * 50 * Gdx.graphics.getDeltaTime();
-        float max = (camera.viewportHeight + camera.viewportWidth) / 1.5f + 10;
+        float size = (camera.viewportHeight + camera.viewportWidth) * 2;
+        camera.zoom += amountY * getClient().getCameraZoomVelocity() * size * Gdx.graphics.getDeltaTime();
+        float max = size / 1.5f;
         float min = (camera.viewportHeight + camera.viewportWidth) / 3f;
         camera.zoom = (camera.zoom < min) ? min : Math.min(camera.zoom, max);
         camera.update();
@@ -613,6 +616,13 @@ public class Controller {
                     openMainMenu();
                 }
             };
+            dialog.addListener(new InputListener(){
+                @Override
+                public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    dialog.hide();
+                    return true;
+                }
+            });
             Label timerText = new Label("Close in " + seconds + "seconds", skin);
             Label label = new Label(
                     "The " + faction.prettyName() + " won the war in " + getModel().getRound() + " rounds", skin
@@ -848,6 +858,13 @@ public class Controller {
         Skin skin = Assets.getInstance().getSkin();
         int timer = 5;
         Dialog dialog = new DialogWithCloseButton("", this);
+        dialog.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                dialog.hide();
+                return true;
+            }
+        });
         Label label = new Label(current.getFaction().prettyName() + "'s turn to play", skin);
         Label timerText = new Label("Close in " + timer + "seconds", skin);
         timerText.setColor(Color.FIREBRICK);
