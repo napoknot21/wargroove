@@ -140,6 +140,8 @@ L'ordre des paramètres est indépendant
 
 Pour assurer la compatibilité entre le plugin d'importation et Tiled, il faut utiliser ce plugin pour obtenir les textures
 
+Les tuiles sont au format 64*64 avec une marge et un espacement de 4 px
+
 ### ImportMap
 
 Commande CLI : `importMap --paths --biome`
