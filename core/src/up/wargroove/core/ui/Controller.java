@@ -506,8 +506,8 @@ public class Controller {
         if (entityTarget instanceof Commander || entityTarget instanceof Stronghold) {
             if (entityTarget.getHealth() <= 0) {
                 killArmyAndDestroyBases(getWorld().getPlayer(entityTarget.getFaction()), attack);
-                getWorld().removePlayer(entityTarget.getFaction());
-                gameOver(attack);
+                Player defeated = getWorld().removePlayer(entityTarget.getFaction());
+                gameOver(getModel().getWorld().getPlayer(attack), defeated);
                 return true;
             }
         }
@@ -601,11 +601,11 @@ public class Controller {
 
     /**
      * Shoes final dialog and allows to go to the main menu
-     *
-     * @param faction winner
+     * @param winner winner
+     * @param defeated The defeated faction
      */
 
-    private void gameOver(Faction faction) {
+    private void gameOver(Player winner, Player defeated) {
         if (getWorld().isTheLastPlayer()) {
             int seconds = 5;
             GameView gameView = (GameView) getScreen();
@@ -627,16 +627,35 @@ public class Controller {
             });
             Label timerText = new Label("Close in " + seconds + "seconds", skin);
             Label label = new Label(
-                    "The " + faction.prettyName() + " won the war in " + getModel().getRound() + " rounds", skin
+                    "The " + winner.getFaction().prettyName()
+                            + " won the war in " + getModel().getRound() + " rounds", skin
             );
-            label.setColor(Color.BLACK);
+            label.setColor(winner.getColor());
             timerText.setColor(Color.FIREBRICK);
             dialog.getContentTable().add(label).expand().fill();
             dialog.getContentTable().row();
             dialog.getContentTable().add(timerText);
             dialog.show(gameView.getGameViewUi());
             closeDialog(dialog, timerText, seconds);
+        } else {
+            showDefeatMessage(defeated);
         }
+    }
+
+    private void showDefeatMessage(Player defeated) {
+        GameView g = (GameView) getScreen();
+        Skin skin = Assets.getInstance().getSkin();
+        int timer = 3;
+        DialogWithCloseButton dialog = new DialogWithCloseButton("",this);
+        Label label = new Label("The " + defeated.getFaction().prettyName() + " has been defeated !", skin);
+        label.setColor(defeated.getColor());
+        Label timerText = new Label("Close in "+ timer+ " seconds", skin);
+        timerText.setColor(Color.FIREBRICK);
+        dialog.getContentTable().add(label);
+        dialog.getContentTable().row();
+        dialog.getContentTable().add(timerText);
+        dialog.show(g.getGameViewUi());
+        closeDialog(dialog,timerText,timer);
     }
 
     public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
@@ -868,9 +887,9 @@ public class Controller {
             }
         });
         Label label = new Label(current.getFaction().prettyName() + "'s turn to play", skin);
+        label.setColor(current.getColor());
         Label timerText = new Label("Close in " + timer + "seconds", skin);
         timerText.setColor(Color.FIREBRICK);
-        label.setColor(Color.BLACK);
         dialog.getContentTable().add(label).pad(10);
         dialog.getContentTable().row();
         dialog.getContentTable().add(timerText);

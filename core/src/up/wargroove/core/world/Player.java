@@ -3,6 +3,7 @@ package up.wargroove.core.world;
 import java.util.Queue;
 import java.util.LinkedList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Null;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Faction;
@@ -17,6 +18,7 @@ public class Player {
     private int money;
     private int income;
     private final float ratio;
+    private final Color color;
 
 
     public Player(Faction faction, float ratio) {
@@ -26,6 +28,22 @@ public class Player {
         this.money = (int) (1000 * ratio);
         //addEntity(new Commander());
         this.ratio = ratio;
+        switch (faction) {  //Color based on the tile set
+            case FLORAN_TRIBES:
+                color = new Color(111 / 255f, 153 / 255f, 13 / 255f, 1);
+                break;
+            case FELHEIM_LEGION:
+                color = new Color(13 / 255f, 76 / 255f, 153 / 255f, 1);
+                break;
+            case CHERRYSTONE_KINGDOM:
+                color = new Color(153 / 255f, 23 / 255f, 13 / 255f, 1);
+                break;
+            case HEAVENSONG_EMPIRE:
+                color = new Color(153 / 255f, 120 / 255f, 13 / 255f, 1);
+                break;
+            default:
+                color = Color.CLEAR;
+        }
 
     }
 
@@ -137,5 +155,9 @@ public class Player {
 
     public void buy(int amount) {
         this.money -= amount;
+    }
+
+    public Color getColor() {
+        return color;
     }
 }

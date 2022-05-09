@@ -99,24 +99,7 @@ public class PlayerBox extends Table {
         money.setText(player.getMoney());
         income.setText("+" + player.getIncome());
         this.round.setText("Round " + round);
-        Color color;
-        switch (player.getFaction()) {  //Color based on the tile set
-            case FLORAN_TRIBES:
-                color = new Color(111 / 255f, 153 / 255f, 13 / 255f, 1);
-                break;
-            case FELHEIM_LEGION:
-                color = new Color(13 / 255f, 76 / 255f, 153 / 255f, 1);
-                break;
-            case CHERRYSTONE_KINGDOM:
-                color = new Color(153 / 255f, 23 / 255f, 13 / 255f, 1);
-                break;
-            case HEAVENSONG_EMPIRE:
-                color = new Color(153 / 255f, 120 / 255f, 13 / 255f, 1);
-                break;
-            default:
-                color = Color.CLEAR;
-        }
-        this.avatar.setColor(color);
+        this.avatar.setColor(player.getColor());
         this.isStatic = isStatic;
     }
 

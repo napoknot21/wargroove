@@ -119,14 +119,16 @@ public class World {
         players.remove(players.size() - 1);
     }
 
-    public void removePlayer(Faction faction) {
+    public Player removePlayer(Faction faction) {
+        Player removed = null;
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).getFaction().equals(faction)) {
-                players.remove(i);
+                removed = players.remove(i);
                 if (i <= playerPtr) playerPtr--;
                 break;
             }
         }
+        return removed;
     }
 
     @Null
