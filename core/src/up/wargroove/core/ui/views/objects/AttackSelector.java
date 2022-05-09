@@ -30,7 +30,7 @@ public class AttackSelector implements Selector{
         valid = new Valid(worldScale);
         availableAttackPositions = new Valid(worldScale) {
             @Override
-            void reset() {
+            protected void reset() {
                 path = "";
                 postionAttack = null;
                 super.reset();
@@ -39,11 +39,10 @@ public class AttackSelector implements Selector{
         active = false;
     }
 
-    public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
+    public void showValids(Assets assets, Pair<List<Pair<?, ?>>, List<int[]>> data) {
         reset();
         Texture texture = assets.get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
-        pair.first.forEach(v -> valid.add(texture, v));
-        valid.addIntel(pair.second);
+        valid.setData(texture,data.first, data.second, owner);
     }
 
     public void addMovement(Vector3 worldPosition) {
@@ -54,7 +53,7 @@ public class AttackSelector implements Selector{
     }
 
     @Override
-    public void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates) {
+    public void showValid(Assets assets, List<Pair<?, ?>> coordinates) {
 
     }
 
@@ -91,9 +90,7 @@ public class AttackSelector implements Selector{
             return;
         }
         Texture texture = Assets.getInstance().get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
-        for (Pair<?, ?> o : results) {
-            availableAttackPositions.add(texture, o);
-        }
+        availableAttackPositions.setData(texture, List.of(results), owner);
         active = true;
     }
 
@@ -200,7 +197,6 @@ public class AttackSelector implements Selector{
         targetPosition = null;
         attackRange = 0;
         postionAttack = null;
-        owner = false;
     }
 
     private  char getAttackDirection(int dx, int dy) {

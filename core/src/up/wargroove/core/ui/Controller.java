@@ -20,6 +20,7 @@ import up.wargroove.core.character.entities.Villager;
 import up.wargroove.core.ui.views.objects.*;
 import up.wargroove.core.ui.views.scenes.*;
 import up.wargroove.core.world.*;
+import up.wargroove.utils.Constants;
 import up.wargroove.utils.Database;
 import up.wargroove.utils.Pair;
 
@@ -242,8 +243,8 @@ public class Controller {
      *
      * @return A vector of all the possible movements in world terrain coordinate.
      */
-    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getMovementPossibilities() {
-        Vector<Pair<Integer, Pair<Integer, Integer>>> valid = getWorld().validMovements();
+    public Pair<List<Pair<?, ?>>, List<int[]>> getMovementPossibilities() {
+        Vector<int[]> valid = getWorld().validMovements();
         return computeSelectorData(valid);
     }
 
@@ -253,20 +254,20 @@ public class Controller {
      * @return A vector of all the possible targets in world terrain coordinate.
      */
 
-    public Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> getTargetPossibilities() {
-        Vector<Pair<Integer, Pair<Integer, Integer>>> valid = getWorld().validTargets();
+    public Pair<List<Pair<?, ?>>, List<int[]>> getTargetPossibilities() {
+        Vector<int[]> valid = getWorld().validTargets();
         return computeSelectorData(valid);
     }
 
-    private Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> computeSelectorData(
-            Vector<Pair<Integer, Pair<Integer, Integer>>> valid
+    private Pair<List<Pair<?, ?>>, List<int[]>> computeSelectorData(
+            Vector<int[]> valid
     ) {
-        Vector<Pair<Integer, Integer>> vectors = new Vector<>();
-        Vector<Pair<Integer, Integer>> intel = new Vector<>();
+        Vector<Pair<?, ?>> vectors = new Vector<>();
+        Vector<int[]> intel = new Vector<>();
         valid.forEach(v -> {
-            Pair<Integer, Integer> coord = World.intToCoordinates(v.first, getWorld().getDimension());
+            Pair<Integer, Integer> coord = World.intToCoordinates(v[Constants.BFS_LIN], getWorld().getDimension());
             vectors.add(new Pair<>(coord.first, coord.second));
-            intel.add(v.second);
+            intel.add(v);
         });
         return new Pair<>(vectors, intel);
     }
@@ -329,10 +330,11 @@ public class Controller {
             g.getCursor().setLock(false);
             return false;
         }
-        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair1 = getMovementPossibilities();
+        Pair<List<Pair<?, ?>>, List<int[]>> pair1 = getMovementPossibilities();
+        movementSelector.setOwner(getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
         movementSelector.showValids(getScreen().getAssets(), pair1);
         movementSelector.setEntityInformation(worldPosition, getScopedEntityMovementCost());
-        movementSelector.setOwner(getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
+
         return movementSelector.isOwner() && !(getScopedEntity() instanceof Structure);
     }
 
@@ -359,9 +361,9 @@ public class Controller {
             return false;
         }
         if (getScopedEntity() instanceof Structure) return false;
-        Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair = getTargetPossibilities();
-        attackSelector.showValids(getScreen().getAssets(), pair);
+        Pair<List<Pair<?, ?>>, List<int[]>> data = getTargetPossibilities();
         attackSelector.setOwner(getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction()));
+        attackSelector.showValids(getScreen().getAssets(), data);
         attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
         return attackSelector.isOwner() && !(getScopedEntity() instanceof Villager);
     }

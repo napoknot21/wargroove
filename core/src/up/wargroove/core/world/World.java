@@ -32,19 +32,21 @@ public class World {
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-        if (toTile.entity.isPresent() || k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
+        if (k[Constants.WG_ZERO].equals(k[3])) return new Pair<>(-1,0);
+        if (k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
 
         int val = sub.toInt();
-
-        return val == 0 ? new Pair<>(-1, 0) : new Pair<>(k[2] - val, 2);
+        if (val == 0) return new Pair<>(-1, 0);
+        else if (toTile.entity.isPresent()) return new Pair<>(k[2] - val, -2);
+        else return new Pair<>(k[2] - val, 2);
 
     };
 
     private final WPredicate<Integer> withinRange = (k) -> {
-        int attackRange = k[3];
+        int attackRange = k[4];
         if (k[2] >= 0) return new Pair<>(1, 0);
         if (attackRange > 0) {
             return new Pair<>(attackRange - 1, 1);
@@ -54,10 +56,10 @@ public class World {
 
     private final WPredicate<Integer> canAttack = (k) -> {
 
-        Optional<Entity> rootEntity = terrain[k[4]].entity, targetEntity = terrain[k[0]].entity;
+        Optional<Entity> rootEntity = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
 
-        if (!rootEntity.isPresent() || !targetEntity.isPresent()) return new Pair<>(-1, 0);
-        if (k[3] < 0) return new Pair<>(-2, 0);
+        if (rootEntity.isEmpty() || targetEntity.isEmpty()) return new Pair<>(-1, 0);
+        if (k[4] < 0) return new Pair<>(-2, 0);
 
         boolean status = targetEntity.get().getFaction() != rootEntity.get().getFaction();
 
@@ -339,12 +341,12 @@ public class World {
      */
 
     @SuppressWarnings("unchecked")
-    private Vector<Pair<Integer, Pair<Integer, Integer>>> attackBreadthFirstSearch(int root) {
+    private Vector<int[]> attackBreadthFirstSearch(int root) {
 
         Map<Integer, Integer> checked = new HashMap<>();
         HashSet<Integer> mouvements = new HashSet<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
-        Vector<Pair<Integer, Pair<Integer, Integer>>> res = new Vector<>();
+        Vector<int[]> res = new Vector<>();
         mouvements.add(root);
 
         if (terrain[root].entity.isEmpty()) return res;
@@ -369,7 +371,7 @@ public class World {
 
 
             for (Integer lin : adjacent) {
-                if (checked.containsKey(lin) && checked.get(lin) > 4) continue;
+                if (checked.containsKey(lin) && checked.get(lin) > 2) continue;
 
 
                 boolean added = false;
@@ -385,8 +387,8 @@ public class World {
                 attackRange = element.second.second;
                 for (var p : predicates) {
                     //linearPosition, movementId, movementCost, currentAttackRange, rootPosition.
-                    result = p.test(lin, movementId, movementCost, attackRange, root);
-                    switch (result.second) {
+                    result = p.test(lin, movementId, movementCost, root, attackRange);
+                    switch (Math.abs(result.second)) {
                         case 1:
                             attackRange = result.first;
                             break;
@@ -403,7 +405,7 @@ public class World {
                     }
                 }
                 if (result.first >= 0 && correctAlignement(mouvements, lin, entity.getRange())) {
-                    res.add(bfsBuildResultValue(movementId, parentIndex, lin));
+                    res.add(bfsBuildResultValue(movementId, parentIndex, lin, result.second));
                 }
                 checked.put(lin, checked.getOrDefault(lin, 0) + 1);
             }
@@ -413,11 +415,10 @@ public class World {
         return res;
     }
 
-    private Pair<Integer, Pair<Integer, Integer>> bfsBuildResultValue(int movementId, int parentIndex, Integer lin) {
+    private int[] bfsBuildResultValue(int movementId, int parentIndex, int lin, int valid) {
         BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
         BitSet sub = bitset.sub(4 * movementId, 4);
-        Pair<Integer, Integer> intel = new Pair<>(parentIndex, sub.toInt());
-        return new Pair<>(lin, intel);
+        return new int[]{lin, parentIndex, sub.toInt(), valid};
     }
 
     private boolean correctAlignement(HashSet<Integer> mouvements, int lin, int range) {
@@ -434,11 +435,11 @@ public class World {
     }
 
     @SafeVarargs
-    private Vector<Pair<Integer, Pair<Integer, Integer>>> breadthFirstSearch(int root, WPredicate<Integer>... predicates) {
+    private Vector<int[]> breadthFirstSearch(int root, WPredicate<Integer>... predicates) {
 
         Map<Integer, Integer> checked = new HashMap<>();
         Queue<Pair<Integer, Integer>> emp = new LinkedList<>();
-        Vector<Pair<Integer, Pair<Integer, Integer>>> res = new Vector<>();
+        Vector<int[]> res = new Vector<>();
 
         if (predicates.length == 0 || terrain[root].entity.isEmpty()) return res;
 
@@ -461,7 +462,7 @@ public class World {
 
             for (Integer lin : adjacent) {
 
-                if (checked.containsKey(lin) && checked.get(lin) > 4) continue;
+                if (checked.containsKey(lin) && checked.get(lin) > 2) continue;
 
 
                 boolean added = false;
@@ -474,9 +475,9 @@ public class World {
                     second indique si first est le movement cost
                  */
                 for (var p : predicates) {
-                    //linearPosition, movementId, movementCost
-                    result = p.test(lin, movementId, element.second);
-                    if (result.second == 2) {
+                    //linearPosition, movementId, movementCost, rootLinPosition
+                    result = p.test(lin, movementId, element.second, root);
+                    if (Math.abs(result.second) == 2) {
                         movementCost = result.first;
                     }
                     if (result.first >= 0) {
@@ -486,7 +487,7 @@ public class World {
                     }
                 }
                 if (result.first >= 0) {
-                    res.add(bfsBuildResultValue(movementId, parentIndex, lin));
+                    res.add(bfsBuildResultValue(movementId, parentIndex, lin,result.second));
                 }
                 checked.put(lin, checked.getOrDefault(lin, 0) + 1);
             }
@@ -504,9 +505,9 @@ public class World {
      * @return le vecteur des positions valides
      */
 
-    public Vector<Pair<Integer, Pair<Integer, Integer>>> validMovements() {
+    public Vector<int[]> validMovements() {
 
-        Vector<Pair<Integer, Pair<Integer, Integer>>> positions = new Vector<>();
+        Vector<int[]> positions = new Vector<>();
 
         if (currentEntityLinPosition.isPresent()) {
 
@@ -518,9 +519,9 @@ public class World {
 
     }
 
-    public Vector<Pair<Integer, Pair<Integer, Integer>>> validTargets() {
+    public Vector<int[]> validTargets() {
 
-        Vector<Pair<Integer, Pair<Integer, Integer>>> positions = new Vector<>();
+        Vector<int[]> positions = new Vector<>();
 
         if (currentEntityLinPosition.isPresent()) {
 

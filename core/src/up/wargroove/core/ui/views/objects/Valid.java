@@ -1,9 +1,11 @@
 package up.wargroove.core.ui.views.objects;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import up.wargroove.utils.Constants;
 import up.wargroove.utils.Pair;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * Tile useful information. The order of intel is the same as this.
      * The first is the parentIndex, the second is the tile's movement cost.
      */
-    private final ArrayList<Pair<Integer, Integer>> intel;
+    private final ArrayList<int[]> intel;
 
     /**
      * Index that point to the last used sprite.
@@ -34,16 +36,21 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
     /**
      * Add a new sprite to the list if all the sprites are already used
      * otherwise it will use a free sprite.
-     *
-     * @param texture The sprite texture.
+     *  @param texture The sprite texture.
      * @param coordinates   The sprites coordinates.
+     * @param owner
      */
-    protected void add(TextureRegion texture, Pair<?, ?> coordinates) {
+    private void add(TextureRegion texture, Pair<?, ?> coordinates, boolean owner) {
         if (!(coordinates.first instanceof Integer) || !(coordinates.second instanceof Integer)) return;
         Pair<Integer,Integer> coord = new Pair<>((int) coordinates.first, (int) coordinates.second);
         int x = (int) (coord.first * worldScale);
         int y = (int) (coord.second * worldScale);
         Sprite sprite = new Sprite(texture);
+        if (!owner) sprite.setColor(Color.BLACK);
+        else sprite.setColor(Color.WHITE);
+        if ((intel.size() > size()) && intel.get(size())[Constants.BFS_VALID] < 0 ) {
+            sprite.setAlpha(0);
+        }
         sprite.setPosition(x, y);
         this.add(new Pair<>(sprite, (coord)));
     }
@@ -51,12 +58,12 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
     /**
      * Add a new sprite to the list if all the sprites are already used
      * otherwise it will use a free sprite.
-     *
-     * @param texture The sprite texture.
+     *  @param texture The sprite texture.
      * @param coord   The sprites coordinates.
+     * @param owner
      */
-    protected void add(Texture texture, Pair<?, ?> coord) {
-        this.add(new TextureRegion(texture),coord);
+    void add(Texture texture, Pair<?, ?> coord, boolean owner) {
+        this.add(new TextureRegion(texture),coord, owner);
     }
 
     /**
@@ -64,7 +71,7 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      *
      * @param vector the list of intel.
      */
-    protected void addIntel(List<Pair<Integer, Integer>> vector) {
+    private void addIntel(List<int[]> vector) {
         intel.addAll(vector);
     }
 
@@ -77,8 +84,8 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
     protected int isValid(Pair<Integer, Integer> coordinate) {
         for (int i = 0; i < size(); i++) {
             if (this.get(i).second.equals(coordinate)) {
-                validPosition = true;
-                return i;
+                validPosition = intel.get(i)[Constants.BFS_VALID] >= 0;
+                return validPosition ? i : -1;
             }
         }
         validPosition = false;
@@ -91,8 +98,8 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * @param tileIndex the index of the tile.
      * @return the cost of moving on the tile.
      */
-    int getTileCost(int tileIndex) {
-        return intel.get(tileIndex).second;
+    protected int getTileCost(int tileIndex) {
+        return intel.get(tileIndex)[Constants.BFS_MV_COST];
     }
 
     /**
@@ -101,13 +108,13 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * @param tileIndex the destination tile index of the path.
      * @return a stack with the character's path to the destination.
      */
-    Stack<Pair<Pair<Integer, Integer>, Integer>> getDefault(int tileIndex) {
+    protected Stack<Pair<Pair<Integer, Integer>, Integer>> getDefault(int tileIndex) {
         Stack<Pair<Pair<Integer, Integer>, Integer>> res = new Stack<>();
         int i = tileIndex;
         while (i >= 0) {
             var tmp = this.get(i).second;
             res.push(new Pair<>(new Pair<>(tmp.first, tmp.second), i));
-            i = intel.get(i).first;
+            i = intel.get(i)[Constants.BFS_PARENT];
         }
         return res;
     }
@@ -116,7 +123,7 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      * Reset movement path and list index. All the build sprites
      * are now considered free.
      */
-    void reset() {
+    protected void reset() {
         intel.clear();
         clear();
     }
@@ -130,9 +137,22 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
      *
      * @param batch The drawer.
      */
-    void draw(Batch batch) {
+    protected void draw(Batch batch) {
         for (Pair<Sprite, Pair<Integer, Integer>> spritePairPair : this) {
             spritePairPair.first.draw(batch);
         }
+    }
+
+    public void setData(Texture texture, List<Pair<?, ?>> coordinates, List<int[]> intel, boolean owner) {
+        addIntel(intel);
+        coordinates.forEach(v -> add(texture, v, owner));
+    }
+
+    public void setData(Texture texture, List<Pair<?, ?>> results, boolean owner) {
+        ArrayList<int[]> intel = new ArrayList<>();
+        for(int i = 0; i< results.size(); i++) {
+            intel.add(new int[]{1,1,1,1});
+        }
+        setData(texture,results,intel,owner);
     }
 }

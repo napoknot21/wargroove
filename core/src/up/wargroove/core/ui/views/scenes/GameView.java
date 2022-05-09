@@ -102,7 +102,7 @@ public class GameView extends View {
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         addInput(characters);
-        camera.zoom = (camera.viewportHeight + camera.viewportWidth) / 2.25f;
+        camera.zoom = (camera.viewportHeight + camera.viewportWidth)/1.5f;
 
     }
 
@@ -429,7 +429,7 @@ public class GameView extends View {
      */
     public void showsPlaceable(List<Integer> list) {
         buy = true;
-        List<Pair<Integer, Integer>> coordinates = new LinkedList<>();
+        List<Pair<?, ?>> coordinates = new LinkedList<>();
         list.forEach(i -> coordinates.add(World.intToCoordinates(i, getModel().getWorld().getDimension())));
         movementSelector.showValid(getAssets(), coordinates);
     }

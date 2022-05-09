@@ -1,5 +1,7 @@
 package up.wargroove.utils;
 
+import java.util.List;
+
 public class Pair<T, U> {
 
 	public T first;

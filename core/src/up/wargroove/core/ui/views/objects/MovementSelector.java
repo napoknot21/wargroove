@@ -8,10 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 import up.wargroove.core.ui.Assets;
 import up.wargroove.utils.Pair;
@@ -144,9 +141,6 @@ public class MovementSelector implements Selector{
     @Override
     public void setOwner(boolean owner) {
         this.owner = owner;
-        if (!owner) {
-            valid.forEach(p -> p.first.setColor(Color.BLACK));
-        }
     }
 
     @Override
@@ -195,27 +189,26 @@ public class MovementSelector implements Selector{
         valid.reset();
         movements.reset();
         active = false;
-        owner = false;
     }
 
     /**
      * Add a new sprite to the list if all the sprites are already used
      * else it will take a free sprite.
-     *
-     * @param assets The app assets.
-     * @param pair   The sprites coordinates.
+     *  @param assets The app assets.
+     * @param data   The sprites coordinates.
      */
-    public void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair) {
+    public void showValids(Assets assets, Pair<List<Pair<?, ?>>, List<int[]>> data) {
         reset();
         Texture texture = assets.get(Assets.AssetDir.GUI.path() + "valids.png");
-        pair.first.forEach(v -> valid.add(texture, v));
-        valid.addIntel(pair.second);
+        valid.setData(texture, data.first,data.second, owner);
     }
 
-    public void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates) {
+    public void showValid(Assets assets, List<Pair<?, ?>> coordinates) {
         reset();
         Texture texture = assets.get(Assets.AssetDir.GUI.path() + "valids.png");
-        coordinates.forEach(v -> valid.add(texture, v));
+        ArrayList<int[]> intel = new ArrayList<>();
+        for (int i = 0; i< coordinates.size(); i++) intel.add(new int[]{1,1,1,1});
+        valid.setData(texture,coordinates,intel, owner);
     }
 
     /**
@@ -225,7 +218,7 @@ public class MovementSelector implements Selector{
      * @return The next coordinates in world terrain dimension
      */
     private Pair<Integer, Integer> getCoord(char c) {
-        var coord = movements.getLastMovement();
+        Pair<Integer,Integer> coord = movements.getLastMovement();
         switch (c) {
             case 'U':
                 return new Pair<>(coord.first, coord.second + 1);

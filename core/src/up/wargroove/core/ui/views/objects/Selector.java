@@ -43,9 +43,9 @@ public interface Selector {
      * @param assets The app assets.
      * @param pair   The sprites coordinates.
      */
-    void showValids(Assets assets, Pair<List<Pair<Integer, Integer>>, List<Pair<Integer, Integer>>> pair);
+    void showValids(Assets assets, Pair<List<Pair<?, ?>>, List<int[]>> pair);
 
-    void showValid(Assets assets, List<Pair<Integer, Integer>> coordinates);
+    void showValid(Assets assets, List<Pair<?, ?>> coordinates);
 
     /**
      * Sets the unit original position.
