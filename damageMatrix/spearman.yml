@@ -6,7 +6,6 @@ SOLDIER :
   base :
     - 75
 
-
 VILLAGER :
   attacks:
     - 80
@@ -46,7 +45,7 @@ GIANT :
   attacks :
     - 15
     - 23
-  defends :
+  base :
     - 10
 
 STRUCTURE :
