@@ -31,8 +31,9 @@ public class World {
 
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
+        Optional<Entity> rootEntity = terrain[k[3]].entity;
         Tile toTile = terrain[k[Constants.WG_ZERO]];
-        if (k[Constants.WG_ZERO].equals(k[3])) return new Pair<>(-1,0);
+        if (k[Constants.WG_ZERO].equals(k[3]) || rootEntity.isEmpty()) return new Pair<>(-1,0);
         if (k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
 
         BitSet bitset = new BitSet(toTile.getType().enc, 32);
@@ -40,7 +41,11 @@ public class World {
 
         int val = sub.toInt();
         if (val == 0) return new Pair<>(-1, 0);
-        else if (toTile.entity.isPresent()) return new Pair<>(k[2] - val, -2);
+        else if (toTile.entity.isPresent()) {
+            if (toTile.entity.get().getFaction().equals(rootEntity.get().getFaction()))
+            return new Pair<>(k[2] - val, -2);
+            else return new Pair<>(-1,-2);
+        }
         else return new Pair<>(k[2] - val, 2);
 
     };

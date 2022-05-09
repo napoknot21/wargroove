@@ -858,7 +858,7 @@ public class Controller {
     private void showNextTurnMessage() {
         Player current = getModel().getCurrentPlayer();
         Skin skin = Assets.getInstance().getSkin();
-        int timer = 5;
+        int timer = 3;
         Dialog dialog = new DialogWithCloseButton("", this);
         dialog.addListener(new InputListener(){
             @Override

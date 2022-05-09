@@ -73,14 +73,15 @@ public class Indicator extends Actor {
             TextureRegion[][] tmp = TextureRegion.split(texture, texture.getWidth() / 13, texture.getHeight());
             setForeground((tmp[0][0]));
         }
-        int numero = 0;
-        if (character.getHealth() < 90) {
-            numero = (int) ((character.getHealth() / 10) + 1);
+        int number;
+        if ((character.getHealth() <= 0) || character.getHealth() > 90) {
+            number = 0;
+        } else if (character.getHealth() < 90) {
+            number = (int) ((character.getHealth() / 10)) + 1;
+        } else {
+            number = (int) ((character.getHealth() / 10));
         }
-        if ((character.getHealth() <= 0) || (character.getHealth() == 90)) {
-            numero = (int) ((character.getHealth() / 10));
-        }
-        Texture stats = assets.get(Assets.AssetDir.STATS.path() + "Stats" + numero + ".png");
+        Texture stats = assets.get(Assets.AssetDir.STATS.path() + "Stats" + number + ".png");
         setStats(stats);
     }
 
