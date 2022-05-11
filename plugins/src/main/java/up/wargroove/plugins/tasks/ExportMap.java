@@ -113,7 +113,7 @@ public class ExportMap extends Plugin {
 
 
     private String getWorldTexturePath() {
-        return "core/assets/data/gui/world/grass.atlas\"";
+        return "core/assets/data/gui/world/grass.atlas";
     }
 
     //(option = "name", description = "name of the map stored in the database")
@@ -202,7 +202,7 @@ public class ExportMap extends Plugin {
         StringBuilder builder = new StringBuilder();
         for (int i = tiles.length - 1; i >= 0; i--) {
             for (int id : tiles[i]) {
-                builder.append(id).append(";");
+                builder.append(id).append(",");
             }
             builder.append('\n');
         }

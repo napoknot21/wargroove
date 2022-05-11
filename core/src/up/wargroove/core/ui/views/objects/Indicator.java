@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import up.wargroove.core.character.Entity;
+import up.wargroove.core.character.Faction;
 import up.wargroove.core.ui.Assets;
 import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.Structure;
@@ -74,7 +75,7 @@ public class Indicator extends Actor {
             setForeground((tmp[0][0]));
         }
         int number;
-        if ((character.getHealth() <= 0) || character.getHealth() > 90) {
+        if (character.getFaction().equals(Faction.OUTLAWS) || (character.getHealth() <= 0) || character.getHealth() > 90) {
             number = 0;
         } else if (character.getHealth() < 90) {
             number = (int) ((character.getHealth() / 10)) + 1;

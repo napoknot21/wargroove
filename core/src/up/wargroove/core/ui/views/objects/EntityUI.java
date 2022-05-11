@@ -50,7 +50,7 @@ public abstract class EntityUI extends Actor {
     }
 
     public void actualiseStats() {
-        if ((entity.getHealth() <= 0) || entity.getHealth() > 90) {
+        if (entity.getFaction().equals(Faction.OUTLAWS) || (entity.getHealth() <= 0) || entity.getHealth() > 90) {
             this.stats = new Sprite(getPathSTATS(0));
         } else if (entity.getHealth() < 90) {
             this.stats = new Sprite(getPathSTATS((int) ((entity.getHealth() / 10) + 1)));
