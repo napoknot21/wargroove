@@ -85,7 +85,7 @@ public class MatchSettings extends ViewWithPrevious {
         biome = new SelectBox<>(skin);
         biome.setAlignment(Align.center);
         biome.setItems(Biome.GRASS, Biome.ICE, Biome.DESERT, Biome.VOLCANO);
-        last = Biome.GRASS;
+        last = properties.getBiome();
         initListener();
         VLT.addActor(buildLeftTop());
         VB.addActor(buildBottom());
