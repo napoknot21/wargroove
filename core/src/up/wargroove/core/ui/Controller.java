@@ -553,8 +553,6 @@ public class Controller {
             } else {
                 getWorld().getPlayer(entity.getFaction()).removeEntity(entity);
                 entity.setFaction(Faction.OUTLAWS);
-                getWorld().getFantome().addEntity(entity);
-                entity.setHealth(20);
                 getScreen().getStage().addActor(
                         new StructureUI(getScreen().getStage(), (Structure) entity, entityUI.getCoordinates())
                 );
@@ -591,7 +589,6 @@ public class Controller {
             getWorld().delEntity(actor.getCoordinates(), entity);
         } else {
             entity.setFaction(Faction.OUTLAWS);
-            getWorld().getFantome().addEntity(entity);
             getScreen().getStage().addActor(
                     new StructureUI(getScreen().getStage(), (Structure) entity, actor.getCoordinates())
             );
