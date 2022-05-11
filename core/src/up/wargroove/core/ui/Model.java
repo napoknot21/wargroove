@@ -67,7 +67,14 @@ public class Model {
         Recruitment.clearAll();
         EntityManager.getInstance().load();
         isActive = true;
+        updateTiles();
         setStartData();
+    }
+
+    private void updateTiles() {
+        for (Tile t : world.getTerrain()) {
+            t.updateType(getBiome());
+        }
     }
 
     /**

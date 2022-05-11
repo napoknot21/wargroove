@@ -100,7 +100,7 @@ public class WorldProperties implements Savable {
 		    DbObject tileFrom = mapDBO.get(String.valueOf(k));
 
 		    terrain[k] = new Tile();
-		    terrain[k].load(tileFrom);  
+		    terrain[k].load(tileFrom);
 
 	    }
 

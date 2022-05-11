@@ -94,6 +94,16 @@ public class Tile implements Savable {
 
     }
 
+    public void updateType(Biome biome) {
+        if (type == Type.RIVER){
+            if (biome == Biome.VOLCANO) {
+                type.enc = SEA_D_COST;
+            } else if (biome == Biome.ICE){
+                type.enc = PLAIN_D_COST;
+            }
+        }
+    }
+
     public int getTextureVersion() {
         return textureVersion;
     }
@@ -140,7 +150,7 @@ public class Tile implements Savable {
         FLAGSTONE('.', FLAGSTONE_D_COST),
         CARPET('c', CARPET_D_COST);
 
-        public final int enc;
+        private int enc;
         final char asciiFormat;
 
         Type(char asciiFormat, int enc) {
@@ -148,6 +158,9 @@ public class Tile implements Savable {
             this.asciiFormat = asciiFormat;
             this.enc = enc;
 
+        }
+        public int enc() {
+            return enc;
         }
 
         public boolean isWalkable() {

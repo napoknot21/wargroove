@@ -36,7 +36,7 @@ public class World {
         if (k[Constants.WG_ZERO].equals(k[3]) || rootEntity.isEmpty()) return new Pair<>(-1,0);
         if (k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
 
-        BitSet bitset = new BitSet(toTile.getType().enc, 32);
+        BitSet bitset = new BitSet(toTile.getType().enc(), 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
 
         int val = sub.toInt();
@@ -423,7 +423,7 @@ public class World {
     }
 
     private int[] bfsBuildResultValue(int movementId, int parentIndex, int lin, int valid) {
-        BitSet bitset = new BitSet(terrain[lin].getType().enc, 32);
+        BitSet bitset = new BitSet(terrain[lin].getType().enc(), 32);
         BitSet sub = bitset.sub(4 * movementId, 4);
         return new int[]{lin, parentIndex, sub.toInt(), valid};
     }

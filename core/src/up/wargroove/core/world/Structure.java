@@ -21,8 +21,7 @@ public abstract class Structure extends Entity {
         super(Entity.Type.STRUCTURE, faction);
         movement = Movement.NULL;
         this.type = type;
-        setHealth(100);
-
+        setHealth((faction == Faction.OUTLAWS)? 1: 100);
     }
 
     public int getBonus() {
