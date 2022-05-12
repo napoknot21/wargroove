@@ -211,6 +211,7 @@ public class Controller {
      * @return The new cursor's position.
      */
     public Vector3 moveCursor(int screenX, int screenY, Camera camera) {
+        if (camera == null) return null;
         Vector3 v = new Vector3(screenX, screenY, 0);
         v = camera.unproject(v);
         int x = (v.x < 0) ? 0 : (int) (v.x - v.x % worldScale);

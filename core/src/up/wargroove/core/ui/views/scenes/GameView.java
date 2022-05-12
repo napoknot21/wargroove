@@ -161,6 +161,7 @@ public class GameView extends View {
             @Override
             public boolean mouseMoved(int screenX, int screenY) {
                 Vector3 vector = getController().moveCursor(screenX, screenY, camera);
+                if (vector == null) return false;
                 cursor.setPosition(vector);
                 Tile tile = getController().getTile(cursor.getWorldPosition());
                 indicator.setTexture(getAssets(), tile);

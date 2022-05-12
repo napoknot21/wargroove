@@ -1,669 +1,670 @@
+
 ice.png
-size: 2048, 512
+size: 2040, 272
 format: RGBA8888
 filter: Nearest, Nearest
 repeat: none
 barracks-cherrystone_kingdom-1
   rotate: false
-  xy: 0, 2
+  xy: 0, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-felheim_legion-1
   rotate: false
-  xy: 66, 2
+  xy: 68, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-floran_tribes-1
   rotate: false
-  xy: 132, 2
+  xy: 136, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-heavensong_empire-1
   rotate: false
-  xy: 198, 2
+  xy: 204, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 barracks-outlaws-1
   rotate: false
-  xy: 264, 2
+  xy: 272, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-1
   rotate: false
-  xy: 330, 2
+  xy: 340, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-11
   rotate: false
-  xy: 396, 2
+  xy: 408, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-12
   rotate: false
-  xy: 462, 2
+  xy: 476, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-13
   rotate: false
-  xy: 528, 2
+  xy: 544, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-2
   rotate: false
-  xy: 594, 2
+  xy: 612, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-3
   rotate: false
-  xy: 660, 2
+  xy: 680, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-4
   rotate: false
-  xy: 726, 2
+  xy: 748, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-5
   rotate: false
-  xy: 792, 2
+  xy: 816, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-6
   rotate: false
-  xy: 858, 2
+  xy: 884, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-7
   rotate: false
-  xy: 924, 2
+  xy: 952, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-8
   rotate: false
-  xy: 990, 2
+  xy: 1020, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 beach-9
   rotate: false
-  xy: 1056, 2
+  xy: 1088, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-1
   rotate: false
-  xy: 1122, 2
+  xy: 1156, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-10
   rotate: false
-  xy: 1188, 2
+  xy: 1224, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-11
   rotate: false
-  xy: 1254, 2
+  xy: 1292, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-12
   rotate: false
-  xy: 1320, 2
+  xy: 1360, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-13
   rotate: false
-  xy: 1386, 2
+  xy: 1428, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-14
   rotate: false
-  xy: 1452, 2
+  xy: 1496, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-15
   rotate: false
-  xy: 1518, 2
+  xy: 1564, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-2
   rotate: false
-  xy: 1584, 2
+  xy: 1632, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-3
   rotate: false
-  xy: 1650, 2
+  xy: 1700, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-4
   rotate: false
-  xy: 1716, 2
+  xy: 1768, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-5
   rotate: false
-  xy: 1782, 2
+  xy: 1836, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-6
   rotate: false
-  xy: 1848, 2
+  xy: 1904, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-7
   rotate: false
-  xy: 1914, 2
+  xy: 1972, 4
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-8
   rotate: false
-  xy: 1980, 2
+  xy: 0, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 bridge-9
   rotate: false
-  xy: 0, 68
+  xy: 68, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-1
   rotate: false
-  xy: 66, 68
+  xy: 136, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-2
   rotate: false
-  xy: 132, 68
+  xy: 204, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-3
   rotate: false
-  xy: 198, 68
+  xy: 272, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-4
   rotate: false
-  xy: 264, 68
+  xy: 340, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-5
   rotate: false
-  xy: 330, 68
+  xy: 408, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-6
   rotate: false
-  xy: 396, 68
+  xy: 476, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 forest-7
   rotate: false
-  xy: 462, 68
+  xy: 544, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 mountain-1
   rotate: false
-  xy: 528, 68
+  xy: 612, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 mountain-2
   rotate: false
-  xy: 594, 68
+  xy: 680, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 plain-1
   rotate: false
-  xy: 660, 68
+  xy: 748, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 plain-2
   rotate: false
-  xy: 726, 68
+  xy: 816, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 plain-3
   rotate: false
-  xy: 792, 68
+  xy: 884, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 plain-4
   rotate: false
-  xy: 858, 68
+  xy: 952, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 plain-5
   rotate: false
-  xy: 924, 68
+  xy: 1020, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-1
   rotate: false
-  xy: 990, 68
+  xy: 1088, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-10
   rotate: false
-  xy: 1056, 68
+  xy: 1156, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-11
   rotate: false
-  xy: 1122, 68
+  xy: 1224, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-12
   rotate: false
-  xy: 1188, 68
+  xy: 1292, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-13
   rotate: false
-  xy: 1254, 68
+  xy: 1360, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-14
   rotate: false
-  xy: 1320, 68
+  xy: 1428, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-15
   rotate: false
-  xy: 1386, 68
+  xy: 1496, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-2
   rotate: false
-  xy: 1452, 68
+  xy: 1564, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-3
   rotate: false
-  xy: 1518, 68
+  xy: 1632, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-4
   rotate: false
-  xy: 1584, 68
+  xy: 1700, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-5
   rotate: false
-  xy: 1650, 68
+  xy: 1768, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-6
   rotate: false
-  xy: 1716, 68
+  xy: 1836, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-7
   rotate: false
-  xy: 1782, 68
+  xy: 1904, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-8
   rotate: false
-  xy: 1848, 68
+  xy: 1972, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 river-9
   rotate: false
-  xy: 1914, 68
+  xy: 0, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-1
   rotate: false
-  xy: 1980, 68
+  xy: 68, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-10
   rotate: false
-  xy: 0, 134
+  xy: 136, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-11
   rotate: false
-  xy: 66, 134
+  xy: 204, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-12
   rotate: false
-  xy: 132, 134
+  xy: 272, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-13
   rotate: false
-  xy: 198, 134
+  xy: 340, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-14
   rotate: false
-  xy: 264, 134
+  xy: 408, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-15
   rotate: false
-  xy: 330, 134
+  xy: 476, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-2
   rotate: false
-  xy: 396, 134
+  xy: 544, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-3
   rotate: false
-  xy: 462, 134
+  xy: 612, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-4
   rotate: false
-  xy: 528, 134
+  xy: 680, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-5
   rotate: false
-  xy: 594, 134
+  xy: 748, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-6
   rotate: false
-  xy: 660, 134
+  xy: 816, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-7
   rotate: false
-  xy: 726, 134
+  xy: 884, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-8
   rotate: false
-  xy: 792, 134
+  xy: 952, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 road-9
   rotate: false
-  xy: 858, 134
+  xy: 1020, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-1
   rotate: false
-  xy: 924, 134
+  xy: 1088, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-10
   rotate: false
-  xy: 990, 134
+  xy: 1156, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-2
   rotate: false
-  xy: 1056, 134
+  xy: 1224, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-3
   rotate: false
-  xy: 1122, 134
+  xy: 1292, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-4
   rotate: false
-  xy: 1188, 134
+  xy: 1360, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-5
   rotate: false
-  xy: 1254, 134
+  xy: 1428, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-6
   rotate: false
-  xy: 1320, 134
+  xy: 1496, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-7
   rotate: false
-  xy: 1386, 134
+  xy: 1564, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-8
   rotate: false
-  xy: 1452, 134
+  xy: 1632, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 sea-9
   rotate: false
-  xy: 1518, 134
+  xy: 1700, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-cherrystone_kingdom-1
   rotate: false
-  xy: 1584, 134
+  xy: 1768, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-felheim_legion-1
   rotate: false
-  xy: 1650, 134
+  xy: 1836, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-floran_tribes-1
   rotate: false
-  xy: 1716, 134
+  xy: 1904, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 stronghold-heavensong_empire-1
   rotate: false
-  xy: 1782, 134
+  xy: 1972, 140
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-cherrystone_kingdom-1
   rotate: false
-  xy: 1848, 134
+  xy: 0, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-felheim_legion-1
   rotate: false
-  xy: 1914, 134
+  xy: 68, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-floran_tribes-1
   rotate: false
-  xy: 1980, 134
+  xy: 136, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-heavensong_empire-1
   rotate: false
-  xy: 0, 200
+  xy: 204, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 village-outlaws-1
   rotate: false
-  xy: 66, 200
+  xy: 272, 208
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
