@@ -356,7 +356,7 @@ public class World {
         HashMap<Integer,Pair<Integer,Integer>> mouvements = new HashMap<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
         Vector<int[]> res = new Vector<>();
-        mouvements.put(root,new Pair<>(root,-1));
+        mouvements.put(root,new Pair<>(root,1));
 
         if (terrain[root].entity.isEmpty()) return res;
         WPredicate<Integer>[] predicates = new WPredicate[]{canMoveOn, withinRange, canAttack};
