@@ -203,6 +203,9 @@ public class CharacterUI extends EntityUI {
                 ((CharacterUI) victime).setReadyToAttack(true);
                 victime.setTemps(0);
             }
+            if (victime instanceof StructureUI){
+                setInjured(true);
+            }
         }
     }
 
