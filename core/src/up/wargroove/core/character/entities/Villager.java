@@ -26,10 +26,7 @@ public class Villager extends Character {
 	    super.movement = Movement.WALKING;
 
 	    stats.attack = 0;
-	    stats.defense = 10;
 	    stats.health = 100;
-	    stats.capture = true;
-	    stats.sight = 2;
 	    stats.range = 0;
 	    stats.cost = 50;
 

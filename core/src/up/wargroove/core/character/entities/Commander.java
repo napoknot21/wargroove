@@ -24,10 +24,7 @@ public class Commander extends Character {
 	    super.movRange = 4;
 
 	    stats.attack = 20;
-	    stats.defense = 20;
 	    stats.health = 100;
-	    stats.capture = true;
-	    stats.sight = 3;
 	    stats.range = 1;
 	    stats.cost = 500;
 

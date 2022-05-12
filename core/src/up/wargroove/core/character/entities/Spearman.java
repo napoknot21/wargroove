@@ -21,10 +21,7 @@ public class Spearman extends Character {
         super.movRange = 3;
 
         stats.attack = 20;
-        stats.defense = 20;
         stats.health = 100;
-        stats.capture = true;
-        stats.sight = 2;
         stats.range = 1;
         stats.cost = 250;
     }

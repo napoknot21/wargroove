@@ -21,10 +21,7 @@ public class Giant extends Character {
         super.movRange = 5;
 
         stats.attack = 20;
-        stats.defense = 20;
         stats.health = 100;
-        stats.capture = false;
-        stats.sight = 2;
         stats.range = 1;
         stats.cost = 1200;
     }

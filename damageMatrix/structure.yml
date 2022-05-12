@@ -1,7 +1,7 @@
 ---
 SOLDIER :
-  attacks : #first = base, second = critical
-    - 40
+  attacks :
+    - 40 #first = Median, second = critical
     - 40
   base :
     - 35

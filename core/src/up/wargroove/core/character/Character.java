@@ -6,19 +6,17 @@ public abstract class Character extends Entity implements Cloneable{
     protected Stats stats;
 
     /**
-     * Constructeur pour Character
-     *
-     * @param name    nom du personnage
-     * @param faction Faction du personnage
-     * @param type    Type d'unité du personnage
+     * Constructor for Character
+     * @param name character's name
+     * @param faction character's faction
+     * @param type type of character
      */
     public Character(String name, Entity.Type type, Faction faction) {
-
         super(type, faction);
         this.name = name;
         stats = new Stats();
-
     }
+
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -28,13 +26,13 @@ public abstract class Character extends Entity implements Cloneable{
         return clone;
     }
 
+
+    /***************** setters and getters *****************/
+
     public Faction getFaction() {
         return super.getFaction();
     }
 
-    /**
-     * getter et setters pour character
-     */
     @Override
     public int getCost() {
         return this.stats.cost;
@@ -60,9 +58,7 @@ public abstract class Character extends Entity implements Cloneable{
     }
 
     public int getRange() {
-
         return stats.range;
-
     }
 
     public void setRange(int range) {
@@ -77,57 +73,35 @@ public abstract class Character extends Entity implements Cloneable{
         this.stats.attack = attack;
     }
 
-    public double getDefense() {
-        return this.stats.defense;
-    }
-
-    public void setDefense(double defense) {
-        this.stats.defense = defense;
-    }
-
-    public void setCapture(boolean capture) {
-        this.stats.capture = capture;
-    }
-
-    public void setSight(int sight) {
-        this.stats.sight = sight;
-    }
 
     /**
-     * Classe interne contenant les stats du personnage
+     * Internal class for character's stats
      */
     protected static class Stats {
 
-        public double health; //Vie du personnage
-        public double attack; //Attaque du personnage
-        public double defense; //Pourcentage (entre 0 et 100) qui réduit l'attaque du personnage attaquant
-        public boolean capture; //Capacité à capture un village (true = oui, false = no)
-        public int sight; //Vue du personnage
-        public int range; //Rang d'attaque du personnage
-        public int cost; //Prix du personnage (monnaie du jeu)
+        public double health; //PH of character
+        public double attack; //character Attack
+        public int range; //Character range
+        public int cost; //Character cost
 
         /**
-         * Constructeur pour les stats d'un personnage
+         * Constructor for character stats
          */
         public Stats() {
             this.health = 0;
             this.attack = 0;
-            this.defense = 0;
-            this.capture = false;
-            this.sight = 0;
             this.range = 0;
             this.cost = 0;
         }
 
+        /**
+         * Constructor for character stats
+         */
         public Stats(Stats stats) {
             this.health = stats.health;
             this.attack = stats.attack;
-            this.defense = stats.defense;
-            this.capture = stats.capture;
-            this.sight = stats.sight;
             this.range = stats.range;
             this.cost = stats.cost;
-
         }
     }
 
