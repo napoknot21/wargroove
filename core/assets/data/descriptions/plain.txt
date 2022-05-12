@@ -1,1 +1,3 @@
 Whilst accessible to all units, plains provide little defense.
+
+Movement cost = 1

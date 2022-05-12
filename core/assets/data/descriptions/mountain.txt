@@ -1,1 +1,3 @@
 Accessible only to walking units. A slow but defensive terrain.
+
+Movement cost = 3

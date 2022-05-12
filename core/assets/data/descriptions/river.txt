@@ -1,1 +1,3 @@
 Only accessible to those on foot. Units attacked in a river are at a distinct disadvantage.
+
+Movement cost = 2

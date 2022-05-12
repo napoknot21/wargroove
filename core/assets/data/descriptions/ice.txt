@@ -1,1 +1,1 @@
-An alternative biome pallete, with snow covering the ground, trees, and even mountaintops
+An alternative biome pallete, with snow covering the ground, trees, and even mountaintops. The rivers are glassed, so characters can walk over it.

@@ -1,1 +1,3 @@
 Boats can move onto beach tiles to load units.
+
+Movement cost = 1

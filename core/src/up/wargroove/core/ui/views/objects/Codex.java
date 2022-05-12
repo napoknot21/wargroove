@@ -241,7 +241,6 @@ public class Codex extends Table {
     public enum Game {
         CREATORS,
         MUSIC,
-        ART,
-        COPYRIGHTS
+        ART
     }
 }

@@ -1,1 +1,3 @@
 A decorative tile that's functionally the same as a flagstone.
+
+Movement cost = 1

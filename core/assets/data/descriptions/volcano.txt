@@ -1,0 +1,1 @@
+Volcano is a special biome type, unlike others it has gameplay effects. Water becomes Lava, as a result walking units can not be placed in lava.

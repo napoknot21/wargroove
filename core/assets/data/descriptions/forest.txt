@@ -1,1 +1,3 @@
 Forests may be slow going but provide good defense and a means of avoiding vehicles.
+
+Movement cost = 2
