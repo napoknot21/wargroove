@@ -94,17 +94,18 @@ public class World {
         int amt = Math.min(properties.amt, Faction.values().length - 1);
 
         if (amt < Constants.WG_TWO) {
-
             amt = Constants.WG_TWO;
 
         }
-
-        for (int k = 0; k < amt; k++) {
-
-            Player p = new Player(Faction.values()[k], properties.getIncome());
-            p.setName("Player " + (k + 1));
-            players.add(p);
+        int k=0;
+        for (Tile t : terrain) {
+            if (t.entity.isPresent() && t.entity.get() instanceof Stronghold) {
+                Player p = new Player(t.entity.get().getFaction(), properties.getIncome());
+                p.setName("Player " + (k + 1));
+                players.add(p);
+            }
         }
+
     }
 
     public void addPlayer(Faction faction) {
