@@ -1,6 +1,6 @@
 package up.wargroove.core.character;
 
-public abstract class Character extends Entity {
+public abstract class Character extends Entity implements Cloneable{
 
     protected String name;
     protected Stats stats;
@@ -18,6 +18,14 @@ public abstract class Character extends Entity {
         this.name = name;
         stats = new Stats();
 
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Character clone = (Character) super.clone();
+        clone.name = this.name;
+        clone.stats = new Stats(stats);
+        return clone;
     }
 
     public Faction getFaction() {
@@ -111,6 +119,16 @@ public abstract class Character extends Entity {
             this.cost = 0;
         }
 
+        public Stats(Stats stats) {
+            this.health = stats.health;
+            this.attack = stats.attack;
+            this.defense = stats.defense;
+            this.capture = stats.capture;
+            this.sight = stats.sight;
+            this.range = stats.range;
+            this.cost = stats.cost;
+
+        }
     }
 
 }

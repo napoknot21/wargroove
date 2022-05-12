@@ -102,6 +102,10 @@ public class Recruitment extends Structure {
 
 	}
 
-
-
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		Recruitment clone = (Recruitment) super.clone();
+		clone.type = this.type;
+		return clone;
+	}
 }

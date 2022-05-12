@@ -68,4 +68,11 @@ public abstract class Structure extends Entity {
     public Type getStructureType() {
         return type;
     }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Structure clone = (Structure) super.clone();
+        clone.type = this.type;
+        return clone;
+    }
 }

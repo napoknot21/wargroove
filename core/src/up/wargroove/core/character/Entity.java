@@ -13,7 +13,7 @@ import up.wargroove.utils.Savable;
 import java.io.FileInputStream;
 import java.util.*;
 
-public abstract class Entity implements Savable {
+public abstract class Entity implements Savable, Cloneable {
 
     private static final Random r = new Random();
     protected Type type;
@@ -189,6 +189,18 @@ public abstract class Entity implements Savable {
             if (d.get("attacks").get(0) > 70) c.add(Type.valueOf(n.toUpperCase()));
         });
         return c;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Entity clone = (Entity) super.clone();
+        clone.health = this.health;
+        clone.faction = this.faction;
+        clone.movement = this.movement;
+        clone.movRange = this.movRange;
+        clone.type = this.type;
+        clone.isExhausted = this.isExhausted;
+        return clone;
     }
 
     public int getRange() {

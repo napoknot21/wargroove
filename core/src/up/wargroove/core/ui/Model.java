@@ -88,7 +88,7 @@ public class Model {
                         if (player != null) {
                             player.addEntity(entity);
                             if (entity instanceof Stronghold) {
-                                loadCommander(i, j, player);
+                                loadTroops(i, j, player);
                             }
                         }
                     }
@@ -105,18 +105,10 @@ public class Model {
      * @param j      The tile second coordinate
      * @param player The owner of the stronghold
      */
-    private void loadCommander(int i, int j, Player player) {
-        List<Integer> adj = getWorld().adjacentOf(World.coordinatesToInt(new Pair<>(i, j), getWorld().getDimension()));
-        adj.removeIf(pos -> {
-            Tile t = getWorld().at(pos);
-            return t.entity.isPresent() || !t.getType().availableForLoad();
-        });
-        Random random = new Random();
-        int pos = adj.get(random.nextInt(adj.size()));
-        Entity entity = new Commander("Commander", player.getFaction());
-        player.addEntity(entity);
-        getWorld().at(pos).entity = Optional.of(entity);
-        loadGuards(pos, player);
+    private void loadTroops(int i, int j, Player player) {
+        int pos = World.coordinatesToInt(new Pair<>(i, j), getWorld().getDimension());
+        int commanderPos = troopGenerationBfs(1, pos,new Commander("Commander", player.getFaction()), player);
+        troopGenerationBfs(2,commanderPos,new Soldier("Knit-Guards", player.getFaction()), player);
     }
 
     /**
@@ -125,7 +117,7 @@ public class Model {
      * @param pos    The commander position.
      * @param player the commander owner.
      */
-    private void loadGuards(int pos, Player player) {
+    /*private void loadGuards(int pos, Player player) {
         HashSet<Integer> checked = new HashSet<>();
         Queue<Integer> emp = new LinkedList<>();
         int amt = 2;
@@ -137,7 +129,7 @@ public class Model {
                 if (checked.contains(adj.get(i))) continue;
                 Tile t = getWorld().at(adj.get(i));
                 if (t.entity.isEmpty() && t.getType().availableForLoad()) {
-                    Entity entity = new Soldier("Knit-Guards", player.getFaction());
+                    Entity entity = ;
                     player.addEntity(entity);
                     getWorld().at(adj.get(i)).entity = Optional.of(entity);
                     amt--;
@@ -146,6 +138,34 @@ public class Model {
                 emp.add(adj.get(i));
             }
         }
+    }*/
+
+    private int troopGenerationBfs(int amt, int pos, Entity cloneGen, Player player) {
+        HashSet<Integer> checked = new HashSet<>();
+        Queue<Integer> emp = new LinkedList<>();
+        emp.add(pos);
+        int ret = 0;
+        while(amt > 0 && !emp.isEmpty()) {
+            int el = emp.poll();
+            List<Integer> adj = getWorld().adjacentOf(el);
+            for (int i = 0; i< adj.size() && amt > 0; i++) {
+                if (checked.contains(adj.get(i))) continue;
+                Tile t = getWorld().at(adj.get(i));
+                if (t.entity.isEmpty() && t.getType().availableForLoad()) {
+                    try {
+                        Entity entity = (Entity) cloneGen.clone();
+                        player.addEntity(entity);
+                        getWorld().at(adj.get(i)).entity = Optional.of(entity);
+                        amt--;
+                        ret = adj.get(i);
+                    } catch (CloneNotSupportedException ignored) {
+                    }
+                }
+                checked.add(adj.get(i));
+                emp.add(adj.get(i));
+            }
+        }
+        return ret;
     }
 
     public World getWorld() {

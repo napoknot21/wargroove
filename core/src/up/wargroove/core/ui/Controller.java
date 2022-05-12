@@ -169,9 +169,6 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
-        Viewport viewport = (getScreen()).getStage().getViewport();
-        System.out.println(camera.position.x+","+camera.position.y);
-        float worldSize = Math.min(getWorld().getDimension().first, getWorld().getDimension().second);
         float tileSize = Model.getTileSize();
         float velocity = getClient().getCameraVelocity() * tileSize * Gdx.graphics.getDeltaTime();
         float x = -Gdx.input.getDeltaX(pointer) * velocity + camera.position.x;

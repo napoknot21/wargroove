@@ -28,5 +28,4 @@ public class Archer extends Character {
         stats.range = 3;
         stats.cost = 500;
     }
-
 }
