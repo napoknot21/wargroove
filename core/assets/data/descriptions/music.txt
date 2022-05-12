@@ -1,3 +1,5 @@
-Grass: "Introduction", "To the Battle", "March through the High Weeds" Soline Corm
-Volcano: "Steam and Soot in the Air", "The Volcano Awakens", "The Lava is Spreading" Soline Corm
-Desert: "Sandy Introduction", "Snake Concerto", "Mysteries of the Desert", "Heat Distorsion"
+Grass: "Introduction", "To the Battle", "March through the High Weeds" by Soline Corm
+Volcano: "Steam and Soot in the Air", "The Volcano Awakens", "The Lava is Spreading" by Soline Corm
+Desert: "Sandy Introduction", "Mysteries of the Desert", "Heat Distorsion" by Soline Corm
+Ice : by Vladislas de Haldat
+Menu : by Vladislas de Haldat
