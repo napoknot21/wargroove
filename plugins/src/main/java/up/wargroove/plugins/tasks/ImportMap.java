@@ -38,9 +38,6 @@ public class ImportMap extends Plugin {
      * @throws Exception if an error occurred.
      */
     public void run() throws Exception {
-        db.dropCollection("2_players");
-        db.dropCollection("3_players");
-        db.dropCollection("4_players");
         db.createCollection("2_players");
         db.createCollection("3_players");
         db.createCollection("4_players");
