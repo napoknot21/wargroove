@@ -95,13 +95,13 @@ public class Tile implements Savable {
     }
 
     public void updateType(Biome biome) {
-        if (type == Type.RIVER){
+        /*if (type == Type.RIVER){
             if (biome == Biome.VOLCANO) {
                 type.enc = SEA_D_COST;
             } else if (biome == Biome.ICE){
                 type.enc = PLAIN_D_COST;
             }
-        }
+        }*/
     }
 
     public int getTextureVersion() {
@@ -163,7 +163,7 @@ public class Tile implements Savable {
             return enc;
         }
 
-        public boolean isWalkable() {
+        public boolean availableForLoad() {
             return this != SEA && this != DEEP_SEA && this != REEF && this != WALL;
         }
 

@@ -111,7 +111,7 @@ public class Model {
         List<Integer> adj = getWorld().adjacentOf(World.coordinatesToInt(new Pair<>(i, j), getWorld().getDimension()));
         adj.removeIf(pos -> {
             Tile t = getWorld().at(pos);
-            return t.entity.isPresent() || !t.getType().isWalkable();
+            return t.entity.isPresent() || !t.getType().availableForLoad();
         });
         Random random = new Random();
         int pos = adj.get(random.nextInt(adj.size()));
@@ -131,7 +131,7 @@ public class Model {
         List<Integer> adj = getWorld().adjacentOf(pos);
         adj.removeIf(i -> {
             Tile t = getWorld().at(i);
-            return t.entity.isPresent() || !t.getType().isWalkable();
+            return t.entity.isPresent() || !t.getType().availableForLoad();
         });
         for (int i = 0; i < adj.size() && i < 2; i++) {
             Entity entity = new Soldier("Knit-Guards", player.getFaction());

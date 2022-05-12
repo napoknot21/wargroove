@@ -93,8 +93,8 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        viewport = new ExtendViewport(x, y);
-        camera = (OrthographicCamera) viewport.getCamera();
+        camera = new OrthographicCamera(x,y);
+        viewport = new ExtendViewport(x, y, camera);
         viewport.apply();
         setStage(viewport);
         characters = new Stage(viewport, getBatch());
