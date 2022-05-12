@@ -68,7 +68,7 @@ public abstract class Entity implements Savable, Cloneable {
 
 
     /**
-     * Initialize the health and the turn status of the entity
+     * Initialize stats of the entity
      */
     public void initialize() {
         this.health = getHealth();

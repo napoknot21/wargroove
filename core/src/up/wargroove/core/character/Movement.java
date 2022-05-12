@@ -1,5 +1,8 @@
 package up.wargroove.core.character;
 
+/**
+ * Types of movements for characters
+ */
 public enum Movement {
 
     NULL		(-1, Character.Component.GROUND),
@@ -15,14 +18,12 @@ public enum Movement {
     public Entity.Component component;
 
     /**
-     * constructeur pour l'enumération Movement
-     * @param id du type de mouvement
-     * @param component Type de mouvement
+     * constructor for enum movement
+     * @param id movement type
+     * @param component terrain type
      */
     Movement(int id, Character.Component component) {
-
         this.id = id;
 		this.component = component;
-        
 	}
 }

@@ -15,17 +15,16 @@ public class EntityManager {
 	private static String packageURI = "up.wargroove.core.character.entities";
 
 	/**
-	 * constructeur
+	 * Constructor for entityManager
 	 */
 	private EntityManager() {
-	
 		entitySubClasses = new Vector<>();
-
 	}
 
+
 	/**
-	 * Chargement des structures primitives et additives d'entity par réflexions
-	 * @return true si tout a été bien chargé, false (si il y a une exception) et null sinon
+	 * Load primitives and additives structures of entity by reflexion
+	 * @return true if all loaded successfully or false (exception) else null
 	 */
 	@SuppressWarnings("unchecked")
 	public boolean load() {
@@ -34,14 +33,11 @@ public class EntityManager {
 		boolean status = true;
 
 		for(Entity.Type t : types) {
-
 			if (t.equals(Entity.Type.COMMANDER) || t.equals(Entity.Type.STRUCTURE)) {
 				continue;
 			}
 			try {
-
 				String typeStr = t.toString();
-
 				String fmt = packageURI + 
 					"." + 
 					typeStr.charAt(0) + 
@@ -49,71 +45,52 @@ public class EntityManager {
 
 				Log.print("Refléxion sur " + fmt);
 
-
 				Class<Entity> subClass = (Class<Entity>) Class.forName(fmt);
 				entitySubClasses.add(subClass);
 
 				/*
-				 * Exemple d'instanciation de la classe
+				 * Example of instantiation of class
 				 */
-	
 				Entity e = instantiate(subClass);
 				if(e == null) throw new Exception();
-
 				Movement mov = e.movement;
-
 				switch(mov.component) {
-
 					case GROUND: 
 						Recruitment.landEntityClasses.add(e);
 				   		break;
-
 					case AIR:
 						Recruitment.airEntityClasses.add(e);
 						break;
-
 					case SEA:
 						Recruitment.navalEntityClasses.add(e);
-						break;		
-
+						break;
 				}
-
 				Log.print(Log.Status.SUCCESS, "Ajout effectué avec succès!");
-
 			} catch (Exception e) {
-
 				Log.print(Log.Status.ERROR, "Erreur au chargement des personnages primitifs!");
 				status = false;
-
 			}
-
 		}
-
 		return status;
-
 	}
+
 
 	/**
-	 * Transforme la classe Entity passé en paramètre en un objet Entity
-	 * @param ce classe cherché par reflexion
-	 * @return un objet entity
+	 * Transform the class extended by entity in an Entity object
+	 * @param ce the class searched by reflexion
+	 * @return Entity object
 	 */
 	public static Entity instantiate(Class<? extends Entity> ce, String name, Faction faction) {
-
 		try {
-
 			Constructor<? extends Entity> constructor = ce.getDeclaredConstructor(String.class, Faction.class);
 			return constructor.newInstance(name,faction);
-		
 		} catch(Exception e) {
-
 			e.printStackTrace();
 			Log.print(Log.Status.ERROR, "Erreur lors de l'instantiation!");
-
 		}
-
 		return null;
 	}
+
 
 	@Null
 	public static Entity instantiate(Entity.Type type, String name, Faction faction) {
@@ -125,23 +102,21 @@ public class EntityManager {
 		return null;
 	}
 
+
 	/**
-	 * Transforme la classe Entity passé en paramètre en un objet Entity
-	 * @param ce classe cherché par reflexion
-	 * @return un objet entity
+	 * Transform a class in Entity object
+	 * @param ce class searched by reflexion
+	 * @return un Object Entity
 	 */
 	public static Entity instantiate(Class<? extends Entity> ce) {
 		return instantiate(ce,"",Faction.OUTLAWS);
 	}
 
-	/**
-	 * getter pour l'instance de Entity Manager
-	 * @return
-	 */
-	public static EntityManager getInstance() {
-	
-		return instance;
 
+	/***************** setters and getters *****************/
+
+	public static EntityManager getInstance() {
+		return instance;
 	}
 
 }

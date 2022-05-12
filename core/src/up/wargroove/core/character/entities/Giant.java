@@ -6,10 +6,19 @@ import up.wargroove.core.character.Movement;
 
 public class Giant extends Character {
 
+    /**
+     * Constructor for Giant
+     */
     public Giant () {
         this("", Faction.OUTLAWS);
     }
 
+
+    /**
+     * Constructor for Giant
+     * @param name character name
+     * @param faction character faction
+     */
     public Giant (String name, Faction faction) {
         super(name, Type.GIANT, faction);
         initialize();
@@ -19,7 +28,6 @@ public class Giant extends Character {
     public void initialize() {
         super.movement = Movement.WALKING;
         super.movRange = 5;
-
         stats.attack = 20;
         stats.health = 100;
         stats.range = 1;

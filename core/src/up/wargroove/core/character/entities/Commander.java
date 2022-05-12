@@ -4,14 +4,21 @@ import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Faction;
 import up.wargroove.core.character.Movement;
 
-
 public class Commander extends Character {
 
-
+	/**
+	 * Constructor for Commander
+	 */
 	public Commander() {
 		this("", Faction.OUTLAWS);
 	}
 
+
+	/**
+	 * Constructor for Commander
+	 * @param name character name
+	 * @param faction character faction
+	 */
     public Commander (String name, Faction faction) {
         super(name, Type.COMMANDER, faction);
         initialize();
@@ -19,18 +26,13 @@ public class Commander extends Character {
 
     @Override
     public void initialize() {
-
 	    super.movement = Movement.WALKING;
 	    super.movRange = 4;
-
 	    stats.attack = 20;
 	    stats.health = 100;
 	    stats.range = 1;
 	    stats.cost = 500;
-
 		setHealth(stats.health);
-
     }
-
 
 }

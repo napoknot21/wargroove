@@ -1,5 +1,8 @@
 package up.wargroove.core.character;
 
+/**
+ * All factions for entities
+ */
 public enum Faction {
 	
 	CHERRYSTONE_KINGDOM,
