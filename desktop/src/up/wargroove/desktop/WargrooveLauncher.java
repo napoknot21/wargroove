@@ -27,7 +27,6 @@ public class WargrooveLauncher {
             config.setTitle("Wargroove");
             config.setWindowSizeLimits(800,600,-1,-1);
             EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(debug), config));
-            System.out.println(new File(".").getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }

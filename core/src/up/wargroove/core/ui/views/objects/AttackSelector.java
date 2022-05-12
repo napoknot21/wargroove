@@ -89,7 +89,7 @@ public class AttackSelector implements Selector{
         if (results.length == 0) {
             return;
         }
-        Texture texture = Assets.getInstance().get(Assets.AssetDir.GUI.path()+"attack.png", Texture.class);
+        Texture texture = Assets.getInstance().get(Assets.AssetDir.GUI.path()+"attackPosition.png", Texture.class);
         availableAttackPositions.setData(texture, List.of(results), owner);
         active = true;
     }

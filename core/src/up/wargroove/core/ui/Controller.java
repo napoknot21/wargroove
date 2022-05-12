@@ -5,12 +5,14 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Null;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import up.wargroove.core.WargrooveClient;
 import up.wargroove.core.character.Character;
 import up.wargroove.core.character.Entity;
@@ -149,11 +151,14 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void zoom(float amountX, float amountY, OrthographicCamera camera) {
-        float size = (camera.viewportHeight + camera.viewportWidth) * 2;
-        camera.zoom += amountY * getClient().getCameraZoomVelocity() * size * Gdx.graphics.getDeltaTime();
-        float max = size / 1.5f;
-        float min = (camera.viewportHeight + camera.viewportWidth) / 3f;
-        camera.zoom = (camera.zoom < min) ? min : Math.min(camera.zoom, max);
+        Viewport viewport = (getScreen()).getStage().getViewport();
+        float tileSize = Model.getTileSize();
+        float screenSize = Math.max(viewport.getScreenHeight(), viewport.getScreenWidth());
+        float worldSize = Math.min(getWorld().getDimension().first, getWorld().getDimension().second);
+        float min = 0.5f * screenSize/worldSize;
+        float max = 1.5f * screenSize/worldSize;
+        float value = camera.zoom +  amountY * getClient().getCameraZoomVelocity() *tileSize* Gdx.graphics.getDeltaTime();
+        camera.zoom = MathUtils.clamp(value,min,max);
         camera.update();
     }
 
@@ -164,10 +169,16 @@ public class Controller {
      * @param camera  The screen camera.
      */
     public void drag(int pointer, OrthographicCamera camera) {
-        float velocity = getClient().getCameraVelocity() * 50 * Gdx.graphics.getDeltaTime();
-        camera.translate(
-                -Gdx.input.getDeltaX(pointer) * velocity, Gdx.input.getDeltaY(pointer) * velocity
-        );
+        Viewport viewport = (getScreen()).getStage().getViewport();
+        System.out.println(camera.position.x+","+camera.position.y);
+        float worldSize = Math.min(getWorld().getDimension().first, getWorld().getDimension().second);
+        float tileSize = Model.getTileSize();
+        float velocity = getClient().getCameraVelocity() * tileSize * Gdx.graphics.getDeltaTime();
+        float x = -Gdx.input.getDeltaX(pointer) * velocity + camera.position.x;
+        float y = Gdx.input.getDeltaY(pointer) * velocity + camera.position.y;
+
+        camera.position.x = MathUtils.clamp(x,0,camera.viewportWidth * tileSize);
+        camera.position.y = MathUtils.clamp(y,0,camera.viewportHeight * tileSize);
         camera.update();
     }
 

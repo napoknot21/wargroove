@@ -93,8 +93,8 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        camera = new OrthographicCamera(x, y);
-        viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
+        viewport = new ExtendViewport(x, y);
+        camera = (OrthographicCamera) viewport.getCamera();
         viewport.apply();
         setStage(viewport);
         characters = new Stage(viewport, getBatch());
@@ -102,7 +102,7 @@ public class GameView extends View {
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         addInput(characters);
-        camera.zoom = (camera.viewportHeight + camera.viewportWidth)/1.5f;
+        camera.zoom =(float) viewport.getScreenWidth()/  (float) world.getDimension().first ;
 
     }
 
