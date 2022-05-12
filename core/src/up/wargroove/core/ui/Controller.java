@@ -433,18 +433,18 @@ public class Controller {
         Pair<Integer, Integer> positionTarget = selector.getDestination();
         gameView.clearSelectors();
         getWorld().moveEntity(World.coordinatesToInt(position, getWorld().getDimension()));
-        Actor actor = gameView.getScopedEntity();
+        EntityUI actor = (EntityUI) gameView.getScopedEntity();
         Tile tile = getWorld().at(position);
         if (tile.entity.isEmpty()) return;
         actualiseFocusEntity(positionTarget);
         Entity entityTarget = getWorld().getScopedEntity();
-        Actor actorTarget = gameView.getCharacterUI(entityTarget);
+        EntityUI actorTarget = (EntityUI) gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        boolean alive = attack((CharacterUI) actor, (EntityUI) actorTarget, path);
+        boolean alive = attack((CharacterUI) actor,actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
-            structureAttackted((EntityUI) actorTarget, tile.entity.get().getFaction());
-            if (canCounterAttack((EntityUI) actorTarget, (CharacterUI) actor, alive)) {
-                counterAttack((EntityUI) actorTarget, (CharacterUI) actor, inversePath(path.substring(path.length() - 1)));
+            structureAttackted( actorTarget, tile.entity.get().getFaction());
+            if (canCounterAttack( actorTarget, (CharacterUI) actor, alive)) {
+                counterAttack( actorTarget,  actor, inversePath(path.substring(path.length() - 1)));
             }
         }
     }
@@ -502,6 +502,7 @@ public class Controller {
         }
         actor.setVictime(actorTarget);
         actor.getEntity().attack(actorTarget.getEntity());
+        commanderDie(actorTarget.getEntity(),actor.getEntity().getFaction());
     }
 
     /**
