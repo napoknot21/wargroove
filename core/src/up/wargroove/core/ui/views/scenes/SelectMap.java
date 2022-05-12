@@ -15,6 +15,7 @@ import up.wargroove.core.ui.Assets;
 import up.wargroove.core.ui.Model;
 import up.wargroove.core.ui.Controller;
 import up.wargroove.core.ui.views.objects.MapActor;
+import up.wargroove.core.world.Biome;
 import up.wargroove.core.world.WorldProperties;
 import up.wargroove.utils.DBEngine;
 import up.wargroove.utils.Database;
@@ -249,6 +250,7 @@ public class SelectMap extends ViewWithPrevious {
         WorldProperties properties = new WorldProperties();
         properties.load(object);
         properties.amt = amt;
+        properties.setBiome(Biome.GRASS);
         getModel().setWorld(properties);
         VRT.clear();
         renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());

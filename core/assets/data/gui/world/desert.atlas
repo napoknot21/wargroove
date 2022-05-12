@@ -306,7 +306,7 @@ plain-2
   index: -1
 plain-3
   rotate: false
-  xy: 884, 72
+  xy: 748, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
@@ -320,7 +320,7 @@ plain-4
   index: -1
 plain-5
   rotate: false
-  xy: 1020, 72
+  xy: 748, 72
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
