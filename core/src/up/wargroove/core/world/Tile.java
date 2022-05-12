@@ -100,6 +100,8 @@ public class Tile implements Savable {
                 type.enc = SEA_D_COST;
             } else if (biome == Biome.ICE){
                 type.enc = PLAIN_D_COST;
+            } else {
+                type.enc = RIVER_D_COST;
             }
         }
     }

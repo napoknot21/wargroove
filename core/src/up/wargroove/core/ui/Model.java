@@ -67,6 +67,7 @@ public class Model {
         isActive = true;
         updateTiles();
         setStartData();
+        System.out.println(getBiome().name());
     }
 
     private void updateTiles() {
