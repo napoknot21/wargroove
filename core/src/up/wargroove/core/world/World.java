@@ -33,17 +33,20 @@ public class World {
         Optional<Entity> rootEntity = terrain[k[3]].entity;
         Tile toTile = terrain[k[Constants.WG_ZERO]];
         if (k[Constants.WG_ZERO].equals(k[3]) || rootEntity.isEmpty()) return new Pair<>(-1,0);
-        if (k[Constants.WG_TWO] <= 0) return new Pair<>(-1, 2);
+        if (k[Constants.WG_TWO] <= 0) return new Pair<>(-1, -2);
 
         BitSet bitset = new BitSet(toTile.getType().enc(), 32);
         BitSet sub = bitset.sub(4 * k[Constants.WG_ONE], 4);
 
         int val = sub.toInt();
-        if (val == 0) return new Pair<>(-1, 0);
+        if (val == 0) return new Pair<>(-1, -2);
         else if (toTile.entity.isPresent()) {
-            if (toTile.entity.get().getFaction().equals(rootEntity.get().getFaction()))
-            return new Pair<>(k[2] - val, -2);
-            else return new Pair<>(-1,-2);
+            if (toTile.entity.get().getFaction().equals(rootEntity.get().getFaction())) {
+                return new Pair<>(k[2] - val, -2);
+            }
+            else {
+                return new Pair<>(-1,-2);
+            }
         }
         else return new Pair<>(k[2] - val, 2);
 
@@ -55,7 +58,7 @@ public class World {
         if (attackRange > 0) {
             return new Pair<>(attackRange - 1, 1);
         }
-        return new Pair<>(-1, 0);
+        return new Pair<>(-1, -1);
     };
 
     private final WPredicate<Integer> canAttack = (k) -> {
@@ -350,10 +353,10 @@ public class World {
     private Vector<int[]> attackBreadthFirstSearch(int root) {
 
         Map<Integer, Integer> checked = new HashMap<>();
-        HashSet<Integer> mouvements = new HashSet<>();
+        HashMap<Integer,Pair<Integer,Integer>> mouvements = new HashMap<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
         Vector<int[]> res = new Vector<>();
-        mouvements.add(root);
+        mouvements.put(root,new Pair<>(root,-1));
 
         if (terrain[root].entity.isEmpty()) return res;
         WPredicate<Integer>[] predicates = new WPredicate[]{canMoveOn, withinRange, canAttack};
@@ -377,7 +380,7 @@ public class World {
 
 
             for (Integer lin : adjacent) {
-                if (checked.containsKey(lin) && checked.get(lin) > 2) continue;
+                if (checked.containsKey(lin) && checked.get(lin) > 4) continue;
 
 
                 boolean added = false;
@@ -400,7 +403,7 @@ public class World {
                             break;
                         case 2:
                             movementCost = result.first;
-                            if (movementCost >= 0) mouvements.add(lin);
+                            if (movementCost >= 0) mouvements.put(lin,result);
                             break;
                         default:
                     }
@@ -427,17 +430,21 @@ public class World {
         return new int[]{lin, parentIndex, sub.toInt(), valid};
     }
 
-    private boolean correctAlignement(HashSet<Integer> mouvements, int lin, int range) {
+    private boolean correctAlignement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin, int range) {
         Pair<Integer, Integer> pos = intToCoordinates(lin, getDimension());
         boolean valid = false;
         for (int i = 0; i <= range && !valid; i++) {
-            valid = mouvements.contains(coordinatesToInt(new Pair<>(pos.first + i, pos.second), getDimension()));
-            valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first - i, pos.second), getDimension()));
-            valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first, pos.second + i), getDimension()));
-            valid |= mouvements.contains(coordinatesToInt(new Pair<>(pos.first, pos.second - i), getDimension()));
+            valid = checkMouvement(mouvements, coordinatesToInt(new Pair<>(pos.first + i, pos.second), getDimension()));
+            valid |= checkMouvement(mouvements, coordinatesToInt(new Pair<>(pos.first - i, pos.second), getDimension()));
+            valid |= checkMouvement(mouvements, coordinatesToInt(new Pair<>(pos.first, pos.second + i), getDimension()));
+            valid |= checkMouvement(mouvements, coordinatesToInt(new Pair<>(pos.first, pos.second - i), getDimension()));
         }
         return valid;
+    }
 
+    private boolean checkMouvement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin){
+        Pair<Integer, Integer> m = mouvements.get(lin);
+        return m != null && m.second > 0;
     }
 
     @SafeVarargs
@@ -468,7 +475,7 @@ public class World {
 
             for (Integer lin : adjacent) {
 
-                if (checked.containsKey(lin) && checked.get(lin) > 2) continue;
+                if (checked.containsKey(lin) && checked.get(lin) > 4) continue;
 
 
                 boolean added = false;

@@ -10,9 +10,7 @@ import up.wargroove.core.character.entities.Soldier;
 import up.wargroove.core.world.*;
 import up.wargroove.utils.Pair;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * The gui model.
@@ -128,15 +126,25 @@ public class Model {
      * @param player the commander owner.
      */
     private void loadGuards(int pos, Player player) {
-        List<Integer> adj = getWorld().adjacentOf(pos);
-        adj.removeIf(i -> {
-            Tile t = getWorld().at(i);
-            return t.entity.isPresent() || !t.getType().availableForLoad();
-        });
-        for (int i = 0; i < adj.size() && i < 2; i++) {
-            Entity entity = new Soldier("Knit-Guards", player.getFaction());
-            player.addEntity(entity);
-            getWorld().at(adj.get(i)).entity = Optional.of(entity);
+        HashSet<Integer> checked = new HashSet<>();
+        Queue<Integer> emp = new LinkedList<>();
+        int amt = 2;
+        emp.add(pos);
+        while(amt > 0 && !emp.isEmpty()) {
+            int el = emp.poll();
+            List<Integer> adj = getWorld().adjacentOf(el);
+            for (int i = 0; i< adj.size() && amt > 0; i++) {
+                if (checked.contains(adj.get(i))) continue;
+                Tile t = getWorld().at(adj.get(i));
+                if (t.entity.isEmpty() && t.getType().availableForLoad()) {
+                    Entity entity = new Soldier("Knit-Guards", player.getFaction());
+                    player.addEntity(entity);
+                    getWorld().at(adj.get(i)).entity = Optional.of(entity);
+                    amt--;
+                }
+                checked.add(adj.get(i));
+                emp.add(adj.get(i));
+            }
         }
     }
 
