@@ -865,7 +865,7 @@ public class Controller {
      * @return if the actorTarget can attack the actor
      */
     public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor, boolean inLive) {
-        return inLive && !((actorTarget.getEntity()) instanceof Villager) && correctDistanceToCounterAttack(actorTarget, actor);
+        return inLive && !((actorTarget.getEntity()) instanceof Villager) && correctDistanceToCounterAttack(actorTarget, actor) && actor.getEntity().equals(actorTarget.getEntity().getFaction());
     }
 
     /**

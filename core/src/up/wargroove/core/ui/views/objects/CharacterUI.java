@@ -200,10 +200,10 @@ public class CharacterUI extends EntityUI {
             attackDirection = null;
             actualiseTexture();
             if (victime instanceof CharacterUI) {
-                ((CharacterUI) victime).setReadyToAttack(true);
+                 victime.setReadyToAttack(true);
                 victime.setTemps(0);
             }
-            if (victime instanceof StructureUI){
+            if ((victime instanceof StructureUI )&&(!victime.getEntity().getFaction().equals(getEntity().getFaction()))){
                 setInjured(true);
             }
         }
