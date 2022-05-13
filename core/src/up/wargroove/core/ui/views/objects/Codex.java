@@ -47,7 +47,7 @@ public class Codex extends Table {
             @Override
             public void hide() {
                 super.hide();
-                description.setText("Welcome to the world\n of NAME_NOT_FOUND ");
+                description.setText("Welcome to the world\n of Wargroove ");
             }
         };
         description = new Label("This is the codex\n of the game", skin);
