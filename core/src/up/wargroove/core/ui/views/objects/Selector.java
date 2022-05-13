@@ -61,6 +61,8 @@ public interface Selector {
      */
     void setEntityInformation(Pair<Integer, Integer> coord, int cost);
 
+    /***************** setters and getters *****************/
+
     void setOwner(boolean owner);
 
     boolean isOwner();

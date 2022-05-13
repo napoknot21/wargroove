@@ -70,6 +70,15 @@ public class GameMap extends TiledMap {
         this(world, stage, characters, controller, 1);
     }
 
+    /**
+     * Takes an entity in the position, and creates a entityUI of it
+     *
+     * @param stage      Where visual elements are drawed
+     * @param characters Table with others characters
+     *                   Position
+     * @param i
+     * @param j
+     */
     private void addEntityImage(Stage stage, Stage characters, Controller controller, World world, int i, int j, boolean structure, boolean character, float scale) {
         Tile tile = world.at(i, j);
         if (tile.entity.isEmpty()) return;
@@ -79,6 +88,8 @@ public class GameMap extends TiledMap {
             new StructureUI(stage, (Structure) tile.entity.get(), new Pair<>(i, j), scale);
         }
     }
+
+    /***************** setters and getters *****************/
 
     public int getHeight() {
         return height;

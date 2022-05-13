@@ -46,6 +46,9 @@ public class StructureUI extends EntityUI {
         this(stage, structure, position, 1);
     }
 
+    /**
+     * Move the StructureUI, his sprite and his stats
+     */
     @Override
     public void positionChanged() {
         getSprite().setPosition(getCoordinates().first * getTileSize(), getCoordinates().second * getTileSize());
@@ -53,6 +56,10 @@ public class StructureUI extends EntityUI {
         super.positionChanged();
     }
 
+    /**
+     * @param batch       The drawer
+     * @param parentAlpha
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (isPlayable) exhaust();

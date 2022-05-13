@@ -13,6 +13,11 @@ import up.wargroove.core.ui.Controller;
 public class DialogWithCloseButton extends Dialog {
     private final CheckBox exitBox;
 
+    /**
+     * Creates a dialog with an exit button
+     *
+     * @param title the name of the dialog
+     */
     public DialogWithCloseButton(String title, Controller controller) {
         super(title, Assets.getInstance().getSkin());
         exitBox = new CheckBox("", Assets.getInstance().getSkin());
@@ -30,7 +35,7 @@ public class DialogWithCloseButton extends Dialog {
                         exitBox.setChecked(true);
                     }
                 });
-        this.addListener(new InputListener(){
+        this.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 if (x < 0 || y < 0 || x > getWidth() || y > getHeight()) {
@@ -41,6 +46,8 @@ public class DialogWithCloseButton extends Dialog {
             }
         });
     }
+
+    /***************** setters and getters *****************/
 
     public CheckBox getCloseButtonMenu() {
         return exitBox;

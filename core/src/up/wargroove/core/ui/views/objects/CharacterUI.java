@@ -59,6 +59,9 @@ public class CharacterUI extends EntityUI {
         controller.getScreen().getStage().addActor(this);
     }
 
+    /**
+     * Initialise the sprite of a character using the first texture of animation die
+     */
     @Override
     protected void initialiseSprites() {
         super.initialiseSprites();
@@ -200,10 +203,10 @@ public class CharacterUI extends EntityUI {
             attackDirection = null;
             actualiseTexture();
             if (victime instanceof CharacterUI) {
-                 victime.setReadyToAttack(true);
+                victime.setReadyToAttack(true);
                 victime.setTemps(0);
             }
-            if ((victime instanceof StructureUI )&&(!victime.getEntity().getFaction().equals(getEntity().getFaction()))){
+            if ((victime instanceof StructureUI) && (!victime.getEntity().getFaction().equals(getEntity().getFaction()))) {
                 setInjured(true);
             }
         }
@@ -277,10 +280,6 @@ public class CharacterUI extends EntityUI {
         return finalPos;
     }
 
-    public void setMove(String path) {
-        move = move + path;
-    }
-
     /**
      * @return true while the character can move
      */
@@ -289,6 +288,9 @@ public class CharacterUI extends EntityUI {
         return (move.length() > 0);
     }
 
+    /**
+     * @return true if character the have not actions to do
+     */
     @Override
     public boolean isWaiting() {
         return (!canMove() && attackDirection == null);
@@ -298,15 +300,16 @@ public class CharacterUI extends EntityUI {
         return (attackDirection == null);
     }
 
+    /**
+     * Remove the first step of the path
+     */
     private void removeFirstMove() {
         move = move.substring(1);
     }
 
-    public void setAttackDirection(java.lang.Character attackDirection) {
-        this.attackDirection = attackDirection;
-    }
-
-
+    /**
+     * Define the features of the sprite according whith the character
+     */
     private void defineFeatures() {
         decalage = new Pair<>(0, 0);
         switch (getEntity().getType()) {
@@ -343,7 +346,10 @@ public class CharacterUI extends EntityUI {
         return canMove() && animationAttack != null;
     }
 
-
+    /**
+     * @param batch       the drawer
+     * @param parentAlpha
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (getReadyAttack()) {
@@ -355,4 +361,16 @@ public class CharacterUI extends EntityUI {
 
         super.draw(batch, parentAlpha);
     }
+
+
+    /***************** setters and getters *****************/
+
+    public void setAttackDirection(java.lang.Character attackDirection) {
+        this.attackDirection = attackDirection;
+    }
+
+    public void setMove(String path) {
+        move = move + path;
+    }
+
 }

@@ -16,7 +16,7 @@ import up.wargroove.utils.Pair;
 /**
  * The screen movement manager.
  */
-public class MovementSelector implements Selector{
+public class MovementSelector implements Selector {
     /**
      * List of valid positions.
      */
@@ -80,7 +80,7 @@ public class MovementSelector implements Selector{
      * @param assets The app assets.
      * @param coord  The step coordinates.
      */
-    public  void addMovement(Assets assets, Pair<Integer, Integer> coord) {
+    public void addMovement(Assets assets, Pair<Integer, Integer> coord) {
         if (!owner) return;
         int tileIndex = valid.isValid(coord);
         if (tileIndex < 0) {
@@ -90,13 +90,31 @@ public class MovementSelector implements Selector{
         }
     }
 
+    /**
+     * Check if v is a possible position to attack
+     */
+
     public boolean isValidPosition() {
         return valid.isValidPosition();
     }
 
+    /**
+     * Check if v is a possible position to attack
+     *
+     * @param c the coordinate that needed to be checked.
+     * @return
+     */
+
     public boolean isValidPosition(Pair<Integer, Integer> c) {
         return this.valid.isValid(c) != -1;
     }
+
+    /**
+     * Check if v is a possible position to attack
+     *
+     * @param v the vector that needed to be checked.
+     * @return
+     */
 
     public boolean isValidPosition(Vector3 v) {
         return isValidPosition(new Pair<>((int) v.x, (int) v.y));
@@ -138,15 +156,6 @@ public class MovementSelector implements Selector{
         this.cost = cost;
     }
 
-    @Override
-    public void setOwner(boolean owner) {
-        this.owner = owner;
-    }
-
-    @Override
-    public boolean isOwner() {
-        return owner;
-    }
 
     /**
      * Draw the path on the screen.
@@ -194,21 +203,22 @@ public class MovementSelector implements Selector{
     /**
      * Add a new sprite to the list if all the sprites are already used
      * else it will take a free sprite.
-     *  @param assets The app assets.
+     *
+     * @param assets The app assets.
      * @param data   The sprites coordinates.
      */
     public void showValids(Assets assets, Pair<List<Pair<?, ?>>, List<int[]>> data) {
         reset();
         Texture texture = assets.get(Assets.AssetDir.GUI.path() + "valids.png");
-        valid.setData(texture, data.first,data.second, owner);
+        valid.setData(texture, data.first, data.second, owner);
     }
 
     public void showValid(Assets assets, List<Pair<?, ?>> coordinates) {
         reset();
         Texture texture = assets.get(Assets.AssetDir.GUI.path() + "valids.png");
         ArrayList<int[]> intel = new ArrayList<>();
-        for (int i = 0; i< coordinates.size(); i++) intel.add(new int[]{1,1,1,1});
-        valid.setData(texture,coordinates,intel, owner);
+        for (int i = 0; i < coordinates.size(); i++) intel.add(new int[]{1, 1, 1, 1});
+        valid.setData(texture, coordinates, intel, owner);
     }
 
     /**
@@ -218,7 +228,7 @@ public class MovementSelector implements Selector{
      * @return The next coordinates in world terrain dimension
      */
     private Pair<Integer, Integer> getCoord(char c) {
-        Pair<Integer,Integer> coord = movements.getLastMovement();
+        Pair<Integer, Integer> coord = movements.getLastMovement();
         switch (c) {
             case 'U':
                 return new Pair<>(coord.first, coord.second + 1);
@@ -239,7 +249,7 @@ public class MovementSelector implements Selector{
      * @param next The next step.
      * @return a string that symbolizes the directions to take.
      */
-    private  String direction(Pair<Integer, Integer> next) {
+    private String direction(Pair<Integer, Integer> next) {
         Pair<Integer, Integer> last = movements.getLastMovement();
         int dx = last.first - next.first;
         int dy = last.second - next.second;
@@ -253,7 +263,7 @@ public class MovementSelector implements Selector{
      * @param dy The next movement
      * @return a string that symbolizes the directions to take.
      */
-    private  String directionSelector(int dx, int dy) {
+    private String directionSelector(int dx, int dy) {
         StringBuilder s = new StringBuilder();
         char d = (dx < 0) ? 'R' : 'L';
         int end = Math.abs(dx);
@@ -264,8 +274,23 @@ public class MovementSelector implements Selector{
         return s.toString();
     }
 
+    /**
+     * Removes MovementSelector
+     */
     public void dispose() {
         this.reset();
+    }
+
+    /***************** setters and getters *****************/
+
+    @Override
+    public void setOwner(boolean owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public boolean isOwner() {
+        return owner;
     }
 
     /**
@@ -296,7 +321,7 @@ public class MovementSelector implements Selector{
          *
          * @return The last movement coordinates
          */
-        private  Pair<Integer, Integer> getLastMovement() {
+        private Pair<Integer, Integer> getLastMovement() {
             int x;
             int y;
             if (movements.index != 0) {
@@ -315,7 +340,7 @@ public class MovementSelector implements Selector{
          *
          * @return The last movement coordinates
          */
-        private  Pair<Integer, Integer> getNextToLastMovement() {
+        private Pair<Integer, Integer> getNextToLastMovement() {
             int x;
             int y;
             if ((movements.index != 0) && (movements.index != 1)) {
@@ -331,7 +356,8 @@ public class MovementSelector implements Selector{
 
         /**
          * Adds the default movements to movements according to the tileIndex. Its follow the BFR order
-         * @param assets The app assets.
+         *
+         * @param assets    The app assets.
          * @param tileIndex The tile's index in valid.
          */
         private void addDefaultMovement(Assets assets, int tileIndex) {
@@ -350,7 +376,7 @@ public class MovementSelector implements Selector{
          * @param assets The app assets
          * @param d      the path.
          */
-        private  boolean add(Assets assets, String d) {
+        private boolean add(Assets assets, String d) {
             if (d.isBlank() || index + d.length() > cost) {
                 return false;
             }
@@ -367,7 +393,7 @@ public class MovementSelector implements Selector{
          * @param assets The app assets.
          * @param coord  The step coordinates.
          */
-        private  void add(Assets assets, Pair<Integer, Integer> coord, int tileIndex) {
+        private void add(Assets assets, Pair<Integer, Integer> coord, int tileIndex) {
             if (getLastMovement().equals(coord)) {
                 return;
             }
@@ -415,7 +441,7 @@ public class MovementSelector implements Selector{
          * @param coordinate The next coordinate
          * @return true if a sprite is recycled, false otherwise.
          */
-        private  boolean reuse(char d, Assets assets, Pair<Integer, Integer> coordinate, int tileIndex) {
+        private boolean reuse(char d, Assets assets, Pair<Integer, Integer> coordinate, int tileIndex) {
             if (index >= size() || currentCost >= cost) {
                 return false;
             }
@@ -436,7 +462,7 @@ public class MovementSelector implements Selector{
          * @param coordinate The next movement coordinate.
          * @return true if the coordinate is present, false otherwise.
          */
-        private  boolean isPresent(Assets assets, Pair<Integer, Integer> coordinate, int tileIndex) {
+        private boolean isPresent(Assets assets, Pair<Integer, Integer> coordinate, int tileIndex) {
 
             for (int i = index - 1; i >= 0; i--) {
                 if (get(i).second.equals(coordinate)) {
@@ -457,7 +483,7 @@ public class MovementSelector implements Selector{
          * @param d      The direction.
          * @return The sprite texture.
          */
-        private  TextureRegion getArrow(Assets assets, char d) {
+        private TextureRegion getArrow(Assets assets, char d) {
             TextureAtlas atlas =
                     assets.get(Assets.AssetDir.ARROWS.path() + "arrows.atlas", TextureAtlas.class);
             if (index > 0) {
@@ -482,7 +508,7 @@ public class MovementSelector implements Selector{
          * Reset the movements' path and reset the list's index. All the build sprites
          * are now considered as free.
          */
-        private  void reset() {
+        private void reset() {
             path.delete(0, path.length());
             index = 0;
             currentCost = 0;

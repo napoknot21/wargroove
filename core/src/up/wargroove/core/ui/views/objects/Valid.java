@@ -36,19 +36,20 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
     /**
      * Add a new sprite to the list if all the sprites are already used
      * otherwise it will use a free sprite.
-     *  @param texture The sprite texture.
-     * @param coordinates   The sprites coordinates.
+     *
+     * @param texture     The sprite texture.
+     * @param coordinates The sprites coordinates.
      * @param owner
      */
     private void add(TextureRegion texture, Pair<?, ?> coordinates, boolean owner) {
         if (!(coordinates.first instanceof Integer) || !(coordinates.second instanceof Integer)) return;
-        Pair<Integer,Integer> coord = new Pair<>((int) coordinates.first, (int) coordinates.second);
+        Pair<Integer, Integer> coord = new Pair<>((int) coordinates.first, (int) coordinates.second);
         int x = (int) (coord.first * worldScale);
         int y = (int) (coord.second * worldScale);
         Sprite sprite = new Sprite(texture);
         if (!owner) sprite.setColor(Color.BLACK);
         else sprite.setColor(Color.WHITE);
-        if ((intel.size() > size()) && intel.get(size())[Constants.BFS_VALID] < 0 ) {
+        if ((intel.size() > size()) && intel.get(size())[Constants.BFS_VALID] < 0) {
             sprite.setAlpha(0);
         }
         sprite.setPosition(x, y);
@@ -58,12 +59,13 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
     /**
      * Add a new sprite to the list if all the sprites are already used
      * otherwise it will use a free sprite.
-     *  @param texture The sprite texture.
+     *
+     * @param texture The sprite texture.
      * @param coord   The sprites coordinates.
      * @param owner
      */
     void add(Texture texture, Pair<?, ?> coord, boolean owner) {
-        this.add(new TextureRegion(texture),coord, owner);
+        this.add(new TextureRegion(texture), coord, owner);
     }
 
     /**
@@ -143,16 +145,31 @@ class Valid extends ArrayList<Pair<Sprite, Pair<Integer, Integer>>> {
         }
     }
 
+    /**
+     * According to the intel, add the texture  in the list of coorfinates
+     *
+     * @param texture
+     * @param coordinates
+     * @param intel
+     * @param owner
+     */
     public void setData(Texture texture, List<Pair<?, ?>> coordinates, List<int[]> intel, boolean owner) {
         addIntel(intel);
         coordinates.forEach(v -> add(texture, v, owner));
     }
 
+    /**
+     * Creates the first intel
+     *
+     * @param texture
+     * @param results
+     * @param owner
+     */
     public void setData(Texture texture, List<Pair<?, ?>> results, boolean owner) {
         ArrayList<int[]> intel = new ArrayList<>();
-        for(int i = 0; i< results.size(); i++) {
-            intel.add(new int[]{1,1,1,1});
+        for (int i = 0; i < results.size(); i++) {
+            intel.add(new int[]{1, 1, 1, 1});
         }
-        setData(texture,results,intel,owner);
+        setData(texture, results, intel, owner);
     }
 }

@@ -52,6 +52,9 @@ public class Cursor extends Sprite {
         }
     }
 
+    /**
+     * @param batch the drawer
+     */
     @Override
     public void draw(Batch batch) {
         if (!locked) {
@@ -68,6 +71,15 @@ public class Cursor extends Sprite {
         return new Vector3(getX() / worldScale, getY() / worldScale, 0);
     }
 
+    /**
+     * Removes this.getTexture()
+     */
+    public void dispose() {
+        this.getTexture().dispose();
+    }
+
+    /***************** setters and getters *****************/
+
     public void setWorldScale(int worldScale) {
         this.worldScale = worldScale;
     }
@@ -76,7 +88,4 @@ public class Cursor extends Sprite {
         this.locked = locked;
     }
 
-    public void dispose() {
-        this.getTexture().dispose();
-    }
 }

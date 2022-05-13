@@ -27,6 +27,10 @@ public class Codex extends Table {
     private final Assets assets;
 
 
+    /**
+     * Represent the guide of the game
+     */
+
     public Codex(Assets assets, Controller controller) {
         this.assets = assets;
         Skin skin = assets.getSkin();
@@ -73,6 +77,11 @@ public class Codex extends Table {
         resize();
     }
 
+    /**
+     * Initialise the actions listeners
+     *
+     * @param controller
+     */
     private void initInput(Controller controller) {
         openCodex.addListener(
                 new ChangeListener() {
@@ -119,6 +128,11 @@ public class Codex extends Table {
         }
     }
 
+    /**
+     * Fix the features of a scroll pane
+     *
+     * @param pane the scrolle pane
+     */
     private void initialisePanel(ScrollPane pane) {
         pane.setScrollbarsVisible(false);
         pane.setScrollingDisabled(true, false);
@@ -132,6 +146,10 @@ public class Codex extends Table {
         return openCodex;
     }
 
+
+    /**
+     * @return a table with buttons representing the array subject
+     */
     private Table addSubject() {
         Table table = new Table();
         for (TextButton textButton : subject) {
@@ -140,6 +158,9 @@ public class Codex extends Table {
         return table;
     }
 
+    /**
+     * Add buttons to tableObjects
+     */
     private void actualiseTableObject() {
         tableObjects.clear();
         for (TextButton textButton : object) {
@@ -148,6 +169,9 @@ public class Codex extends Table {
         }
     }
 
+    /**
+     * Create the subject of the codex
+     */
     private void createSubject(Skin skin) {
         subject.add(new TextButton("Entity", skin));
         subject.add(new TextButton("Tile", skin));
@@ -195,7 +219,9 @@ public class Codex extends Table {
 
     }
 
-
+    /**
+     * Actualise the size
+     */
     private void resize() {
         float x = dialog.getX();
         float y = dialog.getY();
@@ -207,14 +233,17 @@ public class Codex extends Table {
     }
 
 
-    private void setDescription(String object, String name) {
-        description.setText(getDescription(object, name));
-    }
-
-    private String getDescription(String object, String name) {
+    /**
+     * Get the description of an object include on the subject
+     *
+     * @param subject subject's name
+     * @param name    object's name
+     * @return
+     */
+    private String getDescription(String subject, String name) {
         Object type = null;
 
-        switch (object) {
+        switch (subject) {
             case "Entity":
                 type = Entity.Type.valueOf(name.toUpperCase());
                 break;
@@ -238,9 +267,18 @@ public class Codex extends Table {
         }
     }
 
+    /**
+     * enum name of subjects with the extra info
+     */
     public enum Game {
         CREATORS,
         MUSIC,
         ART
+    }
+
+    /***************** setters and getters *****************/
+
+    private void setDescription(String object, String name) {
+        description.setText(getDescription(object, name));
     }
 }

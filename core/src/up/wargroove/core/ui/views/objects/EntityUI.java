@@ -28,6 +28,9 @@ public abstract class EntityUI extends Actor {
     private boolean readyToAttack = true;
     private float temps;
 
+    /**
+     * Represent a abstract entity of the world.
+     */
 
     public EntityUI(Pair<Integer, Integer> coord, Entity entity, float scale) {
         this.entity = entity;
@@ -40,6 +43,10 @@ public abstract class EntityUI extends Actor {
         }
     }
 
+    /**
+     * Initialises stats and basic sprites
+     */
+
     protected void initialiseSprites() {
         this.sprite = new Sprite();
         sprite.setSize(size.first, size.second);
@@ -49,6 +56,9 @@ public abstract class EntityUI extends Actor {
         positionChanged();
     }
 
+    /**
+     * Shows the entity percentage of life in a tens' system + 1
+     */
     public void actualiseStats() {
         if (entity.getFaction().equals(Faction.OUTLAWS) || (entity.getHealth() <= 0) || entity.getHealth() > 90) {
             this.stats = new Sprite(getPathSTATS(0));
@@ -61,7 +71,12 @@ public abstract class EntityUI extends Actor {
         stats.setPosition(coordinates.first * TILE_SIZE + TILE_SIZE - 6, coordinates.second * TILE_SIZE + 1);
     }
 
-
+    /**
+     * Old system to get textures
+     *
+     * @param nameFile attack, move or die
+     * @return The texture
+     */
     protected Texture getPath(String nameFile) {
         return Assets.getInstance().get(
                 Assets.AssetDir.CHARACTER.path() + entity.getFaction() + "/" +
@@ -107,6 +122,12 @@ public abstract class EntityUI extends Actor {
         }
     }
 
+    /**
+     * Moves the actor and the sprite in pos x and y
+     *
+     * @param x pos x
+     * @param y pos y
+     */
     @Override
     public void moveBy(float x, float y) {
         coordinates.first += (int) x;
@@ -114,7 +135,10 @@ public abstract class EntityUI extends Actor {
         setPosition(coordinates.first * TILE_SIZE, coordinates.second * TILE_SIZE);
     }
 
-
+    /**
+     * @param batch       The drawer
+     * @param parentAlpha
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (isWaiting() && !injured) {
@@ -127,6 +151,8 @@ public abstract class EntityUI extends Actor {
 
         super.draw(batch, parentAlpha);
     }
+
+    /***************** setters and getters *****************/
 
     public static float getTimeLapse() {
         return Gdx.graphics.getDeltaTime() * (getTileSize());

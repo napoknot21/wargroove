@@ -43,6 +43,9 @@ public class MoveDialog extends Table {
         addButton(nextUnit);
     }
 
+    /**
+     * Initialise the actions listeners
+     */
     private void initInput(Controller controller) {
         wait.addListener(
                 new ChangeListener() {
@@ -105,6 +108,10 @@ public class MoveDialog extends Table {
         });
     }
 
+    /**
+     * @param batch       the drawer
+     * @param parentAlpha
+     */
     @Override
     public void draw(Batch batch, float parentAlpha) {
         if (getChildren().isEmpty()) {
@@ -113,14 +120,11 @@ public class MoveDialog extends Table {
         super.draw(batch, parentAlpha);
     }
 
-    public void addWait() {
-        addButton(wait);
-    }
-
-    public void addMove() {
-        addButton(move);
-    }
-
+    /**
+     * Add button in MoveDialog
+     *
+     * @param b The button
+     */
     private void addButton(Button b) {
         if (!getChildren().contains(b, true)) {
             add(b).pad(5);
@@ -128,14 +132,6 @@ public class MoveDialog extends Table {
         }
     }
 
-    public void addBuy() {
-        clear();
-        addButton(buy);
-    }
-
-    public void addAttack() {
-        addButton(attack);
-    }
 
     @Override
     public void clear() {
@@ -146,9 +142,15 @@ public class MoveDialog extends Table {
         row();
     }
 
+    /**
+     * Removes MoveDialog
+     */
     public void dispose() {
         clear(true);
     }
+
+    /***************** setters and getters *****************/
+
 
     public void setEndTurnVisible(boolean visible) {
         endTurn.setVisible(visible);
@@ -156,5 +158,24 @@ public class MoveDialog extends Table {
 
     public void setNextUnitVisible(boolean visible) {
         nextUnit.setVisible(visible);
+    }
+
+    /***************** addButton *****************/
+
+    public void addBuy() {
+        clear();
+        addButton(buy);
+    }
+
+    public void addAttack() {
+        addButton(attack);
+    }
+
+    public void addWait() {
+        addButton(wait);
+    }
+
+    public void addMove() {
+        addButton(move);
     }
 }

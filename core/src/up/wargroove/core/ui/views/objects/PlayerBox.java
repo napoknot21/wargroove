@@ -103,7 +103,9 @@ public class PlayerBox extends Table {
         this.isStatic = isStatic;
     }
 
-
+    /**
+     * Removes PlayerBox attributes
+     */
     public void dispose() {
         name = null;
         money = null;

@@ -9,6 +9,9 @@ import up.wargroove.utils.Pair;
 public class MapActor {
     private final GameMap map;
 
+    /**
+     * Represents menus espace
+     */
     private MapActor(World world, Stage stage, Controller controller) {
         float heightRatio = (stage.getHeight() / (world.getDimension().first * 64));
         float widthRatio = (stage.getWidth() / (world.getDimension().second * 64));
@@ -20,6 +23,9 @@ public class MapActor {
         this.map = null;
     }
 
+    /**
+     * Creates a static  reduce map
+     */
     public static OrthogonalTiledMapRenderer buildMap(
             World world, Stage stage, Pair<Float, Float> mapSize, Controller controller
     ) {
@@ -36,11 +42,16 @@ public class MapActor {
         return renderer;
     }
 
+    /**
+     * Removes MapActor attributes
+     */
     public void dispose() {
         if (map != null) {
             map.dispose();
         }
     }
+
+    /***************** setters and getters *****************/
 
     public GameMap getMap() {
         return map;

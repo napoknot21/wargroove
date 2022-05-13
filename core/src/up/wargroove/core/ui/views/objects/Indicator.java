@@ -86,9 +86,6 @@ public class Indicator extends Actor {
         setStats(stats);
     }
 
-    public Sprite getForeground() {
-        return foreground;
-    }
 
     /**
      * Set the foreground texture.
@@ -116,9 +113,6 @@ public class Indicator extends Actor {
         }
     }
 
-    public Sprite getBackground() {
-        return background;
-    }
 
     /**
      * Set the background texture.
@@ -146,34 +140,14 @@ public class Indicator extends Actor {
         }
     }
 
-    public Biome getBiome() {
-        return biome;
-    }
-
-
-    @Override
-    public float getWidth() {
-        return foreground.getWidth();
-    }
-
-    @Override
-    public float getHeight() {
-        return foreground.getHeight();
-    }
-
+    /**
+     * Removes attributes of Indicator
+     */
     public void dispose() {
         foreground = null;
         background = null;
     }
 
-
-    public void setStats(Texture texture) {
-        if (texture != null) {
-            Stats.setRegion(new TextureRegion(texture));
-        } else {
-            Stats.setTexture(null);
-        }
-    }
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
@@ -191,4 +165,38 @@ public class Indicator extends Actor {
             Stats.draw(batch);
         }
     }
+
+    /***************** setters and getters *****************/
+
+
+    public Biome getBiome() {
+        return biome;
+    }
+
+    @Override
+    public float getWidth() {
+        return foreground.getWidth();
+    }
+
+    @Override
+    public float getHeight() {
+        return foreground.getHeight();
+    }
+
+    public Sprite getForeground() {
+        return foreground;
+    }
+
+    public Sprite getBackground() {
+        return background;
+    }
+
+    public void setStats(Texture texture) {
+        if (texture != null) {
+            Stats.setRegion(new TextureRegion(texture));
+        } else {
+            Stats.setTexture(null);
+        }
+    }
+
 }

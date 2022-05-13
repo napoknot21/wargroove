@@ -104,28 +104,21 @@ public class StructureMenu extends DialogWithCloseButton {
         instance.getContentTable().add(d).expand().fill();
     }
 
-    @Override
-    public float getPrefHeight() {
-        return Math.min(Gdx.graphics.getHeight() / 1.5f, 400);
-    }
 
-    @Override
-    public float getPrefWidth() {
-        return Math.min(Gdx.graphics.getWidth() / 1.5f, 600);
-    }
-
-    @Override
-    public void setPosition(float x, float y) {
-        setX(x);
-        setY(y);
-    }
-
+    /**
+     * Sounds a click when click object
+     *
+     * @param object The object
+     */
     @Override
     protected void result(Object object) {
         controller.playSound(Assets.getInstance().getSound());
         buy();
     }
 
+    /**
+     * Hide the StructureMenu
+     */
     @Override
     public void hide() {
         super.hide();
@@ -151,8 +144,31 @@ public class StructureMenu extends DialogWithCloseButton {
         super.keepWithinStage();
     }
 
+    /**
+     * Shoe the table lines
+     */
+
     public void setDebug(boolean debug) {
         super.setDebug(debug);
+    }
+
+
+    /***************** setters and getters *****************/
+
+    @Override
+    public float getPrefHeight() {
+        return Math.min(Gdx.graphics.getHeight() / 1.5f, 400);
+    }
+
+    @Override
+    public float getPrefWidth() {
+        return Math.min(Gdx.graphics.getWidth() / 1.5f, 600);
+    }
+
+    @Override
+    public void setPosition(float x, float y) {
+        setX(x);
+        setY(y);
     }
 
     /**
@@ -259,4 +275,6 @@ public class StructureMenu extends DialogWithCloseButton {
             });
         }
     }
+
+
 }
