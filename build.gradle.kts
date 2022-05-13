@@ -23,7 +23,6 @@ allprojects {
 
 
     	plugins.apply("java")
-    	plugins.apply("checkstyle")
 	    plugins.apply("maven-publish")
 		plugins.apply("java-gradle-plugin")
 
