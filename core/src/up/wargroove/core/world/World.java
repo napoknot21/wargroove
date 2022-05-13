@@ -55,6 +55,7 @@ public class World {
 
     };
 
+
     /**
      * Predicate that take attack range for bfs
      */
@@ -66,6 +67,7 @@ public class World {
         }
         return new Pair<>(-1, -1);
     };
+
 
     /**
      * Predicate that search all structures targets to attack (and verify if it's possible)
@@ -106,6 +108,7 @@ public class World {
         players = new Vector<>();
     }
 
+
     /**
      * Load all players to the game
      */
@@ -127,6 +130,7 @@ public class World {
 
     }
 
+
     /**
      * Add of a new Player
      * @param faction player faction
@@ -135,8 +139,9 @@ public class World {
         players.add(new Player(faction, properties.getIncome()));
     }
 
+
     /**
-     * Remove last player from the list
+     * Remove last player from the players list
      */
     public void removeLastPlayer() {
         if (players.isEmpty()) {
@@ -145,6 +150,12 @@ public class World {
         players.remove(players.size() - 1);
     }
 
+
+    /**
+     * Remove a player from the players list
+     * @param faction player faction
+     * @return the new player removed
+     */
     public Player removePlayer(Faction faction) {
         Player removed = null;
         for (int i = 0; i < players.size(); i++) {
@@ -167,16 +178,19 @@ public class World {
         return null;
     }
 
+    /**
+     * Test if there is only one player in the players list
+     * @return True if it's the case, False else
+     */
     public boolean isTheLastPlayer() {
         return players.size() == 1;
     }
 
-    /**
-     * Initialise le monde avec ou sans génération procédurale.
-     *
-     * @param generation procède ou non à la génération
-     */
 
+    /**
+     * Initializes the world with or without procedural generation.
+     * @param generation generation or not
+     */
     public void initialize(boolean generation) {
 
         Log.print("Initialisation du monde ...");
@@ -198,14 +212,18 @@ public class World {
         Log.print("Initialisation terminée ...");
     }
 
+    /**
+     * Pushes a currentState into the state list
+     */
     private void nextTurn() {
-
         states.push(currentState);
         currentState = new State();
-
-
     }
 
+
+    /**
+     * Next player
+     */
     public void nextPlayer() {
 
         playerPtr = (playerPtr + 1) % players.size();
@@ -215,21 +233,25 @@ public class World {
             nextTurn();
 
         }
-
     }
 
-    public Player getCurrentPlayer() {
 
-        return players.get(playerPtr);
-
-    }
-
+    /**
+     * number of turns
+     * @return number of turns
+     */
     public int turns() {
 
         return states.size() + 1;
 
     }
 
+    /**
+     * Search a tile from a coordinate
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return
+     */
     public Tile at(int x, int y) {
 
         return terrain[y * properties.dimension.first + x];
@@ -244,12 +266,23 @@ public class World {
         return terrain[linCoordinate];
     }
 
+    /**
+     * Check the tile from the Pair coordinates
+     * @param coordinates The pair coordinate
+     * @return
+     */
     public Tile at(Pair<Integer, Integer> coordinates) {
 
         return at(coordinates.first, coordinates.second);
 
     }
 
+    /**
+     * Adding and entity with a linear coordinate
+     * @param linCoordinate linear coordinate
+     * @param entity the entity
+     * @return success of adding
+     */
     public boolean addEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -262,14 +295,13 @@ public class World {
 
     }
 
-    /**
-     * Ajout d'une entité sur le monde
-     *
-     * @param coordinate la coordonnée
-     * @param entity     l'entité
-     * @return le succès de l'ajout
-     */
 
+    /**
+     * Adding an entity to the world
+     * @param coordinate the coordinate
+     * @param entity the entity
+     * @return success of adding
+     */
     public boolean addEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
         int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
@@ -277,6 +309,13 @@ public class World {
 
     }
 
+
+    /**
+     * delete an entity
+     * @param linCoordinate linear coordinate
+     * @param entity the entity
+     * @return success of deletion
+     */
     public boolean delEntity(int linCoordinate, Entity entity) {
 
         Tile spawnTile = terrain[linCoordinate];
@@ -285,6 +324,13 @@ public class World {
 
     }
 
+
+    /**
+     * Delete an entity
+     * @param coordinate Pair coordinate
+     * @param entity the entity
+     * @return success of deletion
+     */
     public boolean delEntity(Pair<Integer, Integer> coordinate, Entity entity) {
 
         int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
@@ -292,12 +338,11 @@ public class World {
 
     }
 
-    /**
-     * Vérouille l'accès sur l'entité courrante
-     *
-     * @param coordinate la coordonnée
-     */
 
+    /**
+     * Lock access to the current entity
+     * @param coordinate the coordinate
+     */
     public boolean scopeEntity(Pair<Integer, Integer> coordinate) {
 
         int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
@@ -309,23 +354,30 @@ public class World {
 
     }
 
+
     /**
-     * Devérouille l'accès sur l'entité courrante
+     * unlock access to the current entity
      */
-
     public void unscopeEntity() {
-
         currentEntityLinPosition = Optional.empty();
-
     }
 
-    public void actualiseEntity(Pair<Integer, Integer> coordinate) {
 
+    /**
+     * Update an entity from a specific tile
+     * @param coordinate the coordinate tile
+     */
+    public void actualiseEntity(Pair<Integer, Integer> coordinate) {
         unscopeEntity();
         scopeEntity(coordinate);
-
     }
 
+
+    /**
+     * Verify if an entity is present in the coordinate
+     * @param coordinate the coordinate tile
+     * @return true if it's the case, false then
+     */
     public boolean checkEntity(Pair<Integer, Integer> coordinate) {
 
         int linCoordinate = coordinatesToInt(coordinate, properties.dimension);
@@ -335,12 +387,10 @@ public class World {
 
 
     /**
-     * Retourne les tuiles adjacentes
-     *
-     * @param linCoordinate la coordonnée sur une dimension
-     * @return le vecteur des coordonnées
+     * Check the adjacent tiles
+     * @param linCoordinate the one dimensin coordinate
+     * @return the coordinate vector
      */
-
     public Vector<Integer> adjacentOf(int linCoordinate) {
 
         var adjacent = new Vector<Integer>(permutations.length);
@@ -362,16 +412,12 @@ public class World {
 
     }
 
-    /*
-     * Recherche par adjacence basée sur
-     * un breadth-first-search.
-     *
-     * @param int root la racine de l'arbre
-     * @param Predicate<Integer> un prédicat sur la validité de la recherche
-     *
-     * @return le vecteur des coordonnées valides
-     */
 
+    /**
+     * Adjacency search based on a breadth-first-search.
+     * @param root the root tree
+     * @return the vector of valid coordinates
+     */
     @SuppressWarnings("unchecked")
     private Vector<int[]> attackBreadthFirstSearch(int root) {
 
@@ -382,6 +428,7 @@ public class World {
         mouvements.put(root,new Pair<>(root,1));
 
         if (terrain[root].entity.isEmpty()) return res;
+        //a predicate on the validity of the search
         WPredicate<Integer>[] predicates = new WPredicate[]{canMoveOn, withinRange, canAttack};
 
         Entity entity = terrain[root].entity.get();
@@ -410,10 +457,10 @@ public class World {
                 Pair<Integer, Integer> result = new Pair<>(-1, 0);
 
                 /*
-                Les premiers predicats indique si c'est possible, le dernier renseigne la valeur de movement cost
-                La paire est constuite comme suit:
-                    first = resultat du predicat
-                    second indique si first est le movement cost
+                The first predicates indicate if it is possible, the last informs the value of movement cost
+                    The pair is constructed as follows:
+                        first = result of the predicate
+                        second indicates if first is the movement cost
                  */
                 movementCost = element.second.first;
                 attackRange = element.second.second;
@@ -447,12 +494,23 @@ public class World {
         return res;
     }
 
+    /**
+     * Bfs value results
+     * @param movementId id movement
+     * @param parentIndex father node tree
+     */
     private int[] bfsBuildResultValue(int movementId, int parentIndex, int lin, int valid) {
         BitSet bitset = new BitSet(terrain[lin].getType().enc(), 32);
         BitSet sub = bitset.sub(4 * movementId, 4);
         return new int[]{lin, parentIndex, sub.toInt(), valid};
     }
 
+    /**
+     * Correct alignment
+     * @param mouvements movement hashmap
+     * @param range range
+     * @return true if success
+     */
     private boolean correctAlignement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin, int range) {
         Pair<Integer, Integer> pos = intToCoordinates(lin, getDimension());
         boolean valid = false;
@@ -465,6 +523,12 @@ public class World {
         return valid;
     }
 
+    /**
+     * check movement with validity
+     * @param mouvements movement hashMap
+     * @param lin validity
+     * @return true if success
+     */
     private boolean checkMouvement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin){
         Pair<Integer, Integer> m = mouvements.get(lin);
         return m != null && m.second > 0;
@@ -535,12 +599,9 @@ public class World {
 
 
     /**
-     * Recherche des tuiles valides pour
-     * l'entité courrante
-     *
-     * @return le vecteur des positions valides
+     * Finding valid tiles for the current entity
+     * @return the vector of valid positions
      */
-
     public Vector<int[]> validMovements() {
 
         Vector<int[]> positions = new Vector<>();
@@ -555,6 +616,11 @@ public class World {
 
     }
 
+
+    /**
+     * Store in a vector all valid targets
+     * @return the vector
+     */
     public Vector<int[]> validTargets() {
 
         Vector<int[]> positions = new Vector<>();
@@ -569,6 +635,12 @@ public class World {
 
     }
 
+
+    /**
+     * Verify the entity movement
+     * @param linCoordinate linear coordinate
+     * @return status (success or not)
+     */
     public boolean moveEntity(Integer linCoordinate) {
 
         if (currentEntityLinPosition.isEmpty()) return false;
@@ -582,30 +654,6 @@ public class World {
     }
 
 
-    public Pair<Integer, Integer> getDimension() {
-
-        return properties.dimension;
-
-    }
-
-    public String getName() {
-
-        return properties.getName();
-
-    }
-
-
-
-    public String getDescription() {
-
-        return properties.getDescription();
-
-    }
-
-    public Tile[] getTerrain() {
-        return terrain;
-    }
-
     @Null
     public Entity getScopedEntity() {
         if (currentEntityLinPosition.isEmpty() || terrain[currentEntityLinPosition.get()].entity.isEmpty()) {
@@ -615,18 +663,23 @@ public class World {
     }
 
     /**
-     * Validité de la coordonnée sur le plateau.
-     *
-     * @param linCoordinate les coordonnées
-     * @return l'appartenance des coordonnées au plateau
+     * check the validity of the coordinate on the board.
+     * @param linCoordinate the coordinates
+     * @return the belonging of the coordinates to the board
      */
-
     public static boolean validCoordinates(Integer linCoordinate, Pair<Integer, Integer> dimension) {
 
         return validCoordinates(intToCoordinates(linCoordinate, dimension), dimension);
 
     }
 
+
+    /**
+     * check the validity of the coordinate on the board.
+     * @param coordinates Pair coordinates
+     * @param dimension dimension of coordinate
+     * @return status
+     */
     public static boolean validCoordinates(Pair<Integer, Integer> coordinates, Pair<Integer, Integer> dimension) {
 
         boolean zero = coordinates.first >= 0 && coordinates.second >= 0;
@@ -636,6 +689,13 @@ public class World {
 
     }
 
+
+    /**
+     * Transform an integer to coordinate pair
+     * @param k integer
+     * @param dimension Pair coordinate
+     * @return A new pair structure
+     */
     public static Pair<Integer, Integer> intToCoordinates(int k, Pair<Integer, Integer> dimension) {
 
         int x = k % dimension.first;
@@ -645,12 +705,21 @@ public class World {
 
     }
 
+    /**
+     * Transform a Pair coordinate to integer
+     * @param co Pair coordinate
+     * @param dimension pair dimension
+     */
     public static int coordinatesToInt(Pair<Integer, Integer> co, Pair<Integer, Integer> dimension) {
 
         return dimension.first * co.second + co.first;
 
     }
 
+    /**
+     * Save config and setting of the world
+     * @return
+     */
     public boolean save() {
 
         DBEngine engine = DBEngine.getInstance();
@@ -669,6 +738,13 @@ public class World {
 
     }
 
+
+    /**
+     * save the world config in a database
+     * @param db database
+     * @param collectionName collection name database
+     * @return status (success or not)
+     */
     public boolean save(Database db, String collectionName) {
         db.selectCollection(collectionName);
         DbObject worldDBO = properties.toDBO();
@@ -677,6 +753,11 @@ public class World {
         return status;
     }
 
+
+    /**
+     * save the world config in a database
+     * @param db database
+     */
     public boolean save(Database db) {
         return save(db, "worlds");
     }
@@ -697,5 +778,33 @@ public class World {
 
         return builder.toString();
 
+    }
+
+    /***************** setters and getters *****************/
+
+    public Player getCurrentPlayer() {
+        return players.get(playerPtr);
+    }
+
+    public Pair<Integer, Integer> getDimension() {
+
+        return properties.dimension;
+
+    }
+
+    public String getName() {
+
+        return properties.getName();
+
+    }
+
+    public String getDescription() {
+
+        return properties.getDescription();
+
+    }
+
+    public Tile[] getTerrain() {
+        return terrain;
     }
 }
