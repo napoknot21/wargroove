@@ -31,8 +31,8 @@ public class Log {
         WARN(1, "[!]"),
         INFO(2, "[i]");
 
-        int code;
-        String str;
+        final int code;
+        final String str;
 
         Status(int code, String str) {
 
