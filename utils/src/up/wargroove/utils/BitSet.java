@@ -5,6 +5,11 @@ public class BitSet {
 	private boolean [] bits;
 	private int setBits = 0;
 
+	/**
+	 * Constructor for Bitset
+	 * @param str String to analyse
+	 * @param size length for boolean table
+	 */
 	public BitSet(String str, int size) {
 
 		bits = new boolean[size];
@@ -25,18 +30,32 @@ public class BitSet {
 		}
 	}
 
+	/**
+	 * constructor for BitSet
+	 * @param i Integer in binary format
+	 * @param size length of a boolean table
+	 */
 	public BitSet(Integer i, int size) {
 
 		this(Integer.toBinaryString(i), size);
 
 	}
 
+	/**
+	 * constructor for BitSet
+	 * @param size length of boolean table
+	 */
 	public BitSet(int size) {
 	
 		this(0, size);
 
 	};
 
+	/**
+	 * gets a boolean value at a specific position
+	 * @param k index
+	 * @return the boolean value of bits[k]
+	 */
 	public boolean get(int k) {
 
 		if(k >= bits.length) return false;
@@ -45,24 +64,19 @@ public class BitSet {
 
 	}
 
-	public int count() {
-
-		return setBits;	
-
-	}
-
+	/**
+	 * @return length of the boolean table
+	 */
 	public int size() {
 
 		return bits.length;
 
 	}
 
-	public void set(int i, boolean v) {
-
-		bits[i] = v;
-
-	}
-
+	/**
+	 * sum of true boolean values
+	 * @return the sum
+	 */
 	public int toInt() {
 
 		int sum = 0;
@@ -89,6 +103,20 @@ public class BitSet {
 		}
 
 		return bs;
+
+	}
+
+	/***************** setters and getters *****************/
+
+	public int count() {
+
+		return setBits;
+
+	}
+
+	public void set(int i, boolean v) {
+
+		bits[i] = v;
 
 	}
 

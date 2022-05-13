@@ -35,6 +35,10 @@ public class Database {
 	private Base64.Encoder encoder;
 	private Base64.Decoder decoder;
 
+	/**
+	 * Constructor for database
+	 * @param source File src
+	 */
 	public Database(File source) {
 
 		this.source = source;
@@ -54,18 +58,21 @@ public class Database {
 
 	}
 
-	/**
-	 * Séléction de la collection.
-	 *
-	 * @param String nom de la collection
-	 */
 
+	/**
+	 * selection of the selection
+	 * @param name collection name
+	 */
 	public void selectCollection(String name) {
 
 		collection = collections.get(name);
 
 	}
 
+	/**
+	 * find of the selection
+	 * @return -1 if jsonData is null, kc = collection keys then
+	 */
 	private int findCollections() {
 		if (jsonData == null) {
 			return -1;
@@ -86,13 +93,12 @@ public class Database {
 
 	}
 
-	/**
-	 * Effectue la requête sur la collection choisie.
-	 *
-	 * @param String la requête séparée par des / pour les différents niveaux de profondeur.
-	 * @return la valeur en chaîne de caractères de l'objet
-	 */
 
+	/**
+	 * Performs the query on the chosen collection.
+	 * @param req the query separated by / for the different depth levels.
+	 * @return the string value of the object
+	 */
 	public DbObject get(String req) {
 
 		String [] tags = req.split("/");
@@ -104,13 +110,12 @@ public class Database {
 
 	}
 
-	/**
-	 * Créée une collection, ne requiert pas de
-	 * flush() pour l'écriture.
-	 *
-	 * @param String le nom de la nouvelle collection
-	 */
 
+
+	/**
+	 * Creates a collection, does not require flush() for writing.
+	 * @param collectionName new collection name
+	 */
 	public void createCollection(String collectionName) {
 
 		if(collections.containsKey(collectionName)) {
@@ -127,13 +132,11 @@ public class Database {
 
 	}
 
-	/**
-	 * Supprime une collection existante, ne requiert pas de
-	 * flush() pour l'écriture.
-	 *
-	 * @param String le nom de la collection
-	 */
 
+	/**
+	 * Removes an existing collection, does not require flush() for writing.
+	 * @param collectionName collection name
+	 */
 	public void dropCollection(String collectionName) {
 
 		if(collections.containsKey(collectionName)) {
@@ -145,14 +148,14 @@ public class Database {
 
 	}
 
-	/**
-	 * Met à jour la valeur de la variable à la collection courrante
-	 *
-	 * @param String la requête de la variable
-	 * @param T nouvelle valeur
-	 * @return état de la requête
-	 */
 
+	/**
+	 * Update the value of the variable to the current collection
+	 * @param req the variable query
+	 * @param data data
+	 * @param <T> new value
+	 * @return query status
+	 */
 	public <T> boolean update(String req, T data) {
 
 		String [] tabs = req.split("/");
@@ -166,10 +169,10 @@ public class Database {
 
 	}
 
-	/**
-	 * Insert un JsonObject dans la collection courrante
-	 */
 
+	/**
+	 * Insert a JsonObject into the current collection
+	 */
 	public <T> boolean insert(String req, T data) {
 	
 		return update(req, data);

@@ -21,9 +21,8 @@ public abstract class Constants {
 	public static final String WORLD_BIOME_DB_KEY = "biome";
 	public static final String WORLD_NAME_DB_KEY = "name";
 
-	/*
-	 * Clés de la sauvegarde des mondes
-	 */
+
+	//Keys to Saving Worlds
 	public static final String WORLD_MAP_DB_KEY = "map";
 	public static final String WORLD_TILE_TYPE_DB_KEY = "tile_type";
 	public static final String WORLD_TILE_ENTITY_DB_KEY= "entity";
