@@ -5,7 +5,6 @@ import java.util.function.Function;
 
 /**
  * Terrain generator properties.
- *
  * @see Generator
  */
 public class GeneratorProperties {
@@ -15,62 +14,42 @@ public class GeneratorProperties {
     public static final double DEFAULT_SMOOTH = -12.0;
 
     /**
-     * La fonction de répartition par
-     * défaut est un polynôme de degré
-     * max, un entier impair.
-     *
-     * Représente le degré impair le plus haut
-     * et d = 2*repartition + 1
+     * The default distribution function is a max degree polynomial, an odd integer.
+     * This represents the highest odd degree and d = 2*distribution + 1
      */
-
     public int repartition;
 
     /**
-     * Permet d'indiquer une fonction de
-     * répartition autre que celle donnée
-     * par défaut
-     *
+     * Allows you to specify a distribution function other than the one given by default
      */
-
     public Function<Double, Integer> repartitionFunction;
 
     /**
-     * Le coefficient de normalisation
-     * est utilisé dans la fonction de
-     * normalisation des valeurs obtenues
-     * pour chaque coordonnée. Cette normalisation
-     * devient uniforme quand la valeur
-     * absolue du coef grandit
+     * The normalization coefficient is used in the normalization function of the values obtained for each coordinate.
+     * This normalization becomes uniform when the absolute value of the coefficient increases
      */
-
     public double normalization;
 
     /**
-     * De même, appliqué sur une sigmoïde.
-     * Il permet la transition plus ou moins
-     * douce entre les différents types de
-     * tuiles.
+     * Similarly, applied to a sigmoid. It allows the more or less smooth transition between the different types of tiles
      */
-
     public double smooth;
 
     /**
-     * Définit la fréquence de types de tuiles
-     * respectant une loi normale discrète.
-     * Les types les moins enclins à apparaîtres
-     * sont aux extrêmités
+     * Defines the frequency of tile types respecting a discrete normal law.
+     * Types least likely to spawn are at the extremities
      */
-
     public Vector<Tile.Type> gaussianRep;
 
+
     /**
+     * Constructor for GeneratorProperties.
      * Generate default properties
      */
     public GeneratorProperties() {
-
         this(DEFAULT_REPARTITION, DEFAULT_NORMALIZATION, DEFAULT_SMOOTH);
-
     }
+
 
     /**
      * Generate custom properties
@@ -85,7 +64,6 @@ public class GeneratorProperties {
         this.smooth = smooth;
 
         repartitionFunction = (x) -> (int) (Math.ceil(Tile.PRIMARY_TILE_TYPE / 2.0) * Math.pow(x, 2 * this.repartition + 1)) + 2;
-
     }
 
 }

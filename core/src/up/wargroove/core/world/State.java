@@ -6,10 +6,11 @@ public class State {
 
 	private Vector<Long> blocks;
 
+	/**
+	 * Constructor for State
+	 */
 	public State() {
-	
 		blocks = new Vector<>();
-
 	}
 
 }

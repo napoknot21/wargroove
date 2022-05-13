@@ -1,10 +1,8 @@
 package up.wargroove.core.world;
 
-
 import java.util.Random;
 import java.util.Vector;
 import up.wargroove.utils.Pair;
-
 
 /**
  * Terrain generator.
@@ -19,9 +17,9 @@ public class Generator {
     private final Random rdSeed;
     private Pair<Double, Double>[][] generationGradients;
 
+
     /**
-     * Init the generator with the given arguments.
-     *
+     * Initialization of the generator with the given arguments.
      * @param dimension  The world dimension.
      * @param properties The generator properties.
      */
@@ -49,20 +47,16 @@ public class Generator {
                 if (gaussianRepInit.contains(type)) {
                     continue;
                 }
-
                 gaussianRepInit.add(type);
 
             }
-
         }
-
         this.properties.gaussianRep = gaussianRepInit;
-
     }
+
 
     /**
      * Builds the terrain.
-     *
      * @return The built terrain.
      */
     public Tile[] build() {
@@ -82,30 +76,23 @@ public class Generator {
             terrain[k] = new Tile(type);
 
             if (type == Tile.Type.MOUNTAIN) {
-
                 mountainsCoordinates.add(coordinates);
-
             }
-
         }
 
-        /*
-         * Quantité de rivières à générer ?
-         */
+        //Quantité de rivières à générer ?
 
         if (mountainsCoordinates.size() > 0) {
             generateRiver(mountainsCoordinates);
         }
 
         return terrain;
-
     }
 
-    /**
-     * Génération procédurale basée
-     * sur le bruit de Perlin.
-     */
 
+    /**
+     * Procedural generation based on Perlin noise
+     */
     @SuppressWarnings("unchecked")
     private void generateGradients() {
 
@@ -123,21 +110,19 @@ public class Generator {
 
             Pair<Double, Double> vector = new Pair<>(x, y);
             generationGradients[k / sizeX][k % sizeX] = vector;
-
         }
 
     }
 
+
     /**
-     * Ajustes le type de certaines tuiles.
+     * Set the type of certain tuiles
      */
+    private void sharp() {}
 
-    private void sharp() {
-    }
 
     /**
-     * Calculs the distance between a and b.
-     *
+     * Calculates the distance between a and b.
      * @param a The a's world coordinate.
      * @param b The b's world coordinate
      * @return The distance between a and b.
@@ -148,14 +133,15 @@ public class Generator {
         int dy = Math.abs(a.second - b.second);
 
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
     }
 
-    /**
-     * Renvoie la coordonnée de la tuile la plus proche
-     * du type indiqué.
-     */
 
+    /**
+     * Search and return the nearest coordinate tile as Pair object
+     * @param from Tile coordinate
+     * @param type Tile type
+     * @return The nearest tile coordinate tile
+     */
     private Pair<Integer, Integer> nearestOf(Pair<Integer, Integer> from, Tile.Type type) {
 
         int index = 0;
@@ -169,25 +155,22 @@ public class Generator {
             double tmpDistance = distance(from, to);
 
             if (tile.getType() == type && (tmpDistance < dist || dist == -1.0)) {
-
                 dist = tmpDistance;
                 res.swap(to);
-
             }
 
             index++;
-
         }
 
         return res;
-
     }
 
-    /**
-     * Génère une rivière à partir des coordonnées
-     * d'une montagne.
-     */
 
+
+    /**
+     * Generates a river from the coordinates of a mountain
+     * @param mountains mountain coordinates
+     */
     private void generateRiver(Vector<Pair<Integer, Integer>> mountains) {
 
         int index = rdSeed.nextInt(mountains.size());
@@ -195,11 +178,7 @@ public class Generator {
 
         mountains.removeElementAt(index);
 
-        /*
-         * Simulation de l'écoulement
-         * à partir du point d'eau le
-         * plus proche
-         */
+        //Simulation of the flow from the nearest water point
 
         var nearWater = nearestOf(coordinates, Tile.Type.SEA);
 
@@ -233,35 +212,36 @@ public class Generator {
 
     }
 
-    /**
-     * Permet une interpolation plus progressive.
-     *
-     * @param x compris entre -1.0 et 1.0
-     */
 
+    /**
+     * Allows more gradual interpolation
+     * @param x between -1.0 and 1.0
+     */
     private double smooth(double x) {
-
         return 1.0 / (1.0 + Math.exp(properties.smooth * x));
-
     }
 
-    private double interpolation(double a, double b, double w) {
-
-        return a + smooth(w) * (b - a);
-
-    }
 
     /**
-     * Produit du vecteur w (1x2) préalablement généré, à
-     * la position de la coordonnée (x, y) entière.
-     *
-     * @param floorX coordonnée en x entière
-     * @param floorY coordonnée en y entière
-     * @param x      coordonnée en x
-     * @param y      coordonnée en y
-     * @return le produit scalaire des vecteurs de différence et w
+     * Interpolation of a, b, c
+     * @param a double
+     * @param b double
+     * @param w double
+     * @return the Interpolation of a, b, c
      */
+    private double interpolation(double a, double b, double w) {
+        return a + smooth(w) * (b - a);
+    }
 
+
+    /**
+     * Product of the vector w (1x2) previously generated, at the position of the integer (x, y) coordinate.
+     * @param floorX integer x-coordinate
+     * @param floorY integer y-coordinate
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return the dot product of the difference vectors and w
+     */
     private double cornerDotProduct(int floorX, int floorY, double x, double y) {
 
         double deltaX = x - (double) floorX;
@@ -276,6 +256,13 @@ public class Generator {
 
     }
 
+
+    /**
+     * Noise from Perlin Noise
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return Interpolation of the two interpolations obtained
+     */
     private double noise(int x, int y) {
 
         double doubleX = (double) x / (CELL_SUBDIVISION/* * dimension.first*/);
@@ -284,21 +271,17 @@ public class Generator {
         int intCoXAlpha = (int) Math.floor(doubleX);
         int intCoYAlpha = (int) Math.floor(double_y);
 
-
-
         int intCoXBeta = intCoXAlpha + 1;
         int intCoYBeta = intCoYAlpha + 1;
 
         /*
          * Interpolation:
          *
-         * - Sur les deux vecteurs de coordonnée y_0
-         * de la cellulle
+         * - On the two vectors of coordinate y_0 of the cell
          *
-         * - Sur les deux dernières
+         * - On the two last ones
          *
-         * - Interpolation des deux interpolations
-         * obtenues
+         * - Interpolation of the two interpolations obtained
          */
 
         double cornerAlpha;
@@ -307,26 +290,19 @@ public class Generator {
         double polX = doubleX - (double) intCoXAlpha;
         double polY = double_y - (double) intCoYAlpha;
 
-        /*
-         * Première interpolation
-         */
-
+        /* first interpolation */
         cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYAlpha, doubleX, double_y);
         cornerBeta = cornerDotProduct(intCoXBeta, intCoYAlpha, doubleX, double_y);
 
         double interpolationAlpha = interpolation(cornerAlpha, cornerBeta, polX);
 
-        /*
-         * Seconde interpolation
-         */
-
+        /* second interpolation */
         cornerAlpha = cornerDotProduct(intCoXAlpha, intCoYBeta, doubleX, double_y);
         cornerBeta = cornerDotProduct(intCoXBeta, intCoYBeta, doubleX, double_y);
 
         double interpolationBeta = interpolation(cornerAlpha, cornerBeta, polX);
 
         return interpolation(interpolationAlpha, interpolationBeta, polY);
-
     }
 
 }

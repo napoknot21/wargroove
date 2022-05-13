@@ -15,9 +15,7 @@ public enum Biome {
     String cid;
 
     Biome(String cid) {
-
         this.cid = cid;
-
     }
 
 }

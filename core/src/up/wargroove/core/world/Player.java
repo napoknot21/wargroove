@@ -21,6 +21,11 @@ public class Player {
     private final Color color;
 
 
+    /**
+     * Constructor for Player
+     * @param faction player faction
+     * @param ratio quotient
+     */
     public Player(Faction faction, float ratio) {
 
         entities = new LinkedList<>();
@@ -47,11 +52,11 @@ public class Player {
 
     }
 
-    /**
-     * Gestion des personnages à disposition
-     * du joueur
-     */
 
+    /**
+     * entity management available to the player
+     * @param character entity to add
+     */
     public void addEntity(Entity character) {
         if (character instanceof Structure) {
             addIncome(((Structure) character).getBonus());
@@ -59,6 +64,11 @@ public class Player {
         entities.add(character);
     }
 
+
+    /**
+     * Delete an entity (structure) from the player list of entities
+     * @param character entity to delete
+     */
     public void removeEntity(Entity character) {
         if (character instanceof Structure) {
             addIncome(-((Structure) character).getBonus());
@@ -67,12 +77,20 @@ public class Player {
 
     }
 
+
+    /**
+     * check if there are still structures(characters) available to play
+     * @return True if there are ones, else False
+     */
     public boolean hasNext() {
-
         return !entities.element().isExhausted();
-
     }
 
+
+    /**
+     * Retrieves and removes the head of the queue of entities
+     * @return the entity if it's available to play it
+     */
     @Null
     public Entity next() {
         if (entities.isEmpty()) return null;
@@ -84,16 +102,19 @@ public class Player {
 
     }
 
-    public Entity peekEntity() {
-
-        return entities.peek();
-
-    }
 
     /**
-     * Passe le tour du joueur
-     *
-     * @return faux si le commandant n'existe plus et vrai sinon ou que la base a ete detruite.
+     * Retrieves the head of entities
+     * @return the head of entities
+     */
+    public Entity peekEntity() {
+        return entities.peek();
+    }
+
+
+    /**
+     * Pass the player's turn
+     * @return False if the commandant is not alive or if the StrongHold was destroyed, and else True
      */
     public boolean nextTurn() {
 
@@ -112,10 +133,11 @@ public class Player {
 
     }
 
-    public Faction getFaction() {
-        return faction;
-    }
 
+    /**
+     * Browse the list of entities availables to play
+     * @return Null if there is not more playable entities,
+     */
     @Null
     public Entity nextPlayableEntity() {
         int size = entities.size();
@@ -126,6 +148,12 @@ public class Player {
             }
         }
         return null;
+    }
+
+    /***************** setters and getters *****************/
+
+    public Faction getFaction() {
+        return faction;
     }
 
     public void setName(String name) {
@@ -147,7 +175,6 @@ public class Player {
     public int getIncome() {
         return income;
     }
-
 
     public Queue<Entity> getEntities() {
         return entities;

@@ -1,10 +1,14 @@
 package up.wargroove.core.world;
 
 import up.wargroove.core.character.Faction;
-import up.wargroove.utils.DbObject;
+
 
 public class Stronghold extends Structure {
 
+    /**
+     * Constructor for StrongHold
+     * @param faction StrongHold faction
+     */
     public Stronghold(Faction faction) {
         super(Type.STRONGHOLD, faction);
         exhaust();

@@ -28,6 +28,9 @@ public class World {
 
     private State currentState;
 
+    /**
+     * Predicate that search entities target to attack for bfs
+     */
     private final WPredicate<Integer> canMoveOn = (k) -> {
 
         Optional<Entity> rootEntity = terrain[k[3]].entity;
@@ -52,6 +55,9 @@ public class World {
 
     };
 
+    /**
+     * Predicate that take attack range for bfs
+     */
     private final WPredicate<Integer> withinRange = (k) -> {
         int attackRange = k[4];
         if (k[2] >= 0) return new Pair<>(1, 0);
@@ -61,6 +67,9 @@ public class World {
         return new Pair<>(-1, -1);
     };
 
+    /**
+     * Predicate that search all structures targets to attack (and verify if it's possible)
+     */
     private final WPredicate<Integer> canAttack = (k) -> {
 
         Optional<Entity> rootEntity = terrain[k[3]].entity, targetEntity = terrain[k[0]].entity;
@@ -76,6 +85,10 @@ public class World {
 
     private Stack<State> states;
 
+    /**
+     * Constructor for World
+     * @param properties WorldProperties
+     */
     public World(WorldProperties properties) {
 
         this.properties = properties;
@@ -93,6 +106,9 @@ public class World {
         players = new Vector<>();
     }
 
+    /**
+     * Load all players to the game
+     */
     public void loadPlayers() {
         int amt = Math.min(properties.amt, Faction.values().length - 1);
 
@@ -111,10 +127,17 @@ public class World {
 
     }
 
+    /**
+     * Add of a new Player
+     * @param faction player faction
+     */
     public void addPlayer(Faction faction) {
         players.add(new Player(faction, properties.getIncome()));
     }
 
+    /**
+     * Remove last player from the list
+     */
     public void removeLastPlayer() {
         if (players.isEmpty()) {
             return;

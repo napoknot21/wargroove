@@ -8,7 +8,9 @@ import up.wargroove.core.character.Movement;
 
 public abstract class Structure extends Entity {
 
-
+    /**
+     * Enum for structure types
+     */
     static enum Type {
 
         RECRUITMENT, STRONGHOLD, VILLAGE
@@ -17,6 +19,11 @@ public abstract class Structure extends Entity {
 
     private Type type;
 
+    /**
+     * Constructor for Structure
+     * @param type structure type
+     * @param faction structure faction
+     */
     protected Structure(Type type, Faction faction) {
         super(Entity.Type.STRUCTURE, faction);
         movement = Movement.NULL;
@@ -24,10 +31,13 @@ public abstract class Structure extends Entity {
         setHealth((faction == Faction.OUTLAWS)? 1: 100);
     }
 
-    public int getBonus() {
-        return 100;
-    }
 
+    /**
+     * Load a structure from a database
+     * @param from database
+     * @param faction structure faction
+     * @return a new structure object, null else
+     */
     public static Structure loadStructure(DbObject from, Faction faction) {
         if (from == null) {
             return null;
@@ -65,14 +75,21 @@ public abstract class Structure extends Entity {
         }
     }
 
-    public Type getStructureType() {
-        return type;
-    }
-
     @Override
     public Object clone() throws CloneNotSupportedException {
         Structure clone = (Structure) super.clone();
         clone.type = this.type;
         return clone;
     }
+
+    /***************** setters and getters *****************/
+
+    public Type getStructureType() {
+        return type;
+    }
+
+    public int getBonus() {
+        return 100;
+    }
+
 }

@@ -8,8 +8,10 @@ public class Movement {
 	public static final int COST_THREE = 3;
 	public static final int COST_FOUR  = 4;
 
+	/**
+	 * Movement types
+	 */
 	static enum Type {
-
 		WALKING,
 		RIDING,
 		WHEELS,
@@ -17,21 +19,24 @@ public class Movement {
 		HOVER,
 		WATER,
 		AMPHIBIOUS;
-
 	}
 
 	private Type type;
 
+	/**
+	 * Constructor for movement
+	 * @param type movement type
+	 */
 	public Movement(Type type) {
-
 		this.type = type;
-
 	}
 
+	/**
+	 * Getter for type
+	 * @return the movement type
+	 */
 	public Type getType() {
-
 		return type;
-
 	}
 
 }
