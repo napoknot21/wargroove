@@ -41,26 +41,68 @@ public class GameView extends View {
      * Visual of the world.
      */
     private GameMap gameMap;
+    /**
+     * The map viewport and main viewport.
+     */
     private Viewport viewport;
+    /**
+     * The map and main camera.
+     */
     private OrthographicCamera camera;
+    /**
+     * the map renderer.
+     */
     private OrthogonalTiledMapRenderer renderer;
+    /**
+     * The tile indicator.
+     */
     private Indicator indicator;
+    /**
+     * The current player information box.
+     */
     private PlayerBox playerBox;
+    /**
+     * The screen interface viewport. Basically everything except the map is inside this viewport.
+     */
     private Stage gameViewUi;
+
+    /**
+     * The menu button.
+     */
     private TextButton menu;
 
+    /**
+     * Indicate if the screen shows the movements.
+     */
     private boolean movement;
+    /**
+     * Indicates if the screen shows.
+     */
     private boolean attack;
+    /**
+     * The actions box.
+     */
     private MoveDialog moveDialog;
-    private Codex codex;
+    /**
+     * The scoped CharacterUI, the screen scope a characterUI on click.
+     */
     private Actor scopedEntity;
+    /**
+     * The characterUI's stage.
+     */
     private Stage characters;
     /**
-     * The current character possible movement.
+     * The scoped character possible movement.
      */
     private MovementSelector movementSelector;
+    /**
+     * The scoped character possible attack.
+     */
     private AttackSelector attackSelector;
 
+    /**
+     * Indicate if the gameView shows the structureMenu.
+     */
     private boolean buy;
 
 
@@ -93,7 +135,7 @@ public class GameView extends View {
         World world = getModel().getWorld();
         int x = world.getDimension().first;
         int y = world.getDimension().second;
-        camera = new OrthographicCamera(x,y);
+        camera = new OrthographicCamera(x, y);
         viewport = new ExtendViewport(x, y, camera);
         viewport.apply();
         setStage(viewport);
@@ -102,7 +144,7 @@ public class GameView extends View {
         renderer = new OrthogonalTiledMapRenderer(gameMap, getBatch());
         renderer.setView(camera);
         addInput(characters);
-        camera.zoom =(float) viewport.getScreenWidth()/  (float) world.getDimension().first ;
+        camera.zoom = (float) viewport.getScreenWidth() / (float) world.getDimension().first;
 
     }
 
@@ -114,7 +156,7 @@ public class GameView extends View {
         moveDialog = new MoveDialog(getAssets(), getController());
         menu = new TextButton("Menu", getAssets().getSkin());
         playerBox = new PlayerBox();
-        codex = new Codex(getAssets(), getController());
+        Codex codex = new Codex(getAssets(), getController());
 
         Viewport viewport = new ScreenViewport();
         viewport.apply();
@@ -179,11 +221,7 @@ public class GameView extends View {
                 );
 
 
-                if (
-                        tile.entity.isPresent() && !tile.entity.get().isExhausted()
-                                && (tile.entity.get() instanceof Recruitment)
-                                && tile.entity.get().getFaction().equals(getModel().getCurrentPlayer().getFaction())
-                ) {
+                if (tile.entity.isPresent() && isARecruitment(tile.entity.get())) { // buy mode
                     moveDialog.addBuy();
                     clearSelectors();
                     movement = attack = false;
@@ -197,19 +235,21 @@ public class GameView extends View {
                 Vector3 worldPosition = cursor.getWorldPosition();
                 tile = getController().getTile(worldPosition);
 
-                if ((tile.entity.isPresent() && (tile.entity.get().isExhausted()) && !(tile.entity.get() instanceof Structure))) {
+                if ((tile.entity.isPresent() && (tile.entity.get().isExhausted()) // unavailable input
+                        && !(tile.entity.get() instanceof Structure))) {
                     clearSelectors();
                     clearMoveDialog();
                     movement = attack = false;
                     return true;
                 }
 
-                if (buy && movementSelector.isValidPosition(worldPosition)) {
+                if (buy && movementSelector.isValidPosition(worldPosition)) { //end of the buy
                     cursor.setLock(true);
                     getController().placeBoughtEntity();
                     buy = false;
                     return true;
                 }
+                //default input
                 buy = false;
                 indicator.setTexture(getAssets(), tile);
                 attack = getController().showTargets(attack, attackSelector, worldPosition);
@@ -249,6 +289,17 @@ public class GameView extends View {
         });
     }
 
+    /**
+     * Check if the entity is a recruitment which can play and is owned by the currentPlayer.
+     *
+     * @param entity The entity which will be checked.
+     * @return true if its the case, false otherwise.
+     */
+    private boolean isARecruitment(Entity entity) {
+        return (entity instanceof Recruitment) && !entity.isExhausted()
+                && entity.getFaction().equals(getModel().getCurrentPlayer().getFaction());
+    }
+
     @Override
     public void pause() {
 
@@ -284,11 +335,19 @@ public class GameView extends View {
         if (getController().isCameraMoving()) getController().actCamera(camera);
     }
 
+    /**
+     * Checks if a player has a remaining Unit and block the end of the turn if a unit is currently animated.
+     */
     private void checkActions() {
         moveDialog.setEndTurnVisible(!haveAnActiveEntity());
         moveDialog.setNextUnitVisible(getController().haveARemainingUnit());
     }
 
+    /**
+     * Checks if a player has a remaining Unit/
+     *
+     * @return true if it's the case, false otherwise.
+     */
     private boolean haveAnActiveEntity() {
         boolean isActive = false;
         var arr = characters.getActors();
@@ -369,6 +428,12 @@ public class GameView extends View {
     }
 
 
+    /**
+     * Gets the characterUI from the charactersStage which represent on screen the given entity.
+     *
+     * @param entity The abstract entity.
+     * @return The entity's actor if its exist or null otherwise.
+     */
     @Null
     public Actor getCharacterUI(Entity entity) {
         var array = (entity instanceof Character) ? characters.getActors() : getStage().getActors();
@@ -383,6 +448,11 @@ public class GameView extends View {
         return null;
     }
 
+    /**
+     * Scope the characterUI on the given coordinates.
+     *
+     * @param worldCoordinate The characterUI world coordinates.
+     */
     private void scopeEntity(Vector3 worldCoordinate) {
         scopeEntity(new Pair<>((int) worldCoordinate.x, (int) worldCoordinate.y));
     }
@@ -416,6 +486,11 @@ public class GameView extends View {
         return cursor;
     }
 
+    /**
+     * Check if the scoped entity can attack.
+     *
+     * @return true if it's the case, false otherwise.
+     */
     public boolean canAttack() {
         return ((attackSelector.getPath().length() > 0)
                 && (scopedEntity instanceof CharacterUI)
@@ -444,6 +519,9 @@ public class GameView extends View {
         moveDialog.clear();
     }
 
+    /**
+     * Clear the selectors and the move dialog.
+     */
     public void clearAll() {
         clearMoveDialog();
         clearSelectors();

@@ -38,9 +38,20 @@ public class Assets {
      * Asset manifest extension.
      */
     private static final String asmext = ".asman";
+
+    /**
+     * The app asset manager instance.
+     */
     private static Assets instance = new Assets();
+
+    /**
+     * The assets manager.
+     */
     private final AssetManager manager;
 
+    /**
+     * The game descriptions.
+     */
     private final Map<Object, FileHandle> descriptions;
 
 
@@ -48,9 +59,6 @@ public class Assets {
         manager = new AssetManager();
 
         descriptions = new HashMap<>();
-
-
-        instance = this;
     }
 
     public static Assets getInstance() {
@@ -130,6 +138,13 @@ public class Assets {
         }
     }
 
+    /**
+     * Define the description type.
+     *
+     * @param i    The manifest id in the enum DESCRIPTION
+     * @param file The description file.
+     * @return The description type.
+     */
     private Object defineType(int i, FileHandle file) {
         Object object = null;
         switch (i) {
@@ -154,17 +169,8 @@ public class Assets {
     }
 
     /**
-     * Loads all the assets contained in the AssetDir directories.
+     * Load all the game assets.
      */
-    /*
-    private void loadAllAssets() {
-        for (AssetDir dir : AssetDir.values()) {
-            if (dir.manifest != null) {
-                fileLoader(dir);
-            }
-        }
-    }
-    */
     private void loadAllAssets() {
         ThreadGroup group = new ThreadGroup("allDir");
         for (AssetDir dir : AssetDir.values()) {
@@ -174,28 +180,23 @@ public class Assets {
         }
     }
 
+    /**
+     * Gets the game main skin.
+     *
+     * @return the main Skin.
+     */
     public Skin getSkin() {
         return get(AssetDir.SKIN.path + "ui.json", Skin.class);
     }
 
+    /**
+     * Gets the game button sounds
+     *
+     * @return The sound.
+     */
     public Sound getSound() {
         return get(AssetDir.SOUND.path + "switch.wav");
     }
-
-    /*public void loadBiomeMusic(){
-        Music grass.atlas = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/GRASS.mp3"));
-        musics.put(Biome.GRASS, grass.atlas);
-        Music volcano = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/VOLCANO.mp3"));
-        musics.put(Biome.VOLCANO, volcano);
-        Music ice = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/ICE.mp3"));
-        musics.put(Biome.ICE, ice);
-        Music desert = Gdx.audio.newMusic(Gdx.files.internal("data/gui/sound/DESERT.mp3"));
-        musics.put(Biome.DESERT, desert);
-    }
-
-    public Music getMusic(Biome b){
-        return musics.get(b);
-    }*/
 
     /**
      * Print the loading.
@@ -250,15 +251,17 @@ public class Assets {
         }
     }
 
+    /**
+     * Loads a skin from the manifest represented by the dirPath.
+     *
+     * @param dirPath The manifest path.
+     * @param scanner the loader scanner.
+     */
     private void loadSkin(String dirPath, Scanner scanner) {
         while (scanner.hasNextLine()) {
             String path = dirPath + scanner.nextLine();
             manager.load(path, Skin.class, new SkinLoader.SkinParameter());
         }
-    }
-
-    public TextureRegion getTest() {
-        return new TextureRegion(get(AssetDir.WORLD.path() + "test.png", Texture.class));
     }
 
     /**
@@ -273,6 +276,13 @@ public class Assets {
         return manager.get(fileName);
     }
 
+    /**
+     * Gets the tileSet according to the Biome
+     *
+     * @param biome the map's biome.
+     * @return the asset.
+     * @throws GdxRuntimeException if the asset is not loaded.
+     */
     public TextureAtlas get(Biome biome) {
         String fileName = AssetDir.WORLD.path() + biome.name().toLowerCase() + ".atlas";
         return manager.get(fileName.replace('\\', '/'));
@@ -336,10 +346,23 @@ public class Assets {
         return readFile(f, lineLength);
     }
 
+    /**
+     * Gets the texture from the tileSet of the biome.
+     *
+     * @param tile  The tile which need the texture.
+     * @param biome The map's biome.
+     * @return the tile's texture.
+     */
     public TextureRegion get(Tile tile, Biome biome) {
         return get(biome).findRegion(tile.getType().name().toLowerCase() + "-" + tile.getTextureVersion());
     }
 
+    /**
+     * Gets the structure texture.
+     *
+     * @param structure The structure which need the texture.
+     * @return The structure texture.
+     */
     public TextureRegion get(Structure structure) {
         return get(Biome.GRASS).findRegion(getTextureName(structure));
     }
@@ -354,6 +377,13 @@ public class Assets {
         return ret.toLowerCase();
     }
 
+    /**
+     * Reads the description file.
+     *
+     * @param file       The file which wil be read.
+     * @param lineLength The length of the line in the return string.
+     * @return The file content, formatted according to the given length.
+     */
     private String readFile(FileHandle file, int lineLength) {
         Scanner scanner = new Scanner(file.read());
         StringBuilder builder = new StringBuilder();
@@ -384,6 +414,9 @@ public class Assets {
         return manager.getAll(type, out);
     }
 
+    /**
+     * Dispose the Assets.
+     */
     public void dispose() {
         manager.dispose();
         instance = null;
@@ -414,8 +447,13 @@ public class Assets {
         DESERT(WORLD.path + "desert" + fs),
         VOLCANO(WORLD.path + "volcano" + fs);
 
-
+        /**
+         * the directory path.
+         */
         private final String path;
+        /**
+         * The directory manifest.
+         */
         private final String[] manifest;
 
         AssetDir(String path, String... manifest) {
@@ -434,6 +472,11 @@ public class Assets {
             this(path, "");
         }
 
+        /**
+         * Gets the directory path.
+         *
+         * @return the directory path.
+         */
         public String path() {
             return path;
         }

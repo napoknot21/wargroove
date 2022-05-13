@@ -11,6 +11,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+/**
+ * Textures atlas reader.
+ */
 public class Reader {
     String path;
     ArrayList<String> data;

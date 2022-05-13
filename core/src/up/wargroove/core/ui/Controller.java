@@ -39,6 +39,9 @@ public class Controller {
      * The wargroove client.
      */
     private final WargrooveClient wargroove;
+    /**
+     * Store the camera destination when the camera is acting.
+     */
     private final Pair<Float, Float> cameraDestination = new Pair<>();
     /**
      * The screen to control.
@@ -52,6 +55,9 @@ public class Controller {
      * World scale.
      */
     private float worldScale;
+    /**
+     * Indicate if a camera is acting.
+     */
     private boolean cameraMoving = false;
 
     /**
@@ -106,25 +112,25 @@ public class Controller {
     public void openMapSelection() {
         Model model = getModel();
         getClient().getAssets().load();
-        setPrevious();
         setScreen(new SelectMap(getScreen(), this, model, getClient()));
     }
 
+    /**
+     * Opens the settings screen.
+     */
     public void openSettings() {
         Model model = getModel();
         getClient().getAssets().load();
-        setPrevious();
         setScreen(new Settings(getScreen(), this, model, getClient()));
     }
 
+    /**
+     * Opens the match settings screen.
+     */
     public void openMatchSettings() {
         Model model = getModel();
         getClient().getAssets().load();
-        setPrevious();
         setScreen(new MatchSettings(getScreen(), this, model, getClient()));
-    }
-
-    public void setPrevious() {
     }
 
 
@@ -155,10 +161,10 @@ public class Controller {
         float tileSize = Model.getTileSize();
         float screenSize = Math.max(viewport.getScreenHeight(), viewport.getScreenWidth());
         float worldSize = Math.min(getWorld().getDimension().first, getWorld().getDimension().second);
-        float min = 0.5f * screenSize/worldSize;
-        float max = 1.5f * screenSize/worldSize;
-        float value = camera.zoom +  amountY * getClient().getCameraZoomVelocity() *tileSize* Gdx.graphics.getDeltaTime();
-        camera.zoom = MathUtils.clamp(value,min,max);
+        float min = 0.5f * screenSize / worldSize;
+        float max = 1.5f * screenSize / worldSize;
+        float value = camera.zoom + amountY * getClient().getCameraZoomVelocity() * tileSize * Gdx.graphics.getDeltaTime();
+        camera.zoom = MathUtils.clamp(value, min, max);
         camera.update();
     }
 
@@ -174,8 +180,8 @@ public class Controller {
         float x = -Gdx.input.getDeltaX(pointer) * velocity + camera.position.x;
         float y = Gdx.input.getDeltaY(pointer) * velocity + camera.position.y;
 
-        camera.position.x = MathUtils.clamp(x,0,camera.viewportWidth * tileSize);
-        camera.position.y = MathUtils.clamp(y,0,camera.viewportHeight * tileSize);
+        camera.position.x = MathUtils.clamp(x, 0, camera.viewportWidth * tileSize);
+        camera.position.y = MathUtils.clamp(y, 0, camera.viewportHeight * tileSize);
         camera.update();
     }
 
@@ -193,6 +199,9 @@ public class Controller {
         getClient().setScreen(screen);
     }
 
+    /**
+     * Chose the client background music according to the game biome.
+     */
     private void chooseMusic() {
         if (getModel().getBiome() != null) {
             getClient().setMusic(Assets.getInstance().get(Assets.AssetDir.SOUND.path()
@@ -347,6 +356,14 @@ public class Controller {
         return movementSelector.isOwner() && !(getScopedEntity() instanceof Structure);
     }
 
+    /**
+     * Shows the accessible target for the scoped unit.
+     *
+     * @param attack         The gameview boolean. It indicates if the screen is previously in attack mode.
+     * @param attackSelector The GameView attackSelector.
+     * @param worldPosition  the input world position.
+     * @return true if the gameview will be in attack mode, false otherwise.
+     */
     public boolean showTargets(boolean attack, AttackSelector attackSelector, Vector3 worldPosition) {
         GameView g = (GameView) getScreen();
         if (attack) {
@@ -375,16 +392,6 @@ public class Controller {
         attackSelector.showValids(getScreen().getAssets(), data);
         attackSelector.setEntityInformation(worldPosition, getScopedEntity().getRange());
         return attackSelector.isOwner() && !(getScopedEntity() instanceof Villager);
-    }
-
-    private boolean isCurrentOwner(Pair<Integer, Integer> initialPosition) {
-        boolean scoped = getScopedEntity().getFaction().equals(getModel().getCurrentPlayer().getFaction());
-        if (initialPosition == null) {
-            return scoped;
-        }
-        Tile t = getTile(initialPosition.first, initialPosition.second);
-        Faction faction = getModel().getCurrentPlayer().getFaction();
-        return (t.entity.isPresent() && t.entity.get().getFaction().equals(faction)) && scoped;
     }
 
 
@@ -441,11 +448,11 @@ public class Controller {
         Entity entityTarget = getWorld().getScopedEntity();
         EntityUI actorTarget = (EntityUI) gameView.getCharacterUI(entityTarget);
         tile.entity.get().exhaust();
-        boolean alive = attack((CharacterUI) actor,actorTarget, path);
+        boolean alive = attack((CharacterUI) actor, actorTarget, path);
         if (!commanderDie(entityTarget, tile.entity.get().getFaction())) {
-            structureAttackted( actorTarget, tile.entity.get().getFaction());
-            if (canCounterAttack( actorTarget, (CharacterUI) actor, alive)) {
-                counterAttack( actorTarget,  actor, inversePath(path.substring(path.length() - 1)));
+            structureAttacked(actorTarget, tile.entity.get().getFaction());
+            if (canCounterAttack(actorTarget, (CharacterUI) actor, alive)) {
+                counterAttack(actorTarget, actor, inversePath(path.substring(path.length() - 1)));
             }
         }
     }
@@ -475,10 +482,12 @@ public class Controller {
     }
 
     /**
-     * @param actor
-     * @param actorTarget
-     * @param path
-     * @return
+     * Realize the attack between two entities.
+     *
+     * @param actor       The attacker.
+     * @param actorTarget The target.
+     * @param path        The movement of the attacker in order to attack.
+     * @return true if the target is still alive, false otherwise.
      */
     private boolean attack(CharacterUI actor, EntityUI actorTarget, String path) {
         actor.setMove(path.substring(0, path.length() - 1));
@@ -503,7 +512,7 @@ public class Controller {
         }
         actor.setVictime(actorTarget);
         actor.getEntity().attack(actorTarget.getEntity());
-        commanderDie(actorTarget.getEntity(),actor.getEntity().getFaction());
+        commanderDie(actorTarget.getEntity(), actor.getEntity().getFaction());
     }
 
     /**
@@ -528,8 +537,8 @@ public class Controller {
      * Only way to catch the StructureUI, is reading all the map
      * Eliminate or free all the entities of a player
      *
-     * @param player
-     * @param attack
+     * @param player The victim.
+     * @param attack The attacker faction.
      */
     private void killArmyAndDestroyBases(Player player, Faction attack) {
         Faction victim = player.getFaction();
@@ -549,7 +558,13 @@ public class Controller {
         while (!delQueue.isEmpty()) deleteStructureUI((StructureUI) delQueue.poll(), player, attack);
     }
 
-    private void structureAttackted(EntityUI entityUI, Faction attack) {
+    /**
+     * Manage the death of a structure.
+     *
+     * @param entityUI The attacked structure
+     * @param attack   the attacker faction.
+     */
+    private void structureAttacked(EntityUI entityUI, Faction attack) {
         Entity entity = entityUI.getEntity();
         if (entity instanceof Structure && entityUI instanceof StructureUI && entity.getHealth() <= 0) {
             entity.setHealth(1);
@@ -608,7 +623,8 @@ public class Controller {
 
     /**
      * Shoes final dialog and allows to go to the main menu
-     * @param winner winner
+     *
+     * @param winner   winner
      * @param defeated The defeated faction
      */
 
@@ -625,7 +641,7 @@ public class Controller {
                     openMainMenu();
                 }
             };
-            dialog.addListener(new InputListener(){
+            dialog.addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                     dialog.hide();
@@ -649,22 +665,39 @@ public class Controller {
         }
     }
 
+    /**
+     * Shows a message when a player is defeated.
+     *
+     * @param defeated The defeated player.
+     */
     private void showDefeatMessage(Player defeated) {
         GameView g = (GameView) getScreen();
         Skin skin = Assets.getInstance().getSkin();
         int timer = 3;
-        DialogWithCloseButton dialog = new DialogWithCloseButton("",this);
+        DialogWithCloseButton dialog = new DialogWithCloseButton("", this);
         Label label = new Label("The " + defeated.getFaction().prettyName() + " has been defeated !", skin);
         label.setColor(defeated.getColor());
-        Label timerText = new Label("Close in "+ timer+ " seconds", skin);
+        Label timerText = new Label("Close in " + timer + " seconds", skin);
         timerText.setColor(Color.FIREBRICK);
         dialog.getContentTable().add(label);
         dialog.getContentTable().row();
         dialog.getContentTable().add(timerText);
+        dialog.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                dialog.hide();
+                return true;
+            }
+        });
         dialog.show(g.getGameViewUi());
-        closeDialog(dialog,timerText,timer);
+        closeDialog(dialog, timerText, timer);
     }
 
+    /**
+     * Actualise the gameView and world focus to the given position
+     *
+     * @param positionTarget The position of the entity which needs to be focused.
+     */
     public void actualiseFocusEntity(Pair<Integer, Integer> positionTarget) {
         if (positionTarget == null) return;
         getWorld().actualiseEntity(positionTarget);
@@ -761,6 +794,9 @@ public class Controller {
         gameView.getCursor().setLock(false);
     }
 
+    /**
+     * End the player's turn.
+     */
     public void endTurn() {
         GameView gameView = ((GameView) getScreen());
         gameView.getCursor().setLock(false);
@@ -772,6 +808,9 @@ public class Controller {
         showNextTurnMessage();
     }
 
+    /**
+     * Move the camera to the player's commander.
+     */
     private void moveCameraToCommander() {
         Queue<Entity> entities = getModel().getCurrentPlayer().getEntities();
         Entity commander = null;
@@ -788,6 +827,9 @@ public class Controller {
         ((GameView) getScreen()).getCursor().setPosition(commanderSprite.getX(), commanderSprite.getY());
     }
 
+    /**
+     * Move the camera to the next available unit.
+     */
     public void nextUnit() {
         GameView gameView = (GameView) getScreen();
         gameView.clearAll();
@@ -804,6 +846,11 @@ public class Controller {
         gameView.getCursor().setPosition(ui.getX(), ui.getY());
     }
 
+    /**
+     * Move the camera to the cameraDestination coordinates.
+     *
+     * @param camera The camera which needs to move.
+     */
     public void actCamera(Camera camera) {
         float velocity = getClient().getCameraVelocity() * 64 * Gdx.graphics.getDeltaTime();
         boolean negX = cameraDestination.first - camera.position.x < 0;
@@ -823,10 +870,16 @@ public class Controller {
         return cameraMoving;
     }
 
+    /**
+     * Stop the game.
+     */
     public void stopGame() {
         getModel().dispose();
     }
 
+    /**
+     * Opens the main menu.
+     */
     public void openMainMenu() {
         getClient().stopMusic(true);
         setScreen(new MainMenu(this, getModel(), getClient()));
@@ -834,16 +887,28 @@ public class Controller {
         getClient().playMusic();
     }
 
+    /**
+     * close the client.
+     */
     public void closeClient() {
         Gdx.app.exit();
     }
 
+    /**
+     * Opens the in game Menu.
+     */
     public void openInGameMenu() {
-        setPrevious();
         View screen = new InGameMenu(getScreen(), this, getModel(), getClient());
         setScreen(screen);
     }
 
+    /**
+     * change the category of the mapSelector.
+     *
+     * @param name     The collection name.
+     * @param database the game database.
+     * @param buttons  The scrollPane where the buttons will be added.
+     */
     public void changeCategory(String name, Database database, ScrollPane buttons) {
         database.selectCollection(name);
         Table content = ((SelectMap) getScreen()).initButtonsTable(database.getKeys());
@@ -851,6 +916,11 @@ public class Controller {
     }
 
 
+    /**
+     * Check if the current player have a remaining playable unit.
+     *
+     * @return true if it's the case, false otherwise.
+     */
     public boolean haveARemainingUnit() {
         for (var e : getModel().getCurrentPlayer().getEntities()) {
             if (!e.isExhausted()) {
@@ -861,16 +931,16 @@ public class Controller {
     }
 
     /**
-     * @param inLive if the actorTarget has survive to the actor atack
+     * @param alive if the actorTarget has survive to the actor atack
      * @return if the actorTarget can attack the actor
      */
-    public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor, boolean inLive) {
-        return inLive && !((actorTarget.getEntity()) instanceof Villager) && correctDistanceToCounterAttack(actorTarget, actor) && !actor.getEntity().equals(actorTarget.getEntity().getFaction());
+    public boolean canCounterAttack(EntityUI actorTarget, CharacterUI actor, boolean alive) {
+        return alive && !((actorTarget.getEntity()) instanceof Villager) && correctDistanceToCounterAttack(actorTarget, actor) && !actor.getEntity().equals(actorTarget.getEntity().getFaction());
     }
 
     /**
-     * @return true if the actor who has atackk first is in the range of the other actor
-     * @return false if the actors are to futher
+     * @return true if the actor who has attack first is in the range of the other actor <br>
+     * false if the actors are to further
      */
     public boolean correctDistanceToCounterAttack(EntityUI characterUI, CharacterUI characterUIVictime) {
         Pair<Integer, Integer> posAttack = characterUI.getCoordinates();
@@ -881,12 +951,15 @@ public class Controller {
         return distance <= characterUI.getEntity().getRange();
     }
 
+    /**
+     * Show the turn beginning message.
+     */
     private void showNextTurnMessage() {
         Player current = getModel().getCurrentPlayer();
         Skin skin = Assets.getInstance().getSkin();
         int timer = 3;
         Dialog dialog = new DialogWithCloseButton("", this);
-        dialog.addListener(new InputListener(){
+        dialog.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 dialog.hide();
@@ -904,10 +977,23 @@ public class Controller {
         closeDialog(dialog, timerText, timer);
     }
 
+    /**
+     * @param dialog    the dialog which will be closed.
+     * @param timerText The label which will have the closure message.
+     * @param seconds   The timer start amount.
+     */
     private void closeDialog(Dialog dialog, Label timerText, int seconds) {
         closeDialog(dialog, timerText, seconds, null);
     }
 
+    /**
+     * Close the given dialog with a timer. run the action when the timer is done.
+     *
+     * @param dialog  the dialog which will be closed.
+     * @param label   The label which will have the closure message.
+     * @param seconds The timer start amount.
+     * @param action  the action which will be run at the ned of the timer.
+     */
     private void closeDialog(Dialog dialog, Label label, int seconds, Runnable action) {
         if (label == null) {
             label = new Label("", Assets.getInstance().getSkin());
