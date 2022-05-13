@@ -22,6 +22,7 @@ import up.wargroove.core.ui.Controller;
  * The Main Menu.
  */
 public class MainMenu extends View {
+
     /**
      * Start game button.
      */
@@ -72,14 +73,10 @@ public class MainMenu extends View {
     }
 
     @Override
-    public void pause() {
-
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-
-    }
+    public void resume() {}
 
     @Override
     public void hide() {

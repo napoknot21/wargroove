@@ -46,7 +46,7 @@ public abstract class View extends ScreenAdapter {
 
 
     /**
-     * Initialize the screen.
+     * Constructor for View
      *
      * @param controller The screen controller.
      * @param model      The gui model.
@@ -120,27 +120,6 @@ public abstract class View extends ScreenAdapter {
     }
 
     /**
-     * Adds an actor to the stage.
-     *
-     * @param actor the actor that will be added
-     */
-    public void addActor(Actor actor) {
-        ui.addActor(actor);
-    }
-
-    public WargrooveClient getClient() {
-        return wargroove;
-    }
-
-    public Batch getBatch() {
-        return wargroove.getBatch();
-    }
-
-    public Stage getStage() {
-        return ui;
-    }
-
-    /**
      * Sets the main stage of the view.
      *
      * @param viewport The stage's viewport.
@@ -180,6 +159,29 @@ public abstract class View extends ScreenAdapter {
         for (InputProcessor input : inputs) {
             this.inputs.addProcessor(input);
         }
+    }
+
+    /***************** setters and getters *****************/
+
+    /**
+     * Adds an actor to the stage.
+     *
+     * @param actor the actor that will be added
+     */
+    public void addActor(Actor actor) {
+        ui.addActor(actor);
+    }
+
+    public WargrooveClient getClient() {
+        return wargroove;
+    }
+
+    public Batch getBatch() {
+        return wargroove.getBatch();
+    }
+
+    public Stage getStage() {
+        return ui;
     }
 
 }

@@ -14,7 +14,7 @@ public abstract class ViewWithPrevious extends View {
     private final View previous;
 
     /**
-     * Initialize the screen.
+     * Constructor for screen.
      *
      * @param controller The screen controller.
      * @param model      The gui model.
@@ -25,6 +25,10 @@ public abstract class ViewWithPrevious extends View {
         this.previous = previous;
     }
 
+    /**
+     * Getter for the previous view
+     * @return the previous view
+     */
     public View getPrevious() {
         return previous;
     }

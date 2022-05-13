@@ -56,11 +56,17 @@ public class MatchSettings extends ViewWithPrevious {
     private OrthogonalTiledMapRenderer renderer;
     private Pair<Float, Float> mapSize;
 
+    /**
+     * COnstructor for MatchSetting
+     * @param previous previous view
+     * @param controller the controller
+     * @param model the model
+     * @param wargroove the wargrooveClient
+     */
     public MatchSettings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
         this.skin = getAssets().getSkin();
         properties = (getModel().getProperties() != null) ? getModel().getProperties() : new WorldProperties();
-
     }
 
 
@@ -94,6 +100,10 @@ public class MatchSettings extends ViewWithPrevious {
         renderer = MapActor.buildMap(getModel().getWorld(), VRT, mapSize, getController());
     }
 
+    /**
+     * Build a screen table on the left - top
+     * @return the screen table
+     */
     private Table buildLeftTop() {
         Table intel = new Table(skin);
         intel.setFillParent(true);

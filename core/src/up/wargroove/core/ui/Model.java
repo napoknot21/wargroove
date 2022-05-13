@@ -46,13 +46,6 @@ public class Model {
     private Entity activeStructure = null;
 
 
-    public static int getTileSize() {
-        return tileSize;
-    }
-
-    public static void setTileSize(int tileSize) {
-        Model.tileSize = tileSize;
-    }
 
     /**
      * Start a new game.
@@ -112,34 +105,6 @@ public class Model {
         troopGenerationBfs(2,commanderPos,new Soldier("Knit-Guards", player.getFaction()), player);
     }
 
-    /**
-     * Instantiates the close-knit guards next to the previous loaded commander.
-     *
-     * @param pos    The commander position.
-     * @param player the commander owner.
-     */
-    /*private void loadGuards(int pos, Player player) {
-        HashSet<Integer> checked = new HashSet<>();
-        Queue<Integer> emp = new LinkedList<>();
-        int amt = 2;
-        emp.add(pos);
-        while(amt > 0 && !emp.isEmpty()) {
-            int el = emp.poll();
-            List<Integer> adj = getWorld().adjacentOf(el);
-            for (int i = 0; i< adj.size() && amt > 0; i++) {
-                if (checked.contains(adj.get(i))) continue;
-                Tile t = getWorld().at(adj.get(i));
-                if (t.entity.isEmpty() && t.getType().availableForLoad()) {
-                    Entity entity = ;
-                    player.addEntity(entity);
-                    getWorld().at(adj.get(i)).entity = Optional.of(entity);
-                    amt--;
-                }
-                checked.add(adj.get(i));
-                emp.add(adj.get(i));
-            }
-        }
-    }*/
 
     private int troopGenerationBfs(int amt, int pos, Entity cloneGen, Player player) {
         HashSet<Integer> checked = new HashSet<>();
@@ -169,27 +134,6 @@ public class Model {
         return ret;
     }
 
-    public World getWorld() {
-        return world;
-    }
-
-    public void setWorld(WorldProperties properties) {
-        this.world = (properties != null) ? new World(properties) : null;
-        this.properties = properties;
-    }
-
-    /**
-     * Gets the world biome.
-     *
-     * @return The biome.
-     */
-    public Biome getBiome() {
-        return properties.getBiome();
-    }
-
-    public boolean isActive() {
-        return isActive;
-    }
 
     /**
      * Destroy the model.
@@ -226,14 +170,6 @@ public class Model {
         x = (x < 0) ? 0 : Math.min(world.getDimension().first - 1, x);
         y = (y < 0) ? 0 : Math.min(world.getDimension().second - 1, y);
         return world.at(x, y);
-    }
-
-    public Entity getBoughtEntity() {
-        return boughtEntity;
-    }
-
-    public void setBoughtEntity(Entity boughtEntity) {
-        this.boughtEntity = boughtEntity;
     }
 
     /**
@@ -277,19 +213,9 @@ public class Model {
         world.removeLastPlayer();
     }
 
-    /**
-     * Gets the faction's player.
-     *
-     * @param faction the requested faction.
-     * @return the player if its exist, null otherwise.
-     */
-    @Null
-    private Player getPlayer(Faction faction) {
-        return world.getPlayer(faction);
-    }
+    public void endGame() {}
 
-    public void endGame() {
-    }
+    /***************** setters and getters *****************/
 
     public Entity getActiveStructure() {
         return activeStructure;
@@ -306,4 +232,53 @@ public class Model {
     public void setProperties(WorldProperties properties) {
         this.properties = properties;
     }
+
+    public static int getTileSize() {
+        return tileSize;
+    }
+
+    public static void setTileSize(int tileSize) {
+        Model.tileSize = tileSize;
+    }
+
+    /**
+     * Gets the faction's player.
+     *
+     * @param faction the requested faction.
+     * @return the player if its exist, null otherwise.
+     */
+    @Null
+    private Player getPlayer(Faction faction) {
+        return world.getPlayer(faction);
+    }
+
+    public Entity getBoughtEntity() {
+        return boughtEntity;
+    }
+
+    public void setBoughtEntity(Entity boughtEntity) {
+        this.boughtEntity = boughtEntity;
+    }
+
+    /**
+     * Gets the world biome.
+     * @return The biome.
+     */
+    public Biome getBiome() {
+        return properties.getBiome();
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(WorldProperties properties) {
+        this.world = (properties != null) ? new World(properties) : null;
+        this.properties = properties;
+    }
+
 }

@@ -36,6 +36,13 @@ public class Settings extends ViewWithPrevious {
 
     Sound buttonSound;
 
+    /**
+     * Constructor for Settings
+     * @param previous previous view
+     * @param controller the controller
+     * @param model the model
+     * @param wargroove the wargrooveClient
+     */
     public Settings(View previous, Controller controller, Model model, WargrooveClient wargroove) {
         super(previous, controller, model, wargroove);
         Skin skin = getAssets().getSkin();
@@ -116,7 +123,7 @@ public class Settings extends ViewWithPrevious {
     }
 
     /**
-     * Init the table.
+     * Initialization of the table.
      *
      * @return The table.
      */

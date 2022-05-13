@@ -13,7 +13,6 @@ import up.wargroove.core.ui.Controller;
 
 /**
  * The in game Menu
- *
  * @see up.wargroove.core.ui.views.scenes.ViewWithPrevious
  */
 public class InGameMenu extends ViewWithPrevious {
