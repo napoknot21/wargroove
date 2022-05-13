@@ -2,10 +2,9 @@ package up.wargroove.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import java.awt.EventQueue;
-import java.io.File;
-
 import up.wargroove.core.WargrooveClient;
+
+import java.awt.*;
 
 /**
  * The game launcher.
@@ -22,14 +21,10 @@ public class WargrooveLauncher {
         } else {
             debug = false;
         }
-        try {
-            Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-            config.setTitle("Wargroove");
-            config.setWindowSizeLimits(800,600,-1,-1);
-            EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(debug), config));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+        config.setTitle("Wargroove");
+        config.setWindowSizeLimits(800, 600, -1, -1);
+        EventQueue.invokeLater(() -> new Lwjgl3Application(new WargrooveClient(debug), config));
 
     }
 

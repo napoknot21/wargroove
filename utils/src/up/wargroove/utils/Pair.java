@@ -1,40 +1,39 @@
 package up.wargroove.utils;
 
-import java.util.List;
-
 public class Pair<T, U> {
 
-	public T first;
-	public U second;
+    public T first;
+    public U second;
 
-	public Pair() {}
+    public Pair() {
+    }
 
-	public Pair(T first, U second) {
+    public Pair(T first, U second) {
 
-		this.first = first;
-		this.second = second;
+        this.first = first;
+        this.second = second;
 
-	}
+    }
 
-	public void swap(Pair<T, U> copy) {
+    public void swap(Pair<T, U> copy) {
 
-		first = copy.first;
-		second = copy.second;
+        first = copy.first;
+        second = copy.second;
 
-	}
+    }
 
-	public boolean equals(Object object) {
+    public boolean equals(Object object) {
 
-		if(object.getClass() != Pair.class) return false;
+        if (object.getClass() != Pair.class) return false;
 
-		Pair<T, U> pair = (Pair<T, U>) object;
-		return first.equals(pair.first) && second.equals(pair.second);
+        Pair<T, U> pair = (Pair<T, U>) object;
+        return first.equals(pair.first) && second.equals(pair.second);
 
-	}
+    }
 
-	@Override
-	public String toString() {
-		return "(" + first + ", " + second + ")";
-	}
+    @Override
+    public String toString() {
+        return "(" + first + ", " + second + ")";
+    }
 
 }

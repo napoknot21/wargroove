@@ -4,43 +4,43 @@ import java.io.PrintStream;
 
 public class Log {
 
-	private static PrintStream out = System.out;
+    private static PrintStream out = System.out;
 
-	public enum Status {
+    public static void print(String message) {
 
-		ERROR(-1, "[X]"),
-		SUCCESS(0, "[OK]"),
-		WARN(1, "[!]"),
-		INFO(2, "[i]");
+        print(Status.INFO, message);
 
-		int code;
-		String str;
+    }
 
-		Status(int code, String str) {
+    public static void print(Status status, String message) {
 
-			this.code = code;
-			this.str = str;
+        out.println(status.str + " " + message);
 
-		}
+    }
 
-	}
+    public void setOutputStream(PrintStream ps) {
 
-	public static void print(String message) {
+        out = ps;
 
-		print(Status.INFO, message);	
+    }
 
-	}
+    public enum Status {
 
-	public static void print(Status status, String message) {
+        ERROR(-1, "[X]"),
+        SUCCESS(0, "[OK]"),
+        WARN(1, "[!]"),
+        INFO(2, "[i]");
 
-		out.println(status.str + " " + message);
+        int code;
+        String str;
 
-	}
+        Status(int code, String str) {
 
-	public void setOutputStream(PrintStream ps) {
+            this.code = code;
+            this.str = str;
 
-		this.out = ps;
+        }
 
-	}
+    }
 
 }
