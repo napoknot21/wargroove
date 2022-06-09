@@ -422,10 +422,11 @@ public class World {
     private Vector<int[]> attackBreadthFirstSearch(int root) {
 
         Map<Integer, Integer> checked = new HashMap<>();
-        HashMap<Integer,Pair<Integer,Integer>> mouvements = new HashMap<>();
+        HashMap<Integer,List<Pair<Integer,Integer>>> mouvements = new HashMap<>();
         Queue<Pair<Integer, Pair<Integer, Integer>>> emp = new LinkedList<>();
         Vector<int[]> res = new Vector<>();
-        mouvements.put(root,new Pair<>(root,1));
+        mouvements.put(root,new LinkedList<>());
+        mouvements.get(root).add(new Pair<>(root,1));
 
         if (terrain[root].entity.isEmpty()) return res;
         //a predicate on the validity of the search
@@ -473,7 +474,11 @@ public class World {
                             break;
                         case 2:
                             movementCost = result.first;
-                            if (movementCost >= 0) mouvements.put(lin,result);
+                            if (movementCost >= 0) {
+                                List<Pair<Integer, Integer>> list = mouvements.getOrDefault(lin, new LinkedList<>());
+                                list.add(result);
+                                mouvements.put(lin,list);
+                            }
                             break;
                         default:
                     }
@@ -511,7 +516,7 @@ public class World {
      * @param range range
      * @return true if success
      */
-    private boolean correctAlignement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin, int range) {
+    private boolean correctAlignement(HashMap<Integer, List<Pair<Integer, Integer>>> mouvements, int lin, int range) {
         Pair<Integer, Integer> pos = intToCoordinates(lin, getDimension());
         boolean valid = false;
         for (int i = 0; i <= range && !valid; i++) {
@@ -529,9 +534,15 @@ public class World {
      * @param lin validity
      * @return true if success
      */
-    private boolean checkMouvement(HashMap<Integer, Pair<Integer, Integer>> mouvements, int lin){
-        Pair<Integer, Integer> m = mouvements.get(lin);
-        return m != null && m.second > 0;
+    private boolean checkMouvement(HashMap<Integer, List<Pair<Integer, Integer>>> mouvements, int lin){
+        List<Pair<Integer, Integer>> list = mouvements.get(lin);
+        if (list == null) return false;
+        for (Pair<Integer,Integer> m : list) {
+            if (m != null && m.second > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SafeVarargs
