@@ -14,7 +14,7 @@ import java.io.FileWriter;
 /**
  * This is a plugin. Its primary task is to export a map from the local database to the given path.
  */
-public class ExportMap extends Plugin {
+public class ExportMap implements Plugin {
     /**
      * Name of the map stored in the database.
      */
@@ -59,7 +59,12 @@ public class ExportMap extends Plugin {
      * @param args The CLI arguments.
      */
     public ExportMap(String... args) {
-        super(args);
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
     }
 
     /**
@@ -78,7 +83,7 @@ public class ExportMap extends Plugin {
     }
 
 
-    void initParameter(String... parameter) {
+    public void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }
@@ -200,12 +205,16 @@ public class ExportMap extends Plugin {
 
         int[][] tiles = readTerrain(properties);
         StringBuilder builder = new StringBuilder();
-        for (int i = tiles.length - 1; i >= 0; i--) {
+        for (int i = tiles.length - 1; i > 0; i--) {
             for (int id : tiles[i]) {
                 builder.append(id).append(",");
             }
             builder.append('\n');
         }
+        for(int i = 0; i< tiles[0].length - 1; i++) {
+            builder.append(tiles[0][i]).append(",");
+        }
+        builder.append(tiles[0][tiles[0].length - 1]);
         FileWriter writer = new FileWriter(file);
         writer.write(builder.toString());
         writer.flush();

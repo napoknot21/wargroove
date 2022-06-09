@@ -101,6 +101,7 @@ public class SelectMap extends ViewWithPrevious {
         Table VLTable = new Table();
         VLTable.setFillParent(true);
         buttons = new ScrollPane(initButtonsTable(database.getKeys()), skin);
+        buttons.setSmoothScrolling(true);
         VLTable.add(buttons).expand().fill();
         VLTable.row();
         VL.addActor(VLTable);
@@ -169,6 +170,7 @@ public class SelectMap extends ViewWithPrevious {
         int height = Gdx.graphics.getHeight() / 2;
         VL.getViewport().apply();
         VL.draw();
+        VL.act();
         VT.getViewport().setScreenY((3 * height) / 2);
         VT.getViewport().apply();
         VT.draw();

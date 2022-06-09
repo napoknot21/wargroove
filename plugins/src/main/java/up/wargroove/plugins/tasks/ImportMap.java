@@ -14,7 +14,7 @@ import java.util.*;
 /**
  * This is a plugin. Its primary tasks is to import a given map in CLI to the local database.
  */
-public class ImportMap extends Plugin {
+public class ImportMap implements Plugin {
     private static int players = 0;
     private final StringBuilder log = new StringBuilder();
     private final Database db = new Database(getRoot());
@@ -28,8 +28,12 @@ public class ImportMap extends Plugin {
      * @param args The CLI arguments.
      */
     public ImportMap(String... args) {
-        super(args);
-
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
     }
 
     /**
@@ -68,7 +72,7 @@ public class ImportMap extends Plugin {
      *
      * @param parameter the CLI arguments.
      */
-    void initParameter(String... parameter) {
+    public void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }

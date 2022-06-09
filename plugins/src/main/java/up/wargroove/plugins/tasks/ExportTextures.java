@@ -12,7 +12,7 @@ import java.util.Locale;
  * This is a plugin. Its primary task is to export the local textures to the given path.
  * For compatibility reasons, it must be used to draw a map with an external application.
  */
-public class ExportTextures extends Plugin {
+public class ExportTextures implements Plugin {
     private String biome;
     private String path;
     private boolean overwrite = false;
@@ -23,7 +23,12 @@ public class ExportTextures extends Plugin {
      * @param args The CLI arguments.
      */
     public ExportTextures(String... args) {
-        super(args);
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
+                String[] parameter = arg.substring(2).split("=");
+                initParameter(parameter);
+            }
+        }
     }
 
     /**
@@ -53,7 +58,7 @@ public class ExportTextures extends Plugin {
      *
      * @param parameter the CLI arguments.
      */
-    void initParameter(String... parameter) {
+    public void initParameter(String... parameter) {
         if (parameter.length != 2) {
             return;
         }
