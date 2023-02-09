@@ -8,11 +8,7 @@ A tactical RPG game based on the Wargroove game
 
 1. clone the repository
     ```
-    git clone git@gaufre.informatique.univ-paris-diderot.fr:garnierk/wargroove.git
-    ```
-   or
-    ```
-    git clone https://gaufre.informatique.univ-paris-diderot.fr/garnierk/wargroove
+    git clone https://github.com/napoknot/wargroove.git
     ```
 2. Enter the project folder
     ```
